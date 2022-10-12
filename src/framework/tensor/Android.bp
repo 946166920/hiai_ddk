@@ -1,0 +1,120 @@
+soong_config_module_type_import {
+    from: "vendor/hisi/npu/build/core/bp/Android.bp",
+    module_types: [
+        "ai_cc_defaults",
+        "ai_proto_defaults",
+        "ai_filegroup",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_fmk_tensor_objs_srcs",
+    srcs: [
+        "image/image_tensor_buffer_impl.cpp",
+        "image/image_tensor_buffer.cpp",
+    ],
+    soong_config_variables: {
+        AI_SUPPORT_LEGACY_APP_COMPATIBLE: {
+            srcs: [
+                "compatible/AiTensor.cpp",
+            ],
+        },
+        AI_SUPPORT_AIPP_COMPATIBLE: {
+            srcs: [
+                "compatible/AippTensor.cpp",
+                "compatible/HiAiAippPara.cpp",
+            ],
+        },
+    },
+}
+
+cc_defaults {
+    name: "ai_fmk_tensor_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    cflags: [
+        "-DHIAI_TENSOR_API_VISIABLE",
+    ],
+    rtti: true,
+    srcs: [
+        ":ai_fmk_tensor_objs_srcs",
+    ],
+}
+
+ai_cc_defaults {
+    name: "libhiai_c_def_funcs",
+    soong_config_variables: {
+        AI_SUPPORT_AIPP_API: {
+            static_libs: [
+                "libai_fmk_tensor_aipp_para_static",
+            ],
+            ldflags: [
+                "-Wl,--exclude-libs,libai_fmk_tensor_aipp_para_static.a",
+            ],
+        },
+    },
+}
+
+cc_library_shared {
+    name: "libhiai_c_def",
+    defaults: [
+        "ai_fmk_defaults",
+        "libhiai_c_def_funcs",
+        "ai_fmk_util_version_objs",
+        "ai_fmk_util_hiai_version_objs",
+        "ai_fmk_infra_native_handle_objs",
+        "ai_fmk_util_base_types_objs",
+        "ai_fmk_tensor_nd_tensor_impl_objs",
+        "ai_fmk_tensor_nd_tensor_ext_objs",
+        "ai_fmk_tensor_objs",
+        "ai_fmk_infra_buffer_objs",
+        "ai_fmk_infra_base_buffer_objs",
+    ],
+    cflags: [
+        "-DHIAI_C_API_VISIABLE",
+    ],
+    shared_libs: [
+        "libc_secshared",
+        "libmmpa",
+        "libai_infra_log",
+    ],
+    static_libs: [
+        "libai_fmk_util_dl_helper_static",
+    ],
+    whole_static_libs: [
+        "libai_fmk_tensor_nd_tensor_static",
+    ],
+    proprietary: true,
+}
+
+ai_cc_defaults {
+    name: "libhiai_c_funcs",
+    soong_config_variables: {
+        AI_SUPPORT_PREFMODE_EXTEND: {
+            cflags: [
+                "-DAI_SUPPORT_PREFMODE_EXTEND",
+            ],
+        },
+    },
+}
+
+cc_library_shared {
+    name: "libhiai_c",
+    defaults: [
+        "ai_fmk_defaults",
+        "libhiai_c_funcs",
+        "ai_fmk_model_runtime_core_objs",
+        "ai_fmk_model_runtime_core_v1_objs",
+    ],
+    cflags: [
+        "-DHIAI_C_API_VISIABLE",
+    ],
+    shared_libs: [
+        "libc_secshared",
+        "libmmpa",
+        "libai_infra_log",
+        "libhiai_c_def",
+    ],
+    proprietary: true,
+}

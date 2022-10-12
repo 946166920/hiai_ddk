@@ -1,0 +1,69 @@
+soong_config_module_type_import {
+    from: "vendor/hisi/npu/build/core/bp/Android.bp",
+    module_types: [
+        "ai_cc_defaults",
+        "ai_proto_defaults",
+        "ai_filegroup",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_fmk_infra_native_handle_objs_srcs",
+    srcs: [
+        "hiai_native_handle.c",
+    ],
+}
+
+cc_defaults {
+    name: "ai_fmk_infra_native_handle_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    shared_libs: [
+        "libc_secshared",
+    ],
+    srcs: [
+        ":ai_fmk_infra_native_handle_objs_srcs",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_fmk_infra_buffer_objs_srcs",
+    srcs: [
+        "hiai_shared_buffer.c",
+        "local_buffer.cpp",
+    ],
+}
+
+cc_defaults {
+    name: "ai_fmk_infra_buffer_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    shared_libs: [
+        "libc_secshared",
+    ],
+    srcs: [
+        ":ai_fmk_infra_buffer_objs_srcs",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_fmk_infra_base_buffer_objs_srcs",
+    srcs: [
+        "base_buffer.cpp",
+    ],
+}
+
+cc_defaults {
+    name: "ai_fmk_infra_base_buffer_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    shared_libs: [
+        "libc_secshared",
+    ],
+    srcs: [
+        ":ai_fmk_infra_base_buffer_objs_srcs",
+    ],
+}

@@ -1,0 +1,37 @@
+soong_config_module_type_import {
+    from: "vendor/hisi/npu/build/core/bp/Android.bp",
+    module_types: [
+        "ai_cc_defaults",
+        "ai_proto_defaults",
+        "ai_filegroup",
+    ],
+}
+
+ai_filegroup {
+    name: "libai_fmk_tensor_aipp_para_static_srcs",
+    srcs: [
+        "aipp_para_impl.cpp",
+        "hiai_tensor_aipp_para_legacy.c",
+        "hiai_tensor_aipp_para_local.c",
+        "hiai_tensor_aipp_para.c",
+    ],
+}
+
+cc_library_static {
+    name: "libai_fmk_tensor_aipp_para_static",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    cflags: [
+        "-DHIAI_TENSOR_API_VISIABLE",
+        "-DHIAI_C_API_VISIABLE",
+    ],
+    rtti: true,
+    shared_libs: [
+        "libc_secshared",
+    ],
+    srcs: [
+        ":libai_fmk_tensor_aipp_para_static_srcs",
+    ],
+    proprietary: true,
+}

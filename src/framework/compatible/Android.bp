@@ -1,0 +1,51 @@
+soong_config_module_type_import {
+    from: "vendor/hisi/npu/build/core/bp/Android.bp",
+    module_types: [
+        "ai_cc_defaults",
+        "ai_proto_defaults",
+        "ai_filegroup",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_fmk_compatible_objs_srcs",
+    srcs: [
+        "array_op_transformer.cpp",
+        "control_flow_op_transformer.cpp",
+        "detection_op_transformer.cpp",
+        "image_op_transformer.cpp",
+        "internal_op_transformer.cpp",
+        "ir_transformer.cpp",
+        "ir_verify.cpp",
+        "math_op_transformer.cpp",
+        "nn_op_transformer.cpp",
+        "transformer_utils.cpp",
+    ],
+}
+
+cc_defaults {
+    name: "ai_fmk_compatible_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    srcs: [
+        ":ai_fmk_compatible_objs_srcs",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_fmk_compatible_model_compatibility_check_objs_srcs",
+    srcs: [
+        "model_compatibility_check.cpp",
+    ],
+}
+
+cc_defaults {
+    name: "ai_fmk_compatible_model_compatibility_check_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    srcs: [
+        ":ai_fmk_compatible_model_compatibility_check_objs_srcs",
+    ],
+}

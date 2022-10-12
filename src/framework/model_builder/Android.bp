@@ -1,0 +1,56 @@
+soong_config_module_type_import {
+    from: "vendor/hisi/npu/build/core/bp/Android.bp",
+    module_types: [
+        "ai_cc_defaults",
+        "ai_proto_defaults",
+        "ai_filegroup",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_fmk_model_builder_objs_srcs",
+    srcs: [
+        "om/model_build_options_util.cpp",
+        "om/model_builder_impl.cpp",
+    ],
+    soong_config_variables: {
+        AI_SUPPORT_MODEL_BUILDER_COMPATIBLE: {
+            srcs: [
+                "compatible/BuildOptionUtil.cpp",
+            ],
+        },
+    },
+}
+
+cc_defaults {
+    name: "ai_fmk_model_builder_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    cflags: [
+        "-DHIAI_MB_API_VISIABLE",
+    ],
+    shared_libs: [
+        "libc_secshared",
+    ],
+    srcs: [
+        ":ai_fmk_model_builder_objs_srcs",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_fmk_model_builder_compatible_objs_srcs",
+    srcs: [
+        "compatible/BuildOptionUtil.cpp",
+    ],
+}
+
+cc_defaults {
+    name: "ai_fmk_model_builder_compatible_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    srcs: [
+        ":ai_fmk_model_builder_compatible_objs_srcs",
+    ],
+}

@@ -1,0 +1,50 @@
+soong_config_module_type_import {
+    from: "vendor/hisi/npu/build/core/bp/Android.bp",
+    module_types: [
+        "ai_cc_defaults",
+        "ai_proto_defaults",
+        "ai_filegroup",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_infra_log_objs_srcs",
+    srcs: [
+        "android_log.c",
+    ],
+    soong_config_variables: {
+        AI_SUPPORT_LOG_LEVEL_SETTING: {
+            srcs: [
+                "log_level.cpp",
+            ],
+        },
+    },
+}
+
+cc_defaults {
+    name: "ai_infra_log_objs",
+    defaults: [
+        "ai_infra_defaults",
+    ],
+    cflags: [
+        "-fvisibility=default",
+    ],
+    shared_libs: [
+        "liblog",
+    ],
+    srcs: [
+        ":ai_infra_log_objs_srcs",
+    ],
+}
+
+cc_library_shared {
+    name: "libai_infra_log",
+    defaults: [
+        "ai_infra_defaults",
+        "ai_infra_log_objs",
+    ],
+    cflags: [
+        "-fvisibility=default",
+    ],
+    proprietary: true,
+}

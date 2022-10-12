@@ -1,0 +1,28 @@
+soong_config_module_type_import {
+    from: "vendor/hisi/npu/build/core/bp/Android.bp",
+    module_types: [
+        "ai_cc_defaults",
+        "ai_proto_defaults",
+        "ai_filegroup",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_fmk_util_tensor_trans_tensor_objs_srcs",
+    srcs: [
+        "trans_tensor.cpp",
+    ],
+}
+
+cc_defaults {
+    name: "ai_fmk_util_tensor_trans_tensor_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    shared_libs: [
+        "libc_secshared",
+    ],
+    srcs: [
+        ":ai_fmk_util_tensor_trans_tensor_objs_srcs",
+    ],
+}

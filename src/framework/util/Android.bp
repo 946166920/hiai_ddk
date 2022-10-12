@@ -1,0 +1,150 @@
+soong_config_module_type_import {
+    from: "vendor/hisi/npu/build/core/bp/Android.bp",
+    module_types: [
+        "ai_cc_defaults",
+        "ai_proto_defaults",
+        "ai_filegroup",
+    ],
+}
+
+ai_filegroup {
+    name: "libai_fmk_util_file_static_srcs",
+    srcs: [
+        "file_util.cpp",
+    ],
+}
+
+cc_library_static {
+    name: "libai_fmk_util_file_static",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    cflags: [
+        "-DHIAI_UTIL_API_VISIABLE",
+    ],
+    shared_libs: [
+        "libmmpa",
+    ],
+    srcs: [
+        ":libai_fmk_util_file_static_srcs",
+    ],
+    proprietary: true,
+}
+
+ai_filegroup {
+    name: "ai_fmk_util_base_types_objs_srcs",
+    srcs: [
+        "hiai_base_types.c",
+    ],
+}
+
+cc_defaults {
+    name: "ai_fmk_util_base_types_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    cflags: [
+        "-dl",
+    ],
+    rtti: true,
+    shared_libs: [
+        "libc_secshared",
+    ],
+    srcs: [
+        ":ai_fmk_util_base_types_objs_srcs",
+    ],
+}
+
+ai_filegroup {
+    name: "libai_fmk_util_dl_helper_static_srcs",
+    srcs: [
+        "hiai_foundation_dl_helper.c",
+    ],
+}
+
+cc_library_static {
+    name: "libai_fmk_util_dl_helper_static",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    cflags: [
+        "-DHIAI_C_API_VISIABLE",
+    ],
+    srcs: [
+        ":libai_fmk_util_dl_helper_static_srcs",
+    ],
+    proprietary: true,
+}
+
+ai_filegroup {
+    name: "ai_fmk_util_native_handle_objs_srcs",
+    srcs: [
+        "native_handle_creator.cpp",
+    ],
+}
+
+cc_defaults {
+    name: "ai_fmk_util_native_handle_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    include_dirs: [
+        "system/core/include/cutils/",
+    ],
+    cflags: [
+        "-DHIAI_UTIL_API_VISIABLE",
+    ],
+    srcs: [
+        ":ai_fmk_util_native_handle_objs_srcs",
+    ],
+}
+
+ai_filegroup {
+    name: "ai_fmk_util_model_type_util_objs_srcs",
+    srcs: [
+        "model_type_util.cpp",
+    ],
+}
+
+cc_defaults {
+    name: "ai_fmk_util_model_type_util_objs",
+    defaults: [
+        "ai_fmk_defaults",
+    ],
+    shared_libs: [
+        "libc_secshared",
+    ],
+    srcs: [
+        ":ai_fmk_util_model_type_util_objs_srcs",
+    ],
+}
+
+cc_library_shared {
+    name: "libai_fmk_util",
+    defaults: [
+        "ai_fmk_defaults",
+        "ai_fmk_util_version_objs",
+        "ai_fmk_util_hiai_version_objs",
+        "ai_fmk_infra_buffer_objs",
+        "ai_fmk_infra_base_buffer_objs",
+        "ai_fmk_infra_native_handle_objs",
+        "ai_infra_dl_helper_objs",
+    ],
+    cflags: [
+        "-DHIAI_UTIL_API_VISIABLE",
+        "-march=armv8.2-a+simd+fp16",
+        "-std=c++11",
+    ],
+    shared_libs: [
+        "libfmk_common",
+        "libc_secshared",
+        "libhiai_c_def",
+        "libmmpa",
+        "libai_infra_log",
+    ],
+    static_libs: [
+        "libai_fmk_util_file_static",
+    ],
+    compile_multilib: "64",
+    proprietary: true,
+}

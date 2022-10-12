@@ -1,0 +1,15 @@
+
+cc_defaults {
+    name: "ai_infra_defaults",
+    defaults: [
+        "ai_npu_defaults",
+    ],
+    include_dirs: [
+        "vendor/hisi/npu/inc",
+        "vendor/hisi/npu/src/infra",
+        "vendor/hisi/npu/src/framework/inc",
+    ],
+    header_libs:[
+        "ai_api_infra",
+    ],
+}

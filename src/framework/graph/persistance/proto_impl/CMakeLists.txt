@@ -1,0 +1,122 @@
+hi_cc_library_proto(
+  NAME
+    ai::fmk::graph::persistance::proto_impl::ge_ir_objs
+  PROTOC
+    ${ROOT_DIR}/tools/open_source/protoc/protoc-3.13.0/protoc
+  PROTO_PATH
+    ${ROOT_DIR}/vendor/hisi/npu/inc/common
+  SRCS
+    proto/ge_ir.proto
+)
+
+hi_system(HI_LINUX_HOST
+  NAME
+    ai::fmk::graph::persistance::proto_impl::ge_ir_objs
+  INCS
+    vendor/open_source/protobuf/src/
+  COPTS
+    -fvisibility=default
+)
+
+hi_cc_library_shared(
+  NAME
+    ai::fmk::graph::persistance::proto_impl_shared
+  SRCS
+    *.cpp
+  CDEFS
+    GRAPH_API_VISIABLE
+    GRAPH_DEVICE
+  DEPS
+    ai::infra::log
+  PUB_DEPS
+    ai::fmk::graph::persistance::proto_impl::ge_ir_objs
+)
+
+hi_cc_objects(
+  NAME
+    ai::fmk::graph::persistance::proto_impl_objs
+  SRCS
+    *.cpp
+  CDEFS
+    GRAPH_API_VISIABLE
+  DEPS
+    ai::infra::log
+    ai::fmk::graph::persistance::proto_impl::ge_ir_objs
+)
+
+hi_system(HI_ANDROID_AOSP
+  NAME
+    ai::fmk::graph::persistance::proto_impl_shared
+  INCS
+    external/protobuf/src
+  COPTS
+    -fvisibility=default
+  DEPS
+    protobuf-cpp-full
+)
+
+hi_system(HI_ANDROID_AOSP
+  NAME
+    ai::fmk::graph::persistance::proto_impl::ge_ir_objs
+  COPTS
+    -fvisibility=default
+)
+
+hi_system(HI_LINUX_HOST
+  NAME
+    ai::fmk::graph::persistance::proto_impl_shared
+  DEPS
+    google::protobuf_full_shared
+  CDEFS
+    GRAPH_HOST
+  COPTS
+    -fvisibility=default
+)
+
+hi_system(HI_LINUX_TEE
+  NAME
+    ai::fmk::graph::persistance::proto_impl_objs
+  COPTS
+    -fvisibility=default
+  DEPS
+    huawei::itrustee_basic_headers
+    google::protobuf_headers
+)
+
+hi_system(HI_LINUX_TEE
+  NAME
+    ai::fmk::graph::persistance::proto_impl::ge_ir_objs
+  CDEFS
+    GOOGLE_PROTOBUF_NO_RTTI
+    GOOGLE_PROTOBUF_NO_THREADLOCAL
+  COPTS
+    -fvisibility=default
+  DEPS
+    huawei::itrustee_basic_headers
+    google::protobuf_headers
+)
+
+hi_system(HI_ANDROID_NDK
+  NAME
+    ai::fmk::graph::persistance::proto_impl::ge_ir_objs
+  CDEFS
+    GOOGLE_PROTOBUF_NO_RTTI
+    GOOGLE_PROTOBUF_NO_THREADLOCAL
+  COPTS
+    -fvisibility=hidden
+  PUB_DEPS
+    google::protobuf_headers
+)
+
+hi_system(HI_ANDROID_NDK
+  NAME
+    ai::fmk::graph::persistance::proto_impl_objs
+  COPTS
+    -fvisibility=hidden
+)
+
+hi_generator(
+  NAMES
+    ai::fmk::graph::persistance::proto_impl::ge_ir_objs
+    ai::fmk::graph::persistance::proto_impl_shared
+)
