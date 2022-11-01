@@ -1,4 +1,4 @@
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::graph::persistance::dynamic_proxy_objs
   SRCS
@@ -10,7 +10,7 @@ hi_cc_objects(
     dl
 )
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::graph::persistance::static_proxy_objs
   SRCS
@@ -19,24 +19,24 @@ hi_cc_objects(
     GRAPH_DEVICE
   DEPS
     huawei::c_sec
-    ai::fmk::graph::persistance::proto_impl::ge_ir_objs
+    ai::fmk::graph::persistance::proto_impl::ge_ir_static
 )
 
-hi_system(HI_LINUX_TEE
+hi_cc_system(HI_LINUX_TEE
   NAME
     ai::fmk::graph::persistance::static_proxy_objs
   DEPS
     huawei::itrustee_basic_headers
     google::protobuf_headers
 )
-hi_system(HI_ANDROID_NDK
+hi_cc_system(HI_ANDROID_NDK
   NAME
     ai::fmk::graph::persistance::static_proxy_objs
   DEPS
     google::protobuf_headers
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::graph::persistance::dynamic_proxy_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::graph::persistance::dynamic_proxy_objs
+# )

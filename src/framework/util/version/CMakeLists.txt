@@ -1,21 +1,21 @@
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::util::version_objs
   SRCS
     version_util.cpp
   DEPS
-    ai::infra::mmpa
+    # ai::infra::mmpa
     huawei::c_sec
 )
 
-hi_system(HI_ANDROID_NDK
+hi_cc_system(HI_ANDROID_NDK
   NAME
     ai::fmk::util::version_objs
   CDEFS
     HIAI_UTIL_API_VISIABLE
 )
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::util::hiai_version_objs
   SRCS
@@ -23,12 +23,12 @@ hi_cc_objects(
   CDEFS
     HIAI_C_API_VISIABLE
   DEPS
-    ai::infra::mmpa
+    # ai::infra::mmpa
     huawei::c_sec
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::util::version_objs
-    ai::fmk::util::hiai_version_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::util::version_objs
+#     ai::fmk::util::hiai_version_objs
+# )

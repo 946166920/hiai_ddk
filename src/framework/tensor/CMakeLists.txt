@@ -1,7 +1,7 @@
 hi_add_subdirectory(base)
 hi_add_subdirectory(aipp)
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::tensor_objs
   SRCS
@@ -13,14 +13,14 @@ hi_cc_objects(
     -frtti
 )
 
-hi_function(AI_SUPPORT_LEGACY_APP_COMPATIBLE
+hi_cc_function(AI_SUPPORT_LEGACY_APP_COMPATIBLE
   NAME
     ai::fmk::tensor_objs
   SRCS
     compatible/AiTensor.cpp
 )
 
-hi_function(AI_SUPPORT_AIPP_COMPATIBLE
+hi_cc_function(AI_SUPPORT_AIPP_COMPATIBLE
   NAME
     ai::fmk::tensor_objs
   SRCS
@@ -44,30 +44,30 @@ hi_cc_library_shared(
     HIAI_C_API_VISIABLE
 )
 
-hi_system(HI_ANDROID_NDK
+hi_cc_system(HI_ANDROID_NDK
   NAME
     ai::fmk::hiai_c_def_shared
-  EXCLUDE_STATIC_LIBS
-    ai::infra::mmpa
-    ai::infra::log
+  # EXCLUDE_STATIC_LIBS
+  #   ai::infra::mmpa
+  #   ai::infra::log
 )
 
-hi_system(HI_ANDROID_AOSP
+# hi_cc_system(HI_ANDROID_AOSP
+#   NAME
+#     ai::fmk::hiai_c_def_shared
+#   DEPS
+#     ai::infra::mmpa
+#     ai::infra::log
+# )
+
+hi_cc_function(AI_SUPPORT_AIPP_API
   NAME
     ai::fmk::hiai_c_def_shared
-  DEPS
-    ai::infra::mmpa
-    ai::infra::log
+  # EXCLUDE_STATIC_LIBS
+  #   ai::fmk::tensor::aipp_para_static
 )
 
-hi_function(AI_SUPPORT_AIPP_API
-  NAME
-    ai::fmk::hiai_c_def_shared
-  EXCLUDE_STATIC_LIBS
-    ai::fmk::tensor::aipp_para_static
-)
-
-hi_system(HI_ANDROID_AOSP
+hi_cc_system(HI_ANDROID_AOSP
   NAME
     ai::fmk::hiai_c_def_shared
   DEPS
@@ -83,7 +83,7 @@ hi_cc_library_shared(
     ai::fmk::hiai_c_shared
   DEPS
     huawei::c_sec
-    ai::infra::mmpa
+    # ai::infra::mmpa
     ai::infra::log
     ai::fmk::hiai_c_def_shared
     ai::fmk::model_runtime::core_objs
@@ -92,16 +92,16 @@ hi_cc_library_shared(
     HIAI_C_API_VISIABLE
 )
 
-hi_function(AI_SUPPORT_PREFMODE_EXTEND
+hi_cc_function(AI_SUPPORT_PREFMODE_EXTEND
   NAME
     ai::fmk::hiai_c_shared
   CDEFS
     AI_SUPPORT_PREFMODE_EXTEND
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::tensor_objs
-    ai::fmk::hiai_c_def_shared
-    ai::fmk::hiai_c_shared
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::tensor_objs
+#     ai::fmk::hiai_c_def_shared
+#     ai::fmk::hiai_c_shared
+# )

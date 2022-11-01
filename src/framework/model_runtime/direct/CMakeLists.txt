@@ -1,6 +1,6 @@
-hi_add_subdirectory(model_compatible)
+# hi_add_subdirectory(model_compatible)
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::model_runtime::direct_objs
   SRCS
@@ -17,7 +17,7 @@ hi_cc_objects(
     huawei::c_sec
 )
 
-hi_function(AI_SUPPORT_AIPP_API
+hi_cc_function(AI_SUPPORT_AIPP_API
   NAME
     ai::fmk::model_runtime::direct_objs
   SRCS

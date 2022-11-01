@@ -1,7 +1,7 @@
 hi_add_subdirectory(version)
 hi_add_subdirectory(tensor)
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::util::base_types_objs
   SRCS
@@ -13,11 +13,11 @@ hi_cc_objects(
     -dl
 )
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::util::native_handle_objs
   INCS
-    system/core/include/cutils/
+    third_party/system/core/include/cutils/
   SRCS
     native_handle_creator.cpp
   CDEFS
@@ -32,7 +32,8 @@ hi_cc_library_static(
   CDEFS
     HIAI_UTIL_API_VISIABLE
   DEPS
-    ai::infra::mmpa
+    ai::infra::log_static
+    ai::fmk::infra::base_buffer_objs
 )
 
 hi_cc_library_shared(
@@ -49,7 +50,7 @@ hi_cc_library_shared(
     -std=c++11
 )
 
-hi_system(HI_ANDROID_AOSP
+hi_cc_system(HI_ANDROID_AOSP
   NAME
     ai::fmk::util_shared
   DEPS
@@ -61,7 +62,7 @@ hi_system(HI_ANDROID_AOSP
     ai::fmk::common_shared
     huawei::c_sec
     ai::fmk::hiai_c_def_shared
-    ai::infra::mmpa
+    # ai::infra::mmpa
     ai::infra::log
   MULTILIB
     64
@@ -74,9 +75,11 @@ hi_cc_library_static(
     hiai_foundation_dl_helper.c
   CDEFS
     HIAI_C_API_VISIABLE
+  DEPS
+    ai::fmk::util::hiai_version_objs
 )
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::util::model_type_util_objs
   SRCS
@@ -85,7 +88,7 @@ hi_cc_objects(
     huawei::c_sec
 )
 
-hi_system(HI_LINUX_TEE
+hi_cc_system(HI_LINUX_TEE
   NAME
     ai::fmk::util::model_type_util_objs
   CDEFS
@@ -95,12 +98,12 @@ hi_system(HI_LINUX_TEE
     huawei::itrustee_basic_headers
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::util::file_static
-    ai::fmk::util::base_types_objs
-    ai::fmk::util::dl_helper_static
-    ai::fmk::util::native_handle_objs
-    ai::fmk::util::model_type_util_objs
-    ai::fmk::util_shared
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::util::file_static
+#     ai::fmk::util::base_types_objs
+#     ai::fmk::util::dl_helper_static
+#     ai::fmk::util::native_handle_objs
+#     ai::fmk::util::model_type_util_objs
+#     ai::fmk::util_shared
+# )

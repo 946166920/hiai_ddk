@@ -1,4 +1,4 @@
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::common::helper_objs
   SRCS
@@ -6,29 +6,29 @@ hi_cc_objects(
 )
 
 
-hi_system(HI_LINUX_TEE
-  NAME
-    ai::fmk::common::helper_objs
-  CDEFS
-    USE_STATIC_LIB
-    GOOGLE_PROTOBUF_NO_RTTI
-  DEPS
-    google::protobuf_headers
-    huawei::itrustee_basic_headers
-    huawei::itrustee_sdk_securec_headers
-)
+# hi_cc_system(HI_LINUX_TEE
+#   NAME
+#     ai::fmk::common::helper_objs
+#   CDEFS
+#     USE_STATIC_LIB
+#     GOOGLE_PROTOBUF_NO_RTTI
+#   DEPS
+#     google::protobuf_headers
+#     huawei::itrustee_basic_headers
+#     huawei::itrustee_sdk_securec_headers
+# )
 
-hi_system(HI_ANDROID_AOSP
-  NAME
-    ai::fmk::common::helper_objs
-  SRCS
-    model_serialize_wrapper.cpp
-  DEPS
-    huawei::c_sec
-    ai::fmk::graph::proto_shared
-)
+# hi_cc_system(HI_ANDROID_AOSP
+#   NAME
+#     ai::fmk::common::helper_objs
+#   SRCS
+#     model_serialize_wrapper.cpp
+#   DEPS
+#     huawei::c_sec
+#     ai::fmk::graph::proto_shared
+# )
 
-hi_system(HI_ANDROID_NDK
+hi_cc_system(HI_ANDROID_NDK
   NAME
   ai::fmk::common::helper_objs
 SRCS
@@ -38,7 +38,7 @@ DEPS
 )
 
 
-hi_generator(
-  NAMES
-    ai::fmk::common::helper_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::common::helper_objs
+# )

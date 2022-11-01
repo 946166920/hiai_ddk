@@ -1,4 +1,4 @@
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::compatible_objs
   SRCS
@@ -14,15 +14,15 @@ hi_cc_objects(
     transformer_utils.cpp
 )
 
-hi_cc_objects(
-  NAME
-    ai::fmk::compatible::model_compatibility_check_objs
-  SRCS
-    model_compatibility_check.cpp
-)
+# hi_cc_library_static(
+#   NAME
+#     ai::fmk::compatible::model_compatibility_check_objs
+  # SRCS
+  #   model_compatibility_check.cpp
+# )
 
-hi_generator(
-  NAMES
-    ai::fmk::compatible_objs
-    ai::fmk::compatible::model_compatibility_check_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::compatible_objs
+#     ai::fmk::compatible::model_compatibility_check_objs
+# )

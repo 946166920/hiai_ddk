@@ -1,4 +1,4 @@
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::graph::utils_objs
   CDEFS
@@ -9,7 +9,7 @@ hi_cc_objects(
     replacer/*.cpp
 )
 
-hi_system(HI_LINUX_TEE
+hi_cc_system(HI_LINUX_TEE
   NAME
     ai::fmk::graph::utils_objs
   DEPS
@@ -18,14 +18,14 @@ hi_system(HI_LINUX_TEE
     huawei::itrustee_sdk_securec_headers
 )
 
-hi_system(HI_ANDROID_NDK
+hi_cc_system(HI_ANDROID_NDK
   NAME
     ai::fmk::graph::utils_objs
   DEPS
     huawei::c_sec
 )
 
-hi_system("HI_ANDROID_ROM;HI_LINUX_HOST"
+hi_cc_system("HI_ANDROID_ROM;HI_LINUX_HOST"
   NAME
     ai::fmk::graph::utils_objs
   DEPS
@@ -33,7 +33,7 @@ hi_system("HI_ANDROID_ROM;HI_LINUX_HOST"
     ai::fmk::graph::proto_shared
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::graph::utils_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::graph::utils_objs
+# )

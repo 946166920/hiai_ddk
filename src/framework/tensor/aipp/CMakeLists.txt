@@ -14,21 +14,21 @@ hi_cc_library_static(
     huawei::c_sec
 )
 
-hi_system(HI_LINUX_HOST
+hi_cc_system(HI_LINUX_HOST
   NAME
     ai::fmk::tensor::aipp_para_static
   CDEFS
     _Float16=uint16_t
 )
 
-hi_system(HI_ANDROID_AOSP
+hi_cc_system(HI_ANDROID_AOSP
   NAME
     ai::fmk::tensor::aipp_para_static
   CDEFS
     HIAI_C_API_VISIABLE
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::tensor::aipp_para_static
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::tensor::aipp_para_static
+# )

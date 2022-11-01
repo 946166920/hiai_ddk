@@ -3,7 +3,7 @@ hi_add_subdirectory(aipp)
 
 ### define ai::fmk::model_builder::ir_objs ###
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::model_builder::ir_objs
   INCS

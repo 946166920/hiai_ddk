@@ -1,11 +1,11 @@
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::util::tensor::trans_tensor_objs
   SRCS
     trans_tensor.cpp
 )
 
-hi_system(HI_LINUX_TEE
+hi_cc_system(HI_LINUX_TEE
   NAME
     ai::fmk::util::tensor::trans_tensor_objs
   CDEFS
@@ -15,14 +15,14 @@ hi_system(HI_LINUX_TEE
     huawei::itrustee_sdk_securec_headers
 )
 
-hi_system("HI_ANDROID_AOSP;HI_LINUX_HOST;HI_ANDROID_NDK"
+hi_cc_system("HI_ANDROID_AOSP;HI_LINUX_HOST;HI_ANDROID_NDK"
   NAME
     ai::fmk::util::tensor::trans_tensor_objs
   DEPS
     huawei::c_sec
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::util::tensor::trans_tensor_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::util::tensor::trans_tensor_objs
+# )

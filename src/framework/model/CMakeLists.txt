@@ -1,4 +1,4 @@
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::model_objs
   SRCS
@@ -7,7 +7,7 @@ hi_cc_objects(
     HIAI_M_API_VISIABLE
 )
 
-hi_function(AI_SUPPORT_AIPP_API
+hi_cc_function(AI_SUPPORT_AIPP_API
   NAME
     ai::fmk::model_objs
   SRCS
@@ -19,7 +19,7 @@ hi_function(AI_SUPPORT_AIPP_API
     huawei::c_sec
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::model_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::model_objs
+# )

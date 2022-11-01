@@ -1,8 +1,8 @@
 ### sub project
-hi_add_subdirectory(hiaiengine)
-hi_add_subdirectory(old_v2)
+# hi_add_subdirectory(hiaiengine)
+# hi_add_subdirectory(old_v2)
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::model_manager_objs
   SRCS
@@ -13,7 +13,7 @@ hi_cc_objects(
     -frtti
 )
 
-hi_function(AI_SUPPORT_LEGACY_APP_COMPATIBLE
+hi_cc_function(AI_SUPPORT_LEGACY_APP_COMPATIBLE
   NAME
     ai::fmk::model_manager_objs
   SRCS
@@ -48,9 +48,9 @@ hi_cc_library_shared(
   DEPS
     ai::infra::log
     huawei::c_sec
-  EXCLUDE_STATIC_LIBS
-    ai::fmk::common::file_util_static
-    ai::infra::mmpa
+  # EXCLUDE_STATIC_LIBS
+    # ai::fmk::common::file_util_static
+    # ai::infra::mmpa
   WHOLE_STATIC_LIBS
     ai::fmk::util::file_static
   COPTS
@@ -66,7 +66,7 @@ hi_cc_library_shared(
     OS_TYPE=0
 )
 
-hi_system(HI_ANDROID_AOSP
+hi_cc_system(HI_ANDROID_AOSP
   NAME
     ai::fmk::model_manager_shared
   DEPS
@@ -79,22 +79,22 @@ hi_system(HI_ANDROID_AOSP
     64
 )
 
-hi_system(HI_ANDROID_NDK
+hi_cc_system(HI_ANDROID_NDK
   NAME
     ai::fmk::model_manager_shared
-  EXCLUDE_STATIC_LIBS
-    ai::fmk::tensor::nd_tensor_static
-    ai::fmk::util::dl_helper_static
+  # EXCLUDE_STATIC_LIBS
+  #   ai::fmk::tensor::nd_tensor_static
+  #   ai::fmk::util::dl_helper_static
 )
 
-hi_function(AI_SUPPORT_LEGACY_ROM_COMPATIBLE
+hi_cc_function(AI_SUPPORT_LEGACY_ROM_COMPATIBLE
   NAME
     ai::fmk::model_manager_shared
   DEPS
     ai::fmk::model_runtime::direct_objs
 )
 
-hi_function(AI_SUPPORT_PLUGIN_COMPATIBLE
+hi_cc_function(AI_SUPPORT_PLUGIN_COMPATIBLE
   NAME
     ai::fmk::model_manager_shared
   DEPS
@@ -103,7 +103,7 @@ hi_function(AI_SUPPORT_PLUGIN_COMPATIBLE
     ai::infra::dl_helper_objs
 )
 
-hi_function(AI_SUPPORT_AIPP_API
+hi_cc_function(AI_SUPPORT_AIPP_API
   NAME
     ai::fmk::model_manager_shared
   DEPS
@@ -112,8 +112,8 @@ hi_function(AI_SUPPORT_AIPP_API
     AI_SUPPORT_AIPP_API
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::model_manager_objs
-    ai::fmk::model_manager_shared
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::model_manager_objs
+#     ai::fmk::model_manager_shared
+# )

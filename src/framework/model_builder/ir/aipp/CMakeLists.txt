@@ -1,5 +1,5 @@
 ### define ai::fmk::model_builder::ir::aipp_objs
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::model_builder::ir::aipp_objs
   SRCS
@@ -8,14 +8,14 @@ hi_cc_objects(
     compatible/hiai_ir_aipp_compatible.cpp
 )
 
-hi_system("HI_ANDROID_AOSP;HI_LINUX_HOST"
+hi_cc_system("HI_ANDROID_AOSP;HI_LINUX_HOST"
   NAME
     ai::fmk::model_builder::ir::aipp_objs
   SRCS
     omg/hiai_ir_aipp_compatible_adapter_api.cpp
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::model_builder::ir::aipp_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::model_builder::ir::aipp_objs
+# )

@@ -1,0 +1,2 @@
+add_subdirectory(protobuf_full)
+add_subdirectory(protobuf_lite)

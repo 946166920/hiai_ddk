@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 
+// #include "/usr1/c00574543/Code/hiai_ddk_q/hiai_ddk/out/src/framework/graph/persistance/proto_impl/proto/ge_ir.pb.h"
 #include "proto/ge_ir.pb.h"
 #include "graph/graph_api_export.h"
 

@@ -1,4 +1,4 @@
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::model_runtime::core_objs
   SRCS
@@ -18,7 +18,7 @@ hi_cc_objects(
     dl
 )
 
-hi_function(AI_SUPPORT_AIPP_API
+hi_cc_function(AI_SUPPORT_AIPP_API
   NAME
     ai::fmk::model_runtime::core_objs
   SRCS
@@ -26,28 +26,28 @@ hi_function(AI_SUPPORT_AIPP_API
     hiai_built_model_aipp.c
 )
 
-hi_function(AI_SUPPORT_STATIC_LOAD_RUNTIME
+hi_cc_function(AI_SUPPORT_STATIC_LOAD_RUNTIME
   NAME
     ai::fmk::model_runtime::core_objs
   SRCS
     model_runtime_register.cpp
 )
 
-hi_system(HI_ANDROID_AOSP
+hi_cc_system(HI_ANDROID_AOSP
   NAME
     ai::fmk::model_runtime::core_objs
   SCRIPT
     model_runtime_core
 )
 
-hi_system("HI_ANDROID_NDK;HI_LINUX_HOST"
+hi_cc_system("HI_ANDROID_NDK;HI_LINUX_HOST"
   NAME
     ai::fmk::model_runtime::core_objs
   CDEFS
     AI_SW_SPEC_MODEL_RUNTIME_LIST=\"${AI_SW_SPEC_MODEL_RUNTIME_LIST}\"
 )
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::model_runtime::core_v1_objs
   SRCS
@@ -57,8 +57,8 @@ hi_cc_objects(
     huawei::c_sec
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::model_runtime::core_objs
-    ai::fmk::model_runtime::core_v1_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::model_runtime::core_objs
+#     ai::fmk::model_runtime::core_v1_objs
+# )

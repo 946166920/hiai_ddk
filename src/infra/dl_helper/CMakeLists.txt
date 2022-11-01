@@ -1,6 +1,6 @@
 #### define ai::infra::dl_helper_objs
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::infra::dl_helper_objs
   SRCS
@@ -11,7 +11,7 @@ hi_cc_objects(
     INFRA_API_VISIABLE
 )
 
-hi_generator(
-  NAMES
-    ai::infra::dl_helper_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::infra::dl_helper_objs
+# )

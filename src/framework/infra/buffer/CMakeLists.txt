@@ -1,5 +1,5 @@
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::infra::native_handle_objs
   SRCS
@@ -8,7 +8,7 @@ hi_cc_objects(
     huawei::c_sec
 )
 
-hi_system(HI_LINUX_HOST
+hi_cc_system(HI_LINUX_HOST
   NAME
     ai::fmk::infra::native_handle_objs
   CDEFS
@@ -16,7 +16,7 @@ hi_system(HI_LINUX_HOST
     HIAI_C_API_VISIABLE
 )
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::infra::buffer_objs
   SRCS
@@ -26,7 +26,7 @@ hi_cc_objects(
     huawei::c_sec
 )
 
-hi_system("HI_ANDROID_NDK;HI_LINUX_HOST"
+hi_cc_system("HI_ANDROID_NDK;HI_LINUX_HOST"
   NAME
     ai::fmk::infra::buffer_objs
   CDEFS
@@ -34,7 +34,7 @@ hi_system("HI_ANDROID_NDK;HI_LINUX_HOST"
     HIAI_TENSOR_API_VISIABLE
 )
 
-hi_cc_objects(
+hi_cc_library_static(
   NAME
     ai::fmk::infra::base_buffer_objs
   SRCS
@@ -43,7 +43,7 @@ hi_cc_objects(
     huawei::c_sec
 )
 
-hi_system("HI_ANDROID_NDK;HI_LINUX_HOST"
+hi_cc_system("HI_ANDROID_NDK;HI_LINUX_HOST"
   NAME
     ai::fmk::infra::base_buffer_objs
   CDEFS
@@ -51,9 +51,9 @@ hi_system("HI_ANDROID_NDK;HI_LINUX_HOST"
     HIAI_TENSOR_API_VISIABLE
 )
 
-hi_generator(
-  NAMES
-    ai::fmk::infra::native_handle_objs
-    ai::fmk::infra::buffer_objs
-    ai::fmk::infra::base_buffer_objs
-)
+# hi_generator(
+#   NAMES
+#     ai::fmk::infra::native_handle_objs
+#     ai::fmk::infra::buffer_objs
+#     ai::fmk::infra::base_buffer_objs
+# )

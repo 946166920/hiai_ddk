@@ -28,7 +28,7 @@
 #ifdef USE_STATIC_LIB
 #include "HIAIModelManager_internal.h"
 #else
-#include "HIAIModelManager.h"
+#include "framework/c/compatible/HIAIModelManager.h"
 #endif
 
 #include "framework/graph/utils/graph_utils.h"
