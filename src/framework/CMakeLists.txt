@@ -24,15 +24,18 @@ hi_add_subdirectory(graph)
 hi_add_subdirectory(compatible)
 
 # ### hiai main sub project
-# hi_add_subdirectory(kernel_executor)
+
 hi_add_subdirectory(model)
-# hi_add_subdirectory(dedicated_compute)
 hi_add_subdirectory(model_builder)
 hi_add_subdirectory(model_manager)
 hi_add_subdirectory(model_runtime)
 hi_add_subdirectory(tensor)
 hi_add_subdirectory(infra)
 hi_add_subdirectory(util)
+
+
+# hi_add_subdirectory(kernel_executor)
+# hi_add_subdirectory(dedicated_compute)
 # hi_add_subdirectory(pipe)
 # hi_add_subdirectory(v100_compute)
 # hi_add_subdirectory(general_compute)

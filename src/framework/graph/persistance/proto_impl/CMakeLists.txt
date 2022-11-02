@@ -10,16 +10,18 @@ hi_proto_gen(
   PROTO_OUT
     ${cpp_out_dir}
 )
+hi_get_target_property(ai::fmk::graph::persistance::proto_srcs HI_GEN_INCS incgen)
+hi_message(WARNING "cxxx incgen: ${incgen}")
 
-hi_cc_prebuilt_library(
-  SHARED
-  NAME
-    ai::fmk::graph::persistance::protobuf_lite
-  LIB
-    ${ROOT_DIR}/out/hiai/lib/libprotobuf-lite.so
-  INCS
-    ${cpp_out_dir}
-)
+# hi_cc_prebuilt_library(
+#   SHARED
+#   NAME
+#     ai::fmk::graph::persistance::protobuf_lite
+#   LIB
+#     ${ROOT_DIR}/out/hiai/lib/libprotobuf-lite.so
+#   INCS
+#     ${cpp_out_dir}
+# )
 
 hi_message(WARNING "cxxx cpp_out_dir: ${cpp_out_dir}")
 
@@ -31,8 +33,8 @@ hi_cc_library_static(
     ${cpp_out_dir}/../
   SRCS
     ai::fmk::graph::persistance::proto_srcs
-  DEPS
-    ai::fmk::graph::persistance::protobuf_lite
+  # DEPS
+  #   ai::fmk::graph::persistance::protobuf_lite
 )
 
 # hi_cc_library_proto(

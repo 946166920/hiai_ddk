@@ -14,5 +14,5 @@ cmake -DCMAKE_TOOLCHAIN_FILE=${cur_dir}/build/core/himake/hi_toolchain/android-n
       -DANDROID_PLATFORM=android-19 \
       ..
 
-# make
-make -j
+make
+# make -j

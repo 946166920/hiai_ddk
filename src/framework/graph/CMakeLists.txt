@@ -22,15 +22,15 @@ hi_proto_gen(
     ${cpp_out_dir}
 )
 
-hi_cc_prebuilt_library(
-  SHARED
-  NAME
-    ai::fmk::graph::protobuf_full
-  LIB
-    ${ROOT_DIR}/out/hiai/lib/libprotobuf.so
-  INCS
-    ${cpp_out_dir}
-)
+# hi_cc_prebuilt_library(
+#   SHARED
+#   NAME
+#     ai::fmk::graph::protobuf_full
+#   LIB
+#     ${ROOT_DIR}/out/hiai/lib/libprotobuf.so
+#   INCS
+#     ${cpp_out_dir}
+# )
 
 hi_message(WARNING "cxxx cpp_out_dir: ${cpp_out_dir}")
 
@@ -42,8 +42,8 @@ hi_cc_library_static(
     ${cpp_out_dir}/../
   SRCS
     ai::fmk::graph::proto_full_srcs
-  DEPS
-    ai::fmk::graph::protobuf_full
+  # DEPS
+  #   ai::fmk::graph::protobuf_full
 )
 
 
