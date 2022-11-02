@@ -1,5 +1,4 @@
 set(OPEN_SOURCE_CSEC_DIR ${ROOT_DIR}/third_party/bounds_checking_function)
-# hi_message(FATAL_ERROR "OPEN_SOURCE_CSEC_DIR:${OPEN_SOURCE_CSEC_DIR}")
 
 hi_cc_library_static(
   NAME

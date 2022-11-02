@@ -54,14 +54,14 @@ function(hi_cc_library_static)
       PROPERTY HI_INCS ${HI_CC_LIBRARY_STATIC_INCS}
     )
 
-    foreach(inc IN LISTS HI_CC_LIBRARY_STATIC_INCS)
-      list(APPEND target_incs ${ROOT_DIR}/${inc})
-    endforeach()
+    # foreach(inc IN LISTS HI_CC_LIBRARY_STATIC_INCS)
+    #   list(APPEND target_incs ${ROOT_DIR}/${inc})
+    # endforeach()
 
     # absolute paths
     target_include_directories(${target_name}
       PRIVATE
-        ${target_incs}
+        ${HI_CC_LIBRARY_STATIC_INCS}
     )
   endif()
 

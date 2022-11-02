@@ -6,7 +6,7 @@ project(hiai VERSION 1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+# set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 list(APPEND CMAKE_MODULE_PATH ${ROOT_DIR}/build/core/himake)
@@ -47,8 +47,10 @@ hi_cc_default(
     ${CMAKE_CURRENT_SOURCE_DIR}/api/framework
     ${CMAKE_CURRENT_SOURCE_DIR}/api/infra
     ${CMAKE_CURRENT_SOURCE_DIR}/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/framework
+    ${CMAKE_CURRENT_SOURCE_DIR}/inc/framework
     ${CMAKE_CURRENT_SOURCE_DIR}/src/framework/inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/framework
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/bounds_checking_function/include
 )
 
 ## external deps

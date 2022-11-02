@@ -52,16 +52,6 @@ function(hi_proto_gen)
     set(lite_flag "lite:")
   endif()
 
-  hi_message(WARNING "HI_PROTO_GEN_NAME:${HI_PROTO_GEN_NAME}")
-  hi_message(WARNING "proto_shell_dir:${proto_shell_dir}")
-  hi_message(WARNING "HI_PROTO_GEN_PROTO_PATH:${HI_PROTO_GEN_PROTO_PATH}")
-  hi_message(WARNING "lite_flag:${lite_flag}")
-  hi_message(WARNING "HI_PROTO_GEN_PROTO_OUT:${HI_PROTO_GEN_PROTO_OUT}")
-  hi_message(WARNING "HI_PROTO_GEN_PROTO_SRCS:${HI_PROTO_GEN_PROTO_SRCS}")
-  hi_message(WARNING "OUTS all_cc_rlt_srcs:${all_cc_rlt_srcs}")
-  hi_message(WARNING "OUTS all_cc_rlt_hdrs:${all_cc_rlt_hdrs}")
-  hi_message(WARNING "all_proto_src:${all_proto_src}")
-
   hi_cc_gen_srcs(
   NAME
     ${HI_PROTO_GEN_NAME}

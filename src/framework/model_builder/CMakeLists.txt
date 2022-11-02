@@ -1,39 +1,32 @@
 ### sub project
 hi_add_subdirectory(ir)
-# hi_add_subdirectory(optimizer)
 
 hi_cc_library_static(
   NAME
-    ai::fmk::model_builder_objs
+    ai::fmk::model_builder_static
   SRCS
     om/*.cpp
   CDEFS
     HIAI_MB_API_VISIABLE
-  DEPS
-    huawei::c_sec
+  # DEPS
+  #   huawei::c_sec
 )
 
 hi_cc_function(AI_SUPPORT_MODEL_BUILDER_COMPATIBLE
   NAME
-    ai::fmk::model_builder_objs
+    ai::fmk::model_builder_static
   SRCS
     compatible/BuildOptionUtil.cpp
 )
 
 hi_cc_library_static(
   NAME
-    ai::fmk::model_builder::compatible_objs
+    ai::fmk::model_builder::compatible_static
   SRCS
     compatible/BuildOptionUtil.cpp
 )
 
-# hi_generator(
-#   NAMES
-#     ai::fmk::model_builder_objs
-#     ai::fmk::model_builder::compatible_objs
-# )
-
-### define ddk libhiai_ir_build ###
+# ### define ddk libhiai_ir_build ###
 
 hi_cc_library_shared(
   NAME
@@ -42,12 +35,14 @@ hi_cc_library_shared(
     ai::infra::log
     ai::fmk::hiai_ir_shared
     ai::fmk::model_manager_shared
-    ai::fmk::model_builder::ir_objs
-    ai::fmk::model_builder::compatible_objs
+    ai::fmk::model_builder::ir_static
+    ai::fmk::model_builder::compatible_static
   CDEFS
     AI_SUPPORT_AIPP_API
     HIAI_MB_API_VISIABLE
 )
+
+# hi_target_output_name(ai::fmk::hiai_ir_build_shared hiai)
 
 hi_cc_function(AI_SUPPORT_UPGRADE_APK
   NAME
@@ -73,7 +68,7 @@ hi_cc_library_shared(
   DEPS
     ai::infra::log
     ai::fmk::hiai_ir_shared
-    ai::fmk::model_builder::ir::aipp_objs
+    ai::fmk::model_builder::ir::aipp_static
 )
 
 hi_cc_function(AI_SUPPORT_UPGRADE_APK

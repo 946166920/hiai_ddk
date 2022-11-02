@@ -98,6 +98,7 @@ function(hi_set_compile_target_srcs target_name target_srcs)
   hi_extract_all_srcs("${target_srcs}" src_list inc_list)
   target_sources(${target_name} PRIVATE ${src_list})
   target_include_directories(${target_name} PUBLIC ${inc_list})
+  # target_include_directories(${target_name} INTERFACE ${inc_list})
 endfunction()
 
 # TODO: remove

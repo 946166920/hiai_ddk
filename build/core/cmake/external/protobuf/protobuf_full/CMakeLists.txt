@@ -7,9 +7,7 @@ set(OPEN_SOURCE_ROOT_DIR ${ROOT_DIR}/third_party)
 # set(PROTOBUF_OUT_DIR ${AI_BUILD_DIR}/protobuf)
 set(PROTOBUF_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/protobuf_full)
 set(PROTOBUF_INC_DIR ${OPEN_SOURCE_ROOT_DIR}/protobuf/src)
-message(WARNING "AI_BUILD_DIR: ${AI_BUILD_DIR}")
-message(WARNING "CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
-message(WARNING "PROTOBUF_OUT_DIR: ${PROTOBUF_OUT_DIR}")
+
 
 ### call open source cmakes to build libprotobuf.so, etc.
 set(BUILD_SHARED_LIBS TRUE)

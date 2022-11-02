@@ -39,31 +39,25 @@ hi_cc_library_static(
     ${goolge_protobuf_lite_src_dir}/generated_enum_util.cc
     ${goolge_protobuf_lite_src_dir}/io/strtod.cc
     ${goolge_protobuf_lite_src_dir}/io/zero_copy_stream_impl.cc
+    ${goolge_protobuf_lite_src_dir}/map_field.cc
   CDEFS
     HAVE_PTHREAD
     PROTOBUF_INLINE_NOT_IN_HEADERS=0
+    GOOGLE_PROTOBUF_NO_RTTI
+    GOOGLE_PROTOBUF_NO_THREADLOCAL
   DEPS
     google::protobuf_headers
-)
-
-hi_cc_system(HI_LINUX_TEE
-  NAME
-    google::protobuf_lite_static
-  CDEFS
-    GOOGLE_PROTOBUF_NO_RTTI
-    GOOGLE_PROTOBUF_NO_THREADLOCAL
-  DEPS
-    huawei::itrustee_basic_headers
-)
-
-hi_cc_system(HI_ANDROID_NDK
-  NAME
-    google::protobuf_lite_static
-  CDEFS
-    GOOGLE_PROTOBUF_NO_RTTI
-    GOOGLE_PROTOBUF_NO_THREADLOCAL
-  SRCS
-    ${goolge_protobuf_lite_src_dir}/map_field.cc
-  DEPS
     log
 )
+
+# hi_cc_system("HI_ANDROID_NDK"
+#   NAME
+#     google::protobuf_lite_static
+#   CDEFS
+#     GOOGLE_PROTOBUF_NO_RTTI
+#     GOOGLE_PROTOBUF_NO_THREADLOCAL
+#   SRCS
+#     ${goolge_protobuf_lite_src_dir}/map_field.cc
+#   DEPS
+#     log
+# )

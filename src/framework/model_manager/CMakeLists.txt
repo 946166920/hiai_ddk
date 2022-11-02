@@ -1,10 +1,7 @@
 ### sub project
-# hi_add_subdirectory(hiaiengine)
-# hi_add_subdirectory(old_v2)
-
 hi_cc_library_static(
   NAME
-    ai::fmk::model_manager_objs
+    ai::fmk::model_manager_static
   SRCS
     core/model_manager_impl.cpp
   CDEFS
@@ -15,7 +12,7 @@ hi_cc_library_static(
 
 hi_cc_function(AI_SUPPORT_LEGACY_APP_COMPATIBLE
   NAME
-    ai::fmk::model_manager_objs
+    ai::fmk::model_manager_static
   SRCS
     compatible/AiContext.cpp
     compatible/AiModelBuilder.cpp
@@ -29,22 +26,22 @@ hi_cc_library_shared(
   NAME
     ai::fmk::model_manager_shared
   DEPS
-    ai::fmk::model_manager_objs
-    ai::fmk::model_builder_objs
-    ai::fmk::model_runtime::core_objs
-    ai::fmk::model_runtime::core_v1_objs
-    ai::fmk::model_objs
-    ai::fmk::tensor_objs
-    ai::fmk::util::model_type_util_objs
-    ai::fmk::tensor::nd_tensor_impl_objs
-    ai::fmk::tensor::nd_tensor_ext_objs
-    ai::fmk::util::version_objs
-    ai::fmk::util::hiai_version_objs
-    ai::fmk::util::base_types_objs
-    ai::fmk::infra::buffer_objs
-    ai::fmk::infra::base_buffer_objs
-    ai::fmk::infra::native_handle_objs
-    ai::fmk::util::native_handle_objs
+    ai::fmk::model_manager_static
+    ai::fmk::model_builder_static
+    ai::fmk::model_runtime::core_static
+    ai::fmk::model_runtime::core_v1_static
+    ai::fmk::model_static
+    ai::fmk::tensor_static
+    ai::fmk::util::model_type_util_static
+    ai::fmk::tensor::nd_tensor_impl_static
+    ai::fmk::tensor::nd_tensor_ext_static
+    ai::fmk::util::version_static
+    ai::fmk::util::hiai_version_static
+    ai::fmk::util::base_types_static
+    ai::fmk::infra::buffer_static
+    ai::fmk::infra::base_buffer_static
+    ai::fmk::infra::native_handle_static
+    ai::fmk::util::native_handle_static
   DEPS
     ai::infra::log
     huawei::c_sec
@@ -66,32 +63,20 @@ hi_cc_library_shared(
     OS_TYPE=0
 )
 
-hi_cc_system(HI_ANDROID_AOSP
-  NAME
-    ai::fmk::model_manager_shared
-  DEPS
-    ai::fmk::hiai_c_def_shared
-  WHOLE_STATIC_LIBS
-    ai::fmk::tensor::nd_tensor_static
-  LOPTS
-    -Wl,--use-android-relr-tags
-  MULTILIB
-    64
-)
 
-hi_cc_system(HI_ANDROID_NDK
-  NAME
-    ai::fmk::model_manager_shared
-  # EXCLUDE_STATIC_LIBS
-  #   ai::fmk::tensor::nd_tensor_static
-  #   ai::fmk::util::dl_helper_static
-)
+# hi_cc_system(HI_ANDROID_NDK
+#   NAME
+#     ai::fmk::model_manager_shared
+#   # EXCLUDE_STATIC_LIBS
+#   #   ai::fmk::tensor::nd_tensor_static
+#   #   ai::fmk::util::dl_helper_static
+# )
 
 hi_cc_function(AI_SUPPORT_LEGACY_ROM_COMPATIBLE
   NAME
     ai::fmk::model_manager_shared
   DEPS
-    ai::fmk::model_runtime::direct_objs
+    ai::fmk::model_runtime::direct_static
 )
 
 hi_cc_function(AI_SUPPORT_PLUGIN_COMPATIBLE
@@ -99,8 +84,8 @@ hi_cc_function(AI_SUPPORT_PLUGIN_COMPATIBLE
     ai::fmk::model_manager_shared
   DEPS
     # DDK侧需要
-    ai::fmk::om::om_wrapper_objs
-    ai::infra::dl_helper_objs
+    ai::fmk::om::om_wrapper_static
+    ai::infra::dl_helper_static
 )
 
 hi_cc_function(AI_SUPPORT_AIPP_API
@@ -111,9 +96,3 @@ hi_cc_function(AI_SUPPORT_AIPP_API
   CDEFS
     AI_SUPPORT_AIPP_API
 )
-
-# hi_generator(
-#   NAMES
-#     ai::fmk::model_manager_objs
-#     ai::fmk::model_manager_shared
-# )

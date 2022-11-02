@@ -1,13 +1,13 @@
-hi_add_subdirectory(version)
 hi_add_subdirectory(tensor)
+hi_add_subdirectory(version)
 
 hi_cc_library_static(
   NAME
-    ai::fmk::util::base_types_objs
+    ai::fmk::util::base_types_static
   SRCS
     hiai_base_types.c
-  DEPS
-    huawei::c_sec
+  # DEPS
+  #   huawei::c_sec
   COPTS
     -frtti
     -dl
@@ -15,9 +15,9 @@ hi_cc_library_static(
 
 hi_cc_library_static(
   NAME
-    ai::fmk::util::native_handle_objs
+    ai::fmk::util::native_handle_static
   INCS
-    third_party/system/core/include/cutils/
+    ${ROOT_DIR}/third_party/system/core/include/cutils/
   SRCS
     native_handle_creator.cpp
   CDEFS
@@ -31,41 +31,24 @@ hi_cc_library_static(
     file_util.cpp
   CDEFS
     HIAI_UTIL_API_VISIABLE
-  DEPS
+  DEPS    # 符号依赖
     ai::infra::log_static
-    ai::fmk::infra::base_buffer_objs
+    ai::fmk::infra::base_buffer_static
 )
 
 hi_cc_library_shared(
   NAME
     ai::fmk::util_shared
   DEPS
+    huawei::c_sec
     ai::fmk::util::file_static
-    ai::fmk::util::version_objs
-    ai::fmk::util::hiai_version_objs
+    ai::fmk::util::version_static
+    ai::fmk::util::hiai_version_static
   CDEFS
     HIAI_UTIL_API_VISIABLE
   COPTS
     -march=armv8.2-a+simd+fp16
     -std=c++11
-)
-
-hi_cc_system(HI_ANDROID_AOSP
-  NAME
-    ai::fmk::util_shared
-  DEPS
-    ai::fmk::infra::buffer_objs
-    ai::fmk::infra::base_buffer_objs
-    ai::fmk::infra::native_handle_objs
-    ai::infra::dl_helper_objs
-  DEPS
-    ai::fmk::common_shared
-    huawei::c_sec
-    ai::fmk::hiai_c_def_shared
-    # ai::infra::mmpa
-    ai::infra::log
-  MULTILIB
-    64
 )
 
 hi_cc_library_static(
@@ -76,34 +59,14 @@ hi_cc_library_static(
   CDEFS
     HIAI_C_API_VISIABLE
   DEPS
-    ai::fmk::util::hiai_version_objs
+    ai::fmk::util::hiai_version_static    # 符号依赖
 )
 
 hi_cc_library_static(
   NAME
-    ai::fmk::util::model_type_util_objs
+    ai::fmk::util::model_type_util_static
   SRCS
     model_type_util.cpp
-  DEPS
-    huawei::c_sec
+  # DEPS
+  #   huawei::c_sec
 )
-
-hi_cc_system(HI_LINUX_TEE
-  NAME
-    ai::fmk::util::model_type_util_objs
-  CDEFS
-    __AICP_TA__
-  DEPS
-    huawei::itrustee_sdk_securec_headers
-    huawei::itrustee_basic_headers
-)
-
-# hi_generator(
-#   NAMES
-#     ai::fmk::util::file_static
-#     ai::fmk::util::base_types_objs
-#     ai::fmk::util::dl_helper_static
-#     ai::fmk::util::native_handle_objs
-#     ai::fmk::util::model_type_util_objs
-#     ai::fmk::util_shared
-# )

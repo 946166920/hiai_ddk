@@ -4,6 +4,7 @@ cur_dir=$(dirname $0)
 
 if [ -d ${cur_dir}/out ]; then
     rm -rf ${cur_dir}/out
+    # echo "already has out"
 fi
 mkdir ${cur_dir}/out
 
@@ -14,5 +15,5 @@ cmake -DCMAKE_TOOLCHAIN_FILE=${cur_dir}/build/core/himake/hi_toolchain/android-n
       -DANDROID_PLATFORM=android-19 \
       ..
 
-make
-# make -j
+# make
+make -j

@@ -49,7 +49,7 @@ function(hi_cc_default)
 
     set_target_properties(${target_name} PROPERTIES
       HI_INCS ${real_incs}
-  )
+    )
   endif()
 
   hi_enable_empty_srcs(

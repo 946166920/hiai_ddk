@@ -10,25 +10,6 @@ hi_cc_library_static(
     HIAI_TENSOR_API_VISIABLE
   COPTS
     -frtti
-  DEPS
-    huawei::c_sec
+  # DEPS
+  #   huawei::c_sec
 )
-
-hi_cc_system(HI_LINUX_HOST
-  NAME
-    ai::fmk::tensor::aipp_para_static
-  CDEFS
-    _Float16=uint16_t
-)
-
-hi_cc_system(HI_ANDROID_AOSP
-  NAME
-    ai::fmk::tensor::aipp_para_static
-  CDEFS
-    HIAI_C_API_VISIABLE
-)
-
-# hi_generator(
-#   NAMES
-#     ai::fmk::tensor::aipp_para_static
-# )

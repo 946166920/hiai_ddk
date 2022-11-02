@@ -325,3 +325,9 @@ function(hi_target_get_all_deps targets all_dep_targets)
   endforeach()
   set(all_dep_targets ${all_dep_targets} PARENT_SCOPE)
 endfunction()
+
+function(hi_target_output_name target_name output_name)
+  set_target_properties(${target_name}
+    PROPERTIES OUTPUT_NAME ${output_name}
+  )
+endfunction()

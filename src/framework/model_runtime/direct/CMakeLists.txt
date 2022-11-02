@@ -1,8 +1,6 @@
-# hi_add_subdirectory(model_compatible)
-
 hi_cc_library_static(
   NAME
-    ai::fmk::model_runtime::direct_objs
+    ai::fmk::model_runtime::direct_static
   SRCS
     direct_model_runtime.cpp
     direct_model_compatible_proxy.cpp
@@ -13,13 +11,13 @@ hi_cc_library_static(
     direct_model_util.cpp
     direct_model_manager.cpp
     direct_model_manager_impl.cpp
-  DEPS
-    huawei::c_sec
+  # DEPS
+  #   huawei::c_sec
 )
 
 hi_cc_function(AI_SUPPORT_AIPP_API
   NAME
-    ai::fmk::model_runtime::direct_objs
+    ai::fmk::model_runtime::direct_static
   SRCS
     direct_built_model_aipp.cpp
 )

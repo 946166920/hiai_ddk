@@ -1,17 +1,9 @@
-#### define ai::infra::dl_helper_objs
-
+#### define ai::infra::dl_helper_static
 hi_cc_library_static(
   NAME
-    ai::infra::dl_helper_objs
+    ai::infra::dl_helper_static
   SRCS
     dynamic_load_helper.cpp
-  DEPS
-    huawei::c_sec
   CDEFS
     INFRA_API_VISIABLE
 )
-
-# hi_generator(
-#   NAMES
-#     ai::infra::dl_helper_objs
-# )
