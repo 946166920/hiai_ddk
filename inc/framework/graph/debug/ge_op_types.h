@@ -13,13 +13,6 @@
 
 #ifndef GE_OP_TYPES_H_
 #define GE_OP_TYPES_H_
-
-#include <cstdlib>
-#include <string>
-#include <vector>
-#include <map>
-#include <memory>
-#include <algorithm>
 #include <climits>
 
 namespace ge {

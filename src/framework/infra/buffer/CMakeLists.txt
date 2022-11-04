@@ -34,8 +34,8 @@ hi_cc_library_static(
     ai::fmk::infra::base_buffer_static
   SRCS
     base_buffer.cpp
-  DEPS
-    huawei::c_sec     # 符号依赖
+  # DEPS
+  #   huawei::c_sec     # 符号依赖
   CDEFS
     HIAI_UTIL_API_VISIABLE
     HIAI_TENSOR_API_VISIABLE

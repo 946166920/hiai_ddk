@@ -6,8 +6,6 @@ hi_cc_library_static(
     ai::fmk::util::base_types_static
   SRCS
     hiai_base_types.c
-  # DEPS
-  #   huawei::c_sec
   COPTS
     -frtti
     -dl
@@ -31,25 +29,31 @@ hi_cc_library_static(
     file_util.cpp
   CDEFS
     HIAI_UTIL_API_VISIABLE
-  DEPS    # 符号依赖
-    ai::infra::log_static
-    ai::fmk::infra::base_buffer_static
+  # DEPS    # 符号依赖
+  #   ai::infra::log_static
+  #   ai::fmk::infra::base_buffer_static
+)
+hi_cc_library_static(
+  NAME
+    ai::fmk::common::file_util_static
+  SRCS
+    ../common/file_util.cpp
 )
 
-hi_cc_library_shared(
-  NAME
-    ai::fmk::util_shared
-  DEPS
-    huawei::c_sec
-    ai::fmk::util::file_static
-    ai::fmk::util::version_static
-    ai::fmk::util::hiai_version_static
-  CDEFS
-    HIAI_UTIL_API_VISIABLE
-  COPTS
-    -march=armv8.2-a+simd+fp16
-    -std=c++11
-)
+# hi_cc_library_shared(
+#   NAME
+#     ai::fmk::util_shared
+#   DEPS
+#     huawei::c_sec
+#     ai::fmk::util::file_static
+#     ai::fmk::util::version_static
+#     ai::fmk::util::hiai_version_static
+#   CDEFS
+#     HIAI_UTIL_API_VISIABLE
+#   COPTS
+#     -march=armv8.2-a+simd+fp16
+#     -std=c++11
+# )
 
 hi_cc_library_static(
   NAME
@@ -58,8 +62,8 @@ hi_cc_library_static(
     hiai_foundation_dl_helper.c
   CDEFS
     HIAI_C_API_VISIABLE
-  DEPS
-    ai::fmk::util::hiai_version_static    # 符号依赖
+  # DEPS
+  #   ai::fmk::util::hiai_version_static    # 符号依赖
 )
 
 hi_cc_library_static(

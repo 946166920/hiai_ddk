@@ -7,7 +7,6 @@ hi_add_subdirectory(graph)
 hi_add_subdirectory(compatible)
 
 ## hiai main sub project
-
 hi_add_subdirectory(model)
 hi_add_subdirectory(model_builder)
 hi_add_subdirectory(model_manager)

@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "graph/attr_value.h"
-#include "graph/detail/attributes_holder.h"
+#include "graph/attributes_holder.h"
 #include "graph/graph.h"
 
 namespace hiai {

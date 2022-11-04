@@ -16,7 +16,6 @@
 
 #ifndef MODEL_TYPE_UTIL_H
 #define MODEL_TYPE_UTIL_H
-#include "framework/model/base_buffer.h"
 #include "framework/common/types.h"
 #include "framework/common/hcs_types.h"
 #include "framework/ge_error_code.h"
@@ -24,10 +23,10 @@
 namespace hiai {
 class HCS_API_EXPORT ModelTypeUtil {
 public:
-    static ge::Status GetModelType(const ge::BaseBuffer& buffer, hiai::ModelType& type);
-    static ge::Status GetModelTypeFromFile(const std::string& modelPath, hiai::ModelType& type);
+    static ge::Status GetModelType(const void* data, size_t size, ModelType& type);
+    static ge::Status GetModelTypeFromFile(const std::string& modelPath, ModelType& type);
 #if defined (AI_SUPPORT_SPECIAL_3RD_MODEL) || defined(PLATFORM_UNIV100)
-    static ge::Status IsSpecial3rdModel(const ge::BaseBuffer& buff, bool& isSpecial);
+    static ge::Status IsSpecial3rdModel(const void* data, size_t size, bool& isSpecial);
     static ge::Status IsSpecial3rdModelFromFile(const std::string& modelPath, bool& isSpecial);
 #endif
 };

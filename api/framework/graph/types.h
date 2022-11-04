@@ -5,7 +5,6 @@
 #ifndef GE_PUBLIC_TYPES_H
 #define GE_PUBLIC_TYPES_H
 
-#include <atomic>
 #include <memory>
 #include <vector>
 

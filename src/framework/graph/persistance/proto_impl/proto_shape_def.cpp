@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "proto_shape_def.h"
-
+#include "graph/graph_api_export.h"
 namespace hiai {
 ProtoShapeDef::ProtoShapeDef() : ProtoShapeDef(new (std::nothrow) hiai::proto::ShapeDef(), true)
 {

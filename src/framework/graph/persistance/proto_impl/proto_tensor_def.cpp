@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include "proto_tensor_def.h"
-
+#include "graph/graph_api_export.h"
 #include "graph/persistance/proto_impl/proto_tensor_desc_def.h"
 
 namespace hiai {

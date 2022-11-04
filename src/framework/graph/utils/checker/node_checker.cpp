@@ -5,6 +5,8 @@
 
 #include "framework/graph/utils/checker/node_checker.h"
 
+#include <algorithm>
+
 // api/framework
 #include "graph/op/array_defs.h"
 #include "graph/op/detection_defs.h"

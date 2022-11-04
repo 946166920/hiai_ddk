@@ -16,10 +16,11 @@
  * @version 1.0
  *
  */
+#include "graph/shape.h"
 
 #include <cstring>
 #include <map>
-#include "graph/shape.h"
+
 #include "framework/graph/debug/ge_log.h"
 #include "infra/base/assertion.h"
 
@@ -53,8 +54,8 @@ void Shape::RefTo(const Shape& shape)
 Shape::Shape(std::vector<int64_t> s) : Shape() // default
 {
     if (shapeDef_ != nullptr) {
-        for (int64_t i : s) {
-            shapeDef_->add_dim(i);
+        for (size_t i = 0; i < s.size(); ++i) {
+            shapeDef_->add_dim(s[i]);
         }
     }
 }

@@ -23,7 +23,7 @@
 #include "securec.h"
 
 #include "framework/common/types.h"
-#include "common/debug/log.h"
+#include "framework/infra/log/log.h"
 #include "common/math/math_util.h"
 #include "framework/graph/utils/tensor_utils.h"
 #include "infra/math/fp16_t.h"

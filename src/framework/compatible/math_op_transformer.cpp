@@ -137,6 +137,11 @@ ge::GraphErrCodeStatus ReduceMinConverter(ge::Node& node, const ConvertConfigInf
 static ge::GraphErrCodeStatus ArgMaxOMConverterOldToNew(ge::Node& node)
 {
     ge::OpDesc& opdesc = node.ROLE(NodeSpec).OpDesc();
+
+    if (!opdesc.HasAttr(hiai::op::ArgMaxExt2::output_type)) {
+        AttrUtils::SetInt(opdesc, hiai::op::ArgMaxExt2::output_type, 0);
+    }
+
     if (opdesc.GetInputsSize() == 2) {
         return ge::GRAPH_SUCCESS;
     }

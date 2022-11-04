@@ -17,11 +17,11 @@ hi_cc_system("HI_ANDROID_NDK"
 hi_cc_library_shared(
   NAME
     ai::infra::log_shared
-  DEPS
+  # DEPS
+  #   ai::infra::log_static
+  WHOLE_STATIC_LIBS
     ai::infra::log_static
 )
-
-# hi_target_output_name(ai::infra::log_shared hiai_log)
 
 hi_enable_empty_srcs(
   NAME

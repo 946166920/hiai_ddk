@@ -1,14 +1,14 @@
-hi_cc_library_static(
-  NAME
-    ai::fmk::graph::persistance::dynamic_proxy_static
-  SRCS
-    dynamic_proto_factory.cpp
-  CDEFS
-    GRAPH_DEVICE
-  # DEPS
-  #   huawei::c_sec
-  #   dl
-)
+# hi_cc_library_static(
+#   NAME
+#     ai::fmk::graph::persistance::dynamic_proxy_static
+#   SRCS
+#     dynamic_proto_factory.cpp
+#   CDEFS
+#     GRAPH_DEVICE
+#   # DEPS
+#   #   huawei::c_sec
+#   #   dl
+# )
 
 hi_cc_library_static(
   NAME

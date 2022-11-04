@@ -304,8 +304,7 @@ void Operator::SetOpIsInputConst(bool inputConst, uint32_t index)
 {
     GE_CHK_BOOL_EXEC(impl_ != nullptr, return, "operator impl_ is nullptr.");
     GE_CHK_BOOL_EXEC(impl_->GetOpDesc() != nullptr, return, "opDesc is nullptr.");
-    vector<bool> isInputConst;
-    isInputConst = impl_->GetOpDesc()->GetIsInputConst();
+    vector<bool> isInputConst = impl_->GetOpDesc()->GetIsInputConst();
     if (index >= isInputConst.size()) {
         isInputConst.resize(index + 1);
         isInputConst[index] = inputConst;

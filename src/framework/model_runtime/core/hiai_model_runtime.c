@@ -220,7 +220,7 @@ static void* HIAI_ModelRuntime_GetPluginAppRuntimeHandle(void)
     *(void**)(&getPluginSoHandleFunc) = dlsym(handle, functionName);
     if (getPluginSoHandleFunc == NULL) {
         FMK_LOGW("dlsym failed, lib[%s], errmsg[%s]", functionName, dlerror());
-        if (dlclose(handle)) {
+        if (dlclose(handle) != 0) {
             FMK_LOGW("dlclose failed, errmsg[%s]", dlerror());
         }
         return 0L;
@@ -229,13 +229,13 @@ static void* HIAI_ModelRuntime_GetPluginAppRuntimeHandle(void)
     void* pluginRuntimeHandle = getPluginSoHandleFunc(HIAI_HCL_MODEL_RUNTIME_SO);
     if (pluginRuntimeHandle == 0L) {
         FMK_LOGW("get lib[%s] handle fail.", HIAI_HCL_MODEL_RUNTIME_SO);
-        if (dlclose(handle)) {
+        if (dlclose(handle) != 0) {
             FMK_LOGW("dlclose failed, errmsg[%s]", dlerror());
         }
         return 0L;
     }
 
-    if (dlclose(handle)) {
+    if (dlclose(handle) != 0) {
         FMK_LOGW("dlclose failed, errmsg[%s]", dlerror());
         return 0L;
     }

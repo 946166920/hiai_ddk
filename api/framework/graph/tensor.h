@@ -8,7 +8,7 @@
 
 #include "graph/buffer.h"
 #include "graph/debug/ge_error_codes.h"
-#include "graph/detail/attributes_holder.h"
+#include "graph/attributes_holder.h"
 #include "graph/shape.h"
 #include "graph/types.h"
 #include <atomic>

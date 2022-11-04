@@ -24,7 +24,7 @@
 // api/framework
 #include "graph/operator.h"
 #include "graph/debug/ge_error_codes.h"
-#include "graph/detail/attributes_holder.h"
+#include "graph/attributes_holder.h"
 
 // inc/framework
 #include "framework/graph/core/cgraph/graph_fwd.h"
@@ -57,7 +57,7 @@ public:
     using Vistor = RangeVistor<T, std::shared_ptr<const LegacyGraph>>;
 
 public:
-    GRAPH_API_EXPORT virtual ~LegacyGraph() override;
+    GRAPH_API_EXPORT ~LegacyGraph() override;
 
     /**
      * @brief get nodes except nodes belonging to subgraph

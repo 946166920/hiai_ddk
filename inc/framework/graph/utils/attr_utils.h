@@ -7,7 +7,7 @@
 #define GE_ATTR_VALUE_UTILS_H
 
 #include "graph/attr_value.h"
-#include "graph/detail/attributes_holder.h"
+#include "graph/attributes_holder.h"
 
 namespace ge {
 class OpDesc;

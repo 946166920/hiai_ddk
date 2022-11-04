@@ -147,8 +147,8 @@ static HIAI_BuiltModel* BuiltModel_Restore(std::shared_ptr<BaseBuffer>& buffer)
     }
 
     ModelType modelType = IR_API_GRAPH_MODEL;
-    ge::BaseBuffer baseBuffer(static_cast<void*>(buffer->MutableData()), buffer->GetSize());
-    if (ModelTypeUtil::GetModelType(baseBuffer, modelType) == ge::FAIL || modelType == IR_API_GRAPH_MODEL) {
+    if (ModelTypeUtil::GetModelType(buffer->GetData(), buffer->GetSize(), modelType) ==
+        ge::FAIL || modelType == IR_API_GRAPH_MODEL) {
         FMK_LOGE("This model isn't supported.");
         return nullptr;
     }
@@ -165,7 +165,7 @@ static HIAI_BuiltModel* BuiltModel_Restore(std::shared_ptr<BaseBuffer>& buffer)
         return nullptr;
     }
 
-    std::shared_ptr<BaseBuffer> modelBuffer{nullptr};
+    std::shared_ptr<BaseBuffer> modelBuffer {nullptr};
     if (isNeedRelease) {
         modelBuffer = make_shared_nothrow<BaseBuffer>(
             static_cast<uint8_t*>(aferCompatibleBuffer->data), aferCompatibleBuffer->size, false);

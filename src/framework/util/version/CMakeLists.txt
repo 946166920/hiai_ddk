@@ -24,7 +24,7 @@ hi_cc_library_static(
     hiai_version.c
   CDEFS
     HIAI_C_API_VISIABLE
-  DEPS
+  # DEPS
     # ai::infra::mmpa
-    huawei::c_sec   # 符号依赖
+    # huawei::c_sec   # 符号依赖
 )

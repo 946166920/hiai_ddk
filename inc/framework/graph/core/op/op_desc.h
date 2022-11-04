@@ -11,7 +11,7 @@
 #include <functional>
 #include "framework/graph/utils/range_vistor.h"
 #include "graph/attr_value.h"
-#include "graph/detail/attributes_holder.h"
+#include "graph/attributes_holder.h"
 #include "graph/debug/ge_error_codes.h"
 #include "framework/graph/debug/ge_util.h"
 /*lint -e553*/

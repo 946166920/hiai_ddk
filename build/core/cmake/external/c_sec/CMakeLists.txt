@@ -54,7 +54,7 @@ hi_target_include_directories(
 )
 
 set(C_SEC_STATIC ON)
-set(C_SEC_SHARED ON)
+set(C_SEC_SHARED OFF)
 
 hi_cc_library(
   NAME

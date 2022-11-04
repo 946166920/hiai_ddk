@@ -1,19 +1,7 @@
-/**
- * Copyright 2019-2022 Huawei Technologies Co., Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2018-2021. All rights reserved.
+ * Description: attr_value
  */
-
 
 #ifndef GE_ATTR_VALUE_H
 #define GE_ATTR_VALUE_H
@@ -25,7 +13,7 @@
 #include <vector>
 
 #include "graph/buffer.h"
-#include "graph/detail/attributes_holder.h"
+#include "graph/attributes_holder.h"
 #include "graph/graph_api_export.h"
 #include "graph/tensor.h"
 

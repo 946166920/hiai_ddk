@@ -112,7 +112,7 @@ GraphErrCodeStatus GraphUtils::InsertTransNode(
         FMK_LOGE("The anchor ptr should be not null.");
         return GRAPH_FAILED;
     }
-    for (auto& op_desc : vecOpDesc) {
+    for (const auto& op_desc : vecOpDesc) {
         GE_CHECK_NOTNULL(op_desc);
 
         if (op_desc->GetInputsDescSize() == 0 && op_desc->GetOutputsSize() == 0) {
@@ -193,7 +193,7 @@ GraphErrCodeStatus GraphUtils::InsertTransNode(
         auto srcOutIndex = outDataAnchor->GetIdx();
         auto inDataAnchorSrcFormat = AnchorUtils::GetFormat(outDataAnchor);
 
-        for (auto& peerInDataAnchor : outDataAnchor->GetPeerInDataAnchors()) {
+        for (const auto& peerInDataAnchor : outDataAnchor->GetPeerInDataAnchors()) {
             GE_CHECK_NOTNULL(peerInDataAnchor);
             auto dst = peerInDataAnchor->GetOwnerNode();
             GE_CHECK_NOTNULL(dst);

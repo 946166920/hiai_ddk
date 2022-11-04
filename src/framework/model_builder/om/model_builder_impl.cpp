@@ -108,8 +108,7 @@ static Status MakeCompatibleBuffer(std::shared_ptr<IBuffer>& compatibleModelBuff
     }
 
     ModelType modelType = IR_API_GRAPH_MODEL;
-    ge::BaseBuffer baseBuffer(const_cast<void*>(modelBuffer->GetData()), modelBuffer->GetSize());
-    if (ModelTypeUtil::GetModelType(baseBuffer, modelType) != ge::SUCCESS) {
+    if (ModelTypeUtil::GetModelType(modelBuffer->GetData(), modelBuffer->GetSize(), modelType) != ge::SUCCESS) {
         FMK_LOGE("GetModelType failed");
         return HIAI_FAILURE;
     }

@@ -6,12 +6,13 @@
 #ifndef GE_SHAPE_H
 #define GE_SHAPE_H
 
-#include "graph/debug/ge_error_codes.h"
-#include "graph/detail/attributes_holder.h"
-#include "graph/graph_api_export.h"
-#include "graph/types.h"
 #include <cstddef>
 #include <vector>
+
+#include "graph/debug/ge_error_codes.h"
+#include "graph/attributes_holder.h"
+#include "graph/graph_api_export.h"
+#include "graph/types.h"
 
 namespace hiai {
 class IShapeDef;

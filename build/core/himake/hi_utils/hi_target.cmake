@@ -327,6 +327,8 @@ function(hi_target_get_all_deps targets all_dep_targets)
 endfunction()
 
 function(hi_target_output_name target_name output_name)
+
+string(REPLACE :: _ target_name ${target_name})
   set_target_properties(${target_name}
     PROPERTIES OUTPUT_NAME ${output_name}
   )

@@ -7,11 +7,11 @@ hi_cc_library_static(
     hiai_nd_tensor_buffer.c
     hiai_nd_tensor_desc.c
     hiai_nd_tensor_buffer_util.c
-  DEPS
-    huawei::c_sec
-    ai::infra::log_static
-    ai::fmk::util::dl_helper_static
-    ai::fmk::util::base_types_static
+  # DEPS
+  #   huawei::c_sec
+  #   ai::infra::log_static
+  #   ai::fmk::util::dl_helper_static
+  #   ai::fmk::util::base_types_static
   CDEFS
     HIAI_C_API_VISIABLE
   COPTS

@@ -263,17 +263,8 @@ Status ModelManagerImpl::RunAippModel(const Context& context,
     std::unique_ptr<HIAI_NDTensorBuffer* []> cOutputs = Convert2CNDTensorBuffers(outputs);
     HIAI_EXPECT_NOT_NULL_R(cOutputs, INVALID_PARAM);
 
-    auto& aippParasSort = const_cast<std::vector<std::shared_ptr<IAIPPPara>>&>(aippParas);
-    std::sort(
-        aippParasSort.begin(), aippParasSort.end(), [](std::shared_ptr<IAIPPPara>& v1, std::shared_ptr<IAIPPPara>& v2) {
-            return v1->GetInputIndex() < v2->GetInputIndex();
-        });
-
-    std::unique_ptr<HIAI_TensorAippPara* []> cAippParas = Convert2CTensorAippParas(aippParasSort);
-    if (cAippParas == nullptr) {
-        FMK_LOGE("aippParas is invalid.");
-        return INVALID_PARAM;
-    }
+    std::unique_ptr<HIAI_TensorAippPara* []> cAippParas = Convert2CTensorAippParas(aippParas);
+    HIAI_EXPECT_NOT_NULL_R(cAippParas, INVALID_PARAM);
 
     std::lock_guard<std::mutex> lock(modelManagerMutex_);
 

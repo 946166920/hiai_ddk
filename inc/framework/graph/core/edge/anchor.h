@@ -26,11 +26,7 @@ class GRAPH_API_EXPORT Anchor : public std::enable_shared_from_this<Anchor> {
     friend class AnchorUtils;
 
 public:
-#if !defined(__ANDROID__) && !defined(ANDROID) && !defined(_MSC_VER)
-    using TYPE = const char*;
-#else
     using TYPE = std::string;
-#endif
     template<class T>
     using Vistor = RangeVistor<T, std::shared_ptr<ConstAnchor>>;
 

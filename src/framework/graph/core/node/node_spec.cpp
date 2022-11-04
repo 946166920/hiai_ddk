@@ -16,6 +16,8 @@
 
 #include "framework/graph/core/node/node_spec.h"
 
+#include <algorithm>
+
 // api/framework
 #include "graph/op/array_defs.h"
 #include "graph/op/const_defs.h"

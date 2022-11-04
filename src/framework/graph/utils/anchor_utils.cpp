@@ -20,7 +20,6 @@
 #include <algorithm>
 #include "framework/graph/debug/ge_log.h"
 #include "graph/debug/ge_error_codes.h"
-#include "framework/graph/debug/ge_util.h"
 
 namespace ge {
 Format AnchorUtils::GetFormat(DataAnchorPtr dataAnchor)

@@ -16,6 +16,8 @@
 
 #include "framework/graph/core/cgraph/legacy_graph.h"
 
+#include <algorithm>
+
 // api/framework
 #include "graph/op/all_ops.h"
 

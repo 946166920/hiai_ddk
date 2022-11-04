@@ -26,36 +26,36 @@ using namespace hiai;
 using namespace ge;
 
 namespace hiai {
-ge::Status ModelTypeUtil::GetModelType(const ge::BaseBuffer& buffer, ModelType& type)
+ge::Status ModelTypeUtil::GetModelType(const void* data, size_t size, ModelType& type)
 {
-    if (buffer.GetData() == nullptr || buffer.GetSize() == 0) {
-        FMK_LOGE("get buffer null. size:%zu", buffer.GetSize());
+    if (data == nullptr || size == 0) {
+        FMK_LOGE("data or size is invalid. size:%zu", size);
         return FAIL;
     }
 
 #if defined(AI_SUPPORT_SPECIAL_3RD_MODEL)
     bool isSpecial = false;
-    if (IsSpecial3rdModel(buffer, isSpecial) == ge::SUCCESS && isSpecial) {
+    if (IsSpecial3rdModel(data, size, isSpecial) == ge::SUCCESS && isSpecial) {
         type = ModelType::SPECIAL_3RD_MODEL;
         return ge::SUCCESS;
     }
 #endif
 
-    if (buffer.GetSize() < sizeof(ModelFileHeader)) {
-        FMK_LOGI("Input buffer size:%zu", buffer.GetSize());
+    if (size < sizeof(ModelFileHeader)) {
+        FMK_LOGI("Input model size:%zu", size);
         type = IR_API_GRAPH_MODEL;
         return ge::SUCCESS;
     }
 
 #ifdef PLATFORM_FPGA
     const int MODEL_SIZE_LIMIT = 209715200; // 200M: 209715200 = 200 * 1024 * 1024
-    if (buffer.GetSize() > MODEL_SIZE_LIMIT) {
-        FMK_LOGE("Load model size:%zu is big for FPGA platform", buffer.GetSize());
+    if (size > MODEL_SIZE_LIMIT) {
+        FMK_LOGE("Load model size:%zu is big for FPGA platform", size);
         return ge::FAIL;
     }
 #endif
 
-    const ModelFileHeader* modelHeader = reinterpret_cast<const ModelFileHeader*>(buffer.GetData());
+    const ModelFileHeader* modelHeader = reinterpret_cast<const ModelFileHeader*>(data);
     type = static_cast<ModelType>(modelHeader->modeltype);
 #ifndef __AICP_TA__
     if (modelHeader->magic != MODEL_FILE_MAGIC_NUM) {
@@ -119,8 +119,7 @@ ge::Status ModelTypeUtil::GetModelTypeFromFile(const std::string& modelPath, Mod
         return FAIL;
     }
 
-    ge::BaseBuffer modelBuf(data, sizeof(ModelFileHeader));
-    if (ModelTypeUtil::GetModelType(modelBuf, type) != ge::SUCCESS) {
+    if (ModelTypeUtil::GetModelType(data, sizeof(ModelFileHeader), type) != ge::SUCCESS) {
         FMK_LOGE("GetModelType failed");
         delete[] data;
         return FAIL;
@@ -139,8 +138,7 @@ ge::Status ModelTypeUtil::IsSpecial3rdModelFromFile(const std::string& modelPath
         return FAIL;
     }
 
-    ge::BaseBuffer modelBuf(data, sizeof(ModelFileHeader));
-    if (IsSpecial3rdModel(modelBuf, isSpecial) != ge::SUCCESS) {
+    if (IsSpecial3rdModel(data, sizeof(ModelFileHeader), isSpecial) != ge::SUCCESS) {
         FMK_LOGE("GetModelType failed");
         delete[] data;
         return FAIL;
@@ -150,12 +148,12 @@ ge::Status ModelTypeUtil::IsSpecial3rdModelFromFile(const std::string& modelPath
 }
 
 #if defined(AI_SUPPORT_3RD_PLATFORM_IR_MODEL_INFERENCE) || defined(AI_SUPPORT_3RD_PLATFORM_IR_API_ONLINE_BUILD)
-Status ModelTypeUtil::IsSpecial3rdModel(const BaseBuffer& buff, bool& isSpecial)
+Status ModelTypeUtil::IsSpecial3rdModel(const void* data, size_t size, bool& isSpecial)
 {
     isSpecial = false;
     static const size_t modelFileHeadLength = sizeof(ModelFileHeader);
-    if (buff.size() < modelFileHeadLength) {
-        FMK_LOGE("model is invalid, size is %zu.", buff.size());
+    if (size < modelFileHeadLength) {
+        FMK_LOGE("model is invalid, size is %zu.", size);
         return FAIL;
     }
     const vector<vector<uint8_t>> special3rdFlagMap = {
@@ -164,7 +162,7 @@ Status ModelTypeUtil::IsSpecial3rdModel(const BaseBuffer& buff, bool& isSpecial)
     };
     static const std::size_t special3rdFlagLength = 4;
     for (auto it : special3rdFlagMap) {
-        if (memcmp((const void*)(&it[0]), (const void*)buff.data(), special3rdFlagLength) == 0) {
+        if (memcmp((const void*)(&it[0]), data, special3rdFlagLength) == 0) {
             isSpecial = true;
             FMK_LOGI("IsSpecial3rdModel, model is 3rd.");
             return ge::SUCCESS;
@@ -193,12 +191,12 @@ Status ModelTypeUtil::IsSpecial3rdModel(const BaseBuffer& buff, bool& isSpecial)
     return ge::SUCCESS;
 }
 #else
-Status ModelTypeUtil::IsSpecial3rdModel(const BaseBuffer& buff, bool& isSpecial)
+Status ModelTypeUtil::IsSpecial3rdModel(const void* data, size_t size, bool& isSpecial)
 {
     isSpecial = false;
     const std::size_t special3rdFlagLength = 4;
-    if (buff.size() < special3rdFlagLength) {
-        FMK_LOGE("model is invalid, size is %zu.", buff.size());
+    if (size < special3rdFlagLength) {
+        FMK_LOGE("model is invalid, size is %zu.", size);
         return ge::FAIL;
     }
     const vector<vector<uint8_t>> special3rdFlagMap = {
@@ -206,7 +204,7 @@ Status ModelTypeUtil::IsSpecial3rdModel(const BaseBuffer& buff, bool& isSpecial)
         {0xE0, 0xF3, 0x02, 0x00} // 1 core model head
     };
     for (auto it : special3rdFlagMap) {
-        if (memcmp(&it[0], buff.data(), special3rdFlagLength) == 0) {
+        if (memcmp(&it[0], data, special3rdFlagLength) == 0) {
             isSpecial = true;
         }
     }

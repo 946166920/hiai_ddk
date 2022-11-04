@@ -88,7 +88,10 @@ static HIAI_Status BuildModel(HIAI_MemBuffer* inputBuffer, HIAI_Framework fmkTyp
 HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options, const char* modelName,
     const void* inputModelData, size_t inputModelSize, HIAI_BuiltModel** builtModel)
 {
+    // WARNING[begin]: These log used for SUT test. Must confirm with tester before modification.
     FMK_LOGI("start to build model by direct");
+    // WARNING[end]
+
     // 入参校验
     if (modelName == nullptr || inputModelData == nullptr || inputModelSize == 0) {
         FMK_LOGE("param is invalid.");
@@ -103,8 +106,7 @@ HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options
 
     // 模型类型检查
     ModelType modelType = IR_API_GRAPH_MODEL;
-    ge::BaseBuffer baseBuffer(const_cast<void*>(inputModelData), inputModelSize);
-    if (ModelTypeUtil::GetModelType(baseBuffer, modelType) != ge::SUCCESS) {
+    if (ModelTypeUtil::GetModelType(inputModelData, inputModelSize, modelType) != ge::SUCCESS) {
         FMK_LOGE("GetModelType failed");
         return HIAI_FAILURE;
     }
