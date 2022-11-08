@@ -99,5 +99,5 @@ if __name__ == '__main__':
     # 解压
     decopress_tools()
     # 编译
-
+    os.system("./build.sh")
     # 打包

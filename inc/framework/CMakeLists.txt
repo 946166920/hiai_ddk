@@ -1,7 +1,0 @@
-set(AI_INC_FMK_DIR ${CMAKE_CURRENT_LIST_DIR})
-add_subdirectory(c)
-add_subdirectory(common)
-add_subdirectory(compatible)
-add_subdirectory(util)
-add_subdirectory(graph)
-add_subdirectory(infra)
