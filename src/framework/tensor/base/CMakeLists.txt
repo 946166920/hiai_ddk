@@ -30,8 +30,6 @@ hi_cc_library_static(
     ai::fmk::tensor::nd_tensor_impl_static
   SRCS
     nd_tensor_buffer_impl.cpp
-  # DEPS
-  #   huawei::c_sec
   COPTS
     -frtti
   CDEFS

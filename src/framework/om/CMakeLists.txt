@@ -5,18 +5,3 @@ hi_cc_library_static(
     event_manager/om_wrapper.cpp
     event_manager/ai_om_shim.cpp
 )
-
-# hi_cc_library_shared(
-#   NAME
-#     ai::fmk::om_shared
-#   SRCS
-#     event_manager/ai_om_shim.cpp
-#   COPTS
-#     -frtti
-#   CDEFS
-#     AI_SUPPORT_PROFILING
-#     DEV_VISIBILITY
-#   DEPS
-#     ai::infra::log
-#     huawei::c_sec
-# )

@@ -13,7 +13,7 @@ list(APPEND CMAKE_MODULE_PATH ${ROOT_DIR}/build/core/himake)
 include(hi_make)
 
 ### redirect output directory
-set(output_prefix ${ROOT_DIR}/out/hiai)
+set(output_prefix ${ROOT_DIR}/out/hiai/${ANDROID_ABI})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${output_prefix}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${output_prefix}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${output_prefix}/static)

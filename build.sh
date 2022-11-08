@@ -9,11 +9,18 @@ fi
 mkdir ${cur_dir}/out
 
 cd ${cur_dir}/out
+
 # cmake ..
 cmake -DCMAKE_TOOLCHAIN_FILE=${cur_dir}/build/core/himake/hi_toolchain/android-ndk.toolchain.cmake \
       -DANDROID_ABI=arm64-v8a \
       -DANDROID_PLATFORM=android-19 \
       ..
 
-# make
+make -j
+
+cmake -DCMAKE_TOOLCHAIN_FILE=${cur_dir}/build/core/himake/hi_toolchain/android-ndk.toolchain.cmake \
+      -DANDROID_ABI=armeabi-v7a \
+      -DANDROID_PLATFORM=android-19 \
+      ..
+
 make -j

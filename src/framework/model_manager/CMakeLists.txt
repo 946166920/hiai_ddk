@@ -54,10 +54,10 @@ hi_cc_library_shared(
     ai::fmk::util::version_static
 
     # ai::fmk::util::hiai_plugin_version_obj 未使用
-  EXCLUDE_STATIC_LIBS
+  # EXCLUDE_STATIC_LIBS
     ai::fmk::tensor::nd_tensor_static
-    COPTS
-    -march=armv8.2-a+simd+fp16
+  COPTS
+    # -march=armv8.2-a+simd+fp16  # 32位时不支持
     -frtti
     -std=c++11
   CDEFS

@@ -123,16 +123,19 @@ hi_cc_library_shared(
 
     ai::infra::log
     huawei::c_sec
+    google::protobuf_lite_static
+    ai::infra::math::fp16_t_static
     ai::fmk::graph::persistance::proto_impl::ge_ir_static
+    ai::fmk::graph::persistance::proto_impl_static
+    ai::fmk::graph::persistance::static_proxy_static
     ai::fmk::graph::core_static
     ai::fmk::graph::utils_static
     ai::fmk::compatible_static
     ai::fmk::common::helper_static
-    ai::infra::math::fp16_t_static
     ai::fmk::util::tensor::trans_tensor_static
-    google::protobuf_lite_static
-    ai::fmk::graph::persistance::proto_impl_static
-    ai::fmk::graph::persistance::static_proxy_static
+
+    # ai::fmk::graph::persistance::dynamic_proxy_static
+    # dl
 )
 
 hi_target_output_name(ai::fmk::hiai_ir_shared hiai_ir)

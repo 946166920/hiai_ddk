@@ -8,8 +8,6 @@ hi_cc_library_static(
     om/*.cpp
   CDEFS
     HIAI_MB_API_VISIABLE
-  # DEPS
-  #   huawei::c_sec
 )
 
 hi_cc_function(AI_SUPPORT_MODEL_BUILDER_COMPATIBLE
