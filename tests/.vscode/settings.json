@@ -1,0 +1,13 @@
+{
+    "CodeCheck.RealTimeCodeMarsCheck.Enable": false,
+    "CodeCheck.AllRelatedRemoteBranch": "",
+    "C_Cpp.autocomplete": "Disabled",
+    "C_Cpp.intelliSenseEngine": "Disabled",
+    "CodeCheck.TaskIdsUpdateTime": "2022-11-09 15:11:38",
+    "CodeCheck.TaskIdsForRemoteUrl": "ssh://git@codehub-dg-y.huawei.com:2222/y00421044/hiai_ddk.git",
+    "CodeCheck.TaskIdsForRemoteBranch": "master",
+    "CodeCheck.TaskIds": "",
+    "CodeCheck.SubRepoTaskIdsInfo": {},
+    "CodeCheck.RelatedRemoteRepo": "ssh://git@codehub-dg-y.huawei.com:2222/y00421044/hiai_ddk.git",
+    "CodeCheck.RelatedRemoteBranch": "master"
+}
