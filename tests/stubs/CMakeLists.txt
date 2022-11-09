@@ -1,0 +1,5 @@
+add_subdirectory(ai_client)
+add_subdirectory(hiai_ddk)
+add_subdirectory(hiai_ir_ddk)
+add_subdirectory(hiai_ir_build_ddk)
+add_subdirectory(hiai_ir_build_aipp_ddk)
