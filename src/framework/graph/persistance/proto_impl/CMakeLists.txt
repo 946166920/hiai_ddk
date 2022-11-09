@@ -39,7 +39,4 @@ hi_cc_library_static(
     GRAPH_API_VISIABLE
   COPTS
     -fvisibility=hidden
-  # DEPS
-  #   ai::infra::log
-  #   ai::fmk::graph::persistance::proto_impl::ge_ir_static
 )

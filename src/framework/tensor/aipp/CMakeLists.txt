@@ -10,6 +10,4 @@ hi_cc_library_static(
     HIAI_TENSOR_API_VISIABLE
   COPTS
     -frtti
-  # DEPS
-  #   huawei::c_sec
 )

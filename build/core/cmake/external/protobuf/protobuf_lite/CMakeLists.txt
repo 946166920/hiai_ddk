@@ -49,15 +49,3 @@ hi_cc_library_static(
     google::protobuf_headers
     log
 )
-
-# hi_cc_system("HI_ANDROID_NDK"
-#   NAME
-#     google::protobuf_lite_static
-#   CDEFS
-#     GOOGLE_PROTOBUF_NO_RTTI
-#     GOOGLE_PROTOBUF_NO_THREADLOCAL
-#   SRCS
-#     ${goolge_protobuf_lite_src_dir}/map_field.cc
-#   DEPS
-#     log
-# )

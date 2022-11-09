@@ -16,9 +16,6 @@ hi_cc_library_static(
 
     hiai_model_manager_aipp.c
     hiai_built_model_aipp.c
-  # DEPS
-  #   huawei::c_sec
-  #   dl
   CDEFS
     AI_SW_SPEC_MODEL_RUNTIME_LIST=\"${AI_SW_SPEC_MODEL_RUNTIME_LIST}\"
 )
@@ -38,20 +35,10 @@ hi_cc_function(AI_SUPPORT_STATIC_LOAD_RUNTIME
     model_runtime_register.cpp
 )
 
-
-# hi_cc_system("HI_ANDROID_NDK;HI_LINUX_HOST"
-#   NAME
-#     ai::fmk::model_runtime::core_static
-#   CDEFS
-#     AI_SW_SPEC_MODEL_RUNTIME_LIST=\"${AI_SW_SPEC_MODEL_RUNTIME_LIST}\"
-# )
-
 hi_cc_library_static(
   NAME
     ai::fmk::model_runtime::core_v1_static
   SRCS
     hiai_model_build_options_v1.c
     hiai_model_manager_options_v1.c
-  # DEPS
-  #   huawei::c_sec
 )

@@ -10,6 +10,8 @@ mkdir ${cur_dir}/out
 
 cd ${cur_dir}/out
 
+which cmake
+
 # cmake ..
 cmake -DCMAKE_TOOLCHAIN_FILE=${cur_dir}/build/core/himake/hi_toolchain/android-ndk.toolchain.cmake \
       -DANDROID_ABI=arm64-v8a \

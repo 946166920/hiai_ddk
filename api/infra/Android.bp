@@ -1,7 +1,0 @@
-
-cc_library_headers {
-    name: "ai_api_infra",
-    export_include_dirs: [
-        ".",
-    ],
-}

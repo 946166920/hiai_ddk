@@ -72,7 +72,6 @@ hi_cc_library_shared(
 hi_cc_function(AI_SUPPORT_AIPP_API
   NAME
     ai::fmk::model_manager_shared
-  # WHOLE_STATIC_LIBS
   DEPS
     ai::fmk::tensor::aipp_para_static
   CDEFS
@@ -80,27 +79,3 @@ hi_cc_function(AI_SUPPORT_AIPP_API
 )
 
 hi_target_output_name(ai::fmk::model_manager_shared hiai)
-
-# hi_cc_system(HI_ANDROID_NDK
-#   NAME
-#     ai::fmk::model_manager_shared
-#   EXCLUDE_STATIC_LIBS
-#     # ai::fmk::tensor::nd_tensor_static
-#     # ai::fmk::util::dl_helper_static
-# )
-
-# hi_cc_function(AI_SUPPORT_LEGACY_ROM_COMPATIBLE
-#   NAME
-#     ai::fmk::model_manager_shared
-#   DEPS
-#     ai::fmk::model_runtime::direct_static
-# )
-
-# hi_cc_function(AI_SUPPORT_PLUGIN_COMPATIBLE
-#   NAME
-#     ai::fmk::model_manager_shared
-#   DEPS
-#     # DDK侧需要
-#     ai::fmk::om::om_wrapper_static
-#     ai::infra::dl_helper_static
-# )

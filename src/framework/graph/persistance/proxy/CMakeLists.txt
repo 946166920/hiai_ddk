@@ -5,9 +5,6 @@ hi_cc_library_static(
     dynamic_proto_factory.cpp
   CDEFS
     GRAPH_DEVICE
-  # DEPS
-  #   huawei::c_sec
-  #   dl
 )
 
 hi_cc_library_static(
@@ -20,8 +17,4 @@ hi_cc_library_static(
     static_proto_factory.cpp
   CDEFS
     GRAPH_DEVICE
-  # DEPS
-  #   huawei::c_sec
-  #   ai::fmk::graph::persistance::proto_impl::ge_ir_static
-  #   google::protobuf_headers
 )

@@ -15,7 +15,6 @@ hi_cc_library_static(
   NAME
     ai::fmk::util::native_handle_static
   INCS
-    # ${ROOT_DIR}/third_party/system/core/include/cutils/
     ${ROOT_DIR}/third_party/cutils/
   SRCS
     native_handle_creator.cpp

@@ -39,13 +39,6 @@ hi_target_include_directories(
     ${OPEN_SOURCE_CSEC_DIR}/include
 )
 
-# hi_cc_library_static(
-#   NAME
-#     huawei::c_sec_static
-#   DEPS
-#     huawei::c_sec_objs
-# )
-
 hi_target_include_directories(
   NAME
     huawei::c_sec_static

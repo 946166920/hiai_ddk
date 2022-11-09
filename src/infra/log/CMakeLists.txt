@@ -17,8 +17,6 @@ hi_cc_system("HI_ANDROID_NDK"
 hi_cc_library_shared(
   NAME
     ai::infra::log_shared
-  # DEPS
-  #   ai::infra::log_static
   WHOLE_STATIC_LIBS
     ai::infra::log_static
 )

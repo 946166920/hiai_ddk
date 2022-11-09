@@ -30,21 +30,7 @@ hi_cc_feature_option(AI_SUPPORT_LEGACY_APP_COMPATIBLE ON)
 hi_cc_feature_option(AI_SUPPORT_PREFMODE_EXTEND ON)
 hi_cc_feature_option(AI_SUPPORT_PRIORITY_EXTEND ON)
 hi_cc_feature_option(AI_SUPPORT_LOG_LEVEL_SETTING OFF)
-
-# hi_cc_feature_option(AICP_API_EXPORT ON)
-# hi_cc_feature_option(AI_API_EXPORT ON)
 hi_cc_feature_option(HIAI_DDK ON)
-# hi_cc_feature_option(HIAI_M_API_VISIABLE ON)
-# hi_cc_feature_option(HIAI_MB_API_VISIABLE ON)
-# hi_cc_feature_option(HIAI_MM_API_VISIABLE ON)
-# hi_cc_feature_option(HIAI_TENSOR_API_VISIABLE ON)
-# hi_cc_feature_option(HIAI_UTIL_API_VISIABLE ON)
-hi_cc_feature_option(GRAPH_DEVICE OFF)  # 待定
-hi_cc_feature_option(DEV_VISIBILITY ON)
-hi_cc_feature_option(DEVICE_SUPPORT_LITENN OFF) # PrivateHandleInfo不在hiainamespace中
-hi_cc_feature_option(DYNAMIC_BATCH OFF) # 下面有HIAI_LEGACY_API_EXPORT宏未定义
-hi_cc_feature_option(GRAPH_API_VISIABLE ON)
-hi_cc_feature_option(__FMK_KT_TEST__ ON)
 
 hi_cc_default(
   NAME

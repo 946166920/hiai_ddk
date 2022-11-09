@@ -11,8 +11,6 @@ hi_cc_library_static(
     direct_model_util.cpp
     direct_model_manager.cpp
     direct_model_manager_impl.cpp
-  # DEPS
-  #   huawei::c_sec
 )
 
 hi_cc_function(AI_SUPPORT_AIPP_API
