@@ -72,7 +72,7 @@ def decopress_tools():
     # os.system(chmod_ndk)
 
     # cmake 加export
-    export_cmake_path = "export PATH=third_party/cmake-3.20.5-linux-x86_64/bin:$PATH"
+    export_cmake_path = "export PATH={}/third_party/cmake-3.20.5-linux-x86_64/bin:$PATH".format("$(pwd)")
     os.system(export_cmake_path)
     # c_src 换目录名
     mv_c_sec_dir_name = "mv third_party/libboundscheck-1.1.11 third_party/bounds_checking_function"
