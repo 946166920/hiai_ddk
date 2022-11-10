@@ -31,99 +31,83 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 
 #### 编译环境配置
 
-编译所需的第三方工具和对应的推荐版本如下：
+编译所需的第三方源码和工具的推荐版本如下：
 
-| 编译工具      | 推荐版本 | 下载链接                                                     |
+| 编译源码和工具   | 推荐版本 | 下载链接                                                     |
 | -------------- | -------- | ------------------------------------------------------------ |
-| protobuf       | 3.9.0    | https://github.com/protocolbuffers/protobuf/releases/download/v3.9.0/protobuf-cpp-3.9.0.tar.gz |
-| libboundscheck | 1.1.11   | https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip |
+| libboundscheck | 1.1.11 | https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip |
+| protobuf       | 3.13.0  | https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.13.0.zip |
+| protoc | 3.13.0 | https://github.com/protocolbuffers/protobuf/releases/download/v3.13.0/protoc-3.13.0-linux-x86_64.zip |
+| cutils | -- | https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/cutils.tar.gz |
 | android-ndk    | r20b     | https://dl.google.com/android/repository/android-ndk-r20b-linux-x86_64.zip |
-| cmake          | 3.21.4   | https://github.com/Kitware/CMake/releases/download/v3.21.4/cmake-3.21.4-linux-x86_64.tar.gz |
-| ninja          | 1.10.2   | https://github.com/ninja-build/ninja/releases/download/v1.10.2/ninja-linux.zip |
+| cmake          | 3.20.5 | https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz |
 
 只支持在Linux平台Ubuntu 16/18操作系统下进行编译，暂不支持在windows下编译。
 
 
-HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方软件包，请确保可连接网络，脚本会下载所需的工具，下载耗时因网络环境而异。
+HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方软件包，请确保可连接网络，脚本会下载所需的源码和工具，下载耗时因网络环境而异。
 
-下载过程中会在`HiAIFoundation`下新建一个`buildtools`目录存放下载文件和解压后文件。
+下载过程中会在`HiAIFoundation`下新建一个`third_party`目录存放下载的第三方源码，新建一个`buildtools`目录存放编译工具。
 
 本项目支持如下两种方式编译：
 
 1、本地无编译环境
 
-​	如果本地是一个全新的环境，没有所需的编译工具，可以不修改配置文件，直接跳到“编译执行”小节，执行命令即可。
-
+​	如果本地是一个全新的环境，没有所需的编译工具，执行编译脚本，可以不修改配置文件，直接跳到[编译执行](#编译执行)小节，执行命令即可。
 
 2、通过配置文件(build.conf)进行自定义配置
 
 ​	如果本地已经下载好编译工具，需要在配置文件`build.conf`对应的工具名称后面正确填写对应的工具路径，具体配置项如下所示：
  （注意：配置文件中"="前的变量名请勿修改，编译脚本中会引用到，其中有一部分配置与平台相关，会在配置详情中标注）
 
-   如果当前环境中只有部分编译工具，可以只填写当前已有的编译工具路径，剩余的配置路径置为空，我们在`build.py`脚本中会自动检测并下载。
+   如果当前环境中只有部分编译工具，可以只填写当前已有的编译工具路径，剩余的配置路径不配置，我们在`build.py`脚本中会自动检测并下载。
 
 
 1. 配置`NDK`路径（下载文件较大，建议使用本地配置）例如：
    ```
    # 使用自定义本地配置
-   ANDROID_NDK_PATH    =/your/project/path/HiAIFoundation/buildtools/android-ndk-r20b
-   # 使用编译脚本提供的下载配置
-   ANDROID_NDK_PATH    =
+   ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r20b
+   # 使用编译脚本下载的工具的配置（注释掉该行即可）
+   # ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r20b
    ```
 
-2. 配置`cmake`路径，要填写到cmake二进制文件，例如：
+2. 配置`cmake`路径，例如：
    ```
-   CMAKE_TOOLCHAIN_FILE=/your/project/path/HiAIFoundation/buildtools/cmake-3.21.4-linux-x86_64/bin/cmake
-   ```
-
-3. 配置`Ninja`路径，要填写到ninja二进制文件，例如：
-   ```
-   NINJA_PATH        =/your/project/path/HiAIFoundation/buildtools/ninja
+   CMAKE_TOOLCHAIN_FILE=/your/project/path/HiAIFoundation/buildtools/cmake-3.20.5
    ```
 
-4. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，如下所示
+4. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，默认为arm64-v8a，如下所示
 
    ```
    ARCH:armeabi-v7a
         arm64-v8a
         both        #  compile both armeabi-v7a and arm64-v8a
+   ABI=arm64-v8a
    ```
-
-
-build.py会自动下载编译依赖的第三方库，如果用户自定义配置，请务必使用目录名（protobuf、libboundscheck），并且放在和src同级目录的third_party下（如下图所示）。
-
-![image-20211207201758113](doc/images/image-20211207201758113.png)
 
 #### 编译执行
 
-HiAI DDK基于NDK + CMake + Ninja的命令行构建方式，在确认配置文件未修改或者配置完成的前提下，安装好python(2.X与3.X皆可)，并同时安装python包管理工具(pip)，即可执行编译命令，另外本项目还提供测试代码和编译测试代码的一键式脚本，
+HiAI DDK基于NDK + CMake的命令行构建方式，在确认配置完成或者不需配置的前提下，安装好python3，即可执行编译命令，另外本项目还提供测试代码和编译测试代码的一键式脚本
 
 测试代码路径：`HiAIFoundation/tests/`
-编译ddk so和编译运行测试代码合一脚本：`build.py`
+编译打包ddk so和编译运行测试代码合一脚本：`build.py`
 
 详细命令如下：
 
    ```
-   pip install six==1.14.0          # 安装python依赖包命令
-
-   python build.py                  # 编译so和编译运行测试代码默认均执行
-   python build.py --only_ddk       # 只编译so，不编译运行测试代码
+   python3 build.py                  # 编译so和编译运行测试代码默认均执行
+   python3 build.py --only_ddk       # 只编译so，不编译运行测试代码
    ```
 
 
 #### 编译输出
 
-编译成功之后会有如下输出：
+编译成功之后会在HiAIFoundation目录下生成ddk目录，ddk/ai_ddk_lib下存放打包的ddk头文件和so（32位so存放在lib目录下，64位so存放在lib64目录下）。
 
-32位：
+结构如下所示：
 
-![image-20211207200801818](doc/images/image-20211207200801818.png)
+![image-20211228160620651](doc/images/ddk.png)
 
-64位：
-
-![image-20211207200646536](doc/images/image-20211207200646536.png)
-
-也可以通过查看和HiAIFoundation同级目录下的`hiai_ddk`下是否有对应架构的so生成，来确定是否编译成功。
 
 编译运行测试代码成功之后会有如下输出：
 
@@ -131,7 +115,7 @@ HiAI DDK基于NDK + CMake + Ninja的命令行构建方式，在确认配置文�
 
 ### APP集成
 
-APP开发过程参考[HUAWEI HiAI Foundation  开发指南](https://developer.huawei.com/consumer/cn/doc/development/hiai-Guides/dev-process-0000001052965551)，当前开源部分仅支持NPU推理，开源软件编译出libhiai_ir.so，libhiai.so需要配合DDK版本包中libhiai_hcl_model_runtime.so使用。
+APP开发过程参考[HUAWEI HiAI Foundation  开发指南](https://developer.huawei.com/consumer/cn/doc/development/hiai-Guides/dev-process-0000001052965551)，当前开源部分仅支持NPU推理，开源编译出的libhiai.so，libhiai_ir.so需要配合DDK版本包中libhiai_hcl_model_runtime.so使用。
 
 ## 版本说明
 
