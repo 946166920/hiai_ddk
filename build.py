@@ -186,7 +186,8 @@ def get_buildtools_config(config_dict):
     
     if buildtools_config["ABI"] == "both":
         buildtools_config["ABI"] = ["arm64-v8a","armeabi-v7a"]
-
+    else:
+        buildtools_config["ABI"] = [buildtools_config["ABI"]]
     return buildtools_config
 
 def build(buildtools_config):

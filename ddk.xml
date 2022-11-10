@@ -2,19 +2,19 @@
 <config>
     <class value="head_files">
         <!-- 文件缺失 -->
-        <item source="api/framework/cloud_service/cloud_service.h" destination="ddk/ai_ddk_lib/include/cloud_service.h" />
+        <!-- <item source="api/framework/cloud_service/cloud_service.h" destination="ddk/ai_ddk_lib/include/cloud_service.h" /> -->
         <!-- 文件缺失 -->
-        <item source="api/framework/model_debugger/model_dumper.h" destination="ddk/ai_ddk_lib/include/model_dumper.h" />
+        <!-- <item source="api/framework/model_debugger/model_dumper.h" destination="ddk/ai_ddk_lib/include/model_dumper.h" /> -->
         <item source="api/framework/model_builder/hiai_ir_build.h" destination="ddk/ai_ddk_lib/include/hiai_ir_build.h" />
         <item source="api/framework/compatible/HiAiModelBuilderType.h" destination="ddk/ai_ddk_lib/include/compatible/HiAiModelBuilderType.h" />
         <item source="inc/infra/base/hiai_types.h" destination="ddk/ai_ddk_lib/include/hiai_types.h" />
         <item source="api/framework/compatible/HiAiAippPara.h" destination="ddk/ai_ddk_lib/include/HiAiAippPara.h" />
         <!-- 文件缺失 -->
-        <item source="api/framework/model_crypto/HiAiModelCrypto.h" destination="ddk/ai_ddk_lib/include/HiAiModelCrypto.h" />
+        <!-- <item source="api/framework/model_crypto/HiAiModelCrypto.h" destination="ddk/ai_ddk_lib/include/HiAiModelCrypto.h" /> -->
         <item source="api/framework/compatible/HiAiModelManagerService.h" destination="ddk/ai_ddk_lib/include/HiAiModelManagerService.h" />
         <item source="api/framework/compatible/HiAiModelManagerType.h" destination="ddk/ai_ddk_lib/include/HiAiModelManagerType.h" />
         <!-- 文件缺失 -->
-        <item source="system/core/include/cutils/native_handle.h" destination="ddk/ai_ddk_lib/include/native_handle.h" />
+        <!-- <item source="system/core/include/cutils/native_handle.h" destination="ddk/ai_ddk_lib/include/native_handle.h" /> -->
         <item source="api/framework/compatible/AiModelBuilder.h" destination="ddk/ai_ddk_lib/include/compatible/AiModelBuilder.h" />
         <item source="api/framework/compatible/AippTensor.h" destination="ddk/ai_ddk_lib/include/compatible/AippTensor.h" />
         <item source="api/framework/compatible/AiTensor.h" destination="ddk/ai_ddk_lib/include/compatible/AiTensor.h" />
