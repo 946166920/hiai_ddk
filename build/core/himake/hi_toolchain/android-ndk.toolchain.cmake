@@ -17,7 +17,7 @@ endif()
 set(HI_SYSTEM_NAME HI_ANDROID_NDK)
 
 # include android ndk toolchain
-set(NDK_PATH ${CMAKE_CURRENT_LIST_DIR}/../../../../third_party/android-ndk-r20b)
+# set(NDK_PATH ${CMAKE_CURRENT_LIST_DIR}/../../../../buildtools/android-ndk-r20b)
 
 list(APPEND CMAKE_MODULE_PATH
 	${NDK_PATH}/build/cmake)

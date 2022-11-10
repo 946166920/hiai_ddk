@@ -27,9 +27,10 @@ hi_cc_feature_option(AI_USE_LOG_SHARED OFF)
 hi_cc_feature_option(AI_SUPPORT_AIPP_API ON)
 hi_cc_feature_option(AI_SUPPORT_BUILT_MODEL_SAVE ON)
 hi_cc_feature_option(AI_SUPPORT_LEGACY_APP_COMPATIBLE ON)
-hi_cc_feature_option(AI_SUPPORT_PREFMODE_EXTEND ON)
+hi_cc_feature_option(AI_SUPPORT_PREFMODE_EXTEND OFF)
 hi_cc_feature_option(AI_SUPPORT_PRIORITY_EXTEND ON)
 hi_cc_feature_option(AI_SUPPORT_LOG_LEVEL_SETTING OFF)
+hi_cc_feature_option(AI_SUPPORT_CL_CUSTOMIZATION OFF)
 hi_cc_feature_option(HIAI_DDK ON)
 
 hi_cc_default(
