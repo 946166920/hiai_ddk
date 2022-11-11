@@ -47,7 +47,7 @@ HIAI_NDTensorDesc* HIAI_NDTensorDesc_Create(
     (void)memset_s(desc, sizeof(HIAI_NDTensorDesc), 0, sizeof(HIAI_NDTensorDesc));
 
     size_t dimsSize = dimNum * sizeof(int32_t);
-    desc->dims = malloc(dimsSize);
+    desc->dims = (int32_t*)malloc(dimsSize);
     if (desc->dims == nullptr) {
         FMK_LOGE("malloc failed.");
         goto FREE_DESC;
@@ -131,7 +131,7 @@ void HIAI_NDTensorDesc_SetDim(HIAI_NDTensorDesc* tensorDesc, size_t index, int32
 HIAI_DataType HIAI_NDTensorDesc_GetDataType(const HIAI_NDTensorDesc* tensorDesc)
 {
     if (tensorDesc == nullptr) {
-        return 0;
+        return HIAI_DATATYPE_UINT8;
     }
     return tensorDesc->dataType;
 }
@@ -139,7 +139,7 @@ HIAI_DataType HIAI_NDTensorDesc_GetDataType(const HIAI_NDTensorDesc* tensorDesc)
 HIAI_Format HIAI_NDTensorDesc_GetFormat(const HIAI_NDTensorDesc* tensorDesc)
 {
     if (tensorDesc == nullptr) {
-        return 0;
+        return HIAI_FORMAT_NCHW;
     }
     return tensorDesc->format;
 }

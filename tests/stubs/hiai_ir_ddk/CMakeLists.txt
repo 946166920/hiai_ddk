@@ -2,7 +2,7 @@ set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../)
 set(FRAMEWORK_BASE_DIR_FOR_INC_DIRS ${TOP_DIR}/src/framework)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
 set(THIRD_PARTY_PROTOBUF_PATH ${THIRD_PARTY_PATH}/protobuf/)
-set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/libboundscheck/)
+set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/bounds_checking_function/)
 set(GRAPH_IR_PATH ${TOP_DIR}/src/framework/graph)
 
 set(GRAPH_PROTOBUF_LITE_SRC_FILES
@@ -117,7 +117,7 @@ set(GRAPH_PERSISTANCE_PROTO_SRC_FILES
 )
 
 set(COMPATIBLE_SRC
-    ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/common/helper/om_file_helper
+    ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/common/helper/om_file_helper.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/compatible/ir_transformer.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/compatible/ir_verify.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/compatible/array_op_transformer.cpp

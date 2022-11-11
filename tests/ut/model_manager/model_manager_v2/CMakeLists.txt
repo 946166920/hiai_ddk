@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6.0)
 
 set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../../)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
-set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/libboundscheck/)
+set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/bounds_checking_function/)
 
 set(TESTCASES_FILES_PATH ${CMAKE_CURRENT_LIST_DIR}/../model_manager_v2/test)
 set(STUB_FILES_PATH ${CMAKE_CURRENT_LIST_DIR}/../model_manager_v2/stub)
@@ -57,6 +57,7 @@ include_directories(model_manager_v2_ut
     ${TOP_DIR}/src/framework/inc
     ${TOP_DIR}/src/inc
     ${TESTCASES_FILES_PATH}/src
+    ${THIRD_PARTY_PATH}
     ${THIRD_PARTY_CSEC_PATH}/include
     ${GTEST_DIR}/googletest/include
     ${GTEST_DIR}/googlemock/include

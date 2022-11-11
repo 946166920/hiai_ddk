@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.6.0)
 set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
 set(THIRD_PARTY_PROTOBUF_PATH ${THIRD_PARTY_PATH}/protobuf/)
-set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/libboundscheck/)
+set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/bounds_checking_function/)
 
 set(GRAPH_IR_PATH ${TOP_DIR}/src/framework/graph)
 

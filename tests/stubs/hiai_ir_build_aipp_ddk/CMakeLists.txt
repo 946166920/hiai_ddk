@@ -1,7 +1,7 @@
 set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../)
 set(FRAMEWORK_BASE_DIR_FOR_INC_DIRS ${TOP_DIR}/src/framework)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
-set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/libboundscheck/)
+set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/bounds_checking_function/)
 
 set(LOCAL_SRC_FILES
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_builder/ir/aipp/converter/aipp_param_info_converter.cpp

@@ -3,16 +3,12 @@ include(ExternalProject)
 include(GNUInstallDirs)
 
 set(CMAKE_INSTALL_PREFIX ${BASE_DIR}/build CACHE STRING "path for install()" FORCE)
-set(REQ_URL "https://github.com/protocolbuffers/protobuf/releases/download/v3.9.0/protobuf-cpp-3.9.0.tar.gz")
-
-message(STATUS REQ_URL)
 set(protobuf_CXXFLAGS "-D_GLIBCXX_USE_CXX11_ABI=0 -fPIC -D_FORTIFY_SOURCE=2 -O2 -pthread")
 set(protobuf_LDFLAGS " -Wl,-z,relro,-z,now,-z,noexecstack -lpthread")
-set(PROTO_SRC_DIR ${BASE_DIR}/../third_party/protobuf/)
-message(STATUS ${CMAKE_COMMAND})
-message(STATUS ${MAKE})
 
-if(PROTOBUF_DIR)
+set(THIRD_PARTY_PATH ${TOP_DIR}/third_party)
+set(PROTOBUF_DIR ${THIRD_PARTY_PATH}/protobuf/)
+
 ExternalProject_Add(protoc_build
                     SOURCE_DIR ${PROTOBUF_DIR}
                     CONFIGURE_COMMAND cmake -Dprotobuf_WITH_ZLIB=OFF -Dprotobuf_BUILD_TESTS=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_CXX_FLAGS=${protobuf_CXXFLAGS} -DCMAKE_CXX_LDFLAGS=${protobuf_LDFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/protoc <SOURCE_DIR>/cmake
@@ -21,18 +17,6 @@ ExternalProject_Add(protoc_build
                     EXCLUDE_FROM_ALL TRUE
                     BUILD_IN_SOURCE  TRUE
 )
-else()
-ExternalProject_Add(protoc_build
-                    URL ${REQ_URL}
-                    SOURCE_DIR ${PROTOBUF_DIR}
-                    CONFIGURE_COMMAND cmake -Dprotobuf_WITH_ZLIB=OFF -Dprotobuf_BUILD_TESTS=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_CXX_FLAGS=${protobuf_CXXFLAGS} -DCMAKE_CXX_LDFLAGS=${protobuf_LDFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/protoc <SOURCE_DIR>/cmake
-                    BUILD_COMMAND make -j8
-                    INSTALL_COMMAND make install
-                    EXCLUDE_FROM_ALL TRUE
-                    BUILD_IN_SOURCE  TRUE
-)
-endif()
-
 
 set(PROTOC_PKG_DIR ${CMAKE_INSTALL_PREFIX}/protoc)
 
@@ -57,6 +41,7 @@ function(protobuf_generate comp c_var h_var)
         else()
             set(proto_output_path ${BASE_DIR}/build/proto/${comp}/proto/${parent_subdir})
         endif()
+
         list(APPEND ${c_var} "${proto_output_path}/${file_name}.pb.cc")
 
         add_custom_command(

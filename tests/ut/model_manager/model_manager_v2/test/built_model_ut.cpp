@@ -73,17 +73,16 @@ std::shared_ptr<IBuffer> CreateV2DynamicAipp()
     int customDataLen = customModelData.type.size() + customModelData.value.size();
     memcpy_s(buffer->GetData() + 4, buffer->GetSize() - 4, &customDataLen, sizeof(int32_t));
     int customDataTypeLen = customModelData.type.size();
-    memcpy_s(buffer->GetData() + 8, buffer->GetSize() - 8, &customDataTypeLen, sizeof(int32_t));
+    memcpy_s((uint8_t*)buffer->GetData() + 8, buffer->GetSize() - 8, &customDataTypeLen, sizeof(int32_t));
     memcpy_s(buffer->GetData() + 12, buffer->GetSize() - 12, customModelData.type.data(), customModelData.type.size());
     int customDataValueLen = customModelData.value.size();
     memcpy_s(buffer->GetData() + 32, buffer->GetSize() - 32, &customDataValueLen, sizeof(int));
-    memcpy_s(
-        buffer->GetData() + 36, buffer->GetSize() - 36, customModelData.value.data(), customModelData.value.size());
+    memcpy_s((uint8_t*)buffer->GetData() + 36, buffer->GetSize() - 36, customModelData.value.data(),
+        customModelData.value.size());
 
     ModelFileHeader header;
     header.modeltype = HCS_PARTITION_MODEL;
-    memcpy_s(
-        buffer->GetData() + 344, buffer->GetSize() - 344, &header, sizeof(ModelFileHeader));
+    memcpy_s(buffer->GetData() + 344, buffer->GetSize() - 344, &header, sizeof(ModelFileHeader));
     cout << "customModelData.value.size()=" << customModelData.value.size() <<endl;
     return buffer;
 }
