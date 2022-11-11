@@ -1,6 +1,6 @@
 set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
-set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/libboundscheck/)
+set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/bounds_checking_function/)
 
 # set(LIBRARY_OUTPUT_PATH ${TOP_DIR}/out/lite/llt/ut/obj/lib)
 
@@ -22,7 +22,7 @@ target_compile_definitions(${LIBAI_CLIENT_STUB_DDK}
 target_include_directories(${LIBAI_CLIENT_STUB_DDK}
     PRIVATE
     ${TOP_DIR}/src/framework/tensor/base
-    ${THIRD_PARTY_PATH}/system/core/include
+    ${THIRD_PARTY_PATH}
     ${THIRD_PARTY_CSEC_PATH}/include
 )
 

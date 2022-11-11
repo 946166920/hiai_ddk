@@ -1,7 +1,7 @@
 set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../)
 set(FRAMEWORK_BASE_DIR_FOR_INC_DIRS ${TOP_DIR}/src/framework)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
-set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/libboundscheck/)
+set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/bounds_checking_function/)
 
 set(HIAI_SRC_FILES
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model/built_model/built_model_impl.cpp
@@ -150,7 +150,7 @@ target_include_directories(${LIBHIAI_DDK}
     ${TOP_DIR}/src/framework
     ${TOP_DIR}/src/framework/inc
     ${TOP_DIR}/src/framework/util
-    ${THIRD_PARTY_PATH}/system/core/include/cutils
+    ${THIRD_PARTY_PATH}/cutils
     ${THIRD_PARTY_CSEC_PATH}/include
 )
 

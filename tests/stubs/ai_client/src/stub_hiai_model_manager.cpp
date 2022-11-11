@@ -1723,7 +1723,7 @@ int HIAI_ModelManager_buildModel_v2(HIAI_ModelManager* manager, HIAI_Framework f
     fileLength = ftell(fp);
     result = fseek(fp, 0, SEEK_SET);
 
-    fread(outputModelBuffer->data, 1, fileLength, fp);
+    (void)fread(outputModelBuffer->data, 1, fileLength, fp);
 
     *outModelSize = fileLength;
     return 0;

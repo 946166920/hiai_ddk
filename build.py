@@ -12,6 +12,7 @@
 
 
 import os
+import sys
 import zipfile
 import tarfile
 from xml.etree.ElementTree import parse
@@ -51,6 +52,15 @@ def process_protoc(compressed_package):
     chmod_protoc = "chmod -R u+x {}/protoc-3.13.0".format(THIRD_PARTY_DIR)
     os.system(chmod_protoc)
 
+def process_mockcpp(compressed_package):
+    with zipfile.ZipFile(os.path.join(THIRD_PARTY_DIR, compressed_package), 'r') as z:
+        z.extractall(THIRD_PARTY_DIR)
+
+def process_googletest(compressed_package):
+    with tarfile.open(os.path.join(THIRD_PARTY_DIR, compressed_package)) as t:
+        t.extractall(THIRD_PARTY_DIR)
+
+
 # build tools
 def process_ndk(compressed_package):
     with zipfile.ZipFile(os.path.join(BUILDTOOLS_DIR, compressed_package), 'r') as z:
@@ -72,10 +82,12 @@ def process_cmake(compressed_package):
 
 
 THIRD_PARTY_LINK_LIST = {
-    "cutils": ["http://10.136.104.231:4543/core-refs_heads_master-libcutils-include-cutils.tar.gz", process_cutils],
-    "bounds_checking_function": ["http://10.136.104.231:4543/libboundscheck-1.1.11.zip", process_bounds_checking_function],
-    "protobuf": ["http://10.136.104.231:4543/protobuf-3.13.0.zip", process_protobuf],
-    "protoc-3.13.0": ["http://10.136.104.231:4543/protoc-3.13.0-linux-x86_64.zip", process_protoc],
+    "cutils": ["http://10.136.104.34:5051/core-refs_heads_master-libcutils-include-cutils.tar.gz", process_cutils],
+    "bounds_checking_function": ["http://10.136.104.34:5051/libboundscheck-1.1.11.zip", process_bounds_checking_function],
+    "protobuf": ["http://10.136.104.34:5051/protobuf-3.13.0.zip", process_protobuf],
+    "protoc-3.13.0": ["http://10.136.104.34:5051/protoc-3.13.0-linux-x86_64.zip", process_protoc],
+    "mockcpp-2.7": ["http://10.136.104.34:5051/mockcpp-2.7.zip", process_mockcpp],
+    "googletest-release-1.8.1": ["http://10.136.104.34:5051/googletest-release-1.8.1.tar.gz", process_googletest],
 }
 
 BUILDTOOLS_LINK_LIST = {
@@ -83,19 +95,6 @@ BUILDTOOLS_LINK_LIST = {
     "cmake-3.20.5": ["http://10.136.104.231:4543/cmake-3.20.5-linux-x86_64.tar.gz", process_cmake],
     # "android-ndk-r23b": ["http://10.136.104.231:4543/android-ndk-r23b-linux.zip", process_ndk],
 }
-
-# THIRD_PARTY_LINK_LIST = {
-#     "cutils": ["https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/cutils.tar.gz", process_cutils],
-#     "bounds_checking_function": ["https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip", process_bounds_checking_function],
-#     "protobuf": ["https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.13.0.zip", process_protobuf],
-#     "protoc-3.13.0": ["http://10.136.104.231:4543/protoc-3.13.0-linux-x86_64.zip", process_protoc],
-# }
-
-# BUILDTOOLS_LINK_LIST = {
-#     "android-ndk-r20b": ["https://dl.google.com/android/repository/android-ndk-r20b-linux-x86_64.zip", process_ndk],
-#     "cmake-3.20.5": ["https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz", process_cmake],
-#     # "android-ndk-r23b": ["https://dl.google.com/android/repository/android-ndk-r23b-linux.zip", process_ndk],
-# }
 
 
 def run_process(package, link_list):
@@ -190,8 +189,17 @@ def get_buildtools_config(config_dict):
         buildtools_config["ABI"] = [buildtools_config["ABI"]]
     return buildtools_config
 
-def build(buildtools_config):
+def set_environ(buildtools_config):
+    # Add PATH Environment Variables
+    cmake_bin_path = os.path.join(buildtools_config["CMAKE_MAKE_PROGRAM"], "bin", "cmake")
+    print("cmake_bin_path :")
+    print(cmake_bin_path)
+    print(os.environ["PATH"])
+    print("-----------------------------------")
+    os.environ["PATH"] += os.pathsep + cmake_bin_path
+    print(os.environ["PATH"])
 
+def build(buildtools_config):
     cmake_bin = os.path.join(buildtools_config["CMAKE_MAKE_PROGRAM"], "bin", "cmake")
     ndk_path = buildtools_config["ANDROID_NDK_PATH"]
     toolchain = os.path.join(os.getcwd(),
@@ -249,7 +257,72 @@ def package_ddk():
         cp_item(class_configs[2])
     f.close()
 
+def CheckArgv(argv):
+    run_test = True
+    if len(argv) > 2:
+        errmsg_invalid_para_count = \
+        "[ERROR]: The number of command parameters more than 2.\n" \
+        "[INFO] : You can run the following command to obtain more information:\n" \
+        "         'python build.py --help'"
+        print(errmsg_invalid_para_count)
+        sys.exit(-1)
+    if len(argv) == 2:
+        if argv[1] == "--help":
+            helpmessage = \
+            "usage: [ python | python3 ] build.py [ --help | --only_ddk ]\n"\
+            "--help      : print this help message and exit\n"\
+            "--only_ddk   : run compile so command only.\n"\
+            "If no option is available, both compile so and run the test code by default."
+            print(helpmessage)
+            sys.exit(-1)
+        elif argv[1] == "--only_ddk":
+            run_test = False
+        else:
+            errmsg_invalid_para = \
+            "ERROR]: Unknown options and parameters.\n" \
+            "[INFO] : You can run the following command to obtain more information:\n" \
+            "         'python build.py --help'"
+            print(errmsg_invalid_para)
+            sys.exit(-1)
+        
+    return run_test
+
+def RunTest():
+    #Building the testBuild
+    prj_root_path = os.getcwd()
+    testBuild = os.path.join(prj_root_path, "tests", "build")
+    if not os.path.exists(testBuild):
+        os.makedirs(testBuild)
+
+    os.chdir(testBuild)
+    os.system("cmake {}".format(os.path.join(prj_root_path, "tests")))
+
+    os.system("make -j4")
+    if not os.path.exists(os.path.join(testBuild, "ut", "graph", "ut_graph")):
+        print("[ERROR] : Building testcase failed! Test object has not generated!")
+        sys.exit(-1)
+    os.system("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./gtest/lib/ && ./ut/graph/ut_graph")
+
+    if not os.path.exists(os.path.join(testBuild, "ut", "model_manager", "ddk", "ddk_model_manager_ut")):
+        print("[ERROR] : Building testcase failed! Test object has not generated!")
+        sys.exit(-1)
+    os.system("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./gtest/lib/ && ./ut/model_manager/ddk/ddk_model_manager_ut")
+
+    if not os.path.exists(os.path.join(testBuild, "ut", "model_manager", "direct_model_runtime", "direct_model_runtime_ut")):
+        print("[ERROR] : Building testcase failed! Test object has not generated!")
+        sys.exit(-1)
+    os.system("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./gtest/lib/ && ./ut/model_manager/direct_model_runtime/direct_model_runtime_ut")
+
+    if not os.path.exists(os.path.join(testBuild, "ut", "model_manager", "model_manager_v2", "model_manager_v2_ut")):
+        print("[ERROR] : Building testcase failed! Test object has not generated!")
+        sys.exit(-1)
+    os.system("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./gtest/lib/ && ./ut/model_manager/model_manager_v2/model_manager_v2_ut")
+
+    os.chdir(os.path.join(os.getcwd(), "../.."))
+
 if __name__ == '__main__':
+    run_test = CheckArgv(sys.argv)
+
     # 读取编译配置
     config_dict = read_config()
     if not is_config_valid(config_dict):
@@ -263,7 +336,15 @@ if __name__ == '__main__':
 
     # 编译
     buildtools_config = get_buildtools_config(config_dict)
+
+    # 添加环境变量
+    set_environ(buildtools_config)
+
     build(buildtools_config)
+
+    # build test
+    if run_test:
+        RunTest()
 
     # 打包
     package_ddk()
