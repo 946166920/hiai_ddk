@@ -36,10 +36,7 @@ class BuiltModelUt : public testing::Test {
 public:
     void SetUp()
     {
-        int32_t ret = mkdir("../out", S_IRUSR | S_IWUSR | S_IXUSR); // 700
-        if (ret != 0 && errno != EEXIST) {
-            return ret;
-        }
+        mkdir("../out", S_IRUSR | S_IWUSR | S_IXUSR); // 700
         builtModel_ = CreateBuiltModel();
     }
 
@@ -193,7 +190,7 @@ void CreateV2AippModelFile(const char* file)
  */
 TEST_F(BuiltModelUt, Built_Model_restore_006)
 {
-    const char* file = "out/v2AippMode.om";
+    const char* file = "../out/v2AippMode.om";
     CreateV2AippModelFile(file);
 
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));

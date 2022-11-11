@@ -27,10 +27,7 @@ class CreateMemBuffer : public testing::Test {
 public:
     void SetUp()
     {
-        int32_t ret = mkdir("../out", S_IRUSR | S_IWUSR | S_IXUSR); // 700
-        if (ret != 0 && errno != EEXIST) {
-            return ret;
-        }
+        mkdir("../out", S_IRUSR | S_IWUSR | S_IXUSR); // 700
     }
 
     void TearDown()
