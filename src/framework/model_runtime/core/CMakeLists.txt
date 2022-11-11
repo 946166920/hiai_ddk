@@ -16,8 +16,8 @@ hi_cc_library_static(
 
     hiai_model_manager_aipp.c
     hiai_built_model_aipp.c
-  CDEFS
-    AI_SW_SPEC_MODEL_RUNTIME_LIST=\"${AI_SW_SPEC_MODEL_RUNTIME_LIST}\"
+
+    model_runtime_register.cpp
 )
 
 # hi_cc_function(AI_SUPPORT_AIPP_API
@@ -28,12 +28,12 @@ hi_cc_library_static(
 #     hiai_built_model_aipp.c
 # )
 
-hi_cc_function(AI_SUPPORT_STATIC_LOAD_RUNTIME
-  NAME
-    ai::fmk::model_runtime::core_static
-  SRCS
-    model_runtime_register.cpp
-)
+# hi_cc_function(AI_SUPPORT_STATIC_LOAD_RUNTIME
+#   NAME
+#     ai::fmk::model_runtime::core_static
+#   SRCS
+#     model_runtime_register.cpp
+# )
 
 hi_cc_library_static(
   NAME

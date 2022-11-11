@@ -39,6 +39,7 @@ hi_cc_library_static(
     ${goolge_protobuf_lite_src_dir}/generated_enum_util.cc
     ${goolge_protobuf_lite_src_dir}/io/strtod.cc
     ${goolge_protobuf_lite_src_dir}/io/zero_copy_stream_impl.cc
+    
     ${goolge_protobuf_lite_src_dir}/map_field.cc
   CDEFS
     HAVE_PTHREAD

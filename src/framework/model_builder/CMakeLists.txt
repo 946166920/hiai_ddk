@@ -6,16 +6,17 @@ hi_cc_library_static(
     ai::fmk::model_builder_static
   SRCS
     om/*.cpp
+    compatible/BuildOptionUtil.cpp
   CDEFS
     HIAI_MB_API_VISIABLE
 )
 
-hi_cc_function(AI_SUPPORT_MODEL_BUILDER_COMPATIBLE
-  NAME
-    ai::fmk::model_builder_static
-  SRCS
-    compatible/BuildOptionUtil.cpp
-)
+# hi_cc_function(AI_SUPPORT_MODEL_BUILDER_COMPATIBLE
+#   NAME
+#     ai::fmk::model_builder_static
+#   SRCS
+#     compatible/BuildOptionUtil.cpp
+# )
 
 hi_cc_library_static(
   NAME
@@ -24,8 +25,7 @@ hi_cc_library_static(
     compatible/BuildOptionUtil.cpp
 )
 
-# ### define ddk libhiai_ir_build ###
-
+### define ddk libhiai_ir_build ###
 hi_cc_library_shared(
   NAME
     ai::fmk::hiai_ir_build_shared
@@ -37,6 +37,8 @@ hi_cc_library_shared(
   CDEFS
     AI_SUPPORT_AIPP_API
     HIAI_MB_API_VISIABLE
+    AI_SUPPORT_UPGRADE_APK
+    AI_SUPPORT_GRAPH_API
 )
 
 hi_target_output_name(ai::fmk::hiai_ir_build_shared hiai_ir_build)
@@ -49,6 +51,8 @@ hi_cc_library_shared(
   WHOLE_STATIC_LIBS
     ai::fmk::hiai_ir_shared
     ai::fmk::model_builder::ir::aipp_static
+  CDEFS
+    AI_SUPPORT_UPGRADE_APK
 )
 
 hi_target_output_name(ai::fmk::hiai_ir_build_aipp_shared hiai_ir_build_aipp)

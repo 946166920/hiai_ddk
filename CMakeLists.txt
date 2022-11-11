@@ -24,14 +24,24 @@ set(HI_SYSTEM_NAME "HI_ANDROID_NDK")
 ### feature switch
 hi_cc_feature_option(AI_USE_LOG_STATIC ON)
 hi_cc_feature_option(AI_USE_LOG_SHARED OFF)
+
+hi_cc_feature_option(HIAI_DDK ON)
+hi_cc_feature_option(AI_SUPPORT_STATIC_LOAD_RUNTIME ON)
 hi_cc_feature_option(AI_SUPPORT_AIPP_API ON)
+hi_cc_feature_option(AI_SUPPORT_MODEL_BUILDER_COMPATIBLE ON)
 hi_cc_feature_option(AI_SUPPORT_BUILT_MODEL_SAVE ON)
+hi_cc_feature_option(AI_SUPPORT_AIPP_COMPATIBLE ON)
+hi_cc_feature_option(AI_SUPPORT_GRAPH_API ON)
+hi_cc_feature_option(AI_SUPPORT_PLUGIN_COMPATIBLE ON)
 hi_cc_feature_option(AI_SUPPORT_LEGACY_APP_COMPATIBLE ON)
+hi_cc_feature_option(AI_SUPPORT_LEGACY_ROM_COMPATIBLE ON)
 hi_cc_feature_option(AI_SUPPORT_PREFMODE_EXTEND OFF)
 hi_cc_feature_option(AI_SUPPORT_PRIORITY_EXTEND ON)
 hi_cc_feature_option(AI_SUPPORT_LOG_LEVEL_SETTING OFF)
 hi_cc_feature_option(AI_SUPPORT_CL_CUSTOMIZATION OFF)
-hi_cc_feature_option(HIAI_DDK ON)
+hi_cc_feature_option(AI_SUPPORT_UPGRADE_APK ON)
+
+hi_cc_feature_option(AI_SUPPORT_TEST OFF)
 
 hi_cc_default(
   NAME

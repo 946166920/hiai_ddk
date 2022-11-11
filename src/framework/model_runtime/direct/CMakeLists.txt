@@ -11,11 +11,13 @@ hi_cc_library_static(
     direct_model_util.cpp
     direct_model_manager.cpp
     direct_model_manager_impl.cpp
-)
 
-hi_cc_function(AI_SUPPORT_AIPP_API
-  NAME
-    ai::fmk::model_runtime::direct_static
-  SRCS
     direct_built_model_aipp.cpp
 )
+
+# hi_cc_function(AI_SUPPORT_AIPP_API
+#   NAME
+#     ai::fmk::model_runtime::direct_static
+#   SRCS
+#     direct_built_model_aipp.cpp
+# )

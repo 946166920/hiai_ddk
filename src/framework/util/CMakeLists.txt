@@ -30,6 +30,7 @@ hi_cc_library_static(
   CDEFS
     HIAI_UTIL_API_VISIABLE
 )
+
 hi_cc_library_static(
   NAME
     ai::fmk::common::file_util_static
