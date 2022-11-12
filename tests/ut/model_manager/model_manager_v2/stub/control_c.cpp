@@ -111,7 +111,7 @@ bool ControlC::CheckBuildOptions(const HIAI_ModelBuildOptions* options)
         FMK_LOGE("ERROR");
         return false;
     }
-    if (expectBuildOptions_.dynamicShapeConfig.cacheMode != dynamicCacheMode) {
+    if (expectBuildOptions_.dynamicShapeConfig.cacheMode != (hiai::CacheMode)dynamicCacheMode) {
         FMK_LOGE("ERROR");
         return false;
     }
@@ -157,7 +157,7 @@ void ControlC::SetInitOptions(ModelInitOptions& initOptions)
 bool ControlC::CheckInitOptions(const HIAI_ModelInitOptions* options)
 {
     expectBuildOptions_ = expectInitOptions_.buildOptions;
-    return CheckBuildOptions(HIAI_ModelInitOptions_GetBuildOptions(options));
+    return CheckBuildOptions(HIAI_ModelInitOptions_GetBuildOptions(const_cast<HIAI_ModelInitOptions *>(options)));
 }
 
 void ControlC::ChangeNowTimes()

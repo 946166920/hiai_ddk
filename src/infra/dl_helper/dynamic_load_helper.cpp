@@ -29,7 +29,7 @@ DynamicLoadHelper::DynamicLoadHelper() : handle_(nullptr)
 {
 }
 
-DynamicLoadHelper::~DynamicLoadHelper() //lint !e1540
+DynamicLoadHelper::~DynamicLoadHelper()
 {
     Deinit();
 }
@@ -82,7 +82,7 @@ void DynamicLoadHelper::Deinit()
     handle_ = nullptr;
 }
 
-bool DynamicLoadHelper::IsValid() //lint !e1762
+bool DynamicLoadHelper::IsValid()
 {
     return handle_ != nullptr;
 }

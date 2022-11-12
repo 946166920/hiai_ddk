@@ -160,7 +160,6 @@ public:
     // get dst in data anchor(one or more)
     Vistor<InDataAnchorPtr> GetPeerInDataAnchors() const;
 
-    /*lint -e148*/
     // build connection from OutDataAnchor to InDataAnchor
     GraphErrCodeStatus LinkTo(InDataAnchorPtr dest);
 

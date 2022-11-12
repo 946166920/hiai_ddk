@@ -22,7 +22,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-namespace hiai { //lint !e450
+namespace hiai {
 HIAI_Status HIAI_DIRECT_ModelManager_runAippModelV2(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[],
     int32_t inputNum, HIAI_TensorAippPara* aippPara[], int32_t aippParaNum, HIAI_NDTensorBuffer* output[],
     int32_t outputNum, int32_t timeoutInMS, void* userData);

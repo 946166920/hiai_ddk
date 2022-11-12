@@ -32,7 +32,6 @@
 #include "framework/graph/core/op/op_desc.h"
 #include "framework/graph/core/edge/anchor_fwd.h"
 #include "framework/graph/utils/range_vistor.h"
-/*lint -e553*/
 
 namespace ge {
 using KFusionDataFlowVec = std::vector<std::multimap<std::string, ge::AnchorPtr>>;
@@ -40,8 +39,6 @@ using KFusionDataFlowVec = std::vector<std::multimap<std::string, ge::AnchorPtr>
  * LegacyNode is a component of ComputeGraph
  *
  */
-/*lint -e148*/
-/*lint -e1509*/
 
 class NodeSpec;
 class NodeStore;
@@ -146,7 +143,6 @@ private:
     USE_ROLE(NodeSpec);
     USE_ROLE(NodeSubGraph);
 };
-/*lint +e148*/
 } // namespace ge
 
 #endif // FRAMEWORK_GRAPH_CORE_NODE_LEGACY_NODE_H

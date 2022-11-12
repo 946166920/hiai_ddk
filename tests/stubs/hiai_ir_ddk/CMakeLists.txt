@@ -145,7 +145,7 @@ set(LOCAL_SRC_FILES
 
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--gc-sections")
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -pthread -fPIC -frtti -Os -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-exceptions -fomit-frame-pointer -fno-unwind-tables -DHIAI_DDK -DHIAI_DDK_BUILD -DMNN_USE_NEON -D_FORTIFY_SOURCE=2 -DHAVE_PTHREAD -DGOOGLE_PROTOBUF_NO_RTTI -DPROTOBUF_INLINE_NOT_IN_HEADERS=0 -DHOST_VISIBILITY -DGRAPH_API_VISIABLE -DFMK_FEATURE_DYNAMIC_SHAPE")
+set(CMAKE_CXX_FLAGS "-std=c++11 -pthread -fPIC -frtti -Os -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-exceptions -fomit-frame-pointer -fno-unwind-tables -Wno-attributes -DHIAI_DDK -DHIAI_DDK_BUILD -DMNN_USE_NEON -D_FORTIFY_SOURCE=2 -DHAVE_PTHREAD -DGOOGLE_PROTOBUF_NO_RTTI -DPROTOBUF_INLINE_NOT_IN_HEADERS=0 -DHOST_VISIBILITY -DGRAPH_API_VISIABLE -DFMK_FEATURE_DYNAMIC_SHAPE")
 
 set(CMAKE_C_FLAGS "-DAI_SUPPORT_UPGRADE_APK -DSUPPORT_HCL -DAIPP_ENABLE -DAI_SUPPORT_AIPP_API")
 

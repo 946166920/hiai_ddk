@@ -23,7 +23,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-namespace hiai { // lint !e450
+namespace hiai {
 HIAI_Status HIAI_DIRECT_BuiltModel_SaveToExternalBuffer(
     const HIAI_BuiltModel* model, void* data, size_t size, size_t* realSize);
 HIAI_Status HIAI_DIRECT_BuiltModel_Save(const HIAI_BuiltModel* model, void** data, size_t* size);

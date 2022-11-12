@@ -38,9 +38,9 @@ add_compile_options("--coverage")
 set(CMAKE_EXE_LINKER_FLAGS_INIT "${CMAKE_EXE_LINKER_FLAGS_INIT} -Wall -fprofile-arcs -ftest-coverage")
 
 
-set(CMAKE_C_FLAGS "-std=c99 -fexceptions -g -fprofile-arcs -ftest-coverage -DAI_SUPPORT_AIPP_API -DAI_SUPPORT_GRAPH_API -DAI_SUPPORT_BUILT_MODEL_SAVE -DAI_SUPPORT_SPECIAL_3RD_MODEL -DAI_SUPPORT_CL_CUSTOMIZATION -DHIAI_UTIL_API_EXPORT -D_Float16=uint16_t")
+set(CMAKE_C_FLAGS "-std=c99 -fexceptions -g -fprofile-arcs -ftest-coverage -DAI_SUPPORT_AIPP_API -DAI_SUPPORT_GRAPH_API -DAI_SUPPORT_BUILT_MODEL_SAVE -DAI_SUPPORT_SPECIAL_3RD_MODEL -DAI_SUPPORT_CL_CUSTOMIZATION -D_Float16=uint16_t")
 
-set(COVERAGE_COMPILER_FLAGS "-std=c++11 -pthread -Os -fPIC -fpermissive -frtti -fexceptions -ffunction-sections -fno-asynchronous-unwind-tables -fomit-frame-pointer -fno-unwind-tables -fno-access-control -DHIAI_DDK -D_FORTIFY_SOURCE=2 -DHAVE_PTHREAD -DHOST_VISIBILITY -DAI_SUPPORT_AIPP_API -fdata-sections -DFMK_FEATURE_DYNAMIC_SHAPE -DAI_SUPPORT_GRAPH_API -DAI_SUPPORT_BUILT_MODEL_SAVE -DAI_SUPPORT_SPECIAL_3RD_MODEL -DAI_SUPPORT_CL_CUSTOMIZATION -DHIAI_UTIL_API_EXPORT -D_Float16=uint16_t")
+set(COVERAGE_COMPILER_FLAGS "-std=c++11 -pthread -Os -fPIC -frtti -fexceptions -ffunction-sections -fno-asynchronous-unwind-tables -fomit-frame-pointer -fno-unwind-tables -fno-access-control -DHIAI_DDK -D_FORTIFY_SOURCE=2 -DHAVE_PTHREAD -DHOST_VISIBILITY -DAI_SUPPORT_AIPP_API -fdata-sections -DFMK_FEATURE_DYNAMIC_SHAPE -DAI_SUPPORT_GRAPH_API -DAI_SUPPORT_BUILT_MODEL_SAVE -DAI_SUPPORT_SPECIAL_3RD_MODEL -DAI_SUPPORT_CL_CUSTOMIZATION -D_Float16=uint16_t")
 set(CMAKE_CXX_FLAGS "${COVERAGE_COMPILER_FLAGS}")
 
 include_directories(model_manager_v2_ut
@@ -50,6 +50,7 @@ include_directories(model_manager_v2_ut
     ${TOP_DIR}/api/framework
     ${TOP_DIR}/inc
     ${TOP_DIR}/inc/framework
+    ${TOP_DIR}/inc/framework/c
     ${TOP_DIR}/inc/framework/c/compatible
     ${TOP_DIR}/inc/infra
     ${TOP_DIR}/src

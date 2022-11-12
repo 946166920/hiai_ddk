@@ -131,7 +131,7 @@ bool create(void* libHandle, HIAI_MemBuffer*& omModelBuffer)
 }; // namespace
 
 GRAPH_API_EXPORT bool HiaiIrBuild::CreateModelBuff(ge::Model& irModel,
-    ModelBufferData& output) //lint !e1762
+    ModelBufferData& output)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
     const uint32_t defaultSize = 200; // default size 200M
@@ -141,7 +141,7 @@ GRAPH_API_EXPORT bool HiaiIrBuild::CreateModelBuff(ge::Model& irModel,
 }
 
 GRAPH_API_EXPORT bool HiaiIrBuild::CreateModelBuff(
-    ge::Model& irModel, ModelBufferData& output, uint32_t customSize) //lint !e1762
+    ge::Model& irModel, ModelBufferData& output, uint32_t customSize)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
 

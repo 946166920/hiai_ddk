@@ -41,12 +41,12 @@ public:
     GRAPH_API_EXPORT static GraphErrCodeStatus AddEdge(
         OutDataAnchorPtr src, Format srcFormat, InDataAnchorPtr dst, Format dstFormat);
 
-    GRAPH_API_EXPORT static GraphErrCodeStatus AddEdge(OutControlAnchorPtr src, InControlAnchorPtr dst); //lint !e148
+    GRAPH_API_EXPORT static GraphErrCodeStatus AddEdge(OutControlAnchorPtr src, InControlAnchorPtr dst);
 
     // check whether src is link to dst and then remove
     GRAPH_API_EXPORT static GraphErrCodeStatus RemoveEdge(OutDataAnchorPtr src, InDataAnchorPtr dst);
 
-    GRAPH_API_EXPORT static GraphErrCodeStatus RemoveEdge(OutControlAnchorPtr src, InControlAnchorPtr dst); //lint !e148
+    GRAPH_API_EXPORT static GraphErrCodeStatus RemoveEdge(OutControlAnchorPtr src, InControlAnchorPtr dst);
 
     GRAPH_API_EXPORT static GraphErrCodeStatus InsertNodeBetweenDataAnchors(
         OutDataAnchorPtr src, InDataAnchorPtr dst, NodePtr newNode);
@@ -61,7 +61,7 @@ public:
     GRAPH_API_EXPORT static void RecordOriginalNames(std::vector<ge::NodePtr> originalNodes, ge::NodePtr node);
     static void RecordOriginalNames(const std::vector<ge::NodePtr>& sharedOriginalNodes, const ge::Node& node);
 
-    GRAPH_API_EXPORT static void RecordOriginalNames(std::vector<std::string> namesTmp, ge::NodePtr node); //lint !e148
+    GRAPH_API_EXPORT static void RecordOriginalNames(std::vector<std::string> namesTmp, ge::NodePtr node);
 
     static ComputeGraphPtr CreateGraphFromOperator(const string& name, const std::vector<Operator>& inputs);
 

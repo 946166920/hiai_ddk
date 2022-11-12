@@ -124,22 +124,6 @@ public:
         return client->Process(context, inputTensor, outputTensor, info.timeout, taskId);
     }
 
-    AIStatus ProcessV1WithAippTensor(ProcessInfo info)
-    {
-        // vector<TensorDimension> inputDimensions;
-        // vector<TensorDimension> outputDimensions;
-        // client->GetModelIOTensorDim(info.modelName, inputDimensions, outputDimensions);
-
-        // vector<shared_ptr<AiTensor>> inputTensor;
-        // vector<shared_ptr<AiTensor>> outputTensor;
-        // CreateAippTensorV1(inputDimensions, inputTensor);
-        // CreateAippTensorV1(outputDimensions, outputTensor);
-        // AiContext context;
-        // context.SetPara("model_name", info.modelName);
-        // int taskId = 0;
-        // return client->Process(context, inputTensor, outputTensor, info.timeout, taskId);
-    }
-
     shared_ptr<AiModelMngerClient> client{nullptr};
     StubLoadModels stubLoadModels;
 };
@@ -164,9 +148,6 @@ TEST_F(ProcessModel, model_manager_process_001)
 
     AIStatus ret = ProcessV1WithNNTensor(info);
     EXPECT_EQ(AI_SUCCESS, ret);
-
-    ret = ProcessV1WithAippTensor(info);
-    EXPECT_EQ(AI_SUCCESS, ret);
 }
 
 /*
@@ -186,8 +167,6 @@ TEST_F(ProcessModel, model_manager_process_002)
         .timeout = 0,
     };
     AIStatus ret = ProcessV1WithNNTensor(info);
-    EXPECT_EQ(AI_SUCCESS, ret);
-    ret = ProcessV1WithAippTensor(info);
     EXPECT_EQ(AI_SUCCESS, ret);
 }
 

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/*lint -e* */
 #ifndef DOMI_COMMON_FMK_ERROR_CODES_H_
 #define DOMI_COMMON_FMK_ERROR_CODES_H_
 

@@ -80,7 +80,6 @@ using namespace hiai;
 #endif
 
 #ifdef ARM_NEON
-/*lint -e607*/
 #define TransTensorHalfToFloat16_neon(inPtr, outPtr) \
     do { \
         __asm__ __volatile( \
@@ -105,7 +104,6 @@ using namespace hiai;
             : [inPtr] "r"(inPtr) \
             : "x2", "x3", "x4", "x5", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v18", "s17", "cc"); \
     } while (0)
-/*lint +e607*/
 
 #define TransTensorHalfToFloat3_neon(inPtr, outPtr) \
     do { \
@@ -275,8 +273,8 @@ static Status DescNd2NHWC(ccTensor_t& tensorDesc)
         tensorDesc.stride[i] = 0;
     }
     for (int32_t i = startTemp; i < CC_4D_FORMAT_DIMCNT; i++) {
-        tensorDesc.dim[i] = dimTemp[i - startTemp]; /*lint !679*/
-        tensorDesc.stride[i] = strideTemp[i - startTemp]; /*lint !679*/
+        tensorDesc.dim[i] = dimTemp[i - startTemp];
+        tensorDesc.stride[i] = strideTemp[i - startTemp];
     }
     tensorDesc.format = FORMAT_NHWC;
     tensorDesc.dimCnt = CC_4D_FORMAT_DIMCNT;
@@ -398,7 +396,6 @@ static Status CheckTensorOverFlow(const ccTensor_t& tensorDesc)
 }
 
 #ifdef ARM_NEON
-/*lint -e607*/
 #define TransTensorNHWCToHC1HWC0_C3_neon(inPtr, outPtr) \
     do { \
         __asm__ __volatile("mov x2, %[inPtr]\n" \
@@ -478,7 +475,6 @@ static Status CheckTensorOverFlow(const ccTensor_t& tensorDesc)
                            : "x2", "x3", "x4", "x5", "v9", "v13", "v14", "v18", "s17", "cc"); \
     } while (0);
 
-/*lint +e607*/
 static Status TransTensorNHWCToNC1HWC0_C3_neon(const ccTensor_t& xDesc, const void* x, const ccTensor_t& yDesc, void* y)
 {
     (void)(yDesc);
@@ -1016,14 +1012,10 @@ static Status SetTensorNdDescriptor(ccTensor_t& tensorDesc, DataType_t dataType,
     // the stride of the last dimension is 1
     tensorDesc.stride[dimCnt - 1] = 1;
     for (int32_t i = tensorDesc.dimCnt - 2; i >= 0; --i) {
-        /*lint -e571*/
-        /*lint -e679*/
         FMK_INT32_MULCHECK(
             tensorDesc.dim[static_cast<uint64_t>(i) + 1], tensorDesc.stride[static_cast<uint64_t>(i) + 1]);
         tensorDesc.stride[i] = static_cast<int32_t>(static_cast<uint64_t>(tensorDesc.dim[i + 1]) *
             static_cast<uint64_t>((tensorDesc.stride[static_cast<uint64_t>(i) + 1])));
-        /*lint +e679*/
-        /*lint +e571*/
     }
     return SUCCESS;
 };

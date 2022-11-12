@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-namespace hiai { //lint !e450
+namespace hiai {
 HIAI_Status HIAI_DIRECT_BuiltModel_GetTensorAippInfo(
     const HIAI_BuiltModel* model, int32_t index, uint32_t* aippParaNum, uint32_t* batchCount);
 

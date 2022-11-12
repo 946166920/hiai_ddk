@@ -23,7 +23,6 @@ include(CMakeDependentOption)
 include(GNUInstallDirs)
 
 set(CMAKE_CXX_STANDARD 11)
-add_definitions(-std=c++11)
 add_definitions(-fPIC -pthread -DHAVE_PTHREAD -D_FORTIFY_SOURCE=2 -ffunction-sections -fdata-sections -Os)
 add_definitions(-DHIAI_IR_ONLINE_BUILD -DBUILDING_WITH_GTEST)
 add_definitions(-DENABLE_MIX_COMPILE)

@@ -89,7 +89,7 @@ private:
     std::size_t ExpectNodeInDegree(const Node& node) const
     {
         const NodeSpec& spec = node.ROLE(NodeSpec);
-        return spec.InCtrlEdgeSize() + static_cast<std::size_t>(spec.OpDesc().GetInputsDescSize()); //lint !e571
+        return spec.InCtrlEdgeSize() + static_cast<std::size_t>(spec.OpDesc().GetInputsDescSize());
     }
 
     std::size_t ActualNodeInDegree(const Node& node) const

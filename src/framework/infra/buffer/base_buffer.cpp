@@ -27,7 +27,7 @@ BaseBuffer::BaseBuffer(const BaseBuffer& other)
 {
     if (!other.isOwner_) {
         isOwner_ = other.isOwner_;
-        data_ = other.data_; //lint !e1554
+        data_ = other.data_;
         size_ = other.size_;
     } else {
         isOwner_ = false;
@@ -41,7 +41,7 @@ BaseBuffer::BaseBuffer(uint8_t* data, size_t size, bool shouldOwn) : isOwner_(sh
 {
 }
 
-BaseBuffer::~BaseBuffer() //lint !e1540
+BaseBuffer::~BaseBuffer()
 {
     Clear();
 }
@@ -112,7 +112,7 @@ const uint8_t* BaseBuffer::GetData() const
 
 uint8_t* BaseBuffer::MutableData()
 {
-    return data_; //lint !e1536
+    return data_;
 }
 
 size_t BaseBuffer::GetSize() const

@@ -77,7 +77,6 @@ struct Maybe {
         Clear();
     }
 
-    /*lint -e1529*/
     Maybe& operator=(const Maybe<T>& other) noexcept
     {
         if (other) {
@@ -97,9 +96,7 @@ struct Maybe {
         }
         return *this;
     }
-    /*lint +e1529*/
 
-    /*lint -e1520*/
     Maybe& operator=(const T& other) noexcept
     {
         if (exist_) {
@@ -119,7 +116,6 @@ struct Maybe {
         }
         return *this;
     }
-    /*lint +e1520*/
 
     template <typename... Args>
     void Emplace(Args&&... args) noexcept

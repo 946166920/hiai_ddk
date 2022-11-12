@@ -1052,7 +1052,7 @@ TEST_F(CreateAiTensorUTest, InitAiTensor_nhwc_imageformat_fail_003)
     hiai::AiTensorImage_Format imageFormat;
     printf("---InitAiTensor_nhwc_imageformat_fail_003 start----\n");
     imageFormat = hiai::AiTensorImage_Format(hiai::AiTensorImage_YUV420SP_U8);
-    status = aiTensor->Init(1, 1, INT32_MAX + 1, imageFormat);
+    status = aiTensor->Init(1, 1, (uint32_t)(INT32_MAX) + 1, imageFormat);
     EXPECT_TRUE(status == AI_FAILED);
 }
 

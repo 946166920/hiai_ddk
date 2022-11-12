@@ -100,7 +100,7 @@ uint8_t* TensorUtils::GetWeightAddr(const Tensor& tensor, uint8_t* base)
     return base + weightDataOffset;
 }
 
-void TensorUtils::SetWeightSize(TensorDesc& tensorDesc, uint32_t size) //lint !e1764
+void TensorUtils::SetWeightSize(TensorDesc& tensorDesc, uint32_t size)
 {
     auto tensorDescriptorMsg = tensorDesc.tensorDescDef_;
     if (tensorDescriptorMsg != nullptr) {
@@ -142,7 +142,7 @@ GraphErrCodeStatus TensorUtils::GetOutputTensor(const TensorDescPtr& tensorDescP
     return GetOutputTensor(*tensorDescPtr, flag);
 }
 
-void TensorUtils::SetOutputTensor(TensorDesc& tensorDesc, bool flag) //lint !e1764
+void TensorUtils::SetOutputTensor(TensorDesc& tensorDesc, bool flag)
 {
     auto tensorDescriptorMsg = tensorDesc.tensorDescDef_;
     if (tensorDescriptorMsg != nullptr) {
@@ -169,7 +169,7 @@ GraphErrCodeStatus TensorUtils::GetDeviceType(const TensorDesc& tensorDesc, Devi
     return GRAPH_SUCCESS;
 }
 
-void TensorUtils::SetDeviceType(TensorDesc& tensorDesc, DeviceType type) //lint !e1764
+void TensorUtils::SetDeviceType(TensorDesc& tensorDesc, DeviceType type)
 {
     auto typeStr = deviceToStrMap[type];
     auto tensorDescriptorMsg = tensorDesc.tensorDescDef_;
@@ -187,7 +187,7 @@ GraphErrCodeStatus TensorUtils::GetInputTensor(const TensorDesc& tensorDesc, boo
     return GRAPH_SUCCESS;
 }
 
-void TensorUtils::SetInputTensor(TensorDesc& tensorDesc, bool flag) //lint !e1764
+void TensorUtils::SetInputTensor(TensorDesc& tensorDesc, bool flag)
 {
     auto tensorDescriptorMsg = tensorDesc.tensorDescDef_;
     if (tensorDescriptorMsg != nullptr) {
@@ -212,7 +212,7 @@ GraphErrCodeStatus TensorUtils::GetRealDimCnt(const TensorDescPtr& tensorDesc, u
     return GetRealDimCnt(*tensorDesc, cnt);
 }
 
-void TensorUtils::SetRealDimCnt(TensorDesc& tensorDesc, uint32_t cnt) //lint !e1764
+void TensorUtils::SetRealDimCnt(TensorDesc& tensorDesc, uint32_t cnt)
 {
     auto tensorDescriptorMsg = tensorDesc.tensorDescDef_;
     if (tensorDescriptorMsg != nullptr) {
@@ -229,7 +229,7 @@ GraphErrCodeStatus TensorUtils::GetReuseInputIndex(const TensorDesc& tensorDesc,
     return GRAPH_SUCCESS;
 }
 
-void TensorUtils::SetReuseInputIndex(TensorDesc& tensorDesc, uint32_t idx) //lint !e1764
+void TensorUtils::SetReuseInputIndex(TensorDesc& tensorDesc, uint32_t idx)
 {
     auto tensorDescriptorMsg = tensorDesc.tensorDescDef_;
     if (tensorDescriptorMsg != nullptr) {
@@ -246,7 +246,7 @@ GraphErrCodeStatus TensorUtils::GetDataOffset(const TensorDesc& tensorDesc, int6
     return GRAPH_SUCCESS;
 }
 
-void TensorUtils::SetDataOffset(TensorDesc& tensorDesc, int64_t offset) //lint !e1764
+void TensorUtils::SetDataOffset(TensorDesc& tensorDesc, int64_t offset)
 {
     auto tensorDescriptorMsg = tensorDesc.tensorDescDef_;
     if (tensorDescriptorMsg != nullptr) {

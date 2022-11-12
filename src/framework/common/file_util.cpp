@@ -129,7 +129,7 @@ FMK_FUNC_HOST_VISIBILITY FMK_FUNC_DEV_VISIBILITY string RealPath(const char* pat
     HIAI_EXPECT_NOT_NULL_R(path, "");
     HIAI_EXPECT_TRUE_R((strlen(path) < PATH_MAX), "");
     // PATH_MAX使系统自带的宏，表示支持的最大文件路径长度
-    char* resolvedPath = new (std::nothrow) char[PATH_MAX] {0}; // pclint检查，单个变量栈内存不能超过1K
+    char* resolvedPath = new (std::nothrow) char[PATH_MAX] {0};
     HIAI_EXPECT_NOT_NULL_R(resolvedPath, "");
 
     string res = "";
@@ -253,9 +253,9 @@ FMK_FUNC_HOST_VISIBILITY bool ValidateStr(const std::string& filePath, const std
     bool res = regex_match(filePath, match, reg);
 
 #ifdef _MSC_VER
-    res = !regex_search(filePath, regex("[`!@#$%^&*()|{}';',\\[\\]<>?]")); // lint !e27
+    res = !regex_search(filePath, regex("[`!@#$%^&*()|{}';',\\[\\]<>?]"));
 #else
-    res = !regex_search(filePath, regex("[`!@#$%^&*()|{}':;',\\[\\]<>?]")); // lint !e27
+    res = !regex_search(filePath, regex("[`!@#$%^&*()|{}':;',\\[\\]<>?]"));
 #endif
 
     return res && (filePath.size() == match.str().size());
