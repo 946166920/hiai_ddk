@@ -19,9 +19,6 @@
 
 #include <cstdlib>
 #include <cstdint>
-/*lint -e1536*/
-/*lint -e1539*/
-/*lint -e1555*/
 namespace ge {
 class BaseBuffer {
 public:

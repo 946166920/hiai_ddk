@@ -66,12 +66,12 @@ inline std::string Context::GetValue(const std::string& key) const
     return it != paras_.end() ? it->second : "";
 }
 
-inline void Context::SetValue(const std::string& key, const std::string& value) // lint !e1762
+inline void Context::SetValue(const std::string& key, const std::string& value)
 {
     paras_[key] = value;
 }
 
-inline void Context::RemoveValue(const std::string& key) // lint !e1762
+inline void Context::RemoveValue(const std::string& key)
 {
     paras_.erase(key);
 }

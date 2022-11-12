@@ -25,7 +25,6 @@
 #include "graph/attributes_holder.h"
 #include "graph/debug/ge_error_codes.h"
 #include "framework/graph/debug/ge_util.h"
-/*lint -e553*/
 
 #define DYNAMIN_INPUT_NAME(name, index) (((name)) + std::to_string((index)))
 #define DYNAMIN_OUTPUT_NAME(name, index) (((name)) + std::to_string((index)))

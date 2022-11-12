@@ -10,7 +10,7 @@ set(MOCKCPP_DIR ${THIRD_PARTY_PATH}/mockcpp-2.7)
 ExternalProject_Add(mockcpp_build
                     SOURCE_DIR ${MOCKCPP_DIR}
                     CONFIGURE_COMMAND ${CMAKE_COMMAND} -DCMAKE_CXX_FLAGS=${mockcpp_CXXFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/mockcpp <SOURCE_DIR>
-                    -DBUILD_TESTING=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_SHARED_LIBS=ON
+                    -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_SHARED_LIBS=ON
                     BUILD_COMMAND $(MAKE)
                     INSTALL_COMMAND $(MAKE) install
                     EXCLUDE_FROM_ALL TRUE

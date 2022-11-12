@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-namespace hiai { //lint !e450
+namespace hiai {
 HIAI_ModelManager* HIAI_DIRECT_ModelManager_Create();
 void HIAI_DIRECT_ModelManager_Destroy(HIAI_ModelManager** manager);
 

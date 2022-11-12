@@ -40,10 +40,9 @@ static void* LoadLibrary()
 {
     void* handle = dlopen(LIB_FILE, RTLD_NOW);
     if (handle == nullptr) {
-        FMK_LOGE("dlopen failed: %s, try open:%s.", dlerror(), OLD_LIB_FILE);
         handle = dlopen(OLD_LIB_FILE, RTLD_NOW);
         if (handle == nullptr) {
-            FMK_LOGE("dlopen: %s failed.", OLD_LIB_FILE);
+            return nullptr;
         }
     }
     return handle;
@@ -72,7 +71,7 @@ static void* GetSymbol(const char* name)
 
 #define LOAD_FUNCTION(func)                                                                                            \
     const char* functionName = #func;                                                                                  \
-    std::function<decltype(func)> functionObject = reinterpret_cast<decltype(func)*>(GetSymbol(#func)); /*lint !e611*/ \
+    std::function<decltype(func)> functionObject = reinterpret_cast<decltype(func)*>(GetSymbol(#func)); \
     FMK_LOGI("try calling %s", #func)
 
 #define CHECK_FUNCTION_HAS_RETVAL()                                                                                    \
@@ -85,14 +84,14 @@ static void* GetSymbol(const char* name)
 
 AI_OM_Config* AI_OM_Config_Create()
 {
-    LOAD_FUNCTION(AI_OM_Config_Create); // lint !e611
+    LOAD_FUNCTION(AI_OM_Config_Create); //
     CHECK_FUNCTION_HAS_RETVAL();
     return CALL_FUNCTION();
 }
 
 void AI_OM_Config_Destroy(AI_OM_Config* config)
 {
-    LOAD_FUNCTION(AI_OM_Config_Destroy); // lint !e611
+    LOAD_FUNCTION(AI_OM_Config_Destroy); //
     if (!functionObject || GetHandle() == nullptr) {
         FMK_LOGE("dlsym(%s) failed: %s", functionName, dlerror());
         return;
@@ -102,49 +101,49 @@ void AI_OM_Config_Destroy(AI_OM_Config* config)
 
 bool AI_OM_Config_Set(AI_OM_Config* config, const char* name, const char* value)
 {
-    LOAD_FUNCTION(AI_OM_Config_Set); // lint !e611
+    LOAD_FUNCTION(AI_OM_Config_Set); //
     CHECK_FUNCTION_HAS_RETVAL();
     return CALL_FUNCTION(config, name, value);
 }
 
 const char* AI_OM_Config_Get(AI_OM_Config* config, const char* name)
 {
-    LOAD_FUNCTION(AI_OM_Config_Get); // lint !e611
+    LOAD_FUNCTION(AI_OM_Config_Get); //
     CHECK_FUNCTION_HAS_RETVAL();
     return CALL_FUNCTION(config, name);
 }
 
 size_t AI_OM_Config_ForEach(AI_OM_Config* config, AI_OM_Config_Visitor visitor, void* userData)
 {
-    LOAD_FUNCTION(AI_OM_Config_ForEach); // lint !e611
+    LOAD_FUNCTION(AI_OM_Config_ForEach); //
     CHECK_FUNCTION_HAS_RETVAL();
     return CALL_FUNCTION(config, visitor, userData);
 }
 
 char* AI_OM_Config_BuildString(AI_OM_Config* config)
 {
-    LOAD_FUNCTION(AI_OM_Config_BuildString); // lint !e611
+    LOAD_FUNCTION(AI_OM_Config_BuildString); //
     CHECK_FUNCTION_HAS_RETVAL();
     return CALL_FUNCTION(config);
 }
 
 AI_OM_Config* AI_OM_Config_ParseString(const char* configStr)
 {
-    LOAD_FUNCTION(AI_OM_Config_ParseString); // lint !e611
+    LOAD_FUNCTION(AI_OM_Config_ParseString); //
     CHECK_FUNCTION_HAS_RETVAL();
     return CALL_FUNCTION(configStr);
 }
 
 AI_OM_EventListener* AI_OM_EventListener_Create(AI_OM_EventHandler handler, void* userData)
 {
-    LOAD_FUNCTION(AI_OM_EventListener_Create); // lint !e611
+    LOAD_FUNCTION(AI_OM_EventListener_Create); //
     CHECK_FUNCTION_HAS_RETVAL();
     return CALL_FUNCTION(handler, userData);
 }
 
 void AI_OM_EventListener_Destroy(AI_OM_EventListener* listener)
 {
-    LOAD_FUNCTION(AI_OM_EventListener_Destroy); // lint !e611
+    LOAD_FUNCTION(AI_OM_EventListener_Destroy); //
     if (!functionObject || GetHandle() == nullptr) {
         FMK_LOGE("dlsym(%s) failed: %s", functionName, dlerror());
         return;
@@ -154,14 +153,14 @@ void AI_OM_EventListener_Destroy(AI_OM_EventListener* listener)
 
 uint32_t AI_OM_RegisterListener(AI_OM_EventListener* listener)
 {
-    LOAD_FUNCTION(AI_OM_RegisterListener); // lint !e611
+    LOAD_FUNCTION(AI_OM_RegisterListener); //
     CHECK_FUNCTION_HAS_RETVAL();
     return CALL_FUNCTION(listener);
 }
 
 uint32_t AI_OM_PostEvent(const AI_OM_EventMsg* event)
 {
-    LOAD_FUNCTION(AI_OM_PostEvent); // lint !e611
+    LOAD_FUNCTION(AI_OM_PostEvent); //
     CHECK_FUNCTION_HAS_RETVAL();
     return CALL_FUNCTION(event);
 }

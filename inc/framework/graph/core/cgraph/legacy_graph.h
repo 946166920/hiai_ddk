@@ -77,7 +77,6 @@ public:
 
     GRAPH_API_EXPORT NodePtr FindNode(const int64_t id) const;
 
-    /*lint -e504*/
     GRAPH_API_EXPORT NodePtr AddNode(NodePtr node);
 
     GRAPH_API_EXPORT NodePtr AddNode(OpDescPtr op);
@@ -96,7 +95,6 @@ public:
      */
     GRAPH_API_EXPORT vector<ComputeGraphPtr> GetDirectSubGraphs() const;
 
-    /*lint +e504*/
     const std::map<std::vector<std::string>, std::vector<std::string>>& GetShareParamLayer() const
     {
         return paramsShareMap_;

@@ -24,20 +24,20 @@ enum class DataType {
     FLOAT32,
     FLOAT16,
     INT32,
-    INT8, //lint !e578
+    INT8,
     INT16,
     BOOL,
     INT64,
     UINT32,
     DOUBLE,
-    RESERVED //lint !e578
+    RESERVED
 };
 
 enum class Format {
     NCHW = 0, /* NCHW */
     NHWC, /* NHWC */
     ND, /* Nd Tensor */
-    RESERVED //lint !e578
+    RESERVED
 };
 
 struct NativeHandle {

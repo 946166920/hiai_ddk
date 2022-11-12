@@ -50,7 +50,6 @@
 
 using namespace std;
 
-/*lint -e512 -e737 -e752*/
 namespace ge {
 namespace {
 const std::string OP_DESC_SPARSE_ALGORITHM_PARAMS = "sparse_algorithm_params";
@@ -96,7 +95,7 @@ GraphErrCodeStatus OpDescUtils::SetSparseAlgorithmParams(
     namedAttrs.SetAttr("sparseAlgorithmOffset", AttrValue::CreateFrom(coordGrid.sparseAlgorithmOffset));
     namedAttrs.SetAttr("sparseAlgorithmData", AttrValue::CreateFrom(coordGrid.sparseAlgorithmData));
     auto attr = AttrValue::CreateFrom(namedAttrs);
-    return opDesc->SetAttr(OP_DESC_SPARSE_ALGORITHM_PARAMS, attr); //lint !e732
+    return opDesc->SetAttr(OP_DESC_SPARSE_ALGORITHM_PARAMS, attr);
 }
 
 TensorPtr OpDescUtils::MutableWeights(OpDesc& opDesc)
@@ -119,7 +118,7 @@ GraphErrCodeStatus OpDescUtils::SetWeights(OpDesc& opDesc, const TensorPtr weigh
     if (weight == nullptr) {
         return GRAPH_FAILED;
     }
-    return AttrUtils::SetTensor(&opDesc, hiai::ATTR_NAME_WEIGHTS, weight) ? GRAPH_SUCCESS : GRAPH_FAILED; //lint !e737
+    return AttrUtils::SetTensor(&opDesc, hiai::ATTR_NAME_WEIGHTS, weight) ? GRAPH_SUCCESS : GRAPH_FAILED;
 }
 
 GraphErrCodeStatus OpDescUtils::SetWeights(const OpDescPtr& opDesc, const TensorPtr weight)
@@ -190,7 +189,7 @@ bool FindNonConstInDataByNode(const ge::Node& node, const size_t indexNonConst, 
     std::size_t i = 0;
     auto visitor = [&i, indexNonConst, &index](Edge& edge) {
         if (i == indexNonConst) {
-            index = static_cast<std::size_t>(edge.DstIdx()); //lint !e571
+            index = static_cast<std::size_t>(edge.DstIdx());
             return hiai::COMM_EXCEPTION;
         }
         ++i;
@@ -231,13 +230,13 @@ bool OpDescUtils::GetNonConstInputIndex(const ge::ConstNodePtr& node, size_t ind
 
 bool OpDescUtils::IsNonConstInput(const ge::Node& node, size_t index)
 {
-    if (index >= static_cast<size_t>(node.ROLE(NodeSpec).OpDesc().GetInputsDescSize())) { //lint !e571
+    if (index >= static_cast<size_t>(node.ROLE(NodeSpec).OpDesc().GetInputsDescSize())) {
         return false;
     }
 
     bool ret = false;
     auto visitor = [index, &ret](Edge& edge) {
-        if (static_cast<std::size_t>(edge.DstIdx()) == index) { //lint !e571
+        if (static_cast<std::size_t>(edge.DstIdx()) == index) {
             ret = edge.SrcNode().ROLE(NodeSpec).Type() != hiai::op::Const::TYPE &&
                 edge.SrcNode().ROLE(NodeSpec).Type() != hiai::op::QuantizedConst::TYPE;
             return hiai::COMM_EXCEPTION;

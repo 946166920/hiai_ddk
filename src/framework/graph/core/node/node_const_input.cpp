@@ -33,7 +33,7 @@ namespace {
 hiai::Status MakeInConstMark(NodeWalker& walker, std::vector<bool>& inConstMark)
 {
     auto visitor = [&inConstMark](Edge& edge) {
-        HIAI_EXPECT_TRUE(static_cast<std::size_t>(edge.DstIdx()) < inConstMark.size()); //lint !e571
+        HIAI_EXPECT_TRUE(static_cast<std::size_t>(edge.DstIdx()) < inConstMark.size());
 
         inConstMark[edge.DstIdx()] = (edge.SrcNode().ROLE(NodeSpec).Type() == hiai::op::Const::TYPE ||
             edge.SrcNode().ROLE(NodeSpec).Type() == hiai::op::QuantizedConst::TYPE);

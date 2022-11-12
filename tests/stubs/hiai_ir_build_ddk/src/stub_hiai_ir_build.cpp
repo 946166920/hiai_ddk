@@ -109,7 +109,7 @@ bool create(void* libHandle, HIAI_MemBuffer*& omModelBuffer)
 }; // namespace
 
 GRAPH_API_EXPORT bool HiaiIrBuild::CreateModelBuff(ge::Model& irModel,
-    ModelBufferData& output) // lint !e1762
+    ModelBufferData& output)
 {
     const uint32_t defaultSize = 200; // default size 200M
     const uint32_t megaSize = 1024 * 1024; // mega size
@@ -118,7 +118,7 @@ GRAPH_API_EXPORT bool HiaiIrBuild::CreateModelBuff(ge::Model& irModel,
 }
 
 GRAPH_API_EXPORT bool HiaiIrBuild::CreateModelBuff(
-    ge::Model& irModel, ModelBufferData& output, uint32_t customSize) // lint !e1762
+    ge::Model& irModel, ModelBufferData& output, uint32_t customSize)
 {
     bool flag = false;
     string libraryPath = AI_CLIENT_SO_PATH;

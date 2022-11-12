@@ -26,7 +26,7 @@
 #include <algorithm>
 #include <climits>
 #include "framework/common/fmk_types.h"
-#if (OS_TYPE == 0) //lint !e553
+#if (OS_TYPE == 0)
 #include <linux/limits.h>
 #endif
 #include "op_types.h"

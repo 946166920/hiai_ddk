@@ -36,8 +36,7 @@ public:
         return s;
     }
 
-    // lint -esym(551,*)
-    static std::string& Rtrim(std::string& s) // lint !e618
+    static std::string& Rtrim(std::string& s)
     {
 #if __cplusplus >= 201103L
         s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](int c) { return !std::isspace(c); }));
@@ -45,7 +44,6 @@ public:
         s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 #endif
         return s;
-        // lint +esym(551,*)
     }
 
     /*  @ingroup domi_common

@@ -1193,8 +1193,7 @@ HIAI_TensorDescriptionV2* HIAI_ModelTensorInfoV2_getTensorDescription(
     const HIAI_ModelTensorInfoV2* tensorInfo, HIAI_IO_TYPE type, int index)
 {
     std::cout << __func__ << std::endl;
-    HIAI_TensorDescriptionV2 desc = HIAI_TENSOR_DESCRIPTION_V2_INIT;
-    HIAI_TensorDescriptionV2* descPointer = &desc;
+    HIAI_TensorDescriptionV2* descPointer = nullptr;
     if (tensorInfo != nullptr)
         descPointer = (type == HIAI_IO_INPUT ? tensorInfo->inputShape : tensorInfo->outputShape);
     return descPointer;
@@ -1723,7 +1722,7 @@ int HIAI_ModelManager_buildModel_v2(HIAI_ModelManager* manager, HIAI_Framework f
     fileLength = ftell(fp);
     result = fseek(fp, 0, SEEK_SET);
 
-    (void)fread(outputModelBuffer->data, 1, fileLength, fp);
+    fread(outputModelBuffer->data, 1, fileLength, fp);
 
     *outModelSize = fileLength;
     return 0;
