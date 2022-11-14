@@ -86,7 +86,7 @@ private:
 
     void ClearCallbckcb();
 
-    Status AsyncWaitResult(int iTStamp);
+    Status AsyncWaitResult();
 
 private:
     bool isLoadCallBack_ {false};

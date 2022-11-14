@@ -29,7 +29,7 @@ include(android.toolchain)
 add_compile_options(
   -Wall
   -fPIC
-  -no-pie
+  # -no-pie
   -pthread
   -Os
   -fvisibility=hidden

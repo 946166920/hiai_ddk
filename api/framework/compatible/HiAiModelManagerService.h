@@ -62,7 +62,7 @@ public:
     AIStatus GetPrecisionMode(PrecisionMode& precisionMode) const;
     AIStatus SetPrecisionMode(const PrecisionMode& precisionMode);
     AIStatus SetTuningStrategy(const TuningStrategy& tuningStrategy);
-    const TuningStrategy GetTuningStrategy() const;
+    TuningStrategy GetTuningStrategy() const;
 private:
     std::string model_name_;
     int32_t frequency_ {0};

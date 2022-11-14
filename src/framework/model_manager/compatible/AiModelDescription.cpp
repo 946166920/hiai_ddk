@@ -184,7 +184,7 @@ AIStatus AiModelDescription::SetTuningStrategy(const TuningStrategy& tuningStrat
     return AI_SUCCESS;
 }
 
-const TuningStrategy AiModelDescription::GetTuningStrategy() const
+TuningStrategy AiModelDescription::GetTuningStrategy() const
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
     return tuningStrategy_;

@@ -5,8 +5,6 @@ hi_cc_library_static(
     huawei::c_sec_static
   SRCS
     ${OPEN_SOURCE_CSEC_DIR}/src/*.c
-  COPTS
-    -s
   CDEFS
     SECUREC_SUPPORT_STRTOLD=1
 )

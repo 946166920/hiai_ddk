@@ -218,7 +218,7 @@ Status DirectModelManagerImpl::Init(const HIAI_ModelInitOptions* options, const 
 
     Status status = SUCCESS;
     if (listener_ != nullptr) {
-        status = AsyncWaitResult(taskStamp);
+        status = AsyncWaitResult();
     }
 
     SharedManagerInfos_->managers.emplace_back(currentModelUtil_);
@@ -681,7 +681,7 @@ void DirectModelManagerImpl::OnTimeout(void* userdata, int taskStamp)
     (void)taskStamp;
 }
 
-Status DirectModelManagerImpl::AsyncWaitResult(int iTStamp)
+Status DirectModelManagerImpl::AsyncWaitResult()
 {
     std::unique_lock<std::mutex> ulock(syncRunMutex_);
     isLoadCallBack_ = false;

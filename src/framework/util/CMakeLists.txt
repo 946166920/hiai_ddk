@@ -8,7 +8,7 @@ hi_cc_library_static(
     hiai_base_types.c
   COPTS
     -frtti
-    -dl
+    # -dl
 )
 
 hi_cc_library_static(

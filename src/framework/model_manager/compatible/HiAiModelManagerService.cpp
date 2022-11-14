@@ -582,7 +582,7 @@ void AiModelMngerClient::Cancel(const std::string& modelName)
         return;
     }
 
-    Status ret = it->second->Cancel();
+    it->second->Cancel();
 }
 
 } // namespace hiai
