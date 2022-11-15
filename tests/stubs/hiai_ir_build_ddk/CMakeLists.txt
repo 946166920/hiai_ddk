@@ -16,7 +16,7 @@ set(CMAKE_C_FLAGS
     -DAI_SUPPORT_SPECIAL_3RD_MODEL 
 )
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -pthread -fPIC -frtti -Os -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-exceptions -Wno-unused-parameter -fomit-frame-pointer -fno-unwind-tables -DHAVE_PTHREAD -D_FORTIFY_SOURCE -DHOST_VISIBILITY -DGRAPH_API_VISIABLE")
+set(CMAKE_CXX_FLAGS "-std=c++11 -pthread -fPIC -frtti -Os -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-exceptions -Wno-unused-parameter -fomit-frame-pointer -fno-unwind-tables -DHAVE_PTHREAD -D_FORTIFY_SOURCE=2 -DHOST_VISIBILITY -DGRAPH_API_VISIABLE")
 
 set(LIBHIAI_IR_BUILD_DDK hiai_ir_build_ddk)
 add_library(${LIBHIAI_IR_BUILD_DDK} SHARED ${LOCAL_SRC_FILES})
