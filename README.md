@@ -37,7 +37,6 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 | -------------- | -------- | ------------------------------------------------------------ |
 | libboundscheck | 1.1.11 | https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip |
 | protobuf       | 3.13.0  | https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.13.0.zip |
-| protoc | 3.13.0 | https://github.com/protocolbuffers/protobuf/releases/download/v3.13.0/protoc-3.13.0-linux-x86_64.zip |
 | cutils | -- | https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/cutils.tar.gz |
 | android-ndk    | r20b     | https://dl.google.com/android/repository/android-ndk-r20b-linux-x86_64.zip |
 | cmake          | 3.20.5 | https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz |
