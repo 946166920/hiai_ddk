@@ -1,9 +1,8 @@
-
 include(ExternalProject)
 include(GNUInstallDirs)
 
 set(CMAKE_INSTALL_PREFIX ${BASE_DIR}/build CACHE STRING "path for install()" FORCE)
-set(protobuf_CXXFLAGS "-D_GLIBCXX_USE_CXX11_ABI=0 -fPIC -D_FORTIFY_SOURCE=2 -O2 -pthread")
+set(protobuf_CXXFLAGS "-D_GLIBCXX_USE_CXX11_ABI=0 -fPIC -D_FORTIFY_SOURCE=2 -O2 -pthread -Wno-dev")
 set(protobuf_LDFLAGS " -Wl,-z,relro,-z,now,-z,noexecstack -lpthread")
 
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party)
@@ -12,8 +11,8 @@ set(PROTOBUF_DIR ${THIRD_PARTY_PATH}/protobuf/)
 ExternalProject_Add(protoc_build
                     SOURCE_DIR ${PROTOBUF_DIR}
                     CONFIGURE_COMMAND cmake -Dprotobuf_WITH_ZLIB=OFF -Dprotobuf_BUILD_TESTS=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_CXX_FLAGS=${protobuf_CXXFLAGS} -DCMAKE_CXX_LDFLAGS=${protobuf_LDFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/protoc <SOURCE_DIR>/cmake
-                    BUILD_COMMAND make -j8
-                    INSTALL_COMMAND make install
+                    BUILD_COMMAND $(MAKE)
+                    INSTALL_COMMAND $(MAKE) install
                     EXCLUDE_FROM_ALL TRUE
                     BUILD_IN_SOURCE  TRUE
 )

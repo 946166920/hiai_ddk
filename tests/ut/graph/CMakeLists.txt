@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6.0)
+cmake_minimum_required(VERSION 3.8.0)
 
 set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
@@ -242,6 +242,10 @@ include_directories(${LIBGRAPH}
       ${GTEST_DIR}/googlemock/include
       ${TOP_DIR}/third_party/libboundscheck/include
 )
+
+if(COMMAND cmake_policy)
+    cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
 
 add_executable(ut_graph ${GRAPH_ALL_SRC_FILES})
 target_compile_definitions(ut_graph
