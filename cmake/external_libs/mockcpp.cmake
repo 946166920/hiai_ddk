@@ -1,7 +1,7 @@
 include(ExternalProject)
 
 set (mockcpp_CXXFLAGS "-fPIC -std=c++11 -D_GLIBCXX_USE_CXX11_ABI=0 -D_FORTIFY_SOURCE=2 -O2")
-set (mockcpp_CFLAGS "-fPIC")
+set (mockcpp_CFLAGS "-fPIC -Wno-dev")
 set(CMAKE_INSTALL_PREFIX ${BASE_DIR}/build CACHE STRING "path for install()" FORCE)
 
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party)

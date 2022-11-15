@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.6.0)
-
 set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../../)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
 set(THIRD_PARTY_PROTOBUF_PATH ${THIRD_PARTY_PATH}/protobuf/)
@@ -63,6 +61,10 @@ include_directories(ddk_model_manager_ut
     ${MOCKCPP_DIR}/mockcpp/include
 )
 
+if(COMMAND cmake_policy)
+    cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
+
 add_executable(ddk_model_manager_ut ${TESTCASES_FILES})
 target_compile_definitions(ddk_model_manager_ut
     PRIVATE
@@ -76,7 +78,6 @@ target_compile_options(ddk_model_manager_ut
 
 target_link_libraries(ddk_model_manager_ut
     gtest
-    gcov
     mockcpp
     dl
     hiai_ddk
