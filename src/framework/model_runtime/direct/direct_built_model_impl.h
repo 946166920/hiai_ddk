@@ -45,17 +45,17 @@ private:
     Status InnerLoad();
     Status GetAippPara(int32_t index, unsigned int aippCount, unsigned int batchCount, std::vector<void*>& aippParaVec);
 
-private:
-    bool isNeedRelease_ {false};
-    std::vector<HIAI_NDTensorDesc*> inputs_;
-    std::vector<HIAI_NDTensorDesc*> outputs_;
-    std::shared_ptr<DirectModelUtil> currentModelUtil_ {nullptr};
-
 public:
     std::shared_ptr<BaseBuffer> modelBuffer_ {nullptr};
     std::string modelName_ {""};
     std::string modelFile_ {""};
     std::shared_ptr<SharedManagerInfos> SharedManagerInfos_ {nullptr};
+
+private:
+    bool isNeedRelease_ {false};
+    std::vector<HIAI_NDTensorDesc*> inputs_;
+    std::vector<HIAI_NDTensorDesc*> outputs_;
+    std::shared_ptr<DirectModelUtil> currentModelUtil_ {nullptr};
 };
 } // namespace hiai
 #endif // FRAMEWORK_MODEL_MANAGER_DIRECT_MODEL_RUNTIME_BUILT_MODEL_IMPL_H

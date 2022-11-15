@@ -120,7 +120,7 @@ static void FreeModelTensorInfo(HIAI_ModelTensorInfo* modelTensorInfo)
 
 DirectBuiltModelImpl::DirectBuiltModelImpl(
     std::shared_ptr<BaseBuffer>& buffer, std::string modelName, bool isNeedRelease)
-    : isNeedRelease_(isNeedRelease), modelBuffer_(buffer), modelName_(std::move(modelName))
+    : modelBuffer_(buffer), modelName_(std::move(modelName)), isNeedRelease_(isNeedRelease)
 {
 }
 
