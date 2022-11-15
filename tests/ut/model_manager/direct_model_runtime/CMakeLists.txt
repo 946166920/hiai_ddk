@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.6.0)
-
 set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../../)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
 set(THIRD_PARTY_PROTOBUF_PATH ${THIRD_PARTY_PATH}/protobuf/)
@@ -47,6 +45,10 @@ include_directories(direct_model_runtime_ut
     ${GTEST_DIR}/googlemock/include
     ${MOCKCPP_DIR}/mockcpp/include
 )
+
+if(COMMAND cmake_policy)
+    cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
 
 add_executable(direct_model_runtime_ut ${TESTCASES_FILES})
 target_compile_definitions(direct_model_runtime_ut
