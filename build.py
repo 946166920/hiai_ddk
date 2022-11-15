@@ -45,13 +45,6 @@ def process_protobuf(compressed_package):
     os.system(mv_protobuf_dir_name)
 
 
-def process_protoc(compressed_package):
-    with zipfile.ZipFile(os.path.join(THIRD_PARTY_DIR, compressed_package), 'r') as z:
-        z.extractall(os.path.join(THIRD_PARTY_DIR, "protoc-3.13.0"))
-    # protoc 加权限
-    chmod_protoc = "chmod -R u+x {}/protoc-3.13.0".format(THIRD_PARTY_DIR)
-    os.system(chmod_protoc)
-
 def process_mockcpp(compressed_package):
     with zipfile.ZipFile(os.path.join(THIRD_PARTY_DIR, compressed_package), 'r') as z:
         z.extractall(THIRD_PARTY_DIR)
@@ -85,7 +78,6 @@ THIRD_PARTY_LINK_LIST = {
     "cutils": ["http://10.136.104.34:5051/core-refs_heads_master-libcutils-include-cutils.tar.gz", process_cutils],
     "bounds_checking_function": ["http://10.136.104.34:5051/libboundscheck-1.1.11.zip", process_bounds_checking_function],
     "protobuf": ["http://10.136.104.34:5051/protobuf-3.13.0.zip", process_protobuf],
-    "protoc-3.13.0": ["http://10.136.104.34:5051/protoc-3.13.0-linux-x86_64.zip", process_protoc],
     "mockcpp-2.7": ["http://10.136.104.34:5051/mockcpp-2.7.zip", process_mockcpp],
     "googletest-release-1.8.1": ["http://10.136.104.34:5051/googletest-release-1.8.1.tar.gz", process_googletest],
 }
@@ -199,7 +191,51 @@ def set_environ(buildtools_config):
     os.environ["PATH"] += os.pathsep + cmake_bin_path
     print(os.environ["PATH"])
 
+
+def build_protoc():
+    protoc_target_path = "third_party/protoc/bin/protoc"
+    if os.path.exists(protoc_target_path):
+        return True
+
+    cwd = os.getcwd()
+    os.chdir("third_party/protobuf")
+
+    os.system("chmod u+x autogen.sh")
+    os.system("./autogen.sh")
+    
+    build_protoc_path = "protoc-artifacts/build-protoc.sh"
+    os.system("chmod u+x {}".format(build_protoc_path))
+    build_protoc_cmd = "./{} linux x86_64 protoc".format(build_protoc_path)
+    os.system(build_protoc_cmd)
+
+    os.chdir(cwd)
+
+    protoc_target_dir = "third_party/protoc/bin"
+    if not os.path.exists(protoc_target_dir):
+        os.makedirs(protoc_target_dir)
+    
+    protoc_gen_path = "third_party/protobuf/protoc-artifacts/target/linux/x86_64/protoc.exe"
+    if not os.path.exists(protoc_gen_path):
+        return False
+
+    cp_protoc_cmd = "cp {} {}".format(protoc_gen_path, protoc_target_dir)
+    os.system(cp_protoc_cmd)
+    
+    rename_cmd = "mv {}/protoc.exe {}".format(protoc_target_dir, protoc_target_path)
+    os.system(rename_cmd)
+
+    # protoc 加权限
+    chmod_protoc = "chmod u+x {}".format(protoc_target_path)
+    os.system(chmod_protoc)
+
+    return True
+
+
 def build(buildtools_config):
+    if not build_protoc():
+        print("[ERROR:] build protoc failed!")        
+        return
+
     cmake_bin = os.path.join(buildtools_config["CMAKE_MAKE_PROGRAM"], "bin", "cmake")
     ndk_path = buildtools_config["ANDROID_NDK_PATH"]
     toolchain = os.path.join(os.getcwd(),

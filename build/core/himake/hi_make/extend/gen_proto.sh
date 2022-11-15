@@ -1,7 +1,7 @@
 #!/bin/bash
 cur_dir=$(cd $(dirname $0); pwd)
 
-protoc=${cur_dir}/../../../../../third_party/protoc-3.13.0/bin/protoc
+protoc=${cur_dir}/../../../../../third_party/protoc/bin/protoc
 
 args=$(echo $1 | tr "," " ")
 

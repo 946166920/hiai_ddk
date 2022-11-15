@@ -1,0 +1,5 @@
+buildtools/*
+ddk/*
+out/*
+third_party/*
+tests/build/*
