@@ -186,7 +186,7 @@ target_include_directories(${LIBHIAI_IR_DDK}
 
 set(PROTOBUF_LIB_PATH ${TOP_DIR}/third_party/protobuf)
 
-find_library(libprotobuf protobuf ${PROTOBUF_LIB_PATH})
+find_library(libprotobuf libprotobuf.a ${PROTOBUF_LIB_PATH})
 
 target_link_libraries(${LIBHIAI_IR_DDK}
     ${libprotobuf}
