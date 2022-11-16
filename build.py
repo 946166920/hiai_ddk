@@ -26,6 +26,7 @@ CONFIG_FILE = "build.conf"
 BUILDTOOLS_DIR = "buildtools"
 THIRD_PARTY_DIR = "third_party"
 DDK_PACKAGE_FILE = "ddk.xml"
+DDK_LIST = ["libhiai.so", "libhiai_ir.so", "libhiai_ir_build.so", "libhiai_ir_build_aipp.so"]
 
 # Third party source code
 def process_cutils(compressed_package):
@@ -203,12 +204,7 @@ def get_buildtools_config(config_dict):
 def set_environ(buildtools_config):
     # Add PATH Environment Variables
     cmake_bin_path = os.path.join(buildtools_config["CMAKE_MAKE_PROGRAM"], "bin", "cmake")
-    print("cmake_bin_path :")
-    print(cmake_bin_path)
-    print(os.environ["PATH"])
-    print("-----------------------------------")
     os.environ["PATH"] += os.pathsep + cmake_bin_path
-    print(os.environ["PATH"])
 
 
 def build_protoc():
@@ -253,7 +249,7 @@ def build_protoc():
 def build(buildtools_config):
     if not build_protoc():
         print("[ERROR:] build protoc failed!")        
-        return
+        return False
 
     cmake_bin = os.path.join(buildtools_config["CMAKE_MAKE_PROGRAM"], "bin", "cmake")
     ndk_path = buildtools_config["ANDROID_NDK_PATH"]
@@ -282,6 +278,15 @@ def build(buildtools_config):
         os.system(make_cmd)
 
     os.chdir(os.path.join(os.getcwd(), ".."))
+
+    for abi in buildtools_config["ABI"]:
+        for so_name in DDK_LIST:
+            if os.path.exists(os.path.join(os.getcwd(), "out", "hiai", abi, "lib", so_name)):
+                print("[INFO] : PASS! {} has successfully generated!".format(so_name))
+            else:
+                return False
+
+    return True
 
 def cp_item(class_config):
     for item in class_config:
@@ -312,8 +317,8 @@ def package_ddk():
         cp_item(class_configs[2])
     f.close()
 
-def CheckArgv(argv):
-    run_test = True
+def check_argv(argv):
+    is_run_test = True
     if len(argv) > 2:
         errmsg_invalid_para_count = \
         "[ERROR]: The number of command parameters more than 2.\n" \
@@ -331,7 +336,7 @@ def CheckArgv(argv):
             print(helpmessage)
             sys.exit(-1)
         elif argv[1] == "--only_ddk":
-            run_test = False
+            is_run_test = False
         else:
             errmsg_invalid_para = \
             "ERROR]: Unknown options and parameters.\n" \
@@ -340,43 +345,35 @@ def CheckArgv(argv):
             print(errmsg_invalid_para)
             sys.exit(-1)
         
-    return run_test
+    return is_run_test
 
-def RunTest():
+def run_test():
     #Building the testBuild
     prj_root_path = os.getcwd()
     testBuild = os.path.join(prj_root_path, "tests", "build")
-    if not os.path.exists(testBuild):
-        os.makedirs(testBuild)
+    if os.path.exists(testBuild):
+        os.system("rm -r {}".format(testBuild))
+    os.makedirs(testBuild)
 
     os.chdir(testBuild)
     os.system("cmake {}".format(os.path.join(prj_root_path, "tests")))
-
     os.system("make -j4")
-    if not os.path.exists(os.path.join(testBuild, "ut", "graph", "ut_graph")):
-        print("[ERROR] : Building testcase failed! Test object has not generated!")
-        sys.exit(-1)
-    os.system("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./gtest/lib/ && ./ut/graph/ut_graph")
 
-    if not os.path.exists(os.path.join(testBuild, "ut", "model_manager", "ddk", "ddk_model_manager_ut")):
-        print("[ERROR] : Building testcase failed! Test object has not generated!")
-        sys.exit(-1)
-    os.system("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./gtest/lib/ && ./ut/model_manager/ddk/ddk_model_manager_ut")
-
-    if not os.path.exists(os.path.join(testBuild, "ut", "model_manager", "direct_model_runtime", "direct_model_runtime_ut")):
-        print("[ERROR] : Building testcase failed! Test object has not generated!")
-        sys.exit(-1)
-    os.system("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./gtest/lib/ && ./ut/model_manager/direct_model_runtime/direct_model_runtime_ut")
-
-    if not os.path.exists(os.path.join(testBuild, "ut", "model_manager", "model_manager_v2", "model_manager_v2_ut")):
-        print("[ERROR] : Building testcase failed! Test object has not generated!")
-        sys.exit(-1)
-    os.system("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./gtest/lib/ && ./ut/model_manager/model_manager_v2/model_manager_v2_ut")
+    UT_LIST = [ os.path.join(testBuild, "ut", "graph", "ut_graph"),
+                os.path.join(testBuild, "ut", "model_manager", "ddk", "ddk_model_manager_ut"),
+                os.path.join(testBuild, "ut", "model_manager", "direct_model_runtime", "direct_model_runtime_ut"),
+                os.path.join(testBuild, "ut", "model_manager", "model_manager_v2", "model_manager_v2_ut"),
+    ]
+    for ut in UT_LIST:
+        if not os.path.exists(ut):
+            print("[ERROR] : Building testcase failed! Test object {} has not generated!".format(ut))
+            sys.exit(-1)
+        os.system("export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./gtest/lib/ && {}".format(ut))
 
     os.chdir(os.path.join(os.getcwd(), "../.."))
 
 if __name__ == '__main__':
-    run_test = CheckArgv(sys.argv)
+    is_run_test = check_argv(sys.argv)
 
     # 读取编译配置
     config_dict = read_config()
@@ -389,17 +386,20 @@ if __name__ == '__main__':
     # 下载三方源码
     download_third_party()
 
-    # 编译
+    # 获取编译配置
     buildtools_config = get_buildtools_config(config_dict)
 
     # 添加环境变量
     set_environ(buildtools_config)
 
-    build(buildtools_config)
-
-    # build test
-    if run_test:
-        RunTest()
+    # build
+    if not build(buildtools_config):
+        print("[ERROR] : FAIL! build error.")
+        sys.exit(-1)
 
     # 打包
     package_ddk()
+
+    # build test
+    if is_run_test:
+        run_test()
