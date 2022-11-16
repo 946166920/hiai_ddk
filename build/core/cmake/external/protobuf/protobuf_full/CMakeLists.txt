@@ -49,6 +49,10 @@ target_compile_definitions(libprotobuf-lite
     PROTOBUF_INLINE_NOT_IN_HEADERS=0
 )
 
+if(CMAKE_SYSTEM_NAME MATCHES "Android")
+  target_link_libraries(libprotobuf-lite log)
+endif()
+
 ## libprotobuf
 target_compile_options(libprotoc
   PRIVATE

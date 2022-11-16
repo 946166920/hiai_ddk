@@ -34,7 +34,7 @@ hi_cc_library_shared(
     ai::infra::math::fp16_t_static
     ai::fmk::util::tensor::trans_tensor_static
     google::protobuf_lite_static
-  
+
     # ai::fmk::graph::persistance::dynamic_proxy_static
     # dl
 )

@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# Copyright © Huawei Technologies Co., Ltd. 2022-2022. All rights reserved.
-# Description: build.py
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the Apache License Version 2.0.You may not use this file except in compliance with the License.
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# Apache License for more details at
+
+# Copyright 2019-2022 Huawei Technologies Co., Ltd
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 # http://www.apache.org/licenses/LICENSE-2.0
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
 import os
@@ -46,8 +48,12 @@ def process_protobuf(compressed_package):
 
 
 def process_mockcpp(compressed_package):
-    with zipfile.ZipFile(os.path.join(THIRD_PARTY_DIR, compressed_package), 'r') as z:
-        z.extractall(THIRD_PARTY_DIR)
+    # with zipfile.ZipFile(os.path.join(THIRD_PARTY_DIR, compressed_package), 'r') as z:
+    #     z.extractall(THIRD_PARTY_DIR)
+    unzip_cmd = "unzip -q -o -d {} {} ".format(THIRD_PARTY_DIR, os.path.join(THIRD_PARTY_DIR, compressed_package))
+    print("unzip_cmd:", unzip_cmd)
+    os.system(unzip_cmd)
+
 
 def process_googletest(compressed_package):
     with tarfile.open(os.path.join(THIRD_PARTY_DIR, compressed_package)) as t:
@@ -56,10 +62,13 @@ def process_googletest(compressed_package):
 
 # build tools
 def process_ndk(compressed_package):
-    with zipfile.ZipFile(os.path.join(BUILDTOOLS_DIR, compressed_package), 'r') as z:
-        z.extractall(BUILDTOOLS_DIR)
+    print("compressed_package:", compressed_package)
+    unzip_cmd = "unzip -q -o -d {} {} ".format(BUILDTOOLS_DIR, os.path.join(BUILDTOOLS_DIR, compressed_package))
+    print("unzip_cmd:", unzip_cmd)
+    os.system(unzip_cmd)
     # ndk 加权限
-    chmod_ndk = "chmod -R u+x {}/android-ndk-r20b".format(BUILDTOOLS_DIR)
+    chmod_ndk = "chmod -R u+x {}/android-ndk-r23b".format(BUILDTOOLS_DIR)
+    print("chmod_ndk:", chmod_ndk)
     os.system(chmod_ndk)
 
 
@@ -74,18 +83,25 @@ def process_cmake(compressed_package):
     os.system(export_cmake_path)
 
 
+# THIRD_PARTY_LINK_LIST = {
+#     "cutils": ["http://10.136.104.34:5051/core-refs_heads_master-libcutils-include-cutils.tar.gz", process_cutils],
+#     "bounds_checking_function": ["http://10.136.104.34:5051/libboundscheck-1.1.11.zip", process_bounds_checking_function],
+#     "protobuf": ["http://10.136.104.34:5051/protobuf-3.13.0.zip", process_protobuf],
+#     "mockcpp-2.7": ["http://10.136.104.34:5051/mockcpp-2.7.zip", process_mockcpp],
+#     "googletest-release-1.8.1": ["http://10.136.104.34:5051/googletest-release-1.8.1.tar.gz", process_googletest],
+# }
+
 THIRD_PARTY_LINK_LIST = {
-    "cutils": ["http://10.136.104.34:5051/core-refs_heads_master-libcutils-include-cutils.tar.gz", process_cutils],
-    "bounds_checking_function": ["http://10.136.104.34:5051/libboundscheck-1.1.11.zip", process_bounds_checking_function],
-    "protobuf": ["http://10.136.104.34:5051/protobuf-3.13.0.zip", process_protobuf],
-    "mockcpp-2.7": ["http://10.136.104.34:5051/mockcpp-2.7.zip", process_mockcpp],
-    "googletest-release-1.8.1": ["http://10.136.104.34:5051/googletest-release-1.8.1.tar.gz", process_googletest],
+    "cutils": ["http://10.136.104.231:4543/core-refs_heads_master-libcutils-include-cutils.tar.gz", process_cutils],
+    "bounds_checking_function": ["http://10.136.104.231:4543/libboundscheck-1.1.11.zip", process_bounds_checking_function],
+    "protobuf": ["http://10.136.104.231:4543/protobuf-3.13.0.zip", process_protobuf],
+    "mockcpp-2.7": ["http://10.136.104.231:4543/mockcpp-2.7.zip", process_mockcpp],
+    "googletest-release-1.8.1": ["http://10.136.104.231:4543/googletest-release-1.8.1.tar.gz", process_googletest],
 }
 
 BUILDTOOLS_LINK_LIST = {
-    "android-ndk-r20b": ["http://10.136.104.231:4543/android-ndk-r20b-linux-x86_64.zip", process_ndk],
     "cmake-3.20.5": ["http://10.136.104.231:4543/cmake-3.20.5-linux-x86_64.tar.gz", process_cmake],
-    # "android-ndk-r23b": ["http://10.136.104.231:4543/android-ndk-r23b-linux.zip", process_ndk],
+    "android-ndk-r23b": ["http://10.136.104.231:4543/android-ndk-r23b-linux.zip", process_ndk],
 }
 
 
@@ -156,7 +172,7 @@ def is_config_valid(config_dict):
 def download_buildtools(config_dict):
     need_download_list = BUILDTOOLS_LINK_LIST
     if "ANDROID_NDK_PATH" in config_dict:
-        need_download_list.pop("android-ndk-r20b")
+        need_download_list.pop("android-ndk-r23b")
     if "CMAKE_MAKE_PROGRAM" in config_dict:
         need_download_list.pop("cmake-3.20.5")
 
@@ -168,7 +184,7 @@ def download_buildtools(config_dict):
 def get_buildtools_config(config_dict):
     py_cwd = os.getcwd()
     buildtools_config = {
-        "ANDROID_NDK_PATH" : os.path.join(py_cwd, BUILDTOOLS_DIR, "android-ndk-r20b"),
+        "ANDROID_NDK_PATH" : os.path.join(py_cwd, BUILDTOOLS_DIR, "android-ndk-r23b"),
         "CMAKE_MAKE_PROGRAM" : os.path.join(py_cwd, BUILDTOOLS_DIR, "cmake-3.20.5"),
         "ABI" : "arm64-v8a",
     }
@@ -379,8 +395,8 @@ if __name__ == '__main__':
     build(buildtools_config)
 
     # build test
-    if run_test:
-        RunTest()
+    # if run_test:
+    #     RunTest()
 
     # 打包
     package_ddk()
