@@ -10,7 +10,7 @@ set(PROTOBUF_DIR ${THIRD_PARTY_PATH}/protobuf/)
 
 ExternalProject_Add(protoc_build
                     SOURCE_DIR ${PROTOBUF_DIR}
-                    CONFIGURE_COMMAND cmake -Dprotobuf_WITH_ZLIB=OFF -Dprotobuf_BUILD_TESTS=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_CXX_FLAGS=${protobuf_CXXFLAGS} -DCMAKE_CXX_LDFLAGS=${protobuf_LDFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/protoc <SOURCE_DIR>/cmake
+                    CONFIGURE_COMMAND ${CMAKE_COMMAND} -Dprotobuf_WITH_ZLIB=OFF -Dprotobuf_BUILD_TESTS=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_CXX_FLAGS=${protobuf_CXXFLAGS} -DCMAKE_CXX_LDFLAGS=${protobuf_LDFLAGS} -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/protoc <SOURCE_DIR>/cmake
                     BUILD_COMMAND $(MAKE)
                     INSTALL_COMMAND $(MAKE) install
                     EXCLUDE_FROM_ALL TRUE
