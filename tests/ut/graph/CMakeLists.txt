@@ -17,7 +17,7 @@ set(GRAPH_C_SEC_SRC
 )
 
 set(GRAPH_PROTOBUF_LITE_SRC_FILES
-	${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/any.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/any.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/any.pb.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/api.pb.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/compiler/importer.cc

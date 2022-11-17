@@ -8,15 +8,71 @@ set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/bounds_checking_function/)
 set(GRAPH_IR_PATH ${TOP_DIR}/src/framework/graph)
 
 set(GRAPH_PROTOBUF_LITE_SRC_FILES
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/any.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/any.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/api.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/compiler/importer.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/compiler/parser.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/descriptor.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/descriptor.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/descriptor_database.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/duration.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/dynamic_message.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/empty.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/extension_set_heavy.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/field_mask.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/generated_message_reflection.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/generated_message_table_driven.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/io/gzip_stream.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/io/printer.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/io/tokenizer.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/map_field.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/message.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/reflection_ops.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/service.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/source_context.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/struct.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/stubs/substitute.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/text_format.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/timestamp.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/type.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/unknown_field_set.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/delimited_message_util.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/field_comparator.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/field_mask_util.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/datapiece.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/default_value_objectwriter.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/error_listener.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/field_mask_utility.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/json_escaping.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/json_objectwriter.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/json_stream_parser.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/object_writer.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/proto_writer.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/protostream_objectsource.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/protostream_objectwriter.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/type_info.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/type_info_test_helper.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/internal/utility.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/json_util.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/message_differencer.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/time_util.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/util/type_resolver_util.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/wire_format.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/wrappers.pb.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/any_lite.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/arena.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/extension_set.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/generated_enum_util.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/generated_message_table_driven_lite.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/generated_message_util.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/implicit_weak_message.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/io/coded_stream.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/io/io_win32.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/io/strtod.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/io/zero_copy_stream.cc
+    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/io/zero_copy_stream_impl.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/io/zero_copy_stream_impl_lite.cc
-    ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/map_field.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/message_lite.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/parse_context.cc
     ${THIRD_PARTY_PROTOBUF_PATH}/src/google/protobuf/repeated_field.cc
@@ -182,12 +238,4 @@ target_include_directories(${LIBHIAI_IR_DDK}
     ${THIRD_PARTY_PROTOBUF_PATH}/include
     ${THIRD_PARTY_PROTOBUF_PATH}/src
     ${THIRD_PARTY_CSEC_PATH}/include
-)
-
-set(PROTOBUF_LIB_PATH ${TOP_DIR}/third_party/protobuf)
-
-find_library(libprotobuf libprotobuf.a ${PROTOBUF_LIB_PATH})
-
-target_link_libraries(${LIBHIAI_IR_DDK}
-    ${libprotobuf}
 )
