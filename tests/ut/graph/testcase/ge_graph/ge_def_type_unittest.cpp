@@ -39,34 +39,13 @@ protected:
 
 TEST_F(ge_test_def_type, base)
 {
-
-
-
-
     CompressInfo com1;
     com1.set_blockrow(1);
     int32_t a = com1.blockrow;
     EXPECT_EQ(a, 1);
 
-
-//    AippChn aiChn;
-//    AippVec aiVec;
-//    AippParams ai1;
-//    ai1.vec.add_matrix_r0c0(10);
-//    EXPECT_EQ(ai1.vec.matrix_r0c0_size(), 1);
-//    ai1.vec.clear_matrix_r0c0();
-//    EXPECT_EQ(ai1.vec.matrix_r0c0_size(), 0);
-//    ai1.vec.add_matrix_r0c0(5);
-//    EXPECT_EQ(ai1.vec.matrix_r0c0[0], 5);
-//    ai1.vec.set_matrix_r0c0(0, 6);
-//    EXPECT_EQ(ai1.vec.matrix_r0c0[0], 6);
-//    ai1.vec.mutable_matrix_r0c0()->at(0) = 7;
-//    EXPECT_EQ(ai1.vec.matrix_r0c0[0], 7);
-
     QuantizeFactor qfactor;
     QuantizeFactorParams qParams;
-
-
 }
 
 TEST_F(ge_test_def_type, quant)

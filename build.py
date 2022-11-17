@@ -52,8 +52,6 @@ def process_protobuf(compressed_package):
 
 
 def process_mockcpp(compressed_package):
-    # with zipfile.ZipFile(os.path.join(THIRD_PARTY_DIR, compressed_package), 'r') as z:
-    #     z.extractall(THIRD_PARTY_DIR)
     unzip_cmd = "unzip -q -o -d {} {} ".format(THIRD_PARTY_DIR, os.path.join(THIRD_PARTY_DIR, compressed_package))
     print("unzip_cmd:", unzip_cmd)
     os.system(unzip_cmd)
@@ -86,14 +84,6 @@ def process_cmake(compressed_package):
     export_cmake_path = "export PATH={}/{}/cmake-3.20.5/bin:$PATH".format("$(pwd)", BUILDTOOLS_DIR)
     os.system(export_cmake_path)
 
-
-# THIRD_PARTY_LINK_LIST = {
-#     "cutils": ["http://10.136.104.34:5051/core-refs_heads_master-libcutils-include-cutils.tar.gz", process_cutils],
-#     "bounds_checking_function": ["http://10.136.104.34:5051/libboundscheck-1.1.11.zip", process_bounds_checking_function],
-#     "protobuf": ["http://10.136.104.34:5051/protobuf-3.13.0.zip", process_protobuf],
-#     "mockcpp-2.7": ["http://10.136.104.34:5051/mockcpp-2.7.zip", process_mockcpp],
-#     "googletest-release-1.8.1": ["http://10.136.104.34:5051/googletest-release-1.8.1.tar.gz", process_googletest],
-# }
 
 THIRD_PARTY_LINK_LIST = {
     "cutils": ["http://10.136.104.231:4543/core-refs_heads_master-libcutils-include-cutils.tar.gz", process_cutils],

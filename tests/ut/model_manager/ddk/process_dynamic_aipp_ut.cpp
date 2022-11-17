@@ -109,9 +109,6 @@ TEST_F(ProcessDynamicShapeModel, DynamicShapeModel_001)
         ASSERT_TRUE(desc != nullptr);
 
         ret = ret || desc->SetModelBuffer(buffer->GetMemBufferData(), buffer->GetMemBufferSize());
-        // ret = ret || desc->SetInputDims(info.inputDims);
-        // ret = ret || desc->SetDynamicShapeConfig(info.dynamicShape);
-        // ret = ret || desc->SetPrecisionMode(info.precisionMode);
         modelDescs.push_back(desc);
         ASSERT_TRUE(ret == AI_SUCCESS);
     }

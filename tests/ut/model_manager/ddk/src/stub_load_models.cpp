@@ -49,7 +49,6 @@ void StubLoadModels::LoadModelsByV1()
     shared_ptr<AiModelDescription> desc2 = make_shared<AiModelDescription>(modelName2, 3, 0, 0, 0);
     TensorDimension dims(1,2,3,4);
     std::vector<TensorDimension> inputDims = {dims};
-    // desc2->SetInputDims(inputDims);
     desc2->SetModelBuffer(buffer2->GetMemBufferData(), buffer2->GetMemBufferSize());
 
     vector<shared_ptr<AiModelDescription>> modelDescs1;
@@ -65,8 +64,6 @@ void StubLoadModels::LoadModelsByV1()
 
 void StubLoadModels::UnloadModels()
 {
-    // MockExecutorManager mockExecutorManager;
-    // EXPECT_CALL(mockExecutorManager, UnloadModel(_)).WillRepeatedly(Return(0));
     if (client != nullptr) {
         client->UnLoadModel();
     }
