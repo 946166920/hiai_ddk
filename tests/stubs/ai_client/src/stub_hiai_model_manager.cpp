@@ -909,7 +909,7 @@ PrivateHandleInfo* HIAI_GetHandleInfo_From_BufferHandle(buffer_handle_t handle)
     }
     const int privateFormat = 16;
     auto info = static_cast<PrivateHandleInfo*>(malloc(sizeof(PrivateHandleInfo)));
-    memset(info, 0x0, sizeof(PrivateHandleInfo));
+    (void)memset_s(info, sizeof(PrivateHandleInfo), 0, sizeof(PrivateHandleInfo));
     info->fd = 0;
     info->size = 1024;
     info->offset = 0;
