@@ -77,7 +77,7 @@ TEST_F(ge_test_def_type, quant)
     EXPECT_EQ(OpDescUtils::GetQuantizeFactorParams(descPtr1, q3), GRAPH_SUCCESS);
     Buffer &b = q3.quantize_param.scale_value;
     float f1[2];
-    memcpy(f1, b.GetData(), b.GetSize());
+    (void)memcpy_s(f1, b.GetSize(), b.GetData(), b.GetSize());
     EXPECT_EQ(f1[0], 1);
     EXPECT_EQ(f1[1], 2);
 
