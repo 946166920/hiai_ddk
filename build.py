@@ -347,7 +347,7 @@ def check_argv(argv):
         
     return is_run_test
 
-def run_test():
+def run_test(buildtools_config):
     #Building the testBuild
     prj_root_path = os.getcwd()
     testBuild = os.path.join(prj_root_path, "tests", "build")
@@ -356,7 +356,8 @@ def run_test():
     os.makedirs(testBuild)
 
     os.chdir(testBuild)
-    os.system("cmake {}".format(os.path.join(prj_root_path, "tests")))
+    cmake_bin = os.path.join(buildtools_config["CMAKE_MAKE_PROGRAM"], "bin", "cmake")
+    os.system("{} ..".format(cmake_bin, os.path.join(prj_root_path, "tests")))
     os.system("make -j4")
 
     UT_LIST = [ os.path.join(testBuild, "ut", "graph", "ut_graph"),
@@ -402,4 +403,4 @@ if __name__ == '__main__':
 
     # build test
     if is_run_test:
-        run_test()
+        run_test(buildtools_config)
