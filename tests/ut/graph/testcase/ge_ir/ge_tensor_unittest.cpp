@@ -204,7 +204,6 @@ TEST_P(Test_ge_tensor_mutable_tensordesc, Test_tensor_mutable_tensordesc)
 TEST_P(Test_ge_tensor_set_data_buffer, Test_tensor_set_data_buffer)
 {
     auto param = GetParam();
-    // Tensor(const TensorDesc& tensorDesc, const Buffer& data);
     ge::Tensor tensor;
     tensor.SetData(param.buffer);
     if (param.expectNoneZeroBuffer) {
@@ -220,7 +219,6 @@ TEST_P(Test_ge_tensor_set_data_buffer, Test_tensor_set_data_buffer)
 TEST_P(Test_ge_tensor_set_data_data_size, Test_tensor_set_data)
 {
     auto param = GetParam();
-    // Tensor(const TensorDesc& tensorDesc, const Buffer& data);
     ge::Tensor tensor;
     tensor.SetData(param.data, param.size);
     if (param.expectNoneZeroBuffer) {
@@ -236,7 +234,6 @@ TEST_P(Test_ge_tensor_set_data_data_size, Test_tensor_set_data)
 TEST_P(Test_ge_tensor_mutable_data, Test_tensor_mutable_data)
 {
     auto param = GetParam();
-    // Tensor(const TensorDesc& tensorDesc, const Buffer& data);
     ge::Tensor tensor;
     tensor.SetData(param.buffer);
     if (param.expectNoneZeroBuffer) {

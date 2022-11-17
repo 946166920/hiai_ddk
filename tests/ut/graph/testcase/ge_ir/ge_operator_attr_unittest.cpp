@@ -193,7 +193,6 @@ bool CheckAttrValueEqual(ge::AttrValue& value1, ge::AttrValue& value2)
 TEST_P(Test_ge_operator_set_attr, Test_SetAttr)
 {
     auto param = GetParam();
-    // Operator op("op_name", "op_type");
     TestOperator op("op_name", "op_type");
     if (param.attr.isRequired) {
         // 必选

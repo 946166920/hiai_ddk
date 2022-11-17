@@ -68,7 +68,7 @@ TEST_F(Test_ge_shape, test_construct_and_get_dim_success)
     EXPECT_TRUE(shape1.GetDims() == emptyDims);
     EXPECT_TRUE(shape1.GetDimNum() == 0);
     EXPECT_TRUE(shape1.GetTotalDimNum() == 0);
-    // construct from vector  {1, 1, 3, 4};
+
     ge::Shape shape2(dims1);
     EXPECT_TRUE(shape2.GetDims() == dims1);
     EXPECT_TRUE(shape2.GetDimNum() == dims1.size());

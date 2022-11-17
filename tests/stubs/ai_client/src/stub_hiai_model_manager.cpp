@@ -1069,7 +1069,6 @@ HIAI_ModelNDTensorInfo* HIAI_ModelManager_GetModelNDTensorInfo(HIAI_ModelManager
         return nullptr;
     }
     vector<int32_t> dims = {1, 3, 64, 64};
-    // HIAI_DataType dType = HIAI_DataType::DT_FLOAT;
 
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dims.size(), (HIAI_DataType)0, (HIAI_Format)0);
     info->inputShape[0] = desc; // sizeof(HIAI_ModelNDTensorInfo)

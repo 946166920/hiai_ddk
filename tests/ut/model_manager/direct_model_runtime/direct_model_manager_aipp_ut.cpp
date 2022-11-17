@@ -229,10 +229,6 @@ TEST_F(DirectModelManagerAipp_UTest, runAippModelV2_001)
         outputs.data(), outputNum, timeoutInMS, nullptr);
     EXPECT_FALSE(ret == HIAI_SUCCESS);
 
-    // ret = HIAI_DIRECT_ModelManager_runAippModelV2(modelManager, inputs.data(), inputNum + 1,
-    //     aippParas, aippParaNum, outputs.data(), outputNum, timeoutInMS, nullptr);
-    // EXPECT_FALSE(ret == HIAI_SUCCESS);
-
     // 入参aippPara为空场景
     ret = HIAI_DIRECT_ModelManager_runAippModelV2(
         modelManager, inputs.data(), inputNum, nullptr, aippParaNum, outputs.data(), outputNum, timeoutInMS, nullptr);
@@ -243,10 +239,6 @@ TEST_F(DirectModelManagerAipp_UTest, runAippModelV2_001)
         outputs.data(), outputNum, timeoutInMS, nullptr);
     EXPECT_FALSE(ret == HIAI_SUCCESS);
 
-    // ret = HIAI_DIRECT_ModelManager_runAippModelV2(modelManager, inputs.data(), inputNum,
-    //     aippParas, aippParaNum + 1, outputs.data(), outputNum, timeoutInMS, nullptr);
-    // EXPECT_FALSE(ret == HIAI_SUCCESS);
-
     // 入参output为空场景
     ret = HIAI_DIRECT_ModelManager_runAippModelV2(
         modelManager, inputs.data(), inputNum, aippParas, aippParaNum, nullptr, outputNum, timeoutInMS, nullptr);
@@ -256,10 +248,6 @@ TEST_F(DirectModelManagerAipp_UTest, runAippModelV2_001)
     ret = HIAI_DIRECT_ModelManager_runAippModelV2(modelManager, inputs.data(), inputNum, aippParas, aippParaNum,
         outputs.data(), outputNum - 1, timeoutInMS, nullptr);
     EXPECT_FALSE(ret == HIAI_SUCCESS);
-
-    // ret = HIAI_DIRECT_ModelManager_runAippModelV2(modelManager, inputs.data(), inputNum,
-    //     aippParas, aippParaNum, outputs.data(), outputNum + 1, timeoutInMS, nullptr);
-    // EXPECT_FALSE(ret == HIAI_SUCCESS);
 
     // 入参userData为空场景
     ret = HIAI_DIRECT_ModelManager_runAippModelV2(

@@ -84,7 +84,6 @@ TEST_F(FileUtilUt, model_manager_file_util_004)
     data = nullptr;
 
     FileUtil fileUtil;
-    //size_t expsize = defaultSize * megaSize + 2;
     auto ret = fileUtil.LoadToBuffer(modelPath, size);
     EXPECT_TRUE(ret == nullptr);
     remove(modelPath.c_str());
