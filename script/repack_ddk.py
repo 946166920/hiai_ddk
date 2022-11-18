@@ -31,7 +31,7 @@ DDK_ZIP_NAME = 'hwhiai-ddk-100.520.020.010.zip'
 def cp_item(class_config):
     for item in class_config:
         src_file = item.attrib['source']
-        dest_file = os.path.join(DDK_RELEASE_DIR, 'ddk','ai_ddk_lib', item.attrib['destination'])
+        dest_file = os.path.join(DDK_RELEASE_DIR, 'ddk_external', 'ddk', 'ai_ddk_lib', item.attrib['destination'])
 
         dest_dir = os.sep.join(dest_file.split(os.sep)[:-1])
 
@@ -72,7 +72,7 @@ def gen_ddk_info():
 
     # get file_name
     if 'file_name' in root.attrib:
-        ddk_info_file = os.path.join(DDK_RELEASE_DIR, root.attrib['file_name'])
+        ddk_info_file = os.path.join(DDK_RELEASE_DIR, 'ddk_external', root.attrib['file_name'])
     else:
         print('Error: can not get ddk_info file name !')
         return False

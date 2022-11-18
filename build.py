@@ -130,8 +130,7 @@ def config_dependence(dir, link_list):
         if not os.path.exists(os.path.join(dir, package_name)):
             download_cmd = "wget -c -t 3 -P {} {} --no-check-certificate".format(dir, link_list[dependence][0])
             os.system(download_cmd)
-        # compressed_package = link_list[dependence][0].split('/')[-1]
-        print()
+
         print("[INFO] Decompressing package {} ...".format(package_name))
         if os.path.exists(os.path.join(dir, dependence)):
             os.system("rm -rf {}".format(os.path.join(dir, dependence)))
@@ -302,7 +301,7 @@ def build(buildtools_config):
     for abi in buildtools_config["ABI"]:
         for so_name in DDK_LIST:
             if os.path.exists(os.path.join(os.getcwd(), "out", "hiai", abi, "lib", so_name)):
-                print("[INFO] : PASS! {} has successfully generated!".format(so_name))
+                print("[INFO] : PASS! {} has successfully generated!".format(os.path.join(abi, so_name)))
             else:
                 return False
 
@@ -322,9 +321,10 @@ def check_argv(argv):
     if len(argv) == 2:
         if argv[1] == "--help":
             helpmessage = \
-            "usage: [ python | python3 ] build.py [ --help | --only_ddk ]\n"\
+            "usage: python3 build.py [ --help | --ddk | --test]\n"\
             "--help      : print this help message and exit\n"\
-            "--only_ddk   : run compile so command only.\n"\
+            "--ddk       : run compile so command only.\n"\
+            "--test      : run test code only.\n"\
             "If no option is available, both compile so and run the test code by default."
             print(helpmessage)
             sys.exit(-1)
@@ -358,10 +358,10 @@ def run_test(buildtools_config):
     os.system("make -j")
 
     UT_LIST = [
-        os.path.join(test_build_dir, "ut", "graph", "ut_graph"),
         os.path.join(test_build_dir, "ut", "model_manager", "ddk", "ddk_model_manager_ut"),
         os.path.join(test_build_dir, "ut", "model_manager", "direct_model_runtime", "direct_model_runtime_ut"),
         os.path.join(test_build_dir, "ut", "model_manager", "model_manager_v2", "model_manager_v2_ut"),
+        os.path.join(test_build_dir, "ut", "graph", "ut_graph"),
     ]
     for ut in UT_LIST:
         if not os.path.exists(ut):
