@@ -91,11 +91,14 @@ HiAI DDK编译需要依赖第三方库，编译过程中会去下载所需的第
 HiAI DDK基于NDK + CMake的命令行构建方式，在确认编译环境配置完成的前提下，安装好python3，运行`build.py`即可执行编译。
 
 详细命令如下：
-    ```
-    python3 build.py                  	# 编译打包so和编译运行测试代码默认均执行
-    python3 build.py --ddk       		# 只编译和打包so，不编译运行测试代码
-    python3 build.py --test       		# 只编译运行测试代码，不编译和打包so
-    ```
+
+```
+python3 build.py        # 编译打包so和编译运行测试代码默认均执行
+python3 build.py --ddk  # 只编译和打包so，不编译运行测试代码
+python3 build.py --test # 只编译运行测试代码，不编译和打包so
+```
+
+
 
 
 #### 编译输出
