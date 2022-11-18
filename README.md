@@ -114,7 +114,7 @@ HiAI DDK基于NDK + CMake的命令行构建方式，在确认配置完成或者�
 
 ### APP集成
 
-APP开发过程参考[HUAWEI HiAI Foundation  开发指南](https://developer.huawei.com/consumer/cn/doc/development/hiai-Guides/dev-process-0000001052965551)，当前开源部分仅支持NPU推理，开源编译出的libhiai.so，libhiai_ir.so需要配合DDK版本包中libhiai_hcl_model_runtime.so使用。
+APP开发过程参考[HUAWEI HiAI Foundation  开发指南](https://developer.huawei.com/consumer/cn/doc/development/hiai-Guides/dev-process-0000001052965551)，当前开源部分仅支持NPU推理。
 
 ## 版本说明
 
