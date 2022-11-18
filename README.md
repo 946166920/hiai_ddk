@@ -75,14 +75,14 @@ HiAI DDK编译需要依赖第三方库，编译过程中会去下载所需的第
    ```
    # 使用自定义本地配置
    CMAKE_TOOLCHAIN_FILE=/your/project/path/project_name/buildtools/cmake-3.20.5
-```
+   ```
    
-4. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，当前默认配置为both，如下所示
-
+3. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，当前默认配置为both，如下所示
    ```
    # Architecture support for [armeabi-v7a/arm64-v8a/both], 'both' means compile both armeabi-v7a and arm64-v8a
    ABI=both
    ```
+
 
 #### 编译执行
 
@@ -91,12 +91,11 @@ HiAI DDK编译需要依赖第三方库，编译过程中会去下载所需的第
 HiAI DDK基于NDK + CMake的命令行构建方式，在确认编译环境配置完成的前提下，安装好python3，运行`build.py`即可执行编译。
 
 详细命令如下：
-
-   ```
-   python3 build.py                  	# 编译打包so和编译运行测试代码默认均执行
-   python3 build.py --ddk       		# 只编译和打包so，不编译运行测试代码
-   python3 build.py --test       		# 只编译运行测试代码，不编译和打包so
-   ```
+    ```
+    python3 build.py                  	# 编译打包so和编译运行测试代码默认均执行
+    python3 build.py --ddk       		# 只编译和打包so，不编译运行测试代码
+    python3 build.py --test       		# 只编译运行测试代码，不编译和打包so
+    ```
 
 
 #### 编译输出
@@ -126,4 +125,3 @@ APP开发过程参考[HUAWEI HiAI Foundation  开发指南](https://developer.hu
 ## 许可证
 
 [Apache License 2.0](LICENSE)
-
