@@ -19,7 +19,7 @@ function(hi_cc_library_shared)
     SRCS
     EXCLUDES
     DEPS
-    PUB_DEPS # TODO：can remove?
+    PUB_DEPS
     CDEFS
     COPTS
     COPTS_C

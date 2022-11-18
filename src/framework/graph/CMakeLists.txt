@@ -1,5 +1,3 @@
-#cmake_minimum_required(VERSION 3.13...3.20)
-
 hi_add_subdirectory(utils)
 hi_add_subdirectory(persistance)
 

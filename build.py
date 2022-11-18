@@ -20,12 +20,10 @@ import os
 import sys
 import zipfile
 import tarfile
-from xml.etree.ElementTree import parse
 
-CONFIG_FILE = "build.conf"
+CONFIG_FILE = os.path.join("config", "build.conf")
 BUILDTOOLS_DIR = "buildtools"
 THIRD_PARTY_DIR = "third_party"
-DDK_PACKAGE_FILE = "ddk.xml"
 DDK_LIST = ["libhiai.so", "libhiai_ir.so", "libhiai_ir_build.so", "libhiai_ir_build_aipp.so"]
 
 # Third party source code
@@ -53,7 +51,6 @@ def process_protobuf(compressed_package):
 
 def process_mockcpp(compressed_package):
     unzip_cmd = "unzip -q -o -d {} {} ".format(THIRD_PARTY_DIR, os.path.join(THIRD_PARTY_DIR, compressed_package))
-    print("unzip_cmd:", unzip_cmd)
     os.system(unzip_cmd)
 
 
@@ -64,13 +61,10 @@ def process_googletest(compressed_package):
 
 # build tools
 def process_ndk(compressed_package):
-    print("compressed_package:", compressed_package)
     unzip_cmd = "unzip -q -o -d {} {} ".format(BUILDTOOLS_DIR, os.path.join(BUILDTOOLS_DIR, compressed_package))
-    print("unzip_cmd:", unzip_cmd)
     os.system(unzip_cmd)
     # ndk 加权限
     chmod_ndk = "chmod -R u+x {}/android-ndk-r23b".format(BUILDTOOLS_DIR)
-    print("chmod_ndk:", chmod_ndk)
     os.system(chmod_ndk)
 
 
@@ -86,18 +80,32 @@ def process_cmake(compressed_package):
 
 
 THIRD_PARTY_LINK_LIST = {
-    "cutils": ["https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/cutils.tar.gz", process_cutils],
-    "bounds_checking_function": ["https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip", process_bounds_checking_function],
-    "protobuf": ["https://github.com/protocolbuffers/protobuf/archive/v3.13.0.zip", process_protobuf],
-    "mockcpp-2.7": ["https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip", process_mockcpp],
-    "googletest-release-1.8.1": ["https://codeload.github.com/google/googletest/tar.gz/release-1.8.1", process_googletest],
+    "cutils": [
+        "https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/ \
+            cutils.tar.gz",
+        process_cutils],
+    "bounds_checking_function": [
+        "https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip",
+        process_bounds_checking_function],
+    "protobuf": [
+        "https://github.com/protocolbuffers/protobuf/archive/v3.13.0.zip",
+        process_protobuf],
+    "mockcpp-2.7": [
+        "https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip",
+        process_mockcpp],
+    "googletest-release-1.8.1": [
+        "https://codeload.github.com/google/googletest/tar.gz/release-1.8.1",
+        process_googletest],
 }
 
 BUILDTOOLS_LINK_LIST = {
-    "cmake-3.20.5": ["https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz", process_cmake],
-    "android-ndk-r23b": ["https://dl.google.com/android/repository/android-ndk-r23b-linux.zip", process_ndk],
+    "cmake-3.20.5": [
+        "https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz",
+        process_cmake],
+    "android-ndk-r23b": [
+        "https://dl.google.com/android/repository/android-ndk-r23b-linux.zip",
+        process_ndk],
 }
-
 
 def run_process(package, link_list):
     compressed_package = link_list[package][0].split('/')[-1]
@@ -107,11 +115,15 @@ def run_process(package, link_list):
 
 def config_dependence(dir, link_list):
     for dependence in link_list:
-        if os.path.exists(os.path.join(dir, dependence)):
-            continue
-        download_cmd = "wget -c -t 3 -P {} {} --no-check-certificate".format(dir, link_list[dependence][0])
-        os.system(download_cmd)
+        package_name = link_list[dependence][0].split('/')[-1]
+        # 没有压缩包，需要下载后解压；如果压缩包已存在，则直接解压
+        if not os.path.exists(os.path.join(dir, package_name)):
+            download_cmd = "wget -c -t 3 -P {} {} --no-check-certificate".format(dir, link_list[dependence][0])
+            os.system(download_cmd)
         compressed_package = link_list[dependence][0].split('/')[-1]
+        print("[INFO] Decompressing package {} ...".format(compressed_package))
+        if os.path.exists(os.path.join(dir, dependence)):
+            os.system("rm -rf {}".format(os.path.join(dir, dependence)))
         process_func = link_list[dependence][1]
         process_func(compressed_package)
 
@@ -148,7 +160,7 @@ def is_config_valid(config_dict):
     if "ANDROID_NDK_PATH" in config_dict:
         ndk_path = config_dict["ANDROID_NDK_PATH"]
         if not os.path.exists(ndk_path) or \
-            not os.path.exists(ndk_path, "build", "cmake", "android.toolchain.cmake"):
+            not os.path.exists(os.path.join(ndk_path, "build", "cmake", "android.toolchain.cmake")):
             return False
 
     if "CMAKE_MAKE_PROGRAM" in config_dict:
@@ -190,6 +202,7 @@ def get_buildtools_config(config_dict):
     else:
         buildtools_config["ABI"] = [buildtools_config["ABI"]]
     return buildtools_config
+
 
 def set_environ(buildtools_config):
     # Add PATH Environment Variables
@@ -235,11 +248,18 @@ def build_protoc():
 
     return True
 
+def chmod_script():
+    chmod_sh_script = "find . -name *.sh | xargs chmod u+x "
+    os.system(chmod_sh_script)
+    chmod_py_script = "find . -name *.py | xargs chmod u+x "
+    os.system(chmod_py_script)
 
 def build(buildtools_config):
     if not build_protoc():
         print("[ERROR:] build protoc failed!")        
         return False
+    # 添加环境变量
+    set_environ(buildtools_config)
 
     cmake_bin = os.path.join(buildtools_config["CMAKE_MAKE_PROGRAM"], "bin", "cmake")
     ndk_path = buildtools_config["ANDROID_NDK_PATH"]
@@ -262,7 +282,6 @@ def build(buildtools_config):
                     toolchain,
                     abi)
 
-        print("build_cmd:", build_cmd)
         os.system(build_cmd)
         make_cmd = "make -j"
         os.system(make_cmd)
@@ -278,34 +297,6 @@ def build(buildtools_config):
 
     return True
 
-def cp_item(class_config):
-    for item in class_config:
-        src_file = item.attrib['source']
-        dest_file = item.attrib['destination']
-        dest_dir = '/'.join(dest_file.split('/')[:-1])
-        if not os.path.exists(dest_dir):
-            os.makedirs(dest_dir)
-        cp_cmd = "cp {} {}".format(src_file, dest_file)
-        os.system(cp_cmd)
-
-def package_ddk():
-    if os.path.exists("ddk"):
-        os.system("rm -rf ddk")
-
-    f = open(DDK_PACKAGE_FILE, 'r', encoding='utf-8')
-    root = parse(f).getroot()
-    class_configs = list(root)
-    # 拷贝头文件
-    cp_item(class_configs[0])
-
-    # 拷贝32位so
-    if os.path.exists(os.path.join(os.getcwd(), "out", "hiai", "armeabi-v7a")):
-        cp_item(class_configs[1])
-
-    # 拷贝64位so
-    if os.path.exists(os.path.join(os.getcwd(), "out", "hiai", "arm64-v8a")):
-        cp_item(class_configs[2])
-    f.close()
 
 def check_argv(argv):
     is_run_test = True
@@ -348,7 +339,7 @@ def run_test(buildtools_config):
     os.chdir(testBuild)
     cmake_bin = os.path.join(buildtools_config["CMAKE_MAKE_PROGRAM"], "bin", "cmake")
     os.system("{} ..".format(cmake_bin, os.path.join(prj_root_path, "tests")))
-    os.system("make -j4")
+    os.system("make -j")
 
     UT_LIST = [ os.path.join(testBuild, "ut", "graph", "ut_graph"),
                 os.path.join(testBuild, "ut", "model_manager", "ddk", "ddk_model_manager_ut"),
@@ -380,17 +371,16 @@ if __name__ == '__main__':
     # 获取编译配置
     buildtools_config = get_buildtools_config(config_dict)
 
-    # 添加环境变量
-    set_environ(buildtools_config)
+    chmod_script()
 
     # build
     if not build(buildtools_config):
         print("[ERROR] : FAIL! build error.")
         sys.exit(-1)
 
-    # 打包
-    package_ddk()
-
     # build test
     if is_run_test:
         run_test(buildtools_config)
+
+    # 打包
+    os.system("python3 script/repack_ddk.py")

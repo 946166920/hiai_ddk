@@ -41,7 +41,7 @@ function(hi_cc_prebuilt_library_import_location target_name lib)
 
   if(output_name)
     set_target_properties(${target_name}
-      PROPERTIES OUTPUT_NAME ${output_name}  # TODO: OUTPUT_NAME -> HI_OUTPUT_NAME
+      PROPERTIES OUTPUT_NAME ${output_name}
     )
   endif()
 endfunction()

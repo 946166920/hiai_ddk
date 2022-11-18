@@ -46,7 +46,7 @@ hi_cc_library_shared(
     ai::fmk::tensor::nd_tensor_impl_static
     ai::fmk::tensor::nd_tensor_ext_static
     ai::fmk::util::version_static
-    # ai::fmk::util::hiai_plugin_version_obj
+    ai::fmk::util::hiai_plugin_version_static
     ai::fmk::util::base_types_static
     ai::fmk::infra::buffer_static
     ai::fmk::infra::base_buffer_static

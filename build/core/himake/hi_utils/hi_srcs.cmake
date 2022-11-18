@@ -98,10 +98,8 @@ function(hi_set_compile_target_srcs target_name target_srcs)
   hi_extract_all_srcs("${target_srcs}" src_list inc_list)
   target_sources(${target_name} PRIVATE ${src_list})
   target_include_directories(${target_name} PUBLIC ${inc_list})
-  # target_include_directories(${target_name} INTERFACE ${inc_list})
 endfunction()
 
-# TODO: remove
 # 1、extract all file group sources
 # 1、record srcs and filegroup to seperate varible
 function(extract_all_srcs_and_record_seperatly target_name target_srcs target_excludes all_srcs all_incs)

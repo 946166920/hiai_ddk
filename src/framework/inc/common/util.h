@@ -197,7 +197,7 @@
         } \
     } while (0)
 
-// 校验容器是否为空,TODO
+// 校验容器是否为空
 #define DOMI_CHECK_VECTOR_NOT_EMPTY(vector) \
     do { \
         if (vector.empty()) { \

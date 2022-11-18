@@ -3,3 +3,5 @@ ddk/*
 out/*
 third_party/*
 tests/build/*
+tests/out/*
+hwhiai-ddk-100.520.020.010.zip

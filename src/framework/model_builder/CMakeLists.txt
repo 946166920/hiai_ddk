@@ -34,6 +34,7 @@ hi_cc_library_shared(
     ai::fmk::model_manager_shared
     ai::fmk::model_builder::ir_static
     ai::fmk::model_builder::compatible_static
+    log
   CDEFS
     AI_SUPPORT_AIPP_API
     HIAI_MB_API_VISIABLE
@@ -51,6 +52,7 @@ hi_cc_library_shared(
   WHOLE_STATIC_LIBS
     ai::fmk::hiai_ir_shared
     ai::fmk::model_builder::ir::aipp_static
+    log
   CDEFS
     AI_SUPPORT_UPGRADE_APK
 )

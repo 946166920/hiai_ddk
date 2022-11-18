@@ -249,7 +249,6 @@ TEST_F(ge_test_opdesc, ge_test_opdesc_attrs)
     EXPECT_TRUE(opDesc->HasAttr(BIAS));
     EXPECT_FALSE(opDesc->HasAttr("xxx"));
 
-    // todo
     EXPECT_EQ(2, opDesc->GetAllAttrs().size() - defautlAttrSize);
     EXPECT_EQ(opDesc->DelAttr("xxx"), GRAPH_SUCCESS);
     EXPECT_EQ(opDesc->DelAttr(Pad), GRAPH_SUCCESS);

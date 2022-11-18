@@ -52,7 +52,7 @@ HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方
 
 1、本地无编译环境
 
-​	如果本地是一个全新的环境，没有所需的编译工具，执行编译脚本，可以不修改配置文件，直接跳到[编译执行](#编译执行)小节，执行命令即可。
+​	如果本地是一个全新的环境，没有所需的编译工具，执行编译脚本，可以不修改配置文件，直接跳到[编译执行](#编译执行)小节，执行命令即可，默认会编译64bit架构的so，如果需要修改目标so架构，请参考下面第3节，配置`ABI`小节。
 
 2、通过配置文件(build.conf)进行自定义配置
 
@@ -66,7 +66,7 @@ HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方
    ```
    # 使用自定义本地配置
    ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r23b
-   # 使用编译脚本下载的工具的配置（注释掉该行即可）
+   # 使用编译脚本下载的工具的配置（注释掉下面这行即可）
    # ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r23b
    ```
 
@@ -78,13 +78,13 @@ HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方
 4. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，默认为arm64-v8a，如下所示
 
    ```
-   ARCH:armeabi-v7a
-        arm64-v8a
-        both        #  compile both armeabi-v7a and arm64-v8a
+   # Architecture support for [armeabi-v7a/arm64-v8a/both], 'both' means compile both armeabi-v7a and arm64-v8a
    ABI=arm64-v8a
    ```
 
 #### 编译执行
+
+在编译过程中，会使用`autoreconf`编译protobuf源码生成protoc文件，请确保本地环境上已经安装有`autoreconf`命令。
 
 HiAI DDK基于NDK + CMake的命令行构建方式，在确认配置完成或者不需配置的前提下，安装好python3，即可执行编译命令，另外本项目还提供测试代码和编译测试代码的一键式脚本
 
