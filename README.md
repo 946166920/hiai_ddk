@@ -39,20 +39,22 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 | protobuf       | 3.13.0  | https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.13.0.zip |
 | cutils | -- | https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/cutils.tar.gz |
 | android-ndk    | r23b     | https://dl.google.com/android/repository/android-ndk-r23b-linux.zip.zip |
-| cmake          | 3.20.5 | https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz |
+| cmake | 3.20.5 | https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz |
+| mockcpp | 2.7 | https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip |
+| googletest     | 1.8.1    | https://codeload.github.com/google/googletest/tar.gz/release-1.8.1 |
 
 只支持在Linux平台Ubuntu 16/18操作系统下进行编译，暂不支持在windows下编译。
 
 
 HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方软件包，请确保可连接网络，脚本会下载所需的源码和工具，下载耗时因网络环境而异。
 
-下载过程中会在`HiAIFoundation`下新建一个`third_party`目录存放下载的第三方源码，新建一个`buildtools`目录存放编译工具。
+下载过程中会在工程根目录存放下载的第三方源码，新建一个`buildtools`目录存放编译工具。
 
 本项目支持如下两种方式编译：
 
 1、本地无编译环境
 
-​	如果本地是一个全新的环境，没有所需的编译工具，执行编译脚本，可以不修改配置文件，直接跳到[编译执行](#编译执行)小节，执行命令即可，默认会编译64bit架构的so，如果需要修改目标so架构，请参考下面第3小节配置`ABI`。
+​	如果本地是一个全新的环境，没有所需的编译工具，执行编译脚本，可以不修改配置文件，直接跳到[编译执行](#编译执行)小节，执行命令即可，默认会同时编译32bit和64bit架构的so，如果需要修改目标so架构，请参考下面第3小节配置`ABI`。
 
 2、通过修改config目录下的配置文件(build.conf)进行自定义配置
 
@@ -65,14 +67,14 @@ HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方
 1. 配置`NDK`路径（下载文件较大，建议使用本地配置）例如：
    ```
    # 使用自定义本地配置
-   ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r23b
+   ANDROID_NDK_PATH=/your/project/path/project_name/buildtools/android-ndk-r23b
    # 使用编译脚本下载的工具的配置（注释掉下面这行即可，脚本中检测到ANDROID_NDK_PATH未配置，自动会去下载）
-   # ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r23b
+   # ANDROID_NDK_PATH=/your/project/path/project_name/buildtools/android-ndk-r23b
    ```
 
 2. 配置`cmake`路径，例如：
    ```
-   CMAKE_TOOLCHAIN_FILE=/your/project/path/HiAIFoundation/buildtools/cmake-3.20.5
+   CMAKE_TOOLCHAIN_FILE=/your/project/path/project_name/buildtools/cmake-3.20.5
    ```
 
 4. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，默认为both，如下所示
@@ -88,7 +90,7 @@ HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方
 
 HiAI DDK基于NDK + CMake的命令行构建方式，在确认配置完成或者不需配置的前提下，安装好python3，即可执行编译命令，另外本项目还提供测试代码和编译测试代码的一键式脚本
 
-测试代码路径：`HiAIFoundation/tests/`
+测试代码路径：`tests/`
 编译打包ddk so和编译运行测试代码合一脚本：`build.py`
 
 详细命令如下：
@@ -102,7 +104,7 @@ HiAI DDK基于NDK + CMake的命令行构建方式，在确认配置完成或者�
 
 #### 编译输出
 
-编译成功之后会在HiAIFoundation目录下生成hwhiai-ddk-100.520.020.010.zip压缩包，在压缩包里的ddk/ai_ddk_lib下存放打包的ddk头文件和so（32位so存放在lib目录下，64位so存放在lib64目录下）。
+编译成功之后会在工程根目录下生成hwhiai-ddk-100.520.020.010.zip压缩包，在压缩包里的ddk/ai_ddk_lib下存放打包的ddk头文件和so（32位so存放在lib目录下，64位so存放在lib64目录下）。
 
 结构如下所示：
 
