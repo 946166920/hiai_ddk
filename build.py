@@ -87,10 +87,10 @@ def process_cmake(compressed_package):
 
 THIRD_PARTY_LINK_LIST = {
     "cutils": ["http://10.136.104.231:4543/core-refs_heads_master-libcutils-include-cutils.tar.gz", process_cutils],
-    "bounds_checking_function": ["http://10.136.104.231:4543/libboundscheck-1.1.11.zip", process_bounds_checking_function],
-    "protobuf": ["http://10.136.104.231:4543/protobuf-3.13.0.zip", process_protobuf],
-    "mockcpp-2.7": ["http://10.136.104.231:4543/mockcpp-2.7.zip", process_mockcpp],
-    "googletest-release-1.8.1": ["http://10.136.104.231:4543/googletest-release-1.8.1.tar.gz", process_googletest],
+    "bounds_checking_function": ["https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip", process_bounds_checking_function],
+    "protobuf": ["https://github.com/protocolbuffers/protobuf/archive/v3.13.0.zip", process_protobuf],
+    "mockcpp-2.7": ["https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip", process_mockcpp],
+    "googletest-release-1.8.1": ["https://codeload.github.com/google/googletest/tar.gz/release-1.8.1", process_googletest],
 }
 
 BUILDTOOLS_LINK_LIST = {
