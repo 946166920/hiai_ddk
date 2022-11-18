@@ -38,7 +38,7 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 | libboundscheck | 1.1.11 | https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip |
 | protobuf       | 3.13.0  | https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.13.0.zip |
 | cutils | -- | https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/cutils.tar.gz |
-| android-ndk    | r20b     | https://dl.google.com/android/repository/android-ndk-r20b-linux-x86_64.zip |
+| android-ndk    | r23b     | https://dl.google.com/android/repository/android-ndk-r23b-linux.zip.zip |
 | cmake          | 3.20.5 | https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz |
 
 只支持在Linux平台Ubuntu 16/18操作系统下进行编译，暂不支持在windows下编译。
@@ -65,9 +65,9 @@ HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方
 1. 配置`NDK`路径（下载文件较大，建议使用本地配置）例如：
    ```
    # 使用自定义本地配置
-   ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r20b
+   ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r23b
    # 使用编译脚本下载的工具的配置（注释掉该行即可）
-   # ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r20b
+   # ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r23b
    ```
 
 2. 配置`cmake`路径，例如：

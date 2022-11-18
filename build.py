@@ -86,7 +86,7 @@ def process_cmake(compressed_package):
 
 
 THIRD_PARTY_LINK_LIST = {
-    "cutils": ["http://10.136.104.231:4543/core-refs_heads_master-libcutils-include-cutils.tar.gz", process_cutils],
+    "cutils": ["https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/cutils.tar.gz", process_cutils],
     "bounds_checking_function": ["https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip", process_bounds_checking_function],
     "protobuf": ["https://github.com/protocolbuffers/protobuf/archive/v3.13.0.zip", process_protobuf],
     "mockcpp-2.7": ["https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip", process_mockcpp],
@@ -94,8 +94,8 @@ THIRD_PARTY_LINK_LIST = {
 }
 
 BUILDTOOLS_LINK_LIST = {
-    "cmake-3.20.5": ["http://10.136.104.231:4543/cmake-3.20.5-linux-x86_64.tar.gz", process_cmake],
-    "android-ndk-r23b": ["http://10.136.104.231:4543/android-ndk-r23b-linux.zip", process_ndk],
+    "cmake-3.20.5": ["https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz", process_cmake],
+    "android-ndk-r23b": ["https://dl.google.com/android/repository/android-ndk-r23b-linux.zip", process_ndk],
 }
 
 
