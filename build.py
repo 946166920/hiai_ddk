@@ -83,29 +83,37 @@ THIRD_PARTY_LINK_LIST = {
     "cutils": [
         "https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/ \
             cutils.tar.gz",
-        process_cutils],
+        process_cutils,
+        "core-refs_heads_master-libcutils-include-cutils.tar.gz"],
     "bounds_checking_function": [
         "https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip",
-        process_bounds_checking_function],
+        process_bounds_checking_function,
+        "libboundscheck-1.1.11.zip"],
     "protobuf": [
         "https://github.com/protocolbuffers/protobuf/archive/v3.13.0.zip",
-        process_protobuf],
+        process_protobuf,
+        "protobuf-3.13.0.zip"],
     "mockcpp-2.7": [
         "https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip",
-        process_mockcpp],
+        process_mockcpp,
+        "mockcpp-2.7.zip"],
     "googletest-release-1.8.1": [
         "https://codeload.github.com/google/googletest/tar.gz/release-1.8.1",
-        process_googletest],
+        process_googletest,
+        "googletest-release-1.8.1.tar.gz"],
 }
 
 BUILDTOOLS_LINK_LIST = {
     "cmake-3.20.5": [
         "https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz",
-        process_cmake],
+        process_cmake,
+        "cmake-3.20.5-linux-x86_64.tar.gz"],
     "android-ndk-r23b": [
         "https://dl.google.com/android/repository/android-ndk-r23b-linux.zip",
-        process_ndk],
+        process_ndk,
+        "android-ndk-r23b-linux.zip"],
 }
+
 
 def run_process(package, link_list):
     compressed_package = link_list[package][0].split('/')[-1]
@@ -115,17 +123,20 @@ def run_process(package, link_list):
 
 def config_dependence(dir, link_list):
     for dependence in link_list:
-        package_name = link_list[dependence][0].split('/')[-1]
+        package_name = link_list[dependence][2]
+
+        print("package_name:", package_name)
         # 没有压缩包，需要下载后解压；如果压缩包已存在，则直接解压
         if not os.path.exists(os.path.join(dir, package_name)):
             download_cmd = "wget -c -t 3 -P {} {} --no-check-certificate".format(dir, link_list[dependence][0])
             os.system(download_cmd)
-        compressed_package = link_list[dependence][0].split('/')[-1]
-        print("[INFO] Decompressing package {} ...".format(compressed_package))
+        # compressed_package = link_list[dependence][0].split('/')[-1]
+        print()
+        print("[INFO] Decompressing package {} ...".format(package_name))
         if os.path.exists(os.path.join(dir, dependence)):
             os.system("rm -rf {}".format(os.path.join(dir, dependence)))
         process_func = link_list[dependence][1]
-        process_func(compressed_package)
+        process_func(package_name)
 
 
 def download_third_party():
@@ -299,6 +310,7 @@ def build(buildtools_config):
 
 
 def check_argv(argv):
+    is_run_build = True
     is_run_test = True
     if len(argv) > 2:
         errmsg_invalid_para_count = \
@@ -316,8 +328,12 @@ def check_argv(argv):
             "If no option is available, both compile so and run the test code by default."
             print(helpmessage)
             sys.exit(-1)
-        elif argv[1] == "--only_ddk":
+        elif argv[1] == "--ddk":    # 只跑ddk
+            is_run_build = True
             is_run_test = False
+        elif argv[1] == "--test":   # 只跑test
+            is_run_build = False
+            is_run_test = True
         else:
             errmsg_invalid_para = \
             "ERROR]: Unknown options and parameters.\n" \
@@ -326,25 +342,26 @@ def check_argv(argv):
             print(errmsg_invalid_para)
             sys.exit(-1)
         
-    return is_run_test
+    return is_run_build, is_run_test
 
 def run_test(buildtools_config):
-    #Building the testBuild
+    #Building the test_build_dir
     prj_root_path = os.getcwd()
-    testBuild = os.path.join(prj_root_path, "tests", "build")
-    if os.path.exists(testBuild):
-        os.system("rm -r {}".format(testBuild))
-    os.makedirs(testBuild)
+    test_build_dir = os.path.join(prj_root_path, "tests", "build")
+    if os.path.exists(test_build_dir):
+        os.system("rm -r {}".format(test_build_dir))
+    os.makedirs(test_build_dir)
 
-    os.chdir(testBuild)
+    os.chdir(test_build_dir)
     cmake_bin = os.path.join(buildtools_config["CMAKE_MAKE_PROGRAM"], "bin", "cmake")
     os.system("{} ..".format(cmake_bin, os.path.join(prj_root_path, "tests")))
     os.system("make -j")
 
-    UT_LIST = [ os.path.join(testBuild, "ut", "graph", "ut_graph"),
-                os.path.join(testBuild, "ut", "model_manager", "ddk", "ddk_model_manager_ut"),
-                os.path.join(testBuild, "ut", "model_manager", "direct_model_runtime", "direct_model_runtime_ut"),
-                os.path.join(testBuild, "ut", "model_manager", "model_manager_v2", "model_manager_v2_ut"),
+    UT_LIST = [
+        os.path.join(test_build_dir, "ut", "graph", "ut_graph"),
+        os.path.join(test_build_dir, "ut", "model_manager", "ddk", "ddk_model_manager_ut"),
+        os.path.join(test_build_dir, "ut", "model_manager", "direct_model_runtime", "direct_model_runtime_ut"),
+        os.path.join(test_build_dir, "ut", "model_manager", "model_manager_v2", "model_manager_v2_ut"),
     ]
     for ut in UT_LIST:
         if not os.path.exists(ut):
@@ -354,8 +371,15 @@ def run_test(buildtools_config):
 
     os.chdir(os.path.join(os.getcwd(), "../.."))
 
+    if os.path.exists(test_build_dir):
+        os.system("rm -rf {}".format(test_build_dir))
+
+    test_out_dir = os.path.join(prj_root_path, "tests", "out")
+    if os.path.exists(test_out_dir):
+        os.system("rm -rf {}".format(test_out_dir))
+
 if __name__ == '__main__':
-    is_run_test = check_argv(sys.argv)
+    is_run_build, is_run_test = check_argv(sys.argv)
 
     # 读取编译配置
     config_dict = read_config()
@@ -374,13 +398,14 @@ if __name__ == '__main__':
     chmod_script()
 
     # build
-    if not build(buildtools_config):
-        print("[ERROR] : FAIL! build error.")
-        sys.exit(-1)
+    if is_run_build:
+        ret = build(buildtools_config)
+        if not ret:
+            print("[ERROR] : FAIL! build error.")
+            sys.exit(-1)
+        # 打包
+        os.system("python3 script/repack_ddk.py")
 
     # build test
     if is_run_test:
         run_test(buildtools_config)
-
-    # 打包
-    os.system("python3 script/repack_ddk.py")

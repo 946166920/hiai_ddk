@@ -52,9 +52,9 @@ HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方
 
 1、本地无编译环境
 
-​	如果本地是一个全新的环境，没有所需的编译工具，执行编译脚本，可以不修改配置文件，直接跳到[编译执行](#编译执行)小节，执行命令即可，默认会编译64bit架构的so，如果需要修改目标so架构，请参考下面第3节，配置`ABI`小节。
+​	如果本地是一个全新的环境，没有所需的编译工具，执行编译脚本，可以不修改配置文件，直接跳到[编译执行](#编译执行)小节，执行命令即可，默认会编译64bit架构的so，如果需要修改目标so架构，请参考下面第3小节配置`ABI`。
 
-2、通过配置文件(build.conf)进行自定义配置
+2、通过修改config目录下的配置文件(build.conf)进行自定义配置
 
 ​	如果本地已经下载好编译工具，需要在配置文件`build.conf`对应的工具名称后面正确填写对应的工具路径，具体配置项如下所示：
  （注意：配置文件中"="前的变量名请勿修改，编译脚本中会引用到，其中有一部分配置与平台相关，会在配置详情中标注）
@@ -66,7 +66,7 @@ HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方
    ```
    # 使用自定义本地配置
    ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r23b
-   # 使用编译脚本下载的工具的配置（注释掉下面这行即可）
+   # 使用编译脚本下载的工具的配置（注释掉下面这行即可，脚本中检测到ANDROID_NDK_PATH未配置，自动会去下载）
    # ANDROID_NDK_PATH=/your/project/path/HiAIFoundation/buildtools/android-ndk-r23b
    ```
 
@@ -75,11 +75,11 @@ HiAI DDK编译依赖第三方库，编译过程中需要下载所需的第三方
    CMAKE_TOOLCHAIN_FILE=/your/project/path/HiAIFoundation/buildtools/cmake-3.20.5
    ```
 
-4. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，默认为arm64-v8a，如下所示
+4. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，默认为both，如下所示
 
    ```
    # Architecture support for [armeabi-v7a/arm64-v8a/both], 'both' means compile both armeabi-v7a and arm64-v8a
-   ABI=arm64-v8a
+   ABI=both
    ```
 
 #### 编译执行
@@ -94,18 +94,22 @@ HiAI DDK基于NDK + CMake的命令行构建方式，在确认配置完成或者�
 详细命令如下：
 
    ```
-   python3 build.py                  # 编译so和编译运行测试代码默认均执行
-   python3 build.py --only_ddk       # 只编译so，不编译运行测试代码
+   python3 build.py                  	# 编译打包so和编译运行测试代码默认均执行
+   python3 build.py --ddk       		# 只编译和打包so，不编译运行测试代码
+   python3 build.py --test       		# 只编译运行测试代码，不编译和打包so
    ```
 
 
 #### 编译输出
 
-编译成功之后会在HiAIFoundation目录下生成ddk目录，ddk/ai_ddk_lib下存放打包的ddk头文件和so（32位so存放在lib目录下，64位so存放在lib64目录下）。
+编译成功之后会在HiAIFoundation目录下生成hwhiai-ddk-100.520.020.010.zip压缩包，在压缩包里的ddk/ai_ddk_lib下存放打包的ddk头文件和so（32位so存放在lib目录下，64位so存放在lib64目录下）。
 
 结构如下所示：
 
 ![image-20211228160620651](doc/images/ddk.png)
+
+编译打包so成功之后会有如下输出：
+
 
 
 编译运行测试代码成功之后会有如下输出：
