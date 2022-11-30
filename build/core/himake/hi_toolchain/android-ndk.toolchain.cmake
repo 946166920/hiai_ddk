@@ -17,8 +17,7 @@ endif()
 set(HI_SYSTEM_NAME HI_ANDROID_NDK)
 
 # include android ndk toolchain
-list(APPEND CMAKE_MODULE_PATH
-	${NDK_PATH}/build/cmake)
+list(APPEND CMAKE_MODULE_PATH	${NDK_PATH}/build/cmake)
 include(android.toolchain)
 
 # default compile options Android.toolchain.cmake define these options as

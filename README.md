@@ -41,7 +41,7 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 | googletest     | 1.8.1    | https://codeload.github.com/google/googletest/tar.gz/release-1.8.1 |
 | mockcpp | 2.7 | https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip |
 | cmake | 3.20.5 | https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz |
-| android-ndk    | r23b     | https://dl.google.com/android/repository/android-ndk-r23b-linux.zip |
+| android-ndk    | r23c     | https://dl.google.com/android/repository/android-ndk-r23c-linux.zip |
 
 只支持在Linux平台Ubuntu 16/18操作系统下进行编译，暂不支持在windows下编译。
 
@@ -68,7 +68,7 @@ HiAI DDK编译需要依赖第三方库，编译过程中会去下载所需的第
 1. 配置`NDK`路径（下载文件较大，建议使用本地配置）例如：
    ```
    # 使用自定义本地配置
-   ANDROID_NDK_PATH=/your/project/path/project_name/buildtools/android-ndk-r23b
+   ANDROID_NDK_PATH=/your/project/path/project_name/buildtools/android-ndk-r23c
    ```
    
 2. 配置`cmake`路径，例如：

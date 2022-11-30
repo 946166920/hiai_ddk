@@ -4,4 +4,5 @@ out/*
 third_party/*
 tests/build/*
 tests/out/*
-hwhiai-ddk-100.520.020.010.zip
+script/__pycache__/*
+HiAIFoundation.zip
