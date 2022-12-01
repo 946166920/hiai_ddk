@@ -16,8 +16,6 @@
 #ifndef DOMI_SCOPE_GUARD_H__
 #define DOMI_SCOPE_GUARD_H__
 
-// reference1: https://www.cnblogs.com/qicosmos/archive/2013/11/13/3421333.html
-// reference2: https://www.cnblogs.com/jojodru/p/4682816.html
 #include <functional>
 #include <iostream>
 

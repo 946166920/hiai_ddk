@@ -48,7 +48,6 @@ public:
 
     /*  @ingroup domi_common
      *  @brief 去除字符串头尾的空格
-     *  @link http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
      *  @param [in] str 待trim的字符串
      *  @return trim后的字符串
      */
@@ -59,7 +58,6 @@ public:
 
     /*  @ingroup domi_common
      *  @brief 字符串分割
-     *  @link http://stackoverflow.com/questions/236129/how-to-split-a-string-in-c
      *  @param [in] str 待分割的字符串
      *  @param [in] delim  分割字符
      *  @return 分割后的字符串数组
