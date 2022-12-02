@@ -21,12 +21,11 @@ import subprocess
 import zipfile
 import xml.etree.ElementTree as ET
 
-DDK_INFO_CONFIG_FILE = os.path.join('config', 'info.xml')
-DDK_PACKAGE_NAME = 'HiAIFoundation'
+DDK_PACKAGE_NAME = 'hwhiai-ddk-master'
 DDK_RELEASE_DIR = os.path.join('out', DDK_PACKAGE_NAME)
 DDK_PACKAGE_FILE = os.path.join('config', 'ddk.xml')
 DDK_LIST = ["libhiai.so", "libhiai_ir.so", "libhiai_ir_build.so", "libhiai_ir_build_aipp.so"]
-DDK_ZIP_NAME = 'HiAIFoundation.zip'
+DDK_ZIP_NAME = 'hwhiai-ddk-master.zip'
 
 
 class repack_ddk(object):
@@ -37,7 +36,6 @@ class repack_ddk(object):
     def repack(self):
         self.check_so()
         self.pack_ddk_files()
-        self.gen_ddk_info()
         self.gen_ddk_package()
 
 
@@ -70,37 +68,6 @@ class repack_ddk(object):
             self.cp_item(class_configs[2])
         
         f.close()
-
-
-    def gen_ddk_info(self):
-        if not os.path.isfile(DDK_INFO_CONFIG_FILE):
-            print('Error: ddk repack, Can not get ddk_info file:', DDK_INFO_CONFIG_FILE)
-            sys.exit(-1)
-
-        root = ET.parse(DDK_INFO_CONFIG_FILE).getroot()
-
-        # get file_name
-        if 'file_name' in root.attrib:
-            ddk_info_file = os.path.join(DDK_RELEASE_DIR, 'ddk_external', root.attrib['file_name'])
-        else:
-            print('Error: can not get ddk_info file name !')
-            sys.exit(-1)
-
-        # get content
-        content = '{\n'
-        for child in root:
-            content = '%s%s%s%s%s%s' % (content, '"', child.tag, '":"', child.text, '",\n')
-        content += '}\n'
-
-        if os.path.exists(ddk_info_file):
-            cmd = 'rm -rf ' + ddk_info_file
-            subprocess.run(cmd, check=True, shell=True, stdout=subprocess.PIPE)
-        try:
-            with open(ddk_info_file, 'a') as ddk_info_write:
-                ddk_info_write.write(content)
-        except:
-            print('Error: gen ddk_info file fail!')
-            sys.exit(-1)
 
 
     def gen_ddk_package(self):

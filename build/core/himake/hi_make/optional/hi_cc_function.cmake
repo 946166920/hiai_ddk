@@ -84,7 +84,7 @@ function(hi_cc_function func_name)
   ## others
   if(HI_FUNCTION_SRCS)
     if(${func_name})
-      hi_extract_all_srcs(${HI_FUNCTION_SRCS} srcs incs)
+      hi_extract_all_srcs("${HI_FUNCTION_SRCS}" srcs incs)
       target_sources(${target_name}
         PRIVATE
           ${srcs}

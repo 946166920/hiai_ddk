@@ -31,7 +31,7 @@ THIRD_PARTY_DIR = "third_party"
 class HandleConfig(object):
     def __init__(self, config_file):
         self.config_file = config_file
-        self.ndk_path = os.path.join(os.getcwd(), "buildtools", "android-ndk-r23c")
+        self.ndk_path = os.path.join(os.getcwd(), "buildtools", "android-ndk-r23b")
         self.is_configed_ndk = False
         self.cmake_path = os.path.join(os.getcwd(), "buildtools", "cmake-3.20.5")
         self.is_configed_cmake = False
@@ -39,8 +39,8 @@ class HandleConfig(object):
     
         self.BUILDTOOLS_LINK_LIST = {
             "ndk": [
-                "http://10.136.104.231:4543/android-ndk-r23c-linux.zip",
-                "android-ndk-r23c-linux.zip"],
+                "http://10.136.104.231:4543/android-ndk-r23b-linux.zip",
+                "android-ndk-r23b-linux.zip"],
             "cmake": [
                 "http://10.136.104.231:4543/cmake-3.20.5-linux-x86_64.tar.gz",
                 "cmake-3.20.5-linux-x86_64.tar.gz"],
@@ -72,9 +72,9 @@ class HandleConfig(object):
         #     "cmake-3.20.5": [
         #         "https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz",
         #         "cmake-3.20.5-linux-x86_64.tar.gz"],
-        #     "android-ndk-r23c": [
-        #         "https://dl.google.com/android/repository/android-ndk-r23c-linux.zip",
-        #         "android-ndk-r23c-linux.zip"],
+        #     "android-ndk-r23b": [
+        #         "https://dl.google.com/android/repository/android-ndk-r23b-linux.zip",
+        #         "android-ndk-r23b-linux.zip"],
         #     }
         # self.THIRD_PARTY_LINK_LIST = {
         #     "cutils": [
@@ -180,7 +180,7 @@ class HandleConfig(object):
                 BUILDTOOLS_DIR, os.path.join(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["ndk"][1]))
             os.system(unzip_cmd)
             # add permissions to ndk executable files.
-            chmod_ndk = "chmod -R u+x {}/android-ndk-r23c".format(BUILDTOOLS_DIR)
+            chmod_ndk = "chmod -R u+x {}/android-ndk-r23b".format(BUILDTOOLS_DIR)
             os.system(chmod_ndk)
         return True
 

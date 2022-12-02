@@ -4,30 +4,23 @@ hi_cc_library_static(
     ai::fmk::model_manager_static
   SRCS
     core/model_manager_impl.cpp
-    # AI_SUPPORT_LEGACY_APP_COMPATIBLE
-    compatible/AiContext.cpp
-    compatible/AiModelBuilder.cpp
-    compatible/AiModelDescription.cpp
-    compatible/HiAiModelManagerService.cpp
-    compatible/MemBuffer.cpp
-    compatible/MembufferUtil.cpp
   CDEFS
     HIAI_MM_API_VISIABLE
   COPTS
     -frtti
 )
 
-# hi_cc_function(AI_SUPPORT_LEGACY_APP_COMPATIBLE
-#   NAME
-#     ai::fmk::model_manager_static
-#   SRCS
-#     compatible/AiContext.cpp
-#     compatible/AiModelBuilder.cpp
-#     compatible/AiModelDescription.cpp
-#     compatible/HiAiModelManagerService.cpp
-#     compatible/MemBuffer.cpp
-#     compatible/MembufferUtil.cpp
-# )
+hi_cc_function(AI_SUPPORT_LEGACY_APP_COMPATIBLE
+  NAME
+    ai::fmk::model_manager_static
+  SRCS
+    compatible/AiContext.cpp
+    compatible/AiModelBuilder.cpp
+    compatible/AiModelDescription.cpp
+    compatible/HiAiModelManagerService.cpp
+    compatible/MemBuffer.cpp
+    compatible/MembufferUtil.cpp
+)
 
 hi_cc_library_shared(
   NAME
@@ -55,10 +48,6 @@ hi_cc_library_shared(
 
     ai::fmk::util::file_static
 
-    ai::fmk::model_runtime::direct_static
-    ai::fmk::om::om_wrapper_static
-    ai::infra::dl_helper_static
-    ai::fmk::tensor::aipp_para_static
   EXCLUDE_STATIC_LIBS
     ai::fmk::common::file_util_static
     ai::infra::dl_helper_static
@@ -78,29 +67,28 @@ hi_cc_library_shared(
     AI_SUPPORT_AIPP_API
 )
 
-# hi_cc_function(AI_SUPPORT_LEGACY_ROM_COMPATIBLE
-#   NAME
-#     ai::fmk::model_manager_shared
-#   DEPS
-#     ai::fmk::model_runtime::direct_static
-# )
+hi_cc_function(AI_SUPPORT_LEGACY_ROM_COMPATIBLE
+  NAME
+    ai::fmk::model_manager_shared
+  WHOLE_STATIC_LIBS
+    ai::fmk::model_runtime::direct_static
+)
 
-# hi_cc_function(AI_SUPPORT_PLUGIN_COMPATIBLE
-#   NAME
-#     ai::fmk::model_manager_shared
-#   DEPS
-#     # DDK侧需要
-#     ai::fmk::om::om_wrapper_static
-#     ai::infra::dl_helper_static
-# )
+hi_cc_function(AI_SUPPORT_PLUGIN_COMPATIBLE
+  NAME
+    ai::fmk::model_manager_shared
+  WHOLE_STATIC_LIBS
+    ai::fmk::om::om_wrapper_static
+    # ai::infra::dl_helper_static
+)
 
-# hi_cc_function(AI_SUPPORT_AIPP_API
-#   NAME
-#     ai::fmk::model_manager_shared
-#   DEPS
-#     ai::fmk::tensor::aipp_para_static
-#   CDEFS
-#     AI_SUPPORT_AIPP_API
-# )
+hi_cc_function(AI_SUPPORT_AIPP_API
+  NAME
+    ai::fmk::model_manager_shared
+  WHOLE_STATIC_LIBS
+    ai::fmk::tensor::aipp_para_static
+  CDEFS
+    AI_SUPPORT_AIPP_API
+)
 
 hi_target_output_name(ai::fmk::model_manager_shared hiai)

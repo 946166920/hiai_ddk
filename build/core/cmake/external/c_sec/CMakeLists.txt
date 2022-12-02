@@ -1,3 +1,6 @@
+# This file compiles the source code in third_party/bounds_checking_function to 
+# generate libhuawei_c_sec_shared.so.
+
 set(OPEN_SOURCE_CSEC_DIR ${ROOT_DIR}/third_party/bounds_checking_function)
 
 hi_cc_library_static(

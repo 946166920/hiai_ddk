@@ -6,17 +6,16 @@ hi_cc_library_static(
     ai::fmk::model_builder_static
   SRCS
     om/*.cpp
-    compatible/BuildOptionUtil.cpp
   CDEFS
     HIAI_MB_API_VISIABLE
 )
 
-# hi_cc_function(AI_SUPPORT_MODEL_BUILDER_COMPATIBLE
-#   NAME
-#     ai::fmk::model_builder_static
-#   SRCS
-#     compatible/BuildOptionUtil.cpp
-# )
+hi_cc_function(AI_SUPPORT_MODEL_BUILDER_COMPATIBLE
+  NAME
+    ai::fmk::model_builder_static
+  SRCS
+    compatible/BuildOptionUtil.cpp
+)
 
 hi_cc_library_static(
   NAME

@@ -1,4 +1,5 @@
 - [HUAWEI HiAI Foundation介绍](#huawei-hiai-foundation介绍)
+- [工程结构介绍](#工程结构介绍)
 - [编译](#编译)
     - [编译环境配置](#编译环境配置)
     - [编译执行](#编译执行)
@@ -27,6 +28,30 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 
 （[硬件平台和手机型号对应关系表](./doc/MappingHardWarePlatformAndPhoneModel.md)）
 
+
+
+## 工程结构介绍
+| 文件/目录名 | 说明                                                   |
+| -------------- | ------------------------------------------------------------ |
+| api | 开放接口目录 |
+| build   | 编译架构源码目录 |
+| cmake | 编译过程中用到的cmake文件 |
+| config | 配置文件目录 |
+| doc | 文档目录 |
+| inc | 头文件接口目录 |
+| script | 工程使用到的脚本目录 |
+| src | 源码目录 |
+| tests | 测试源码目录 |
+| CMakeLists.txt | 顶层CMakeLists文件 |
+| LICENSE | 许可证文件 |
+| README.md | readme文件 |
+| RELEASE.md | 发布历史记录文件 |
+| Third_Party_Open_Source_Software_Notice.doc | 开源三方使用声明文件 |
+| build.py | 编译脚本 |
+
+
+
+
 ## 编译
 
 #### 编译环境配置
@@ -52,7 +77,7 @@ HiAI DDK编译需要依赖第三方库，编译过程中会去下载所需的第
 
 
 
-本项目编译依赖NDK和CMake编译工具：
+本项目编译依赖NDK和CMake编译工具（暂不支持r19c以下的NDK版本。）：
 
 1、本地没有安装NDK和CMake的情况下：
 
@@ -68,7 +93,7 @@ HiAI DDK编译需要依赖第三方库，编译过程中会去下载所需的第
 1. 配置`NDK`路径（下载文件较大，建议使用本地配置）例如：
    ```
    # 使用自定义本地配置
-   ANDROID_NDK_PATH=/your/project/path/project_name/buildtools/android-ndk-r23c
+   ANDROID_NDK_PATH=/your/project/path/project_name/buildtools/android-ndk-r23b
    ```
    
 2. 配置`cmake`路径，例如：
