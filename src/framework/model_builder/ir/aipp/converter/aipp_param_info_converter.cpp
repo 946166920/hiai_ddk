@@ -50,7 +50,7 @@ enum AIPP_MODE {
 
 uint16_t TransFloatToFp16(float src)
 {
-    fp16_t fp16Data = src;
+    fp16_t fp16Data = static_cast<fp16_t>(src);
     return fp16Data.val;
 }
 

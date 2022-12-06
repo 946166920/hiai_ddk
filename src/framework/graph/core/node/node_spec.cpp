@@ -154,7 +154,7 @@ bool NodeSpec::HasEdge() const
 
 bool NodeSpec::IsInOutAnchorValid() const
 {
-    std::size_t inDescSize = static_cast<std::size_t>(OpDesc().GetInputsDescSize());
+    std::size_t inDescSize = static_cast<unsigned int>(OpDesc().GetInputsDescSize());
     std::size_t outDescSize = static_cast<std::size_t>(OpDesc().GetOutputsSize());
     std::size_t inAnchorSize = ROLE(NodeStore).InDataAnchors().size();
     std::size_t outAnchorSize = ROLE(NodeStore).OutDataAnchors().size();

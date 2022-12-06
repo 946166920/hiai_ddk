@@ -20,10 +20,10 @@
 
 namespace hiai {
 
-class ModelBuiderImpl : public IModelBuilder {
+class ModelBuilderImpl : public IModelBuilder {
 public:
-    ModelBuiderImpl() = default;
-    ~ModelBuiderImpl() = default;
+    ModelBuilderImpl() = default;
+    ~ModelBuilderImpl() override = default;
 
     Status Build(const ModelBuildOptions& options, const std::string& modelName,
         const std::shared_ptr<IBuffer>& modelBuffer, std::shared_ptr<IBuiltModel>& builtModel) override;

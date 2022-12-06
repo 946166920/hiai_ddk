@@ -54,6 +54,11 @@ std::size_t GraphSpec::InNodesNum() const
     return num;
 }
 
+std::size_t GraphSpec::OutNodesNum() const
+{
+    return ROLE(GraphStore).OutputNodes().size();
+}
+
 const std::string& GraphSpec::Name() const
 {
     return ROLE(GraphStore).Name();
@@ -89,7 +94,7 @@ private:
     std::size_t ExpectNodeInDegree(const Node& node) const
     {
         const NodeSpec& spec = node.ROLE(NodeSpec);
-        return spec.InCtrlEdgeSize() + static_cast<std::size_t>(spec.OpDesc().GetInputsDescSize());
+        return spec.InCtrlEdgeSize() + static_cast<unsigned int>(spec.OpDesc().GetInputsDescSize());
     }
 
     std::size_t ActualNodeInDegree(const Node& node) const

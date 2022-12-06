@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef HIAI_FRAMEWORK_INFRA_MEM_STATIC_STORAGE_H
-#define HIAI_FRAMEWORK_INFRA_MEM_STATIC_STORAGE_H
+#ifndef HIAI_API_INFRA_BASE_STATIC_STORAGE_H
+#define HIAI_API_INFRA_BASE_STATIC_STORAGE_H
 
 namespace hiai {
 template <typename T>
@@ -75,4 +75,4 @@ private:
 };
 }
 
-#endif // HIAI_FRAMEWORK_INFRA_MEM_STATIC_STORAGE_H
+#endif // HIAI_API_INFRA_BASE_STATIC_STORAGE_H

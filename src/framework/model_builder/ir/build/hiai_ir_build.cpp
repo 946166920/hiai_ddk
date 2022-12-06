@@ -41,6 +41,7 @@
 #include "framework/infra/log/log_fmk_interface.h"
 #include "framework/infra/log/log.h"
 
+using namespace std;
 namespace hiai {
 #ifdef __LP64__
 static const string AI_CLIENT_SO_PATH = "/vendor/lib64/libai_client.so";

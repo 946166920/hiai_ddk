@@ -37,11 +37,6 @@ namespace ge {
     { \
         name = value; \
     }; \
-\
-private: \
-    bool has_mutable_##name {false}; \
-\
-public: \
     bool has_##name() const \
     { \
         return (has_mutable_##name) || QuantizeFactorHasData(name); \
@@ -51,6 +46,8 @@ public: \
         has_mutable_##name = true; \
         return &name; \
     }
+#define DEF_TYPE_HAS_DEC_PRIVATE(name) \
+    bool has_mutable_##name {false}
 #define DEF_TYPE_VEC_DEC(type, name) do { \
     inline int name##_size() const \
     { \
@@ -247,6 +244,7 @@ inline bool QuantizeFactorHasData(const QuantizeCalcFactor& factor)
 }
 
 struct QuantizeFactorParams {
+public:
     uint32_t quantize_algo {0};
     uint32_t scale_type {0};
     QuantizeFactor quantize_param;
@@ -255,16 +253,17 @@ struct QuantizeFactorParams {
     QuantizeCalcFactor quantizecalc_param;
 
     DEF_TYPE_DEC(uint32_t, quantize_algo);
-
     DEF_TYPE_DEC(uint32_t, scale_type);
-
     DEF_TYPE_HAS_DEC(QuantizeFactor, quantize_param);
-
     DEF_TYPE_HAS_DEC(QuantizeFactor, dequantize_param);
-
     DEF_TYPE_HAS_DEC(QuantizeFactor, requantize_param);
-
     DEF_TYPE_HAS_DEC(QuantizeCalcFactor, quantizecalc_param);
+
+private:
+    DEF_TYPE_HAS_DEC_PRIVATE(quantize_param);
+    DEF_TYPE_HAS_DEC_PRIVATE(dequantize_param);
+    DEF_TYPE_HAS_DEC_PRIVATE(requantize_param);
+    DEF_TYPE_HAS_DEC_PRIVATE(quantizecalc_param);
 };
 
 struct QuantizeInfo {

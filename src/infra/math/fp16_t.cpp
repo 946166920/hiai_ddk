@@ -112,7 +112,8 @@ static float fp16ToFloat(const uint16_t& fpVal)
         mRet = mRet << (FP32_MAN_LEN - FP16_MAN_LEN);
     }
     fVal = FP32_CONSTRUCTOR(sRet, eRet, mRet);
-    ret = *(reinterpret_cast<float*>(&fVal));
+    float* pfVal = reinterpret_cast<float*>(&fVal);
+    ret = *pfVal;
 
     return ret;
 }

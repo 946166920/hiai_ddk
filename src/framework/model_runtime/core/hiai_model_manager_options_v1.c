@@ -38,7 +38,8 @@ void HIAI_ModelInitOptionsV1_SetPerfMode(HIAI_ModelInitOptions* options, HIAI_Pe
     if (options == NULL) {
         return;
     }
-    if (devPerf < HIAI_PERFMODE_UNSET || devPerf > HIAI_PERFMODE_EXTREME) {
+    if (devPerf < HIAI_PERFMODE_UNSET ||
+        (devPerf > HIAI_PERFMODE_EXTREME && devPerf != HIAI_PERFMODE_HIGH_COMPUTE_UNIT)) {
         FMK_LOGW("devPerf is invalid. set devPerf is HIAI_PERFMODE_NORMAL");
         ((HIAI_ModelInitOptionsV1*)options)->perfMode = HIAI_PERFMODE_NORMAL;
         return;

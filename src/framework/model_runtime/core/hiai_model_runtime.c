@@ -65,6 +65,7 @@ static HIAI_SymbolName g_symbolFuncNames[HRANI_SIZE] = {
     {"ModelManager_RunV3", HRANI_MODELMANAGER_RUN_V3},
     {"ModelManager_RunAsyncV3", HRANI_MODELMANAGER_RUN_ASYNC_V3},
     {"ModelManager_runAippModelV3", HRANI_MODELMANAGER_RUN_AIPP_MODEL_V3},
+    {"BuiltModel_RestoreFromFileWithShapeIndex", HRANI_BUILTMODEL_RESTORE_FROM_FILE_WITH_SHAPE_INDEX},
 };
 
 static HIAI_SymbolName g_symbolOptionsNames[OPTIONS_SIZE] = {
@@ -133,7 +134,7 @@ static HIAI_SymbolName g_symbolOptionsNames[OPTIONS_SIZE] = {
     {"ModelInitOptions_Destroy", HIAI_MODELINITOPTIONS_DESTROY},
 };
 
-static char* HIAI_ModelRuntime_ConcateName(const char* prefix, char* funcName)
+static char* HIAI_ModelRuntime_ConcatName(const char* prefix, char* funcName)
 {
     size_t len = strlen(funcName) + strlen(prefix) + 1;
     char* name = malloc(len);
@@ -162,7 +163,7 @@ static int32_t HIAI_ModelRuntime_GetSymbols(
     int32_t count = 0;
 
     for (int32_t i = 0; i < size; i++) {
-        char* name = HIAI_ModelRuntime_ConcateName(prefix, symbolNames[i].name);
+        char* name = HIAI_ModelRuntime_ConcatName(prefix, symbolNames[i].name);
         if (name == NULL) {
             FMK_LOGE("concate name failed");
             return 0;
@@ -208,11 +209,17 @@ static HIAI_Status HIAI_ModelRuntime_LoadFromAllSymbols(HIAI_ModelRuntime* runti
 typedef void* (*GET_PLUGIN_SO_HANDLE_FUNC)(const char* soName);
 static void* HIAI_ModelRuntime_GetPluginAppRuntimeHandle(void)
 {
+    static int enhanceChecked = 0;
+    if (enhanceChecked > 0) {
+        FMK_LOGW("libhiai_enhance.so not exist");
+        return 0L;
+    }
     const char* libraryName = "libhiai_enhance.so";
     dlerror();
     void* handle = dlopen(libraryName, RTLD_LAZY);
     if (handle == NULL) {
         FMK_LOGW("dlopen failed, lib[%s], errmsg[%s]", libraryName, dlerror());
+        enhanceChecked = 1;
         return 0L;
     }
     const char* functionName = "GetPluginSoHandleDefault";

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #ifndef _INC_FRAMEWORK_INFRA_LOG_INTERFACE_H_
 #define _INC_FRAMEWORK_INFRA_LOG_INTERFACE_H_
 

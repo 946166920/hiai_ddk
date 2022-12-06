@@ -76,7 +76,7 @@ uint32_t TensorUtils::GetWeightSize(ConstTensorPtr tensorPtr)
     return GetWeightSize(*tensorPtr);
 }
 
-uint8_t* TensorUtils::GetWeightAddr(ConstTensorPtr tensorPtr, uint8_t* base)
+const uint8_t* TensorUtils::GetWeightAddr(ConstTensorPtr tensorPtr, const uint8_t* base)
 {
     GE_CHK_BOOL_EXEC(base != nullptr, return nullptr, "base is null.");
     if (!tensorPtr) {
@@ -85,7 +85,7 @@ uint8_t* TensorUtils::GetWeightAddr(ConstTensorPtr tensorPtr, uint8_t* base)
     return GetWeightAddr(*tensorPtr, base);
 }
 
-uint8_t* TensorUtils::GetWeightAddr(const Tensor& tensor, uint8_t* base)
+const uint8_t* TensorUtils::GetWeightAddr(const Tensor& tensor, const uint8_t* base)
 {
     GE_CHK_BOOL_EXEC(base != nullptr, return nullptr, "base is null.");
     int64_t weightDataOffset = 0;
@@ -94,7 +94,7 @@ uint8_t* TensorUtils::GetWeightAddr(const Tensor& tensor, uint8_t* base)
     }
     if (weightDataOffset == 0) {
         // offset为0的权值仍然放在const op里面，没有清空，还是从ATTR_NAME_WEIGHTS中获取
-        return const_cast<uint8_t*>(tensor.GetData().GetData());
+        return tensor.GetData().GetData();
     }
 
     return base + weightDataOffset;

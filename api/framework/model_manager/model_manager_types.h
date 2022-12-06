@@ -39,9 +39,7 @@ enum class PerfMode {
     MIDDLE,
     HIGH,
     EXTREME_HIGH,
-#ifdef AI_SUPPORT_PREFMODE_EXTEND
-    HIGH_ONLY_NPU = 103
-#endif
+    HIGH_COMPUTE_UNIT = 103,
 };
 
 struct ModelInitOptions {

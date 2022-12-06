@@ -174,7 +174,7 @@ Status ModelTypeUtil::IsSpecial3rdModel(const void* data, size_t size, bool& isS
         FMK_LOGE("modelHead is null.");
         return FAIL;
     }
-    if (memcpy_s(modelHead, modelFileHeadLength, buff.data(), modelFileHeadLength) != EOK) {
+    if (memcpy_s(modelHead, modelFileHeadLength, data, modelFileHeadLength) != EOK) {
         FMK_LOGE("buffer memset failed.");
         delete[] modelHead;
         return FAIL;

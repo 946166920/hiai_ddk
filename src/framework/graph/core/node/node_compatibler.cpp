@@ -172,8 +172,8 @@ hiai::Status NodeCompatibler::TransTensorToConstInput(const std::vector<ge::Tens
     vector<uint32_t> unsetInputIndexs;
     opDesc.GetUnSetInputIndexs(unsetInputIndexs);
 
+    int dstIndex = 0;
     for (size_t i = 0; i < weights.size(); i++) {
-        int dstIndex;
         HIAI_EXPECT_EXEC(GetDstIndex(unsetInputIndexs, i, ROLE(Node), dstIndex));
         HIAI_EXPECT_EXEC(TransTensorToConstInput(weights[i], dstIndex));
     }

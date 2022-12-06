@@ -27,6 +27,7 @@ namespace hiai {
 void CustomDataUtil::CopyDataToBuffer(
     std::shared_ptr<hiai::IBuffer>& outBuffer, size_t& offset, const void* data, size_t size)
 {
+    HIAI_EXPECT_NOT_NULL_VOID(data);
     if (memcpy_s(reinterpret_cast<void*>(reinterpret_cast<char*>(outBuffer->GetData()) + offset),
         outBuffer->GetSize() - offset, data, size) != 0) {
         FMK_LOGE("memcpy data failed.");
@@ -90,6 +91,7 @@ Status CustomDataUtil::WriteCustomDataToFile(const char* file, const CustomModel
 std::shared_ptr<hiai::IBuffer> CustomDataUtil::SaveCustomDataToBuffer(
     void* data, size_t size, const CustomModelData& customModelData)
 {
+    HIAI_EXPECT_NOT_NULL_R(data, nullptr);
     if (customModelData.type.empty()) {
         return CreateLocalBuffer(data, size, true);
     }
@@ -105,10 +107,7 @@ std::shared_ptr<hiai::IBuffer> CustomDataUtil::SaveCustomDataToBuffer(
         return nullptr;
     }
     (void)CopyDataToBuffer(outBuffer, offset, data, size);
-    if (data != nullptr) {
-        delete[] static_cast<uint8_t*>(data);
-        data = nullptr;
-    }
+    delete[] static_cast<uint8_t*>(data);
 
     return outBuffer;
 }

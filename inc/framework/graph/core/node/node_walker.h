@@ -21,8 +21,8 @@
 #include <memory>
 #include <functional>
 
-// inc/infra
-#include "framework/infra/mem/maybe.h"
+// api/infra
+#include "base/maybe.h"
 
 // inc/framework
 #include "framework/infra/base/dci.h"

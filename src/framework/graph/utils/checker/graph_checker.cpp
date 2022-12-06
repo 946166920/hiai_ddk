@@ -44,23 +44,18 @@ bool GraphChecker::IsInputsFullyLinked(const ComputeGraph& graph)
             });
         }
 
-        /* Note: close_hione_baltimore_fmk_onnx_9732901 tc_fmk_onnx_net_search_distill_aipp_0001
-         close_hione_baltimore_fmk_onnx_9732901 tc_fmk_onnx_net_template_distill_aipp_0001
-         close_hione_m536_fmk_onnx_9732895 tc_fmk_onnx_net_template_distill_aipp_0001
-         close_phoenix_4g_phoenix_fmk_onnx_9732828 tc_fmk_onnx_net_template_distill_aipp_0001 */
         if (type == hiai::op::ConvTranspose::TYPE) {
             return hiai::SUCCESS;
         }
-        // Note: close_hione_baltimore_fmk_cbg_internal_9732940 hiai_cbg_he_net_caffe_personDetector_001_internalDDK
+
         if (type == hiai::op::SSDDetectionOutput::TYPE) {
             return hiai::SUCCESS;
         }
-        /* Note: close_hione_baltimore_hpc_performance_evaluation_9734522
-         tc_perf_Evaluation_AiMark2_5_SSD_Mobilenet_Tensorflow_INT8_2B_AIPP_ASYNC */
+
         if (type == ge::SSDPOSTPROCESSOR) {
             return hiai::SUCCESS;
         }
-        // Note: tf_Antutu_AI_mobilenetv1_ssd_coco_0001
+
         if (type == "SSDAnchorGenerator") {
             return hiai::SUCCESS;
         }

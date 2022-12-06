@@ -49,9 +49,9 @@ public:
     void SetName(std::string name);
 
     std::vector<NodePtr>& AllNodes() const;
-    std::vector<NodePtr>& InputNodes() const;
-    std::vector<NodePtr>& OutputNodes() const;
-    std::map<std::string, uint32_t>& InputOrder() const;
+    std::vector<NodePtr>& InputNodes();
+    std::vector<NodePtr>& OutputNodes();
+    std::map<std::string, uint32_t>& InputOrder();
 
     bool HasNode(const Node& node);
     bool HasEdge(const Edge& edge);

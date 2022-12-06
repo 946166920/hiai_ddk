@@ -18,7 +18,6 @@
 #define HIAI_FRAMEWORK_INFRA_BASE_DCI_H
 
 #include "graph/graph_api_export.h"
-
 #define ROLE(type) Get##type()
 #define ROLE_PROTO_TYPE(type) type& ROLE(type) const
 #define USE_ROLE(type) virtual ROLE_PROTO_TYPE(type) = 0
@@ -27,7 +26,6 @@
 #define DECL_ROLE(type) ROLE_PROTO_TYPE(type)
 #define ROLE_VAR(type) type##_
 #define CAST_TO_ROLE(type, obj)
-
 #define IMPL_ROLE(type)                                                                                                \
 private:                                                                                                               \
     ROLE_PROTO_TYPE(type) override                                                                                     \

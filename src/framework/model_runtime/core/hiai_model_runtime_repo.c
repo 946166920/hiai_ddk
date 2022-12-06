@@ -94,15 +94,15 @@ static bool HIAI_ModelRuntime_IsSupportedModelRuntime(HIAI_ModelRuntimeType type
     return false;
 }
 
-static bool ModelRuntimeRepo_CheckRuntimeOK(size_t index, uint32_t* isHCLTried)
+static HIAI_ModelRuntime* ModelRuntimeRepo_GetRuntimeFromIndex(size_t index, uint32_t* isHCLTried)
 {
     if (!HIAI_ModelRuntime_IsSupportedModelRuntime(index)) {
-        return false;
+        return NULL;
     }
 
     if (*isHCLTried == 1 &&
         (index == PLUGIN_MODEL_RUNTIME_HCL || index == HIAI_MODEL_RUNTIME_HCL || index == FMK_MODEL_RUNTIME_HCL)) {
-        return false;
+        return NULL;
     }
 
     (void)HIAI_ModelRuntimeRepo_LoadByType(index);
@@ -112,7 +112,7 @@ static bool ModelRuntimeRepo_CheckRuntimeOK(size_t index, uint32_t* isHCLTried)
         (index == PLUGIN_MODEL_RUNTIME_HCL || index == HIAI_MODEL_RUNTIME_HCL || index == FMK_MODEL_RUNTIME_HCL)) {
         *isHCLTried = 1;
     }
-    return true;
+    return repo->runtimes[index];
 }
 
 HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryBuild(
@@ -121,16 +121,12 @@ HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryBuild(
 #ifdef HIAI_DDK
     FMK_LOGI("DDK version is beta.");
 #endif
-    HIAI_ModelRuntimeRepo* repo = HIAI_ModelRuntimeRepo_Inst();
 
     uint32_t isHCLTried = 0;
     for (size_t i = 0; i < HIAI_MAX_MODEL_RUNTIME_NUM; i++) {
-        if (!ModelRuntimeRepo_CheckRuntimeOK(i, &isHCLTried)) {
-            continue;
-        }
-
+        HIAI_ModelRuntime* modelRuntime = ModelRuntimeRepo_GetRuntimeFromIndex(i, &isHCLTried);
         HIAI_BuiltModel_Impl* builtModelImpl =
-            HIAI_ModelBuilder_BuildOnRuntime(options, modelName, modelData, modelSize, repo->runtimes[i]);
+            HIAI_ModelBuilder_BuildOnRuntime(options, modelName, modelData, modelSize, modelRuntime);
         if (builtModelImpl != NULL) {
             return builtModelImpl;
         }
@@ -142,18 +138,14 @@ HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryBuild(
 
 HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryRestore(const void* modelData, size_t modelSize)
 {
-    HIAI_ModelRuntimeRepo* repo = HIAI_ModelRuntimeRepo_Inst();
 #ifdef HIAI_DDK
     FMK_LOGI("DDK version is beta.");
 #endif
 
     uint32_t isHCLTried = 0;
     for (size_t i = 0; i < HIAI_MAX_MODEL_RUNTIME_NUM; i++) {
-        if (!ModelRuntimeRepo_CheckRuntimeOK(i, &isHCLTried)) {
-            continue;
-        }
-        HIAI_BuiltModel_Impl* builtModelImpl =
-            HIAI_BuiltModel_RestoreOnRuntime(modelData, modelSize, repo->runtimes[i]);
+        HIAI_ModelRuntime* modelRuntime = ModelRuntimeRepo_GetRuntimeFromIndex(i, &isHCLTried);
+        HIAI_BuiltModel_Impl* builtModelImpl = HIAI_BuiltModel_RestoreOnRuntime(modelData, modelSize, modelRuntime);
         if (builtModelImpl != NULL) {
             return builtModelImpl;
         }
@@ -165,14 +157,26 @@ HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryRestore(const void* modelData, size_t 
 
 HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryRestoreFromFile(const char* file)
 {
-    HIAI_ModelRuntimeRepo* repo = HIAI_ModelRuntimeRepo_Inst();
-
     uint32_t isHCLTried = 0;
     for (size_t i = 0; i < HIAI_MAX_MODEL_RUNTIME_NUM; ++i) {
-        if (!ModelRuntimeRepo_CheckRuntimeOK(i, &isHCLTried)) {
-            continue;
+        HIAI_ModelRuntime* modelRuntime = ModelRuntimeRepo_GetRuntimeFromIndex(i, &isHCLTried);
+        HIAI_BuiltModel_Impl* builtModelImpl = HIAI_BuiltModel_RestoreFromFileOnRuntime(file, modelRuntime);
+        if (builtModelImpl != NULL) {
+            return builtModelImpl;
         }
-        HIAI_BuiltModel_Impl* builtModelImpl = HIAI_BuiltModel_RestoreFromFileOnRuntime(file, repo->runtimes[i]);
+    }
+
+    FMK_LOGE("no runtime support the Model.");
+    return NULL;
+}
+
+HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryRestoreFromFileWithShapeIndex(const char* file, uint8_t shapeIndex)
+{
+    uint32_t isHCLTried = 0;
+    for (size_t i = 0; i < HIAI_MAX_MODEL_RUNTIME_NUM; ++i) {
+        HIAI_ModelRuntime* modelRuntime = ModelRuntimeRepo_GetRuntimeFromIndex(i, &isHCLTried);
+        HIAI_BuiltModel_Impl* builtModelImpl =
+            HIAI_BuiltModel_RestoreFromFileWithShapeIndexOnRuntime(file, shapeIndex, modelRuntime);
         if (builtModelImpl != NULL) {
             return builtModelImpl;
         }

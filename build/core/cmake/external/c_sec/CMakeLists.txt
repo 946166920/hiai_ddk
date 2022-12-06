@@ -8,15 +8,10 @@ hi_cc_library_static(
     huawei::c_sec_static
   SRCS
     ${OPEN_SOURCE_CSEC_DIR}/src/*.c
+  COPTS
+    -s
   CDEFS
     SECUREC_SUPPORT_STRTOLD=1
-)
-
-hi_cc_function(AI_SUPPORT_HUAWEI_C_SEC_SHARED
-  NAME
-    huawei::c_sec_static
-  COPTS
-    -fvisibility=default
 )
 
 hi_target_include_directories(

@@ -22,11 +22,14 @@
 #include <vector>
 #include "securec.h"
 
+#include "infra/base/assertion.h"
+#include "infra/math/fp16_t.h"
+
 #include "framework/common/types.h"
 #include "framework/infra/log/log.h"
-#include "common/math/math_util.h"
 #include "framework/graph/utils/tensor_utils.h"
-#include "infra/math/fp16_t.h"
+
+#include "common/math/math_util.h"
 
 #if defined(ARM_NEON_32)
 #include <arm_neon.h>
@@ -152,21 +155,23 @@ using namespace hiai;
                            : [inPtr] "r"(inPtr) \
                            : "x2", "x3", "x4", "x5", "v9", "v13", "v14", "v18", "s17", "cc"); \
     } while (0)
-#define TransTensorFp32ToFp16_C8_neon(inPtr, outPtr) \
-    do { \
-        __asm__ __volatile("mov x2, %[inPtr]\n" \
-                           "mov x3, %[outPtr]\n" \
-\
-                           "ld1 {v9.4s, v10.4s}, [x2], #32\n" \
-                           "fcvtn v11.4h, v9.4s\n" \
-                           "fcvtn2 v11.8h, v10.4s\n" \
-                           "st1 {v11.8h}, [x3], #16\n" \
-                           : [outPtr] "+r"(outPtr) \
-                           : [inPtr] "r"(inPtr) \
-                           : "x2", "x3", "v9", "v10", "v11", "cc"); \
-    } while (0)
-#endif
 
+namespace {
+inline void TransTensorFp32ToFp16_C8_neon(uint64_t inPtr, uint64_t outPtr)
+{
+    __asm__ __volatile("mov x2, %[inPtr]\n"
+                       "mov x3, %[outPtr]\n"
+
+                       "ld1 {v9.4s, v10.4s}, [x2], #32\n"
+                       "fcvtn v11.4h, v9.4s\n"
+                       "fcvtn2 v11.8h, v10.4s\n"
+                       "st1 {v11.8h}, [x3], #16\n"
+                       : [outPtr] "+r"(outPtr)
+                       : [inPtr] "r"(inPtr)
+                       : "x2", "x3", "v9", "v10", "v11", "cc");
+}
+}
+#endif
 
 namespace ge {
 /*
@@ -191,11 +196,11 @@ inline uint32_t CheckUint64AddOverflow(uint64_t a, uint64_t b)
 
 inline uint32_t Uint64_addCheck(uint64_t a, uint64_t b)
 {
-        if (CheckUint64AddOverflow(a, b) != SUCCESS) {
-            FMK_LOGD("Unsigned Integer64 %lu and %lu addition can result in overflow!", (a), (b));
-            return FAILED;
-        }
-        return SUCCESS;
+    if (CheckUint64AddOverflow(a, b) != SUCCESS) {
+        FMK_LOGD("Unsigned Integer64 %lu and %lu addition can result in overflow!", (a), (b));
+        return FAILED;
+    }
+    return SUCCESS;
 }
 
 /*
@@ -436,27 +441,27 @@ static Status CheckTensorOverFlow(const ccTensor_t& tensorDesc)
                            : "x2", "x3", "v9", "v10", "cc"); \
     } while (0)
 
-#define TransTensor4DTo5DUint8_C3_neon(inPtr, outPtr) \
-    do { \
-        __asm__ __volatile("mov x2, %[inPtr]\n" \
-                           "mov x3, %[outPtr]\n" \
-                           "mov x5, %[outPtr]\n" \
-                           "mov x4, #1\n" \
-\
-                           "movi   v13.8h, #0x0\n" \
-                           "movi   v14.8h, #0x0\n" \
-                           "st1 {v13.8h, v14.8h}, [x5]\n" \
-\
-                           "ld1 {v9.b}[0], [x2], x4\n" \
-                           "st1 {v9.b}[0], [x3], x4\n" \
-                           "ld1 {v9.b}[0], [x2], x4\n" \
-                           "st1 {v9.b}[0], [x3], x4\n" \
-                           "ld1 {v9.b}[0], [x2], x4\n" \
-                           "st1 {v9.b}[0], [x3], x4\n" \
-                           : [outPtr] "+r"(outPtr) \
-                           : [inPtr] "r"(inPtr) \
-                           : "x2", "x3", "x4", "x5", "v9", "v13", "v14", "v18", "s17", "cc"); \
-    } while (0)
+inline void TransTensor4DTo5DUint8_C3_neon(uint64_t inPtr, uint64_t outPtr)
+{
+    __asm__ __volatile("mov x2, %[inPtr]\n"
+                       "mov x3, %[outPtr]\n"
+                       "mov x5, %[outPtr]\n"
+                       "mov x4, #1\n"
+
+                       "movi   v13.8h, #0x0\n"
+                       "movi   v14.8h, #0x0\n"
+                       "st1 {v13.8h, v14.8h}, [x5]\n"
+
+                       "ld1 {v9.b}[0], [x2], x4\n"
+                       "st1 {v9.b}[0], [x3], x4\n"
+                       "ld1 {v9.b}[0], [x2], x4\n"
+                       "st1 {v9.b}[0], [x3], x4\n"
+                       "ld1 {v9.b}[0], [x2], x4\n"
+                       "st1 {v9.b}[0], [x3], x4\n"
+                       : [outPtr] "+r"(outPtr)
+                       : [inPtr] "r"(inPtr)
+                       : "x2", "x3", "x4", "x5", "v9", "v13", "v14", "v18", "s17", "cc");
+}
 
 #define TransTensor5DTo4DUint8_C3_neon(inPtr, outPtr) \
     do { \
@@ -502,6 +507,25 @@ static Status TransTensorNHWCToNC1HWC0_C3_neon(const ccTensor_t& xDesc, const vo
         Uint64_addCheck(outPtr, static_cast<uint64_t>(dstStride));
         inPtr = inPtr + srcStride;
         outPtr = outPtr + dstStride;
+    }
+    return SUCCESS;
+}
+
+static Status TransHalfToFloat(uint32_t c1Align, uint32_t num, uint64_t& inPtr, uint64_t& outPtr)
+{
+    fp16_t fp;
+    for (uint32_t k = 0; k < num; k++) {
+        for (uint32_t i = 0; i < c1Align; i++) {
+            fp = *(reinterpret_cast<fp16_t*>(static_cast<uintptr_t>(inPtr)));
+            *(reinterpret_cast<float*>(static_cast<uintptr_t>(outPtr))) = fp.toFloat();
+            Uint64_addCheck(inPtr, sizeof(uint16_t));
+            Uint64_addCheck(outPtr, sizeof(float));
+            inPtr = inPtr + sizeof(uint16_t);
+            outPtr = outPtr + sizeof(float);
+        }
+        Uint64_addCheck(
+            inPtr, static_cast<uint64_t>(sizeof(uint16_t)) * (CC_CUBE_SIZE - static_cast<uint64_t>(c1Align)));
+        inPtr = inPtr + static_cast<uint64_t>(sizeof(uint16_t)) * (CC_CUBE_SIZE - static_cast<uint64_t>(c1Align));
     }
     return SUCCESS;
 }
@@ -566,21 +590,9 @@ static Status TransTensorNC1HWC0ToNHWC_neon(
                 inPtr = inPtr + srcStride;
                 outPtr = outPtr + align * sizeof(float);
             }
-        } else {
-            for (uint32_t k = 0; k < h * w; k++) {
-                for (uint32_t i = 0; i < c1Align; i++) {
-                    fp = *(reinterpret_cast<fp16_t*>(static_cast<uintptr_t>(inPtr)));
-                    *(reinterpret_cast<float*>(static_cast<uintptr_t>(outPtr))) = fp.toFloat();
-                    Uint64_addCheck(inPtr, sizeof(uint16_t));
-                    Uint64_addCheck(outPtr, sizeof(float));
-                    inPtr = inPtr + sizeof(uint16_t);
-                    outPtr = outPtr + sizeof(float);
-                }
-                Uint64_addCheck(
-                    inPtr, static_cast<uint64_t>(sizeof(uint16_t)) * (CC_CUBE_SIZE - static_cast<uint64_t>(c1Align)));
-                inPtr =
-                    inPtr + static_cast<uint64_t>(sizeof(uint16_t)) * (CC_CUBE_SIZE - static_cast<uint64_t>(c1Align));
-            }
+        } else if (TransHalfToFloat(c1Align, h * w, inPtr, outPtr) != SUCCESS) {
+            FMK_LOGE("TransHalfToFloat failed!");
+            return FAILED;
         }
     }
     return SUCCESS;
@@ -646,8 +658,10 @@ static Status TransTensorNC1HWC0ToNHWCUint8_neon(
         } else {
             for (uint32_t j = 0; j < h * w; j++) {
                 for (uint32_t i = 0; i < c1Align; i++) {
-                    uint8_t fp = *reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(inPtr));
-                    *reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(outPtr)) = fp;
+                    if (inPtr != 0 && outPtr != 0) {
+                        uint8_t fp = *reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(inPtr));
+                        *reinterpret_cast<uint8_t*>(static_cast<uintptr_t>(outPtr)) = fp;
+                    }
                     Uint64_addCheck(inPtr, sizeof(uint8_t));
                     Uint64_addCheck(outPtr, sizeof(uint8_t));
                     inPtr = inPtr + sizeof(uint8_t);
@@ -795,7 +809,7 @@ static Status SetNC1HWC0TensorDimAndCalcCount(
     int32_t c0 =
         ((dataType == CC_DATA_BOOL) || (dataType == CC_DATA_INT8) || (dataType == CC_DATA_UINT8) ||
             (dataType == CC_DATA_DUAL_SUB_UINT8) || (dataType == CC_DATA_QINT8) || (dataType == CC_DATA_QUINT8) ||
-            (dataType == CC_DATA_DUAL_SUB_INT8) || (dataType == CC_DATA_BOOL) || (dataType == CC_DATA_2BITS)) ?
+            (dataType == CC_DATA_DUAL_SUB_INT8) || (dataType == CC_DATA_2BITS)) ?
         CC_INT8_C0_SIZE :
         CC_CUBE_SIZE;
     int32_t c1 = static_cast<int32_t>(std::ceil(dims[NCHW_DIM_C] * 1.0 / c0));
@@ -1013,9 +1027,11 @@ static Status SetTensorNdDescriptor(ccTensor_t& tensorDesc, DataType_t dataType,
     tensorDesc.stride[dimCnt - 1] = 1;
     for (int32_t i = tensorDesc.dimCnt - 2; i >= 0; --i) {
         FMK_INT32_MULCHECK(
-            tensorDesc.dim[static_cast<uint64_t>(i) + 1], tensorDesc.stride[static_cast<uint64_t>(i) + 1]);
-        tensorDesc.stride[i] = static_cast<int32_t>(static_cast<uint64_t>(tensorDesc.dim[i + 1]) *
-            static_cast<uint64_t>((tensorDesc.stride[static_cast<uint64_t>(i) + 1])));
+            tensorDesc.dim[static_cast<uint64_t>(i) + 1],
+            tensorDesc.stride[static_cast<uint64_t>(static_cast<uint32_t>(i)) + 1]);
+        tensorDesc.stride[i] = static_cast<int32_t>(
+            static_cast<uint64_t>(static_cast<uint32_t>(tensorDesc.dim[i + 1])) *
+            static_cast<uint64_t>((tensorDesc.stride[static_cast<uint64_t>(static_cast<uint32_t>(i)) + 1])));
     }
     return SUCCESS;
 };
@@ -1069,13 +1085,10 @@ static Status GetDataTypeTransModeFunc0(const DataType_t xType, DataTypeTransMod
         dataTypeTransmode = CC_DATATYPE_TRANS_INT64_NO_TRANS;
     } else if ((xType == CC_DATA_UINT8) || (xType == CC_DATA_BOOL) || (xType == CC_DATA_QUINT8)) {
         dataTypeTransmode = CC_DATATYPE_TRANS_UINT8_NO_TRANS;
-    }
-#ifndef __FMK_KT_TEST__
-    else {
+    } else {
         FMK_LOGD("TransDataType from %d to %d is not supported!", xType);
         return FAILED;
     }
-#endif
     return SUCCESS;
 }
 
@@ -1088,15 +1101,11 @@ static Status GetDataTypeTransMode(
         dataTypeTransmode = CC_DATATYPE_TRANS_FLOAT_TO_FP16;
     } else if ((xType == CC_DATA_HALF) && (yType == CC_DATA_FLOAT)) {
         dataTypeTransmode = CC_DATATYPE_TRANS_FP16_TO_FLOAT;
-    }
-#ifndef __FMK_KT_TEST__
-    else if ((xType == CC_DATA_UINT8 || xType == CC_DATA_QUINT8) && (yType == CC_DATA_FLOAT)) {
+    } else if ((xType == CC_DATA_UINT8 || xType == CC_DATA_QUINT8) && (yType == CC_DATA_FLOAT)) {
         dataTypeTransmode = CC_DATATYPE_TRANS_UINT8_TO_FLOAT;
     } else if ((xType == CC_DATA_INT8) && (yType == CC_DATA_FLOAT)) {
         dataTypeTransmode = CC_DATATYPE_TRANS_INT8_TO_FLOAT;
-    }
-#endif
-    else {
+    } else {
         FMK_LOGD("TransDataType from %d to %d is not supported!", xType, yType);
         return FAILED;
     }
@@ -1422,8 +1431,7 @@ static Status TransTensorNC1HWC0ToNHWC(const ccTensor_t& xDesc, const void* x, c
     CHECK((xDesc.dim[3] == yDesc.dim[2]), FAILED, "The input and output dims are not equal!");
 
     DataTypeTransMode_t dataTypeTransmode = CC_DATATYPE_TRANS_FLOAT_NO_TRANS;
-    DOMI_CHK_BOOL_TRUE_EXEC_WITH_LOG(GetDataTypeTransMode(xDesc.dataType, yDesc.dataType, dataTypeTransmode) != SUCCESS,
-        return FAILED, "getDataTypeTransMode error!");
+    HIAI_EXPECT_EXEC_R(GetDataTypeTransMode(xDesc.dataType, yDesc.dataType, dataTypeTransmode), FAILED);
 #ifdef ARM_NEON
     if (((yDesc.dim[3] % CC_CUBE_SIZE == 0) || (yDesc.dim[3] % CC_CUBE_SIZE == 3)) &&
         (dataTypeTransmode == CC_DATATYPE_TRANS_FP16_TO_FLOAT)) {

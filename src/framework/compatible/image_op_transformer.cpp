@@ -64,7 +64,7 @@ static ge::GraphErrCodeStatus CropAndResizeConvertConstOpToAttr(ge::Node& node)
     GE_CHK_BOOL_RET_STATUS(
         cropSizeTensor->GetTensorDesc().GetDataType() == ge::DT_INT32, ge::GRAPH_FAILED, "crop_size must be int32.");
     // get data
-    int32_t* sizeHW = reinterpret_cast<int32_t*>(const_cast<uint8_t*>(cropSizeTensor->GetData().GetData()));
+    const int32_t* sizeHW = reinterpret_cast<const int32_t*>(cropSizeTensor->GetData().GetData());
     if (sizeHW == nullptr) {
         return ge::GRAPH_FAILED;
     }

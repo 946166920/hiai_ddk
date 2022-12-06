@@ -114,7 +114,9 @@ class GRAPH_API_EXPORT DataAnchor : public Anchor {
 public:
     DataAnchor(NodePtr ownerNode, int idx);
 
-    virtual ~DataAnchor() = default;
+    ~DataAnchor() override
+    {
+    }
 
     bool IsTypeOf(TYPE type) const override;
 
@@ -129,7 +131,9 @@ class GRAPH_API_EXPORT InDataAnchor : public DataAnchor {
 public:
     InDataAnchor(NodePtr ownerNode, int idx);
 
-    virtual ~InDataAnchor() = default;
+    ~InDataAnchor() override
+    {
+    }
 
     // get  source out data anchor
     OutDataAnchorPtr GetPeerOutAnchor() const;
@@ -155,7 +159,9 @@ public:
 public:
     OutDataAnchor(NodePtr ownerNode, int idx);
 
-    virtual ~OutDataAnchor() = default;
+    ~OutDataAnchor() override
+    {
+    }
 
     // get dst in data anchor(one or more)
     Vistor<InDataAnchorPtr> GetPeerInDataAnchors() const;
@@ -173,7 +179,9 @@ class GRAPH_API_EXPORT ControlAnchor : public Anchor {
 public:
     explicit ControlAnchor(NodePtr ownerNode);
 
-    virtual ~ControlAnchor() = default;
+    ~ControlAnchor() override
+    {
+    }
 
 protected:
     bool IsTypeOf(TYPE type) const override;
@@ -187,7 +195,9 @@ class GRAPH_API_EXPORT InControlAnchor : public ControlAnchor {
 public:
     explicit InControlAnchor(NodePtr ownerNode);
 
-    virtual ~InControlAnchor() = default;
+    ~InControlAnchor() override
+    {
+    }
 
     // get  source out control anchors
     Vistor<OutControlAnchorPtr> GetPeerOutControlAnchors() const;
@@ -211,7 +221,9 @@ public:
 public:
     explicit OutControlAnchor(NodePtr ownerNode);
 
-    virtual ~OutControlAnchor() = default;
+    ~OutControlAnchor() override
+    {
+    }
 
     // get dst in control anchor(one or more)
     Vistor<InControlAnchorPtr> GetPeerInControlAnchors() const;

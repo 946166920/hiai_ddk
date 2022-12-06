@@ -37,11 +37,11 @@ EXPORT_ROLE(GraphSorter)
 {
 public:
     static void StableSort(
-        std::vector<NodePtr> & nodes, const std::map<std::string, uint32_t>& inputOrder, const Comparator& order);
+        std::vector<NodePtr>& nodes, const std::map<std::string, uint32_t>& inputOrder, const Comparator& order);
     static void StableSort(
-        std::list<Node*> & nodes, const std::map<std::string, uint32_t>& inputOrder, const Comparator& order);
+        std::list<Node*>& nodes, const std::map<std::string, uint32_t>& inputOrder, const Comparator& order);
     static void StableSort(
-        std::vector<Node*> & nodes, const std::map<std::string, uint32_t>& inputOrder, const Comparator& order);
+        std::vector<Node*>& nodes, const std::map<std::string, uint32_t>& inputOrder, const Comparator& order);
 
 public:
     hiai::Status SortNodesDFS();

@@ -39,9 +39,9 @@ public:
 
     static uint32_t GetWeightSize(const TensorDesc& tensorDesc);
 
-    static uint8_t* GetWeightAddr(ConstTensorPtr tensorPtr, uint8_t* base);
+    static const uint8_t* GetWeightAddr(ConstTensorPtr tensorPtr, const uint8_t* base);
 
-    static uint8_t* GetWeightAddr(const Tensor& tensor, uint8_t* base);
+    static const uint8_t* GetWeightAddr(const Tensor& tensor, const uint8_t* base);
 
     static void SetWeightSize(TensorDesc& tensorDesc, uint32_t size);
 

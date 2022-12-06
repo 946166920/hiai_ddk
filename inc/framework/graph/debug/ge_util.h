@@ -20,17 +20,6 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <climits>
-#include <cmath>
-#include "graph/debug/ge_error_codes.h"
-
-#if !defined(__ANDROID__) && !defined(ANDROID)
-#define GE_DYNAMIC_CAST dynamic_cast
-#define GE_DYNAMIC_POINTER_CAST std::dynamic_pointer_cast
-#else
-#define GE_DYNAMIC_CAST static_cast
-#define GE_DYNAMIC_POINTER_CAST std::static_pointer_cast
-#endif
 
 /*
  * @ingroup GE_common

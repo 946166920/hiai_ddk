@@ -5,8 +5,6 @@ hi_cc_library_static(
     version_util.cpp
   CDEFS
     HIAI_UTIL_API_VISIABLE
-    HIAI_C_API_VISIABLE
-
 )
 
 hi_cc_library_static(

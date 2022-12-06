@@ -28,9 +28,6 @@
 #include "graph/graph_api_export.h"
 #include "graph/tensor.h"
 
-using std::string;
-using std::vector;
-
 namespace hiai {
 class IAttrDef;
 class INamedAttrDef;
@@ -75,7 +72,7 @@ public:
     private:
         hiai::INamedAttrDef* namedDef_;
         bool isOwner_;
-        mutable std::map<string, AttrValue> attrMap_;
+        mutable std::map<std::string, AttrValue> attrMap_;
     };
 
 public:
@@ -89,15 +86,15 @@ public:
     using BYTES = Buffer;
     using NAMED_ATTRS = NamedAttrs;
     using DATA_TYPE = int64_t;
-    using LIST_INT = vector<INT>;
-    using LIST_FLOAT = vector<FLOAT>;
-    using LIST_BOOL = vector<BOOL>;
-    using LIST_STR = vector<STR>;
-    using LIST_TENSOR = vector<TENSOR>;
-    using LIST_TENSOR_DESC = vector<TENSOR_DESC>;
-    using LIST_GRAPH = vector<GRAPH>;
-    using LIST_BYTES = vector<BYTES>;
-    using LIST_NAMED_ATTRS = vector<NAMED_ATTRS>;
+    using LIST_INT = std::vector<INT>;
+    using LIST_FLOAT = std::vector<FLOAT>;
+    using LIST_BOOL = std::vector<BOOL>;
+    using LIST_STR = std::vector<STR>;
+    using LIST_TENSOR = std::vector<TENSOR>;
+    using LIST_TENSOR_DESC = std::vector<TENSOR_DESC>;
+    using LIST_GRAPH = std::vector<GRAPH>;
+    using LIST_BYTES = std::vector<BYTES>;
+    using LIST_NAMED_ATTRS = std::vector<NAMED_ATTRS>;
 
     enum ValueType {
         VT_NONE = 0,

@@ -58,9 +58,6 @@ public:
 
     virtual ~LegacyNode() = default;
 
-protected:
-    explicit LegacyNode(NodeStore& store);
-
 public:
     GRAPH_API_EXPORT Vistor<InDataAnchorPtr> GetAllInDataAnchors() const;
 
@@ -128,6 +125,10 @@ public:
      */
     void GetDirectSubGraphs(vector<ComputeGraphPtr>& graphs) const;
     GRAPH_API_EXPORT vector<ComputeGraphPtr> GetDirectSubGraphs() const;
+
+protected:
+    explicit LegacyNode(NodeStore& store);
+
 private:
     OpDescPtr& op_;
     vector<InDataAnchorPtr>& inDataAnchors_;

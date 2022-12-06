@@ -23,7 +23,6 @@
 
 // inc/framework
 #include "framework/common/fmk_error_codes.h"
-#include "framework/graph/debug/ge_op_types.h"
 #include "infra/base/assertion.h"
 
 namespace ge {

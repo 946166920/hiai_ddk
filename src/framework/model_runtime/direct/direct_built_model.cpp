@@ -28,7 +28,7 @@ namespace hiai {
 static bool IsBufferValid(DirectBuiltModelImpl*& imp)
 {
     if (imp->modelBuffer_ == nullptr || imp->modelBuffer_->MutableData() == nullptr ||
-        imp->modelBuffer_->GetSize() <= 0) {
+        imp->modelBuffer_->GetSize() == 0) {
         FMK_LOGE("please restore model first.");
         return false;
     }
@@ -141,7 +141,7 @@ HIAI_Status HIAI_DIRECT_BuiltModel_SaveToFile(const HIAI_BuiltModel* model, cons
 
 static HIAI_BuiltModel* BuiltModel_Restore(std::shared_ptr<BaseBuffer>& buffer)
 {
-    if (buffer == nullptr || buffer->MutableData() == nullptr || buffer->GetSize() <= 0) {
+    if (buffer == nullptr || buffer->MutableData() == nullptr || buffer->GetSize() == 0) {
         FMK_LOGE("input is invalid.");
         return nullptr;
     }

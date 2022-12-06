@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#ifndef HIAI_FRAMEWORK_INFRA_MEM_IN_PLACE_H
-#define HIAI_FRAMEWORK_INFRA_MEM_IN_PLACE_H
+#ifndef HIAI_API_INFRA_BASE_IN_PLACE_H
+#define HIAI_API_INFRA_BASE_IN_PLACE_H
 
-#include "framework/infra/mem/inline_variable.h"
+#include "base/inline_variable.h"
 
 namespace hiai {
 struct InPlace {
@@ -29,4 +29,4 @@ struct InPlace {
 HIAI_INLINE_VARIABLE(InPlace, IN_PLACE, InPlace{InPlace::InPlaceTag{}});
 } // namespace hiai
 
-#endif // HIAI_FRAMEWORK_INFRA_MEM_IN_PLACE_H
+#endif // HIAI_API_INFRA_BASE_IN_PLACE_H

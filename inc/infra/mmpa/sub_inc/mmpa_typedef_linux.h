@@ -1,17 +1,14 @@
-/**
- * Copyright 2019-2022 Huawei Technologies Co., Ltd
+/*
+ * @file mmpa_linuxtypedef_linux.h
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (C) <2019> <Huawei Technologies Co., Ltd.>. All Rights Reserved.
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Description:MMPA库 Linux部分类型定义头文件
+ * Create:2017-12-22
  */
 
 #ifndef MMPA_TYPEDEF_LINUX_H
@@ -57,13 +54,9 @@ extern "C" {
 #define MMPA_THREAD_SCHED_OTHER SCHED_OTHER
 #define MMPA_THREAD_MIN_STACK_SIZE PTHREAD_STACK_MIN
 
-#define MMPA_MAX_NI               19
-#define MMPA_MIN_NI               (-20)
-
-#define EN_OK                  0
-#define EN_ERR                 1
-#define EN_ERROR               (-1)
-#define EN_INVALID_PARAM       (-2)
+static const int EN_OK = 0;
+static const int EN_ERROR = -1;
+static const int EN_INVALID_PARAM = -2;
 
 #ifdef __cplusplus
 #if __cplusplus

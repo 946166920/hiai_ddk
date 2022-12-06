@@ -37,6 +37,7 @@ public:
     bool IsEmpty() const;
     std::size_t NodesNum() const;
     std::size_t InNodesNum() const;
+    std::size_t OutNodesNum() const;
 
     const std::string& Name() const;
     hiai::Status SetName(std::string name);

@@ -22,9 +22,9 @@
 namespace hiai {
 class HCS_API_EXPORT IRTransformer {
 public:
-    static bool IsCompatible(ge::ComputeGraphPtr graph, string hiaiRomVersion);
+    static bool IsCompatible(ge::ComputeGraphPtr graph, std::string hiaiRomVersion);
     static bool TransferToStandard(ge::ComputeGraphPtr graph);
-    static bool TransferToTargetVersion(ge::ComputeGraphPtr graph, string aiRomVersion, bool& isGraphChanged);
+    static bool TransferToTargetVersion(ge::ComputeGraphPtr graph, std::string aiRomVersion, bool& isGraphChanged);
     static bool VerifyIrReservedField(ge::ComputeGraphPtr graph);
 };
 } // namespace hiai

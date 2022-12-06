@@ -112,7 +112,7 @@ const uint8_t* BaseBuffer::GetData() const
 
 uint8_t* BaseBuffer::MutableData()
 {
-    return data_;
+    return data_; //lint !e1536
 }
 
 size_t BaseBuffer::GetSize() const

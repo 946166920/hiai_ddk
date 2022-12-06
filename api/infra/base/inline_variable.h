@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#ifndef HIAI_FRAMEWORK_INFRA_MEM_INLINE_VARIABLE_H
-#define HIAI_FRAMEWORK_INFRA_MEM_INLINE_VARIABLE_H
+#ifndef HIAI_API_INFRA_BASE_INLINE_VARIABLE_H
+#define HIAI_API_INFRA_BASE_INLINE_VARIABLE_H
 
-#include "framework/infra/mem/identity.h"
+#include "base/identity.h"
 
 #define HIAI_INLINE_VARIABLE(type, name, val)                                                                          \
     template <typename = void>                                                                                         \
@@ -28,6 +28,6 @@
     template <typename T>                                                                                              \
     constexpr IdentityType<type> InlineVariable##name<T>::value;                                                       \
                                                                                                                        \
-    constexpr static const IdentityType<type>& name = InlineVariable##name<>::value;
+    constexpr static const IdentityType<type>& (name) = InlineVariable##name<>::value
 
-#endif // HIAI_FRAMEWORK_INFRA_MEM_INLINE_VARIABLE_H
+#endif // HIAI_API_INFRA_BASE_INLINE_VARIABLE_H

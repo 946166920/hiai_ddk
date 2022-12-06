@@ -25,7 +25,7 @@ namespace hiai {
 class LocalBuffer : public IBuffer {
 public:
     LocalBuffer() = default;
-    virtual ~LocalBuffer() = default;
+    ~LocalBuffer() override = default;
 
     bool Init(size_t size);
 

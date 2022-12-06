@@ -210,7 +210,7 @@ static CscMatrixPara ConvertCscPara2CscMatrixPara(AippCscPara& cscPara)
     return cscMatrixPara;
 }
 
-static AippCscPara ConvertCscMatrixPara2CscPara(CscMatrixPara& cscMatrixPara, std::shared_ptr<IAIPPPara>& aippParaBase)
+static AippCscPara ConvertCscMatrixPara2CscPara(CscMatrixPara& cscMatrixPara, bool cscSwitch)
 {
     AippCscPara cscPara;
     cscPara.matrixR0C0 = cscMatrixPara.matrixR0C0;
@@ -228,11 +228,8 @@ static AippCscPara ConvertCscMatrixPara2CscPara(CscMatrixPara& cscMatrixPara, st
     cscPara.inputBias0 = cscMatrixPara.inputBias0;
     cscPara.inputBias1 = cscMatrixPara.inputBias1;
     cscPara.inputBias2 = cscMatrixPara.inputBias2;
-    cscPara.switch_ = false;
-    std::shared_ptr<AIPPParaImpl> aippParaImpl = std::dynamic_pointer_cast<AIPPParaImpl>(aippParaBase);
-    if (aippParaImpl != nullptr) {
-        cscPara.switch_ = aippParaImpl->GetEnableCsc();
-    }
+    cscPara.switch_ = cscSwitch;
+
     return cscPara;
 }
 
@@ -249,24 +246,27 @@ AIStatus AippPara::SetCscPara(AiTensorImage_Format targetFormat, ImageType image
 AIStatus AippPara::SetCscPara(AippCscPara cscPara)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
-    if (aippParaBase_ == nullptr) {
-        FMK_LOGE("AippPara is not inited!.");
-        return AI_FAILED;
+    if (aippParaBase_ != nullptr && cscPara.switch_) {
+        return aippParaBase_->SetCscPara(ConvertCscPara2CscMatrixPara(cscPara));
     }
-    return aippParaBase_->SetCscPara(ConvertCscPara2CscMatrixPara(cscPara));
+    FMK_LOGE("AippPara is not inited or switch is false!.");
+    return AI_FAILED;
 }
 
 AippCscPara AippPara::GetCscPara()
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
     CscMatrixPara cscMatrixPara;
+    bool cscSwitch = false;
     if (aippParaBase_ != nullptr) {
         cscMatrixPara = aippParaBase_->GetCscPara();
+        auto aippParaImpl = std::dynamic_pointer_cast<AIPPParaImpl>(aippParaBase_);
+        cscSwitch = aippParaImpl->GetEnableCsc();
     } else {
         FMK_LOGE("AippPara is not inited!.");
     }
 
-    return ConvertCscMatrixPara2CscPara(cscMatrixPara, aippParaBase_);
+    return ConvertCscMatrixPara2CscPara(cscMatrixPara, cscSwitch);
 }
 
 static ChannelSwapPara ConvertAippChannelSwapPara2ChannelSwapPara(AippChannelSwapPara& aippChannelSwapPara)
@@ -320,50 +320,52 @@ static CropPara ConvertAippCropPara2CropPara(AippCropPara& aippCropPara)
     return cropPara;
 }
 
-static AippCropPara ConvertCropPara2AippCropPara(CropPara& cropPara, std::shared_ptr<IAIPPPara>& aippParaBase)
+static AippCropPara ConvertCropPara2AippCropPara(CropPara& cropPara, bool cropSwitch)
 {
     AippCropPara aippCropPara;
-
+    aippCropPara.switch_ = cropSwitch;
     aippCropPara.cropStartPosW = cropPara.cropStartPosW;
     aippCropPara.cropStartPosH = cropPara.cropStartPosH;
     aippCropPara.cropSizeW = cropPara.cropSizeW;
     aippCropPara.cropSizeH = cropPara.cropSizeH;
-    std::shared_ptr<AIPPParaImpl> aippParaImpl = std::dynamic_pointer_cast<AIPPParaImpl>(aippParaBase);
-    if (aippParaImpl == nullptr) {
-        aippCropPara.switch_ = false;
-    } else {
-        aippCropPara.switch_ = aippParaImpl->GetEnableCrop();
-    }
+
     return aippCropPara;
 }
 
 AIStatus AippPara::SetCropPara(uint32_t batchIndex, AippCropPara cropPara)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
-    if (aippParaBase_ == nullptr) {
-        FMK_LOGE("AippPara is not inited!.");
-        return AI_FAILED;
+    if (aippParaBase_ != nullptr && cropPara.switch_) {
+        return aippParaBase_->SetCropPara(batchIndex, ConvertAippCropPara2CropPara(cropPara));
     }
-    return aippParaBase_->SetCropPara(static_cast<int32_t>(batchIndex), ConvertAippCropPara2CropPara(cropPara));
+    FMK_LOGE("AippPara is not inited or switch is false!.");
+    return AI_FAILED;
 }
 
 AIStatus AippPara::SetCropPara(AippCropPara cropPara)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
-    return SetCropPara(-1, cropPara);
+    if (aippParaBase_ != nullptr && cropPara.switch_) {
+        return aippParaBase_->SetCropPara(ConvertAippCropPara2CropPara(cropPara));
+    }
+    FMK_LOGE("AippPara is not inited or switch is false!.");
+    return AI_FAILED;
 }
 
 AippCropPara AippPara::GetCropPara(uint32_t batchIndex)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
     CropPara para;
+    bool cropSwitch = false;
     if (aippParaBase_ != nullptr) {
-        para = aippParaBase_->GetCropPara(static_cast<int32_t>(batchIndex));
+        para = aippParaBase_->GetCropPara(batchIndex);
+        auto aippParaImpl = std::dynamic_pointer_cast<AIPPParaImpl>(aippParaBase_);
+        cropSwitch = aippParaImpl->GetEnableCrop(batchIndex);
     } else {
         FMK_LOGE("AippPara is not inited!.");
     }
 
-    return ConvertCropPara2AippCropPara(para, aippParaBase_);
+    return ConvertCropPara2AippCropPara(para, cropSwitch);
 }
 
 static ResizePara ConvertAippResizePara2ResizePara(AippResizePara& aippResizePara)
@@ -375,48 +377,51 @@ static ResizePara ConvertAippResizePara2ResizePara(AippResizePara& aippResizePar
     return resizePara;
 }
 
-static AippResizePara ConvertResizePara2AippResizePara(ResizePara& resizePara, std::shared_ptr<IAIPPPara>& aippParaBase)
+static AippResizePara ConvertResizePara2AippResizePara(ResizePara& resizePara, bool resizeSwitch)
 {
     AippResizePara aippResizePara;
 
+    aippResizePara.switch_ = resizeSwitch;
     aippResizePara.resizeOutputSizeW = resizePara.resizeOutputSizeW;
     aippResizePara.resizeOutputSizeH = resizePara.resizeOutputSizeH;
-    std::shared_ptr<AIPPParaImpl> aippParaImpl = std::dynamic_pointer_cast<AIPPParaImpl>(aippParaBase);
-    if (aippParaImpl == nullptr) {
-        aippResizePara.switch_ = false;
-    } else {
-        aippResizePara.switch_ = aippParaImpl->GetEnableResize();
-    }
+
     return aippResizePara;
 }
 
 AIStatus AippPara::SetResizePara(uint32_t batchIndex, AippResizePara resizePara)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
-    if (aippParaBase_ == nullptr) {
-        FMK_LOGE("AippPara is not inited!.");
-        return AI_FAILED;
+    if (aippParaBase_ != nullptr && resizePara.switch_) {
+        return aippParaBase_->SetResizePara(batchIndex, ConvertAippResizePara2ResizePara(resizePara));
     }
-    return aippParaBase_->SetResizePara(static_cast<int32_t>(batchIndex), ConvertAippResizePara2ResizePara(resizePara));
+    FMK_LOGE("AippPara is not inited or switch is false!.");
+    return AI_FAILED;
 }
 
 AIStatus AippPara::SetResizePara(AippResizePara resizePara)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
-    return SetResizePara(-1, resizePara);
+    if (aippParaBase_ != nullptr && resizePara.switch_) {
+        return aippParaBase_->SetResizePara(ConvertAippResizePara2ResizePara(resizePara));
+    }
+    FMK_LOGE("AippPara is not inited or switch is false!.");
+    return AI_FAILED;
 }
 
 AippResizePara AippPara::GetResizePara(uint32_t batchIndex)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
     ResizePara para;
+    bool resizeSwitch = false;
     if (aippParaBase_ != nullptr) {
-        para = aippParaBase_->GetResizePara(static_cast<int32_t>(batchIndex));
+        para = aippParaBase_->GetResizePara(batchIndex);
+        auto aippParaImpl = std::dynamic_pointer_cast<AIPPParaImpl>(aippParaBase_);
+        resizeSwitch = aippParaImpl->GetEnableResize(batchIndex);
     } else {
         FMK_LOGE("AippPara is not inited!.");
     }
 
-    return ConvertResizePara2AippResizePara(para, aippParaBase_);
+    return ConvertResizePara2AippResizePara(para, resizeSwitch);
 }
 
 static PadPara ConvertAippPaddingPara2PaddingPara(AippPaddingPara& aippPaddingPara)
@@ -435,7 +440,7 @@ static PadPara ConvertAippPaddingPara2PaddingPara(AippPaddingPara& aippPaddingPa
     return padPara;
 }
 
-static AippPaddingPara ConvertPaddingPara2AippPaddingPara(PadPara& padPara, std::shared_ptr<IAIPPPara>& aippParaBase)
+static AippPaddingPara ConvertPaddingPara2AippPaddingPara(PadPara& padPara, bool paddingSwitch)
 {
     AippPaddingPara aippPaddingPara;
 
@@ -448,43 +453,45 @@ static AippPaddingPara ConvertPaddingPara2AippPaddingPara(PadPara& padPara, std:
     aippPaddingPara.paddingValueChn1 = padPara.paddingValueChn1;
     aippPaddingPara.paddingValueChn2 = padPara.paddingValueChn2;
     aippPaddingPara.paddingValueChn3 = padPara.paddingValueChn3;
-    std::shared_ptr<AIPPParaImpl> aippParaImpl = std::dynamic_pointer_cast<AIPPParaImpl>(aippParaBase);
-    if (aippParaImpl == nullptr) {
-        aippPaddingPara.switch_ = false;
-    } else {
-        aippPaddingPara.switch_ = aippParaImpl->GetEnablePadding();
-    }
+    aippPaddingPara.switch_ = paddingSwitch;
+
     return aippPaddingPara;
 }
 
 AIStatus AippPara::SetPaddingPara(uint32_t batchIndex, AippPaddingPara paddingPara)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
-    if (aippParaBase_ == nullptr) {
-        FMK_LOGE("AippPara is not inited!.");
-        return AI_FAILED;
+    if (aippParaBase_ != nullptr && paddingPara.switch_) {
+        return aippParaBase_->SetPaddingPara(batchIndex, ConvertAippPaddingPara2PaddingPara(paddingPara));
     }
-    return aippParaBase_->SetPaddingPara(
-        static_cast<int32_t>(batchIndex), ConvertAippPaddingPara2PaddingPara(paddingPara));
+    FMK_LOGE("AippPara is not inited or switch is false!.");
+    return AI_FAILED;
 }
 
 AIStatus AippPara::SetPaddingPara(AippPaddingPara paddingPara)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
-    return SetPaddingPara(-1, paddingPara);
+    if (aippParaBase_ != nullptr && paddingPara.switch_) {
+        return aippParaBase_->SetPaddingPara(ConvertAippPaddingPara2PaddingPara(paddingPara));
+    }
+    FMK_LOGE("AippPara is not inited or switch is false!.");
+    return AI_FAILED;
 }
 
 AippPaddingPara AippPara::GetPaddingPara(uint32_t batchIndex)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
     PadPara para;
+    bool paddingSwitch = false;
     if (aippParaBase_ != nullptr) {
-        para = aippParaBase_->GetPaddingPara(static_cast<int32_t>(batchIndex));
+        para = aippParaBase_->GetPaddingPara(batchIndex);
+        auto aippParaImpl = std::dynamic_pointer_cast<AIPPParaImpl>(aippParaBase_);
+        paddingSwitch = aippParaImpl->GetEnablePadding(batchIndex);
     } else {
         FMK_LOGE("AippPara is not inited!.");
     }
 
-    return ConvertPaddingPara2AippPaddingPara(para, aippParaBase_);
+    return ConvertPaddingPara2AippPaddingPara(para, paddingSwitch);
 }
 
 static DtcPara ConvertAippDtcPara2DtcPara(AippDtcPara& aippDtcPara)
@@ -531,7 +538,7 @@ AIStatus AippPara::SetDtcPara(uint32_t batchIndex, AippDtcPara dtcPara)
         FMK_LOGE("AippPara is not inited!.");
         return AI_FAILED;
     }
-    return aippParaBase_->SetDtcPara(static_cast<int32_t>(batchIndex), ConvertAippDtcPara2DtcPara(dtcPara));
+    return aippParaBase_->SetDtcPara(batchIndex, ConvertAippDtcPara2DtcPara(dtcPara));
 }
 
 AIStatus AippPara::SetDtcPara(AippDtcPara dtcPara)
@@ -541,7 +548,7 @@ AIStatus AippPara::SetDtcPara(AippDtcPara dtcPara)
         FMK_LOGE("AippPara is not inited!.");
         return AI_FAILED;
     }
-    return aippParaBase_->SetDtcPara(-1, ConvertAippDtcPara2DtcPara(dtcPara));
+    return aippParaBase_->SetDtcPara(ConvertAippDtcPara2DtcPara(dtcPara));
 }
 
 AippDtcPara AippPara::GetDtcPara(uint32_t batchIndex)
@@ -549,7 +556,7 @@ AippDtcPara AippPara::GetDtcPara(uint32_t batchIndex)
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
     DtcPara para;
     if (aippParaBase_ != nullptr) {
-        para = aippParaBase_->GetDtcPara(static_cast<int32_t>(batchIndex));
+        para = aippParaBase_->GetDtcPara(batchIndex);
     } else {
         FMK_LOGE("AippPara is not inited!.");
     }

@@ -33,6 +33,7 @@
 #include "compatible/AippTensor.h"
 #include "tensor/aipp_para.h"
 #include "tensor/aipp/aipp_para_impl.h"
+#include "model_manager/core/open_request_stats.h"
 #include <atomic>
 
 using namespace std;
@@ -336,6 +337,9 @@ AIStatus AiModelMngerClient::Load(std::vector<std::shared_ptr<AiModelDescription
         UnLoadModel();
         return AI_FAILED;
     }
+
+    (void)OpenRequestStats::CloudDdkVersionStats("", "InterfaceV1Load", AI_SUCCESS);
+
     return AI_SUCCESS;
 }
 

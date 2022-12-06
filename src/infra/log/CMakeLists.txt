@@ -3,6 +3,7 @@ hi_cc_library_static(
     ai::infra::log_static
   COPTS
     -fvisibility=default
+    -fstack-protector-strong
 )
 
 hi_cc_system("HI_ANDROID_NDK"
@@ -19,6 +20,8 @@ hi_cc_library_shared(
     ai::infra::log_shared
   WHOLE_STATIC_LIBS
     ai::infra::log_static
+  COPTS
+    -fvisibility=default
 )
 
 hi_enable_empty_srcs(

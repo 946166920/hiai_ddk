@@ -58,7 +58,7 @@ struct AippPreprocessConfig {
 
 class IBuiltModelAipp : public IBuiltModel {
 public:
-    virtual ~IBuiltModelAipp() = default;
+    ~IBuiltModelAipp() override = default;
 
     virtual Status GetTensorAippInfo(int32_t index, uint32_t* aippParaNum, uint32_t* batchCount) = 0;
 

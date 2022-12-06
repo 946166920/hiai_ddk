@@ -33,15 +33,15 @@ public:
     ComputeGraphPtr OwnerComputeGraphPtr() const;
     void SetOwnerComputeGraph(const ComputeGraphPtr& graph);
 
-    std::vector<InDataAnchorPtr>& InDataAnchors() const;
-    std::vector<OutDataAnchorPtr>& OutDataAnchors() const;
-    InControlAnchorPtr& InCtrlAnchor() const;
-    OutControlAnchorPtr& OutCtrlAnchor() const;
+    std::vector<InDataAnchorPtr>& InDataAnchors();
+    std::vector<OutDataAnchorPtr>& OutDataAnchors();
+    InControlAnchorPtr& InCtrlAnchor();
+    OutControlAnchorPtr& OutCtrlAnchor();
 
     InDataAnchorPtr InDataAnchor(std::size_t idx) const;
     OutDataAnchorPtr OutDataAnchor(std::size_t idx) const;
 
-    OpDescPtr& OpDesc() const;
+    OpDescPtr& OpDesc();
 
     static hiai::Status AddEdge(NodeStore& src, int srcIdx, NodeStore& dst, int dstIdx);
     static hiai::Status RemoveEdge(NodeStore& src, int srcIdx, NodeStore& dst, int dstIdx);

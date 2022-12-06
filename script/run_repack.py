@@ -82,6 +82,12 @@ class repack_ddk(object):
 
     def cp_item(self, class_config):
         for item in class_config:
+            if 'isopen' in item.attrib and item.attrib['isopen'] == 'false':
+                continue
+            
+            if 'macros' in item.attrib and item.attrib['macros'] == 'false':
+                # 删除宏包含的代码
+                pass
             src_file = item.attrib['source']
             dest_file = os.path.join(DDK_RELEASE_DIR, 'ddk_external', 'ddk', 'ai_ddk_lib', item.attrib['destination'])
 

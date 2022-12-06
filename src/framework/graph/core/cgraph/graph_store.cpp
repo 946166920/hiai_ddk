@@ -72,19 +72,19 @@ std::vector<NodePtr>& GraphStore::AllNodes() const
     return const_cast<std::vector<NodePtr>&>(nodes_.Nodes());
 }
 
-std::vector<NodePtr>& GraphStore::InputNodes() const
+std::vector<NodePtr>& GraphStore::InputNodes()
 {
-    return const_cast<std::vector<NodePtr>&>(inputNodes_);
+    return inputNodes_;
 }
 
-std::vector<NodePtr>& GraphStore::OutputNodes() const
+std::vector<NodePtr>& GraphStore::OutputNodes()
 {
-    return const_cast<std::vector<NodePtr>&>(outputNodes_);
+    return outputNodes_;
 }
 
-std::map<std::string, uint32_t>& GraphStore::InputOrder() const
+std::map<std::string, uint32_t>& GraphStore::InputOrder()
 {
-    return const_cast<std::map<std::string, uint32_t>&>(inputOrder_);
+    return inputOrder_;
 }
 
 bool GraphStore::HasNode(const Node& node)

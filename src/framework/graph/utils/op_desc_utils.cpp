@@ -189,7 +189,7 @@ bool FindNonConstInDataByNode(const ge::Node& node, const size_t indexNonConst, 
     std::size_t i = 0;
     auto visitor = [&i, indexNonConst, &index](Edge& edge) {
         if (i == indexNonConst) {
-            index = static_cast<std::size_t>(edge.DstIdx());
+            index = static_cast<unsigned int>(edge.DstIdx());
             return hiai::COMM_EXCEPTION;
         }
         ++i;
@@ -230,13 +230,13 @@ bool OpDescUtils::GetNonConstInputIndex(const ge::ConstNodePtr& node, size_t ind
 
 bool OpDescUtils::IsNonConstInput(const ge::Node& node, size_t index)
 {
-    if (index >= static_cast<size_t>(node.ROLE(NodeSpec).OpDesc().GetInputsDescSize())) {
+    if (index >= static_cast<unsigned int>(node.ROLE(NodeSpec).OpDesc().GetInputsDescSize())) {
         return false;
     }
 
     bool ret = false;
     auto visitor = [index, &ret](Edge& edge) {
-        if (static_cast<std::size_t>(edge.DstIdx()) == index) {
+        if (static_cast<unsigned int>(edge.DstIdx()) == index) {
             ret = edge.SrcNode().ROLE(NodeSpec).Type() != hiai::op::Const::TYPE &&
                 edge.SrcNode().ROLE(NodeSpec).Type() != hiai::op::QuantizedConst::TYPE;
             return hiai::COMM_EXCEPTION;

@@ -96,6 +96,10 @@ enum Format {
     FORMAT_FRACTAL_Z_DECONV_SP_K4S2P1_S16S8,
     FORMAT_FRACTAL_Z_DECONV_SP_K4S2P2_S16S8,
     FORMAT_FRACTAL_Z_DECONV_SP_K3S3P0_S16S8,
+    FORMAT_NC1HWC0_COMPACT, // for compact feature map
+    FORMAT_FRACTAL_Z_COMPACT, // for compact format filter, in and out
+    FORMAT_FRACTAL_Z_COMPACT_IN, // for compact_in conv format filter
+    FORMAT_FRACTAL_Z_COMPACT_OUT, // for compact_out conv format filter
     FORMAT_RESERVED
 };
 

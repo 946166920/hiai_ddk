@@ -65,8 +65,7 @@ HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreOnRuntime(const void* data, size_t 
 }
 
 typedef HIAI_BuiltModel* (*HIAI_BuiltModel_RestoreFromFile_Ptr)(const char* file);
-HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreFromFileOnRuntime(
-    const char* file, const HIAI_ModelRuntime* runtime)
+HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreFromFileOnRuntime(const char* file, const HIAI_ModelRuntime* runtime)
 {
     if (runtime == NULL) {
         return NULL;
@@ -79,6 +78,26 @@ HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreFromFileOnRuntime(
         return NULL;
     }
     HIAI_BuiltModel* runtimeBuiltModel = restore(file);
+
+    return HIAI_BuiltModel_CreateModelImpl(runtimeBuiltModel, runtime);
+}
+
+typedef HIAI_BuiltModel* (*HIAI_BuiltModel_RestoreFromFileWithShapeIndex_Ptr)(const char* file, uint8_t shapeIndex);
+HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreFromFileWithShapeIndexOnRuntime(
+    const char* file, uint8_t shapeIndex, const HIAI_ModelRuntime* runtime)
+{
+    if (runtime == NULL) {
+        return NULL;
+    }
+
+    HIAI_BuiltModel_RestoreFromFileWithShapeIndex_Ptr restore =
+        (HIAI_BuiltModel_RestoreFromFileWithShapeIndex_Ptr)
+            runtime->symbolList[HRANI_BUILTMODEL_RESTORE_FROM_FILE_WITH_SHAPE_INDEX];
+    if (restore == NULL) {
+        FMK_LOGW("sym %d not found.", HRANI_BUILTMODEL_RESTORE_FROM_FILE_WITH_SHAPE_INDEX);
+        return NULL;
+    }
+    HIAI_BuiltModel* runtimeBuiltModel = restore(file, shapeIndex);
 
     return HIAI_BuiltModel_CreateModelImpl(runtimeBuiltModel, runtime);
 }

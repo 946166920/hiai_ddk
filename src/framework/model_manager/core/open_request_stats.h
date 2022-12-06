@@ -1,5 +1,5 @@
 /**
- * Copyright 2019-2022 Huawei Technologies Co., Ltd
+ * Copyright 2022-2022 Huawei Technologies Co., Ltd
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef FRAMEWORK_INC_OPEN_REQUEST_STATS_H
+#define FRAMEWORK_INC_OPEN_REQUEST_STATS_H
 
-#ifndef FRAMEWORK_GRAPH_CORE_NODE_NODE_MODIFIER_H
-#define FRAMEWORK_GRAPH_CORE_NODE_NODE_MODIFIER_H
-
-// inc/api
-#include "graph/graph_api_export.h"
-
-// inc/framework
+#include <string>
 #include "base/error_types.h"
-#include "framework/infra/base/dci.h"
 
-namespace ge {
-class NodeStore;
-
-class GRAPH_API_EXPORT NodeModifier {
+namespace hiai {
+class OpenRequestStats {
 public:
-    virtual ~NodeModifier() = default;
-
-    hiai::Status DelLastEmptyInTensor();
+    static Status StatsRequest(const std::string& statsData);
+    static Status CloudDdkVersionStats(const char* clientDdkVersion, const char* interfaceName, int result);
 
 private:
-    USE_ROLE(NodeStore);
+    OpenRequestStats() = default;
+    ~OpenRequestStats() = default;
 };
-} // namespace ge
-
-#endif // FRAMEWORK_GRAPH_CORE_NODE_NODE_MODIFIER_H
+} // end namespace hiai
+#endif

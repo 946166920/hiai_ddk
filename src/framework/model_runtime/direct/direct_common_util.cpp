@@ -54,7 +54,7 @@ bool DirectCommonUtil::CheckBuildOptions(const HIAI_ModelBuildOptions* options)
         return false;
     }
 
-    if (HIAI_ModelBuildOptions_GetQuantizeConfigData(options) != NULL) {
+    if (HIAI_ModelBuildOptions_GetQuantizeConfigData(options) != nullptr) {
         return false;
     }
 

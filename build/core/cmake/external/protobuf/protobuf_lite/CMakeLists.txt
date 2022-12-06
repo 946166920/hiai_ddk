@@ -1,6 +1,6 @@
 ### define protobuf::lite for DDK
-set(GOOGLE__PROTOBUF_DIR ${ROOT_DIR}/third_party/protobuf)
-set(goolge_protobuf_lite_src_dir ${GOOGLE__PROTOBUF_DIR}/src/google/protobuf)
+set(GOOGLE_PROTOBUF_DIR ${ROOT_DIR}/third_party/protobuf)
+set(goolge_protobuf_lite_src_dir ${GOOGLE_PROTOBUF_DIR}/src/google/protobuf)
 
 hi_cc_headers(
   NAME

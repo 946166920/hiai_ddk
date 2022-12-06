@@ -49,7 +49,8 @@ static Status BuildModel(const ModelBuildOptions& options, const std::string& mo
     }
 
     builtModel = make_shared_nothrow<BuiltModelImpl>(
-        std::shared_ptr<HIAI_BuiltModel>(builtModelImpl, [](HIAI_BuiltModel* p) { HIAI_BuiltModel_Destroy(&p); }));
+        std::shared_ptr<HIAI_BuiltModel>(builtModelImpl, [](HIAI_BuiltModel* p) { HIAI_BuiltModel_Destroy(&p); }),
+        std::const_pointer_cast<IBuffer>(modelBuffer));
     if (builtModel != nullptr) {
         FMK_LOGI("build model success.");
         return SUCCESS;
@@ -131,7 +132,7 @@ static Status MakeCompatibleBuffer(std::shared_ptr<IBuffer>& compatibleModelBuff
 }
 #endif
 
-Status ModelBuiderImpl::Build(const ModelBuildOptions& options, const std::string& modelName,
+Status ModelBuilderImpl::Build(const ModelBuildOptions& options, const std::string& modelName,
     const std::shared_ptr<IBuffer>& modelBuffer, std::shared_ptr<IBuiltModel>& builtModel)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
@@ -165,7 +166,7 @@ Status ModelBuiderImpl::Build(const ModelBuildOptions& options, const std::strin
     return BuildModel(options, modelName, modelBuffer, builtModel);
 }
 
-Status ModelBuiderImpl::Build(const ModelBuildOptions& options, const std::string& modelName,
+Status ModelBuilderImpl::Build(const ModelBuildOptions& options, const std::string& modelName,
     const std::string& modelFile, std::shared_ptr<IBuiltModel>& builtModel)
 {
     H_LOG_INTERFACE_FILTER(ITF_COUNT);
@@ -182,7 +183,7 @@ Status ModelBuiderImpl::Build(const ModelBuildOptions& options, const std::strin
 
 std::shared_ptr<IModelBuilder> CreateModelBuilder()
 {
-    return make_shared_nothrow<ModelBuiderImpl>();
+    return make_shared_nothrow<ModelBuilderImpl>();
 }
 
 } // namespace hiai

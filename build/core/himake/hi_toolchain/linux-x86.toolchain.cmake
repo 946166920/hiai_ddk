@@ -5,27 +5,8 @@ if(LINUX_X86_TOOLCHAIN_INCLUDED)
 endif(LINUX_X86_TOOLCHAIN_INCLUDED)
 set(LINUX_X86_TOOLCHAIN_INCLUDED true)
 
-# self-defined cache variable
-# set(HI_SYSTEM_NAME HI_LINUX)
-
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR x86)
-
-# set(LINUX_X86_TOOLCHAIN_PREFIX x86_64-pc-linux-gnu)
-
-# set(PREBUILT_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../../prebuilts)
-# get_filename_component(PREBUILT_DIR ${PREBUILT_DIR} ABSOLUTE)
-
-# set(CCACHE_PATH ${PREBUILT_DIR}/misc/linux-x86/ccache)
-# set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_PATH}/ccache)
-# set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PATH}/ccache)
-
-# set(GCC_VERSION 6.3.0)
-# set(GCC_PATH ${PREBUILT_DIR}/gcc/linux-x86/x86/x86_64-pc-linux-gnu-${GCC_VERSION})
-# set(CMAKE_C_COMPILER ${GCC_PATH}/bin/${LINUX_X86_TOOLCHAIN_PREFIX}-gcc)
-# set(CMAKE_CXX_COMPILER ${GCC_PATH}/bin/${LINUX_X86_TOOLCHAIN_PREFIX}-g++)
-# set(CMAKE_AR ${GCC_PATH}/bin/${LINUX_X86_TOOLCHAIN_PREFIX}-gcc-ar)
-# set(CMAKE_RANLIB ${GCC_PATH}/bin/${LINUX_X86_TOOLCHAIN_PREFIX}-gcc-ranlib)
 
 set(CMAKE_C_COMPILER_LAUNCHER ccache)
 set(CMAKE_CXX_COMPILER_LAUNCHER ccache)
@@ -109,20 +90,14 @@ set(CMAKE_C_FLAGS ""
     CACHE STRING "Flags used by the compiler during all build types.")
 set(CMAKE_CXX_FLAGS ""
     CACHE STRING "Flags used by the compiler during all build types.")
-# set(CMAKE_ASM_FLAGS ""
-    # CACHE STRING "Flags used by the compiler during all build types.")
 set(CMAKE_C_FLAGS_DEBUG ""
     CACHE STRING "Flags used by the compiler during debug builds.")
 set(CMAKE_CXX_FLAGS_DEBUG ""
     CACHE STRING "Flags used by the compiler during debug builds.")
-# set(CMAKE_ASM_FLAGS_DEBUG ""
-    # CACHE STRING "Flags used by the compiler during debug builds.")
 set(CMAKE_C_FLAGS_RELEASE ""
     CACHE STRING "Flags used by the compiler during release builds.")
 set(CMAKE_CXX_FLAGS_RELEASE ""
     CACHE STRING "Flags used by the compiler during release builds.")
-# set(CMAKE_ASM_FLAGS_RELEASE ""
-    # CACHE STRING "Flags used by the compiler during release builds.")
 set(CMAKE_MODULE_LINKER_FLAGS ""
     CACHE STRING "Flags used by the linker during the creation of modules.")
 set(CMAKE_SHARED_LINKER_FLAGS ""
@@ -132,13 +107,10 @@ set(CMAKE_EXE_LINKER_FLAGS ""
 
 set(CMAKE_C_FLAGS             "${LINUX_COMPILER_FLAGS} ${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS           "${LINUX_COMPILER_FLAGS} ${LINUX_COMPILER_FLAGS_CXX} ${CMAKE_CXX_FLAGS}")
-# set(CMAKE_ASM_FLAGS           "${ANDROID_COMPILER_FLAGS} ${CMAKE_ASM_FLAGS}")
 set(CMAKE_C_FLAGS_DEBUG       "${LINUX_COMPILER_FLAGS_DEBUG} ${CMAKE_C_FLAGS_DEBUG}")
 set(CMAKE_CXX_FLAGS_DEBUG     "${LINUX_COMPILER_FLAGS_DEBUG} ${CMAKE_CXX_FLAGS_DEBUG}")
-# set(CMAKE_ASM_FLAGS_DEBUG     "${ANDROID_COMPILER_FLAGS_DEBUG} ${CMAKE_ASM_FLAGS_DEBUG}")
 set(CMAKE_C_FLAGS_RELEASE     "${LINUX_COMPILER_FLAGS_RELEASE} ${CMAKE_C_FLAGS_RELEASE}")
 set(CMAKE_CXX_FLAGS_RELEASE   "${LINUX_COMPILER_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS_RELEASE}")
-# set(CMAKE_ASM_FLAGS_RELEASE   "${ANDROID_COMPILER_FLAGS_RELEASE} ${CMAKE_ASM_FLAGS_RELEASE}")
 set(CMAKE_SHARED_LINKER_FLAGS "${LINUX_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS}")
 set(CMAKE_MODULE_LINKER_FLAGS "${LINUX_LINKER_FLAGS} ${CMAKE_MODULE_LINKER_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS    "${LINUX_LINKER_FLAGS} ${LINUX_LINKER_FLAGS_EXE} ${CMAKE_EXE_LINKER_FLAGS}")

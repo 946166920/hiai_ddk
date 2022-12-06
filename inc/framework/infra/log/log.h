@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #ifndef HIAI_FRAMEWORK_LOG_H
 #define HIAI_FRAMEWORK_LOG_H
 

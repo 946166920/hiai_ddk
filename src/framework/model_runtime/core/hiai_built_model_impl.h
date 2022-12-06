@@ -37,6 +37,9 @@ HIAI_BuiltModel_Impl* HIAI_BuiltModel_CreateModelImpl(HIAI_BuiltModel* model, co
 HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreOnRuntime(const void* data, size_t size, const HIAI_ModelRuntime* runtime);
 
 HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreFromFileOnRuntime(const char* file, const HIAI_ModelRuntime* runtime);
+
+HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreFromFileWithShapeIndexOnRuntime(
+    const char* file, uint8_t shapeIndex, const HIAI_ModelRuntime* runtime);
 #ifdef __cplusplus
 }
 #endif

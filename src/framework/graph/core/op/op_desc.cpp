@@ -16,6 +16,8 @@
 
 #include "framework/graph/core/op/op_desc.h"
 
+#include <climits>
+
 // inc/common
 #include "infra/base/securestl.h"
 

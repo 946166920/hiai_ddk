@@ -40,6 +40,8 @@ HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryRestore(const void* modelData, size_t 
 
 HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryRestoreFromFile(const char* file);
 
+HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryRestoreFromFileWithShapeIndex(const char* file, uint8_t shapeIndex);
+
 HIAI_ModelRuntime* HIAI_ModelRuntimeRepo_GetSutiableHclRuntime(void);
 
 bool HIAI_ModelRuntimeRepo_IsOldHclModelRuntime(const HIAI_ModelRuntime* runtime);

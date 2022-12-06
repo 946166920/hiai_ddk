@@ -22,7 +22,7 @@
 namespace hiai {
 class IModelManagerAipp : public IModelManager {
 public:
-    virtual ~IModelManagerAipp() = default;
+    ~IModelManagerAipp() override = default;
 
     virtual Status RunAippModel(const Context& context, const std::vector<std::shared_ptr<INDTensorBuffer>>& inputs,
         const std::vector<std::shared_ptr<IAIPPPara>>& aippParas,

@@ -8,7 +8,7 @@ hi_cc_library_static(
     hiai_base_types.c
   COPTS
     -frtti
-    # -dl
+    -dl
 )
 
 hi_cc_library_static(
@@ -29,13 +29,6 @@ hi_cc_library_static(
     file_util.cpp
   CDEFS
     HIAI_UTIL_API_VISIABLE
-)
-
-hi_cc_library_static(
-  NAME
-    ai::fmk::common::file_util_static
-  SRCS
-    ../common/file_util.cpp
 )
 
 hi_cc_library_static(

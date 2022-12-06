@@ -66,8 +66,8 @@ ge::GraphErrCodeStatus GatherV2DConverter(ge::Node& node, const ConvertConfigInf
 
     HIAI_EXPECT_EXEC(TransformTypeConverter(node, config, isOldToNew));
 
-    auto visitor = [](ge::Node& node) {
-        auto& opDesc = node.ROLE(NodeSpec).OpDesc();
+    auto visitor = [](ge::Node& inNode) {
+        auto& opDesc = inNode.ROLE(NodeSpec).OpDesc();
         if (opDesc.GetType() == hiai::op::Const::TYPE) {
             (void)ge::AttrUtils::SetInt(opDesc, "output_format", static_cast<int64_t>(ge::FORMAT_ND));
         }
@@ -424,8 +424,8 @@ ge::GraphErrCodeStatus FlattenOMConverter(ge::Node& node, const ConvertConfigInf
         return ge::GRAPH_SUCCESS;
     }
     auto& graph = node.ROLE(NodeSpec).OwnerComputeGraph();
-    Node* ssdNode = graph.ROLE(GraphFinder).FindNode([](Node& node) {
-        return node.ROLE(NodeSpec).Type() == hiai::op::SSDDetectionOutput::TYPE;
+    Node* ssdNode = graph.ROLE(GraphFinder).FindNode([](Node& n) {
+        return n.ROLE(NodeSpec).Type() == hiai::op::SSDDetectionOutput::TYPE;
     });
     if (ssdNode != nullptr) {
         return TransformTypeConverter(node, config, isOldToNew);

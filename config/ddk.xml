@@ -1,81 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <class value="head_files">
-        <item source="api/framework/model_builder/hiai_ir_build.h" destination="include/hiai_ir_build.h" />
-        <item source="api/framework/compatible/HiAiModelBuilderType.h" destination="include/compatible/HiAiModelBuilderType.h" />
-        <item source="inc/infra/base/hiai_types.h" destination="include/hiai_types.h" />
-        <item source="api/framework/compatible/HiAiAippPara.h" destination="include/HiAiAippPara.h" />
-        <item source="api/framework/compatible/HiAiModelManagerService.h" destination="include/HiAiModelManagerService.h" />
-        <item source="api/framework/compatible/HiAiModelManagerType.h" destination="include/HiAiModelManagerType.h" />
-        <item source="api/framework/compatible/AiModelBuilder.h" destination="include/compatible/AiModelBuilder.h" />
-        <item source="api/framework/compatible/AippTensor.h" destination="include/compatible/AippTensor.h" />
-        <item source="api/framework/compatible/AiTensor.h" destination="include/compatible/AiTensor.h" />
-        <item source="api/framework/compatible/MemBuffer.h" destination="include/compatible/MemBuffer.h" />
-        <item source="api/framework/compatible/hiai_base_types_cpt.h" destination="include/compatible/hiai_base_types_cpt.h" />
-        <item source="api/framework/graph/attr_value.h" destination="include/graph/attr_value.h" />
-        <item source="api/framework/graph/buffer.h" destination="include/graph/buffer.h" />
-        <item source="api/framework/graph/types.h" destination="include/graph/types.h" />
-        <item source="api/framework/graph/tensor.h" destination="include/graph/tensor.h" />
-        <item source="api/framework/graph/shape.h" destination="include/graph/shape.h" />
-        <item source="api/framework/graph/operator.h" destination="include/graph/operator.h" />
-        <item source="api/framework/graph/operator_hiai_reg.h" destination="include/graph/operator_hiai_reg.h" />
-        <item source="api/framework/graph/op_reg.h" destination="include/graph/op_reg.h" />
-        <item source="api/framework/graph/graph.h" destination="include/graph/graph.h" />
-        <item source="api/framework/graph/model.h" destination="include/graph/model.h" />
-        <item source="api/framework/graph/debug/ge_error_codes.h" destination="include/graph/debug/ge_error_codes.h" />
-        <item source="api/framework/graph/graph_api_export.h" destination="include/graph/graph_api_export.h" />
-        <item source="api/framework/graph/attributes_holder.h" destination="include/graph/attributes_holder.h" />
-        <item source="api/framework/graph/op/all_ops.h" destination="include/graph/op/all_ops.h" />
-        <item source="api/framework/graph/op/array_defs.h" destination="include/graph/op/array_defs.h" />
-        <item source="api/framework/graph/op/const_defs.h" destination="include/graph/op/const_defs.h" />
-        <item source="api/framework/graph/op/detection_defs.h" destination="include/graph/op/detection_defs.h" />
-        <item source="api/framework/graph/op/math_defs.h" destination="include/graph/op/math_defs.h" />
-        <item source="api/framework/graph/op/nn_defs.h" destination="include/graph/op/nn_defs.h" />
-        <item source="api/framework/graph/op/random_defs.h" destination="include/graph/op/random_defs.h" />
-        <item source="api/framework/graph/op/image_defs.h" destination="include/graph/op/image_defs.h" />
-        <item source="api/framework/graph/op/image_para_utils.h" destination="include/graph/op/image_para_utils.h" />
-        <item source="inc/infra/base/securestl.h" destination="include/graph/common/securestl.h" />
-        <item source="api/framework/graph/compatible/all_ops.h" destination="include/graph/compatible/all_ops.h" />
-        <item source="api/framework/graph/compatible/cpt_array_defs.h" destination="include/graph/compatible/cpt_array_defs.h" />
-        <item source="api/framework/graph/compatible/cpt_const_defs.h" destination="include/graph/compatible/cpt_const_defs.h" />
-        <item source="api/framework/graph/compatible/cpt_detection_defs.h" destination="include/graph/compatible/cpt_detection_defs.h" />
-        <item source="api/framework/graph/compatible/cpt_math_defs.h" destination="include/graph/compatible/cpt_math_defs.h" />
-        <item source="api/framework/graph/compatible/cpt_nn_defs.h" destination="include/graph/compatible/cpt_nn_defs.h" />
-        <item source="api/framework/graph/compatible/cpt_random_defs.h" destination="include/graph/compatible/cpt_random_defs.h" />
-        <item source="api/framework/graph/compatible/cpt_image_defs.h" destination="include/graph/compatible/cpt_image_defs.h" />
-        <item source="api/framework/graph/compatible/operator_reg.h" destination="include/graph/compatible/operator_reg.h" />
-        <item source="api/infra/base/error_types.h" destination="include/base/error_types.h" />
-        <item source="api/framework/util/base_types.h" destination="include/util/base_types.h" />
-        <item source="api/framework/util/util_api_export.h" destination="include/util/util_api_export.h" />
-        <item source="api/framework/util/version_util.h" destination="include/util/version_util.h" />
-        <item source="api/framework/util/native_handle_creator.h" destination="include/util/native_handle_creator.h" />
-        <item source="api/framework/tensor/tensor_api_export.h" destination="include/tensor/tensor_api_export.h" />
-        <item source="api/framework/tensor/nd_tensor_desc.h" destination="include/tensor/nd_tensor_desc.h" />
-        <item source="api/framework/tensor/image_tensor_buffer.h" destination="include/tensor/image_tensor_buffer.h" />
-        <item source="api/framework/tensor/image_format.h" destination="include/tensor/image_format.h" />
-        <item source="api/framework/tensor/image_config_tensor_util.h" destination="include/tensor/image_config_tensor_util.h" />
-        <item source="api/framework/tensor/image_process_config_types.h" destination="include/tensor/image_process_config_types.h" />
-        <item source="api/framework/tensor/nd_tensor_buffer.h" destination="include/tensor/nd_tensor_buffer.h" />
-        <item source="api/framework/tensor/buffer.h" destination="include/tensor/buffer.h" />
-        <item source="api/framework/model/model_api_export.h" destination="include/model/model_api_export.h" />
-        <item source="api/framework/model/built_model.h" destination="include/model/built_model.h" />
-        <item source="api/framework/model_builder/model_builder_types.h" destination="include/model_builder/model_builder_types.h" />
-        <item source="api/framework/model_builder/model_builder.h" destination="include/model_builder/model_builder.h" />
-        <item source="api/framework/model_builder/model_builder_api_export.h" destination="include/model_builder/model_builder_api_export.h" />
-        <item source="api/framework/model_manager/model_manager.h" destination="include/model_manager/model_manager.h" />
-        <item source="api/framework/model_manager/model_manager_api_export.h" destination="include/model_manager/model_manager_api_export.h" />
-        <item source="api/framework/model_manager/model_manager_types.h" destination="include/model_manager/model_manager_types.h" />
+        <item source="api/framework/cloud_service/cloud_service.h" destination="ddk/ai_ddk_lib/include/cloud_service.h" isopen="false"/>
+        <item source="api/framework/model_debugger/model_dumper.h" destination="ddk/ai_ddk_lib/include/model_dumper.h" isopen="false"/>
+        <item source="api/framework/model_builder/hiai_ir_build.h" destination="ddk/ai_ddk_lib/include/hiai_ir_build.h" />
+        <item source="api/framework/compatible/HiAiModelBuilderType.h" destination="ddk/ai_ddk_lib/include/compatible/HiAiModelBuilderType.h" />
+        <item source="inc/infra/base/hiai_types.h" destination="ddk/ai_ddk_lib/include/hiai_types.h" />
+        <item source="api/framework/compatible/HiAiAippPara.h" destination="ddk/ai_ddk_lib/include/HiAiAippPara.h" />
+        <item source="api/framework/model_crypto/HiAiModelCrypto.h" destination="ddk/ai_ddk_lib/include/HiAiModelCrypto.h" isopen="false"/>
+        <item source="api/framework/compatible/HiAiModelManagerService.h" destination="ddk/ai_ddk_lib/include/HiAiModelManagerService.h" />
+        <item source="api/framework/compatible/HiAiModelManagerType.h" destination="ddk/ai_ddk_lib/include/HiAiModelManagerType.h" />
+        <item source="api/framework/compatible/AiModelBuilder.h" destination="ddk/ai_ddk_lib/include/compatible/AiModelBuilder.h" />
+        <item source="api/framework/compatible/AippTensor.h" destination="ddk/ai_ddk_lib/include/compatible/AippTensor.h" />
+        <item source="api/framework/compatible/AiTensor.h" destination="ddk/ai_ddk_lib/include/compatible/AiTensor.h" />
+        <item source="api/framework/compatible/MemBuffer.h" destination="ddk/ai_ddk_lib/include/compatible/MemBuffer.h" />
+        <item source="api/framework/compatible/hiai_base_types_cpt.h" destination="ddk/ai_ddk_lib/include/compatible/hiai_base_types_cpt.h" />
+        <item source="api/framework/graph/attr_value.h" destination="ddk/ai_ddk_lib/include/graph/attr_value.h" />
+        <item source="api/framework/graph/buffer.h" destination="ddk/ai_ddk_lib/include/graph/buffer.h" />
+        <item source="api/framework/graph/types.h" destination="ddk/ai_ddk_lib/include/graph/types.h" />
+        <item source="api/framework/graph/tensor.h" destination="ddk/ai_ddk_lib/include/graph/tensor.h" />
+        <item source="api/framework/graph/shape.h" destination="ddk/ai_ddk_lib/include/graph/shape.h" />
+        <item source="api/framework/graph/operator.h" destination="ddk/ai_ddk_lib/include/graph/operator.h" />
+        <item source="api/framework/graph/operator_hiai_reg.h" destination="ddk/ai_ddk_lib/include/graph/operator_hiai_reg.h" />
+        <item source="api/framework/graph/op_reg.h" destination="ddk/ai_ddk_lib/include/graph/op_reg.h" />
+        <item source="api/framework/graph/graph.h" destination="ddk/ai_ddk_lib/include/graph/graph.h" />
+        <item source="api/framework/graph/model.h" destination="ddk/ai_ddk_lib/include/graph/model.h" />
+        <item source="api/framework/graph/debug/ge_error_codes.h" destination="ddk/ai_ddk_lib/include/graph/debug/ge_error_codes.h" />
+        <item source="api/framework/graph/graph_api_export.h" destination="ddk/ai_ddk_lib/include/graph/graph_api_export.h" />
+        <item source="api/framework/graph/attributes_holder.h" destination="ddk/ai_ddk_lib/include/graph/attributes_holder.h" />
+        <item source="api/framework/graph/op/all_ops.h" destination="ddk/ai_ddk_lib/include/graph/op/all_ops.h" />
+        <item source="api/framework/graph/op/array_defs.h" destination="ddk/ai_ddk_lib/include/graph/op/array_defs.h" />
+        <item source="api/framework/graph/op/const_defs.h" destination="ddk/ai_ddk_lib/include/graph/op/const_defs.h" />
+        <item source="api/framework/graph/op/detection_defs.h" destination="ddk/ai_ddk_lib/include/graph/op/detection_defs.h" />
+        <item source="api/framework/graph/op/math_defs.h" destination="ddk/ai_ddk_lib/include/graph/op/math_defs.h" />
+        <item source="api/framework/graph/op/nn_defs.h" destination="ddk/ai_ddk_lib/include/graph/op/nn_defs.h" />
+        <item source="api/framework/graph/op/random_defs.h" destination="ddk/ai_ddk_lib/include/graph/op/random_defs.h" />
+        <item source="api/framework/graph/op/image_defs.h" destination="ddk/ai_ddk_lib/include/graph/op/image_defs.h" />
+        <item source="api/framework/graph/op/image_para_utils.h" destination="ddk/ai_ddk_lib/include/graph/op/image_para_utils.h" />
+        <item source="inc/infra/base/securestl.h" destination="ddk/ai_ddk_lib/include/graph/common/securestl.h" />
+        <item source="api/framework/graph/compatible/all_ops.h" destination="ddk/ai_ddk_lib/include/graph/compatible/all_ops.h" />
+        <item source="api/framework/graph/compatible/cpt_array_defs.h" destination="ddk/ai_ddk_lib/include/graph/compatible/cpt_array_defs.h" />
+        <item source="api/framework/graph/compatible/cpt_const_defs.h" destination="ddk/ai_ddk_lib/include/graph/compatible/cpt_const_defs.h" />
+        <item source="api/framework/graph/compatible/cpt_detection_defs.h" destination="ddk/ai_ddk_lib/include/graph/compatible/cpt_detection_defs.h" />
+        <item source="api/framework/graph/compatible/cpt_math_defs.h" destination="ddk/ai_ddk_lib/include/graph/compatible/cpt_math_defs.h" />
+        <item source="api/framework/graph/compatible/cpt_nn_defs.h" destination="ddk/ai_ddk_lib/include/graph/compatible/cpt_nn_defs.h" />
+        <item source="api/framework/graph/compatible/cpt_random_defs.h" destination="ddk/ai_ddk_lib/include/graph/compatible/cpt_random_defs.h" />
+        <item source="api/framework/graph/compatible/cpt_image_defs.h" destination="ddk/ai_ddk_lib/include/graph/compatible/cpt_image_defs.h" />
+        <item source="api/framework/graph/compatible/operator_reg.h" destination="ddk/ai_ddk_lib/include/graph/compatible/operator_reg.h" />
+        <item source="api/infra/base/error_types.h" destination="ddk/ai_ddk_lib/include/base/error_types.h" />
+        <item source="api/infra/base/identity.h" destination="ddk/ai_ddk_lib/include/base/identity.h" />
+        <item source="api/infra/base/inline_variable.h" destination="ddk/ai_ddk_lib/include/base/inline_variable.h" />
+        <item source="api/infra/base/in_place.h" destination="ddk/ai_ddk_lib/include/base/in_place.h" />
+        <item source="api/infra/base/static_storage.h" destination="ddk/ai_ddk_lib/include/base/static_storage.h" />
+        <item source="api/infra/base/maybe.h" destination="ddk/ai_ddk_lib/include/base/maybe.h" />
+        <item source="api/framework/util/base_types.h" destination="ddk/ai_ddk_lib/include/util/base_types.h" />
+        <item source="api/framework/util/util_api_export.h" destination="ddk/ai_ddk_lib/include/util/util_api_export.h" />
+        <item source="api/framework/util/version_util.h" destination="ddk/ai_ddk_lib/include/util/version_util.h" />
+        <item source="api/framework/util/native_handle_creator.h" destination="ddk/ai_ddk_lib/include/util/native_handle_creator.h" />
+        <item source="api/framework/tensor/tensor_api_export.h" destination="ddk/ai_ddk_lib/include/tensor/tensor_api_export.h" />
+        <item source="api/framework/tensor/nd_tensor_desc.h" destination="ddk/ai_ddk_lib/include/tensor/nd_tensor_desc.h" />
+        <item source="api/framework/tensor/image_tensor_buffer.h" destination="ddk/ai_ddk_lib/include/tensor/image_tensor_buffer.h" />
+        <item source="api/framework/tensor/image_format.h" destination="ddk/ai_ddk_lib/include/tensor/image_format.h" />
+        <item source="api/framework/tensor/image_config_tensor_util.h" destination="ddk/ai_ddk_lib/include/tensor/image_config_tensor_util.h" />
+        <item source="api/framework/tensor/image_process_config_types.h" destination="ddk/ai_ddk_lib/include/tensor/image_process_config_types.h" />
+        <item source="api/framework/tensor/nd_tensor_buffer.h" destination="ddk/ai_ddk_lib/include/tensor/nd_tensor_buffer.h" />
+        <item source="api/framework/tensor/buffer.h" destination="ddk/ai_ddk_lib/include/tensor/buffer.h" />
+        <item source="api/framework/model/model_api_export.h" destination="ddk/ai_ddk_lib/include/model/model_api_export.h" />
+        <item source="api/framework/model/built_model.h" destination="ddk/ai_ddk_lib/include/model/built_model.h" />
+        <item source="api/framework/model_builder/model_builder_types.h" destination="ddk/ai_ddk_lib/include/model_builder/model_builder_types.h" macros="false"/>
+        <item source="api/framework/model_builder/model_builder.h" destination="ddk/ai_ddk_lib/include/model_builder/model_builder.h" />
+        <item source="api/framework/model_builder/model_builder_api_export.h" destination="ddk/ai_ddk_lib/include/model_builder/model_builder_api_export.h" />
+        <item source="api/framework/model_manager/model_manager.h" destination="ddk/ai_ddk_lib/include/model_manager/model_manager.h" />
+        <item source="api/framework/model_manager/model_manager_api_export.h" destination="ddk/ai_ddk_lib/include/model_manager/model_manager_api_export.h" />
+        <item source="api/framework/model_manager/model_manager_types.h" destination="ddk/ai_ddk_lib/include/model_manager/model_manager_types.h" macros="false"/>
+        <!-- head_file_android -->
+        <item source="third_party/cutils/native_handle.h" destination="ddk/ai_ddk_lib/include/native_handle.h" />
     </class>
     <class value="so_files_32">
-        <item source="out/hiai/armeabi-v7a/lib/libhiai.so" destination="lib/libhiai.so"/>
-        <item source="out/hiai/armeabi-v7a/lib/libhiai_ir.so" destination="lib/libhiai_ir.so"/>
-        <item source="out/hiai/armeabi-v7a/lib/libhiai_ir_build.so" destination="lib/libhiai_ir_build.so"/>
-        <item source="out/hiai/armeabi-v7a/lib/libhiai_ir_build_aipp.so" destination="lib/libhiai_ir_build_aipp.so"/>
+        <item source="out/hiai/armeabi-v7a/lib/libhiai.so" destination="ddk/ai_ddk_lib/lib/libhiai.so"/>
+        <item source="out/hiai/armeabi-v7a/lib/libhiai_ir.so" destination="ddk/ai_ddk_lib/lib/libhiai_ir.so"/>
+        <item source="out/hiai/armeabi-v7a/lib/libhiai_ir_build.so" destination="ddk/ai_ddk_lib/lib/libhiai_ir_build.so"/>
+        <item source="out/hiai/armeabi-v7a/lib/libhiai_ir_build_aipp.so" destination="ddk/ai_ddk_lib/lib/libhiai_ir_build_aipp.so"/>
     </class>
     <class value="so_files_64">
-        <item source="out/hiai/arm64-v8a/lib/libhiai.so" destination="lib64/libhiai.so"/>
-        <item source="out/hiai/arm64-v8a/lib/libhiai_ir.so" destination="lib64/libhiai_ir.so"/>
-        <item source="out/hiai/arm64-v8a/lib/libhiai_ir_build.so" destination="lib64/libhiai_ir_build.so"/>
-        <item source="out/hiai/arm64-v8a/lib/libhiai_ir_build_aipp.so" destination="lib64/libhiai_ir_build_aipp.so"/>
+        <item source="out/hiai/arm64-v8a/lib/libhiai.so" destination="ddk/ai_ddk_lib/lib64/libhiai.so"/>
+        <item source="out/hiai/arm64-v8a/lib/libhiai_ir.so" destination="ddk/ai_ddk_lib/lib64/libhiai_ir.so"/>
+        <item source="out/hiai/arm64-v8a/lib/libhiai_ir_build.so" destination="ddk/ai_ddk_lib/lib64/libhiai_ir_build.so"/>
+        <item source="out/hiai/arm64-v8a/lib/libhiai_ir_build_aipp.so" destination="ddk/ai_ddk_lib/lib64/libhiai_ir_build_aipp.so"/>
     </class>
 </config>

@@ -85,13 +85,10 @@ static HIAI_Status BuildModel(HIAI_MemBuffer* inputBuffer, HIAI_Framework fmkTyp
     return HIAI_SUCCESS;
 }
 
-HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options, const char* modelName,
-    const void* inputModelData, size_t inputModelSize, HIAI_BuiltModel** builtModel)
+namespace {
+inline HIAI_Status CheckParameters(const HIAI_ModelBuildOptions* options, const char* modelName,
+    const void* inputModelData, const size_t &inputModelSize)
 {
-    // WARNING[begin]: These log used for SUT test. Must confirm with tester before modification.
-    FMK_LOGI("start to build model by direct");
-    // WARNING[end]
-
     // 入参校验
     if (modelName == nullptr || inputModelData == nullptr || inputModelSize == 0) {
         FMK_LOGE("param is invalid.");
@@ -101,6 +98,20 @@ HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options
     // options 参数检查
     if (options != nullptr && !DirectCommonUtil::CheckBuildOptions(options)) {
         FMK_LOGE("BuildOption isn't supported, please reset.");
+        return HIAI_FAILURE;
+    }
+    return HIAI_SUCCESS;
+}
+}
+
+HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options, const char* modelName,
+    const void* inputModelData, size_t inputModelSize, HIAI_BuiltModel** builtModel)
+{
+    // WARNING[begin]: These log used for SUT test. Must confirm with tester before modification.
+    FMK_LOGI("start to build model by direct");
+    // WARNING[end]
+
+    if (CheckParameters(options, modelName, inputModelData, inputModelSize) != HIAI_SUCCESS) {
         return HIAI_FAILURE;
     }
 
@@ -151,13 +162,14 @@ HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options
         return HIAI_FAILURE;
     }
 
-    // 申请输出内存
-    void* data = malloc(estimatedOutputSize);
-    if (data == nullptr) {
-        FMK_LOGE("malloc failed.");
-        return HIAI_FAILURE;
-    }
-    std::shared_ptr<IBuffer> outputBuffer = CreateLocalBuffer(data, estimatedOutputSize);
+    // 申请输出内存，由builtModel释放
+    std::unique_ptr<void, std::function<void(void*)>> outputData(malloc(estimatedOutputSize),
+        [](void* data) { free(data); });
+    HIAI_EXPECT_NOT_NULL(outputData);
+
+    std::shared_ptr<IBuffer> outputBuffer = CreateLocalBuffer(outputData.get(), estimatedOutputSize);
+    HIAI_EXPECT_NOT_NULL(outputBuffer);
+
     uint32_t outputModelSize = 0;
 
     // 模型编译
@@ -166,19 +178,17 @@ HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options
         DirectCommonUtil::DestroyBuffer(aferCompatibleBuffer);
     }
 
-    if (ret != HIAI_SUCCESS || outputModelSize <= 0) {
+    if (ret != HIAI_SUCCESS || outputModelSize == 0) {
         FMK_LOGE("Build model failed.");
         return HIAI_FAILURE;
     }
 
     std::shared_ptr<BaseBuffer> realBuffer =
         make_shared_nothrow<BaseBuffer>(static_cast<uint8_t*>(outputBuffer->GetData()), outputModelSize);
-    if (realBuffer == nullptr) {
-        FMK_LOGE("CreateBaseBuffer failed.");
-        return HIAI_FAILURE;
-    }
+    HIAI_EXPECT_NOT_NULL(realBuffer);
 
-    *builtModel = (HIAI_BuiltModel*)new (std::nothrow) DirectBuiltModelImpl(realBuffer, modelName, true);
+    outputData.release();
+    *builtModel = (HIAI_BuiltModel*) new (std::nothrow) DirectBuiltModelImpl(realBuffer, modelName, true);
     return HIAI_SUCCESS;
 }
 } // namespace hiai

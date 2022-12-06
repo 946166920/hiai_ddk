@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef HIAI_FRAMEWORK_INFRA_MEM_IDENTITY_H
-#define HIAI_FRAMEWORK_INFRA_MEM_IDENTITY_H
+#ifndef HIAI_API_INFRA_BASE_IDENTITY_H
+#define HIAI_API_INFRA_BASE_IDENTITY_H
 
 namespace hiai {
 template <typename T>
@@ -27,4 +27,4 @@ template <typename T>
 using IdentityType = typename Identity<T>::type;
 } // namespace hiai
 
-#endif // HIAI_FRAMEWORK_INFRA_MEM_IDENTITY_H
+#endif // HIAI_API_INFRA_BASE_IDENTITY_H

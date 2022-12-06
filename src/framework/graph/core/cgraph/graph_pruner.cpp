@@ -43,7 +43,7 @@ public:
             nodes_.insert(inputNode.get());
         }
     }
-    ~ActiveNodeCache() = default;
+    ~ActiveNodeCache() override = default;
 
     bool IsDead(const Node& node) const
     {

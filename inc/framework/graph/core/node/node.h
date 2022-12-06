@@ -29,7 +29,6 @@ class NodeWalker;
 class NodeStore;
 class NodeSpec;
 class NodeConstInput;
-class NodeModifier;
 class NodeSubGraph;
 class NodeCompatibler;
 class NodeSerializer;
@@ -41,7 +40,6 @@ public:
     HAS_ROLE(NodeWalker);
     HAS_ROLE(NodeStore);
     HAS_ROLE(NodeConstInput);
-    HAS_ROLE(NodeModifier);
     HAS_ROLE(NodeSubGraph);
     HAS_ROLE(NodeCompatibler);
     HAS_ROLE(NodeSerializer);

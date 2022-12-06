@@ -1,5 +1,5 @@
-hi_add_subdirectory(utils)
 hi_add_subdirectory(persistance)
+hi_add_subdirectory(utils)
 
 hi_cc_library_static(
   NAME
@@ -14,7 +14,6 @@ hi_cc_library_static(
     GRAPH_API_VISIABLE
 )
 
-
 # libhiai_ir.so external
 hi_cc_library_shared(
   NAME
@@ -25,16 +24,26 @@ hi_cc_library_shared(
     ai::fmk::graph::persistance::proto_impl::ge_ir_static
     ai::fmk::graph::core_static
     ai::fmk::graph::utils_static
-    ai::fmk::graph::persistance::proto_impl_static
-    ai::fmk::graph::persistance::static_proxy_static
     ai::fmk::compatible_static
     ai::fmk::common::helper_static
     ai::infra::math::fp16_t_static
     ai::fmk::util::tensor::trans_tensor_static
     google::protobuf_lite_static
+)
 
-    # ai::fmk::graph::persistance::dynamic_proxy_static
-    # dl
+hi_cc_function(STATIC_IR_GRAPH_PROTO
+  NAME
+    ai::fmk::hiai_ir_shared
+  DEPS
+    ai::fmk::graph::persistance::proto_impl_static
+    ai::fmk::graph::persistance::static_proxy_static
+)
+
+hi_cc_function(DYNAMIC_IR_GRAPH_PROTO
+  NAME
+    ai::fmk::hiai_ir_shared
+  DEPS
+    ai::fmk::graph::persistance::dynamic_proxy_static
 )
 
 hi_target_output_name(ai::fmk::hiai_ir_shared hiai_ir)

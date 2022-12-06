@@ -17,7 +17,6 @@ hi_cc_library_static(
     ai::fmk::graph::persistance::proto_impl::ge_ir_static
   INCS
     ${CC_OUT_DIR}
-    ${ROOT_DIR}/third_party/protobuf/src
   SRCS
     ai::fmk::graph::persistance::proto_srcs
   CDEFS
@@ -25,18 +24,21 @@ hi_cc_library_static(
     GOOGLE_PROTOBUF_NO_THREADLOCAL
   COPTS
     -fvisibility=hidden
+  PUB_DEPS
+    google::protobuf_headers
 )
 
 hi_cc_library_static(
   NAME
     ai::fmk::graph::persistance::proto_impl_static
   INCS
-    ${CC_OUT_DIR}     # 依赖ai::fmk::graph::persistance::proto_impl::ge_ir_static生成的.pb.h文件
-    ${ROOT_DIR}/third_party/protobuf/src
+    ${CC_OUT_DIR}
   SRCS
     *.cpp
   CDEFS
     GRAPH_API_VISIABLE
   COPTS
     -fvisibility=hidden
+  PUB_DEPS
+    google::protobuf_headers
 )

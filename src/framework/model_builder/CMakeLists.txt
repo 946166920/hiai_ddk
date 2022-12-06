@@ -29,29 +29,47 @@ hi_cc_library_shared(
   NAME
     ai::fmk::hiai_ir_build_shared
   WHOLE_STATIC_LIBS
+    ai::infra::log
     ai::fmk::hiai_ir_shared
     ai::fmk::model_manager_shared
     ai::fmk::model_builder::ir_static
     ai::fmk::model_builder::compatible_static
-    log
   CDEFS
     AI_SUPPORT_AIPP_API
     HIAI_MB_API_VISIABLE
+)
+
+hi_cc_function(AI_SUPPORT_UPGRADE_APK
+  NAME
+    ai::fmk::hiai_ir_build_shared
+  CDEFS
     AI_SUPPORT_UPGRADE_APK
+)
+
+hi_cc_function(AI_SUPPORT_GRAPH_API
+  NAME
+    ai::fmk::hiai_ir_build_shared
+  CDEFS
     AI_SUPPORT_GRAPH_API
 )
 
 hi_target_output_name(ai::fmk::hiai_ir_build_shared hiai_ir_build)
 
 ### define ddk for libhiai_ir_build_aipp ###
-
 hi_cc_library_shared(
   NAME
     ai::fmk::hiai_ir_build_aipp_shared
   WHOLE_STATIC_LIBS
+    ai::infra::log
     ai::fmk::hiai_ir_shared
     ai::fmk::model_builder::ir::aipp_static
-    log
+  CDEFS
+    AI_SUPPORT_UPGRADE_APK
+)
+
+hi_cc_function(AI_SUPPORT_UPGRADE_APK
+  NAME
+    ai::fmk::hiai_ir_build_aipp_shared
   CDEFS
     AI_SUPPORT_UPGRADE_APK
 )

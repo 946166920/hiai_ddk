@@ -23,6 +23,8 @@
 #include "framework/graph/core/cgraph/graph_modifier.h"
 #include "framework/graph/core/edge/edge.h"
 
+using namespace std;
+
 namespace hiai {
 static ge::GraphErrCodeStatus FSRDetectionOutputConverterConstToAttr(ge::Node& node)
 {

@@ -23,16 +23,15 @@
 #include "framework/infra/log/log.h"
 // src/framework
 #include "model/built_model/customdata_util.h"
-#ifdef AI_SUPPORT_AIPP_API
 #include "model/aipp/aipp_input_converter.h"
 #include "framework/c/hiai_built_model_aipp.h"
 #include "framework/c/hiai_tensor_aipp_para.h"
-#endif
 #include "framework/c/hiai_built_model.h"
 
 namespace hiai {
 
-BuiltModelImpl::BuiltModelImpl(std::shared_ptr<HIAI_BuiltModel> builtModel) : builtModelImpl_(std::move(builtModel))
+BuiltModelImpl::BuiltModelImpl(std::shared_ptr<HIAI_BuiltModel> builtModel, std::shared_ptr<IBuffer> modelBuffer)
+    : builtModelImpl_(std::move(builtModel)), modelBuffer_(modelBuffer)
 {
 }
 
@@ -115,6 +114,7 @@ Status BuiltModelImpl::RestoreFromBuffer(const std::shared_ptr<IBuffer>& buffer)
 
     const std::shared_ptr<IBuffer> outBuffer = CustomDataUtil::GetModelData(buffer, customModelData_);
     HIAI_EXPECT_NOT_NULL(outBuffer);
+    modelBuffer_ = outBuffer;
 
     builtModelImpl_.reset(HIAI_BuiltModel_Restore(outBuffer->GetData(), outBuffer->GetSize()),
         [](HIAI_BuiltModel* p) { HIAI_BuiltModel_Destroy(&p); });
@@ -208,9 +208,7 @@ std::vector<NDTensorDesc> BuiltModelImpl::GetInputTensorDescs() const
     std::vector<NDTensorDesc> inputTensorDescVec =
         GetTensorDescs(builtModelImpl_.get(), HIAI_BuiltModel_GetInputTensorNum, HIAI_BuiltModel_GetInputTensorDesc);
 
-#ifdef AI_SUPPORT_AIPP_API
     AippInputConverter::ConvertInputTensorDesc(customModelData_, inputTensorDescVec);
-#endif
     return inputTensorDescVec;
 }
 
@@ -253,7 +251,6 @@ const CustomModelData& BuiltModelImpl::GetCustomData()
     return customModelData_;
 }
 
-#ifdef AI_SUPPORT_AIPP_API
 Status BuiltModelImpl::GetTensorAippInfo(int32_t index, uint32_t* aippParaNum, uint32_t* batchCount)
 {
     HIAI_EXPECT_NOT_NULL(builtModelImpl_);
@@ -295,10 +292,19 @@ Status BuiltModelImpl::GetTensorAippPara(int32_t index, std::vector<void*>& aipp
     }
     return SUCCESS;
 }
-#endif
 
 std::shared_ptr<IBuiltModel> CreateBuiltModel()
 {
     return make_shared_nothrow<BuiltModelImpl>();
+}
+
+std::shared_ptr<IBuiltModelExt> IBuiltModelExt::RestoreFromFile(const char* file, uint8_t shapeIndex)
+{
+    HIAI_BuiltModel* hiaiBuiltModel = HIAI_BuiltModel_RestoreFromFileWithShapeIndex(file, shapeIndex);
+    HIAI_EXPECT_NOT_NULL_R(hiaiBuiltModel, nullptr);
+
+    return make_shared_nothrow<BuiltModelImpl>(
+        std::shared_ptr<HIAI_BuiltModel>(hiaiBuiltModel, [](HIAI_BuiltModel* p) { HIAI_BuiltModel_Destroy(&p); }),
+        nullptr);
 }
 } // namespace hiai

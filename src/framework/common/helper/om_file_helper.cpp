@@ -16,8 +16,10 @@
 
 #include "common/helper/om_file_helper.h"
 #include <set>
+
 #include "infra/base/assertion.h"
-#include "common/util.h"
+
+#include "framework/infra/log/log.h"
 #include "common/math/math_util.h"
 #include "framework/common/fmk_error_codes.h"
 

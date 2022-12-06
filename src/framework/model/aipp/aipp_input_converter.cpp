@@ -16,7 +16,6 @@
 
 #include "aipp_input_converter.h"
 #include <map>
-#include <functional>
 #include "tensor/image_tensor_buffer.h"
 #include "securec.h"
 #include "framework/common/fmk_error_codes.h"
@@ -36,7 +35,8 @@ static T* GetAippParam(size_t size, void* tensor)
 bool HasDynamicPara(hiai::AippPreprocessConfig& aippConfig, size_t type, size_t& idx)
 {
     for (int32_t i = 0; i < aippConfig.configDataCnt; i++) {
-        if (static_cast<uint32_t>(aippConfig.configDataInfo[i].type) == type) {
+        if ((static_cast<uint32_t>(aippConfig.configDataInfo[i].type) == type) &&
+            (aippConfig.configDataInfo[i].idx >= 0)) {
             idx = static_cast<size_t>(aippConfig.configDataInfo[i].idx);
             return true;
         }
@@ -278,15 +278,18 @@ static Status ExtractAippPreprocessConfig(const CustomModelData& customModelData
     size_t aippNodeCnt = customModelData.value.size() / sizeof(hiai::AippPreprocessConfig);
     for (size_t i = 0; i < aippNodeCnt; i++) {
         hiai::AippPreprocessConfig aippConfig;
-        int ret = memcpy_s(&aippConfig, sizeof(hiai::AippPreprocessConfig),
+        size_t size = sizeof(hiai::AippPreprocessConfig);
+        int ret = memcpy_s(&aippConfig, size,
             reinterpret_cast<const void*>(
-                reinterpret_cast<const char*>(customModelData.value.data()) + i * sizeof(hiai::AippPreprocessConfig)),
-            sizeof(hiai::AippPreprocessConfig));
+                reinterpret_cast<const char*>(customModelData.value.data()) + i * size),
+            size);
         if (ret != 0) {
             FMK_LOGE("ExtractAippPreprocessConfig faliled");
             return FAILED;
         }
-        dynamicInputCount += static_cast<size_t>(aippConfig.configDataCnt);
+        if (aippConfig.configDataCnt >= 0) {
+            dynamicInputCount += static_cast<size_t>(aippConfig.configDataCnt);
+        }
         aippConfigVec.push_back(aippConfig);
     }
     return SUCCESS;

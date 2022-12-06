@@ -114,7 +114,7 @@ enum ModelCheckType {
 /*
  * @brief 模型文件魔数
  */
-GE_API_VISIBILITY const uint32_t MODEL_FILE_MAGIC_NUM = 0x444F4D49; /* 魔数DOMI */
+const uint32_t MODEL_FILE_MAGIC_NUM = 0x444F4D49; /* 魔数DOMI */
 
 /*
  * @brief 模型头长度

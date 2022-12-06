@@ -16,26 +16,18 @@
 #ifndef FRAMEWORK_MODEL_BUILT_MODEL_IMPL_H
 #define FRAMEWORK_MODEL_BUILT_MODEL_IMPL_H
 // api/framework
-#ifdef AI_SUPPORT_AIPP_API
-#include "model/built_model_aipp.h"
-#else
-#include "model/built_model.h"
-#endif
+#include "model/built_model_ext.h"
 // inc
 #include "framework/util/base_buffer.h"
 // src/framework
 #include "model_runtime/core/hiai_built_model_impl.h"
 
 namespace hiai {
-#ifdef AI_SUPPORT_AIPP_API
-class BuiltModelImpl : public IBuiltModelAipp {
-#else
-class BuiltModelImpl : public IBuiltModel {
-#endif
+class BuiltModelImpl : public IBuiltModelExt {
 public:
     BuiltModelImpl() = default;
-    BuiltModelImpl(std::shared_ptr<HIAI_BuiltModel> builtModel);
-    ~BuiltModelImpl() = default;
+    BuiltModelImpl(std::shared_ptr<HIAI_BuiltModel> builtModel, std::shared_ptr<IBuffer> modelBuffer);
+    ~BuiltModelImpl() override = default;
 
     std::shared_ptr<HIAI_BuiltModel> GetBuiltModelImpl();
 
@@ -58,17 +50,14 @@ private:
     void SetCustomData(const CustomModelData& customModelData) override;
     const CustomModelData& GetCustomData() override;
 
-#ifdef AI_SUPPORT_AIPP_API
     Status GetTensorAippInfo(int32_t index, uint32_t* aippParaNum, uint32_t* batchCount) override;
     Status GetTensorAippPara(int32_t index, std::vector<void*>& aippParas) const override;
-#endif
-
-protected:
-    std::shared_ptr<HIAI_BuiltModel> builtModelImpl_ {nullptr};
 
 private:
+    std::shared_ptr<HIAI_BuiltModel> builtModelImpl_ {nullptr};
     std::shared_ptr<BaseBuffer> buffer_ {nullptr};
     CustomModelData customModelData_;
+    std::shared_ptr<IBuffer> modelBuffer_ {nullptr};
 };
 } // namespace hiai
 #endif // FRAMEWORK_MODEL_BUILT_MODEL_IMPL_H

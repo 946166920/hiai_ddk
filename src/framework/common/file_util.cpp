@@ -219,7 +219,7 @@ FMK_FUNC_HOST_VISIBILITY bool CheckOutputPathValid(const string& filePath)
             return false;
         }
 #endif
-    } else { // 无法获取绝对路径。 1. 无权限 2. 文件路径不存在。通过创建路径的方式，判断目录是否有权访问
+    } else { // 无法获取绝对路径。 1. 无权限 2. 文件路径不存在。通过创建路径的方式，判断目录是否有权访问.
         // 寻找最后一个分割符
         int pathSplitPos = static_cast<int>(filePath.size()) - 1;
         for (; pathSplitPos >= 0; pathSplitPos--) {

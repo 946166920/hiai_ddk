@@ -24,7 +24,6 @@
 #include "framework/graph/core/node/node_walker.h"
 #include "framework/graph/core/node/node_serializer.h"
 #include "framework/graph/core/node/node_const_input.h"
-#include "framework/graph/core/node/node_modifier.h"
 #include "framework/graph/core/node/node_sub_graph.h"
 #include "framework/graph/core/node/node_compatibler.h"
 
@@ -47,7 +46,6 @@ class NodeImpl :
     private NodeSpec,
     private NodeWalker,
     private NodeConstInput,
-    private NodeModifier,
     private NodeSubGraph,
     private NodeCompatibler,
     private NodeSerializer,
@@ -58,7 +56,7 @@ public:
     {
         NodeSpec::OpDesc().SetId(nodeId);
     }
-    ~NodeImpl() = default;
+    ~NodeImpl() override = default;
 
 private:
     NodePtr GetNode() override
@@ -72,7 +70,6 @@ private:
     IMPL_ROLE(NodeSpec);
     IMPL_ROLE(NodeWalker);
     IMPL_ROLE(NodeConstInput);
-    IMPL_ROLE(NodeModifier);
     IMPL_ROLE(NodeSubGraph);
     IMPL_ROLE(NodeCompatibler);
     IMPL_ROLE(NodeSerializer);

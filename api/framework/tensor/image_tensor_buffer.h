@@ -26,7 +26,7 @@
 namespace hiai {
 class HIAI_TENSOR_API_EXPORT IImageTensorBuffer : public INDTensorBuffer {
 public:
-    virtual ~IImageTensorBuffer() = default;
+    ~IImageTensorBuffer() override = default;
     virtual int32_t Batch() const = 0;
     virtual int32_t Height() const = 0;
     virtual int32_t Width() const = 0;

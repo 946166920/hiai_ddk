@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef HIAI_FRAMEWORK_INFRA_MEM_MAYBE_H
-#define HIAI_FRAMEWORK_INFRA_MEM_MAYBE_H
+#ifndef HIAI_API_INFRA_BASE_MAYBE_H
+#define HIAI_API_INFRA_BASE_MAYBE_H
 
-#include "framework/infra/mem/inline_variable.h"
-#include "framework/infra/mem/static_storage.h"
-#include "framework/infra/mem/in_place.h"
+#include "base/inline_variable.h"
+#include "base/static_storage.h"
+#include "base/in_place.h"
 
 namespace hiai {
 struct NullMaybe {
@@ -79,6 +79,9 @@ struct Maybe {
 
     Maybe& operator=(const Maybe<T>& other) noexcept
     {
+        if (this == &other) {
+            return *this;
+        }
         if (other) {
             operator=(other.Ref());
         } else {
@@ -89,6 +92,9 @@ struct Maybe {
 
     Maybe& operator=(Maybe<T>&& other) noexcept
     {
+        if (this == &other) {
+            return *this;
+        }
         if (other) {
             operator=(std::move(other.Ref()));
         } else {
@@ -245,4 +251,4 @@ private:
 };
 } // namespace hiai
 
-#endif // HIAI_FRAMEWORK_INFRA_MEM_MAYBE_H
+#endif // HIAI_API_INFRA_BASE_MAYBE_H

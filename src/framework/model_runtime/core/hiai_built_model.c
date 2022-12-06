@@ -84,6 +84,15 @@ HIAI_BuiltModel* HIAI_BuiltModel_RestoreFromFile(const char* file)
     return (HIAI_BuiltModel*)ModelRuntimeRepo_TryRestoreFromFile(file);
 }
 
+HIAI_BuiltModel* HIAI_BuiltModel_RestoreFromFileWithShapeIndex(const char* file, uint8_t shapeIndex)
+{
+    if (file == NULL || (shapeIndex < 1 || shapeIndex > 16)) {
+        FMK_LOGE("param is invalid.");
+        return NULL;
+    }
+    return (HIAI_BuiltModel*)ModelRuntimeRepo_TryRestoreFromFileWithShapeIndex(file, shapeIndex);
+}
+
 typedef HIAI_Status (*HIAI_BuiltModel_CheckCompatibility_Ptr)(
     const HIAI_BuiltModel* model, HIAI_BuiltModel_Compatibility* compatibility);
 HIAI_Status HIAI_BuiltModel_CheckCompatibility(

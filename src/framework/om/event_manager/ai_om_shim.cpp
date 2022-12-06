@@ -21,8 +21,8 @@
 #include <unistd.h> // for access
 
 #include "securec.h"
-#include "common/debug/log.h"
 #include "infra/om/event_manager/ai_om.h"
+#include "framework/infra/log/log.h"
 
 #ifndef REAL_FILE_NAME
 #define REAL_FILE_NAME strrchr(__FILE__, '/')

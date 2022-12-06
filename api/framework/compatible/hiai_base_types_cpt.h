@@ -61,6 +61,7 @@ enum AiModelDescription_Frequency {
     AiModelDescription_Frequency_MEDIUM = 2,
     AiModelDescription_Frequency_HIGH = 3,
     AiModelDescription_Frequency_EXTREME = 4,
+    AiModelDescription_Frequency_HIGH_COMPUTE_UNIT = 103,
 };
 
 enum AiModelDescription_DeviceType {

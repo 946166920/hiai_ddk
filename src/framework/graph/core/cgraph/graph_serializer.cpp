@@ -15,6 +15,8 @@
  */
 #include "framework/graph/core/cgraph/graph_serializer.h"
 
+#include <climits>
+
 #include "framework/graph/core/cgraph/graph_list_walker.h"
 #include "framework/graph/core/cgraph/graph_modifier.h"
 #include "framework/graph/core/edge/anchor.h"

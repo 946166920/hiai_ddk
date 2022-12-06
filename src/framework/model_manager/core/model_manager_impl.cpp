@@ -27,6 +27,7 @@
 #include "model/built_model/built_model_impl.h"
 #include "model_builder/om/model_build_options_util.h"
 #include "tensor/base/nd_tensor_buffer_impl.h"
+#include "model_manager/core/open_request_stats.h"
 
 #ifdef AI_SUPPORT_AIPP_API
 #include "model/built_model_aipp.h"
@@ -118,7 +119,13 @@ Status ModelManagerImpl::Init(const ModelInitOptions& options, const std::shared
 
     customModelData_ = builtModel->GetCustomData();
 
-    return PrepareModelManager(options, builtModel);
+    Status result = PrepareModelManager(options, builtModel);
+
+#ifdef HIAI_DDK
+    (void)OpenRequestStats::CloudDdkVersionStats(AI_DDK_VERSION, "InterfaceV2Init", result);
+#endif
+
+    return result;
 }
 
 void ModelManagerImpl::OnRunDone(

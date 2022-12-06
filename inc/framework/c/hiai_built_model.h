@@ -35,6 +35,8 @@ AICP_C_API_EXPORT HIAI_BuiltModel* HIAI_BuiltModel_Restore(const void* data, siz
 AICP_C_API_EXPORT HIAI_Status HIAI_BuiltModel_SaveToFile(const HIAI_BuiltModel* model, const char* file);
 AICP_C_API_EXPORT HIAI_BuiltModel* HIAI_BuiltModel_RestoreFromFile(const char* file);
 
+AICP_C_API_EXPORT HIAI_BuiltModel* HIAI_BuiltModel_RestoreFromFileWithShapeIndex(const char* file, uint8_t shapeIndex);
+
 AICP_C_API_EXPORT HIAI_Status HIAI_BuiltModel_CheckCompatibility(
     const HIAI_BuiltModel* model, HIAI_BuiltModel_Compatibility* compatibility);
 

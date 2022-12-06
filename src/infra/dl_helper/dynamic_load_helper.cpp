@@ -32,6 +32,7 @@ DynamicLoadHelper::DynamicLoadHelper() : handle_(nullptr)
 DynamicLoadHelper::~DynamicLoadHelper()
 {
     Deinit();
+    handle_ = nullptr;
 }
 
 bool DynamicLoadHelper::Init(const std::string& file)

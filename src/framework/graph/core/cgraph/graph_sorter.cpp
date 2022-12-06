@@ -42,7 +42,7 @@ public:
     GraphDfsSorter(GraphStore& store, GraphListWalker& walker) : store_(store), walker_(walker)
     {
     }
-    ~GraphDfsSorter() = default;
+    ~GraphDfsSorter() override = default;
 
     hiai::Status Sort()
     {

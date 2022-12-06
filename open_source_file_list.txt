@@ -79,11 +79,16 @@ inc/infra/mmpa/sub_inc/mmpa_linux.h
 inc/infra/mmpa/sub_inc/mmpa_typedef_linux.h
 inc/infra/math/fp16_t.h
 inc/framework/ge_error_code.h
-inc/framework/infra/mem/identity.h
-inc/framework/infra/mem/inline_variable.h
-inc/framework/infra/mem/in_place.h
-inc/framework/infra/mem/static_storage.h
-inc/framework/infra/mem/maybe.h
+# inc/framework/infra/mem/identity.h
+# inc/framework/infra/mem/inline_variable.h
+# inc/framework/infra/mem/in_place.h
+# inc/framework/infra/mem/static_storage.h
+# inc/framework/infra/mem/maybe.h
+api/infra/base/identity.h
+api/infra/base/inline_variable.h
+api/infra/base/in_place.h
+api/infra/base/static_storage.h
+api/infra/base/maybe.h
 inc/framework/infra/log/log.h
 inc/framework/infra/log/log_fmk_interface.h
 inc/framework/infra/base/dci.h
@@ -151,7 +156,7 @@ inc/framework/graph/core/def_types.h
 inc/framework/graph/core/op/op_desc.h
 inc/framework/graph/core/node/node_sub_graph.h
 inc/framework/graph/core/node/node_pred.h
-inc/framework/graph/core/node/node_modifier.h
+# inc/framework/graph/core/node/node_modifier.h
 inc/framework/graph/core/node/node_const_input.h
 inc/framework/graph/core/node/node_serializer.h
 inc/framework/graph/core/node/node_visitor.h
@@ -184,7 +189,7 @@ inc/framework/graph/core/cgraph/graph_fwd.h
 inc/framework/graph/core/cgraph/graph_listener.h
 inc/framework/graph/core/cgraph/graph_builder.h
 inc/framework/model/base_buffer.h
-inc/common/proto/ge_ir.proto
+# inc/common/proto/ge_ir.proto
 src/infra/log/android_log.c
 src/infra/log/linux_log.c
 src/infra/dl_helper/dynamic_load_helper.cpp
@@ -262,12 +267,12 @@ src/framework/common/file_util.cpp
 src/framework/common/helper/model_serialize_wrapper.cpp
 src/framework/common/helper/om_file_helper.cpp
 src/framework/inc/common/file_util.h
-src/framework/inc/common/util.h
+# src/framework/inc/common/util.h
 src/framework/inc/common/scope_guard.h
-src/framework/inc/common/string_util.h
+# src/framework/inc/common/string_util.h
 src/framework/inc/common/helper/model_serialize_wrapper.h
 src/framework/inc/common/helper/om_file_helper.h
-src/framework/inc/common/debug/log.h
+# src/framework/inc/common/debug/log.h
 src/framework/inc/common/math/math_util.h
 src/framework/inc/util/file_util.h
 src/framework/model_manager/core/model_manager_impl.h
@@ -409,7 +414,7 @@ src/framework/graph/core/node/node_compatibler.cpp
 src/framework/graph/core/node/node_const_input.cpp
 src/framework/graph/core/node/legacy_node.cpp
 src/framework/graph/core/node/node_maker.h
-src/framework/graph/core/node/node_modifier.cpp
+# src/framework/graph/core/node/node_modifier.cpp
 src/framework/graph/core/edge/anchor.cpp
 src/framework/graph/core/edge/edge.cpp
 src/framework/graph/core/edge/endpoint.cpp
@@ -435,88 +440,3 @@ src/framework/model/built_model/customdata_util.cpp
 src/framework/model/built_model/built_model_impl.cpp
 src/framework/model/aipp/aipp_input_converter.h
 src/framework/model/aipp/aipp_input_converter.cpp
-test/framework/ut/model_manager/model_manager_v2/main.cpp
-test/framework/ut/model_manager/model_manager_v2/stub/stub_hiai_built_model.cpp
-test/framework/ut/model_manager/model_manager_v2/stub/stub_model_manager_listener.h
-test/framework/ut/model_manager/model_manager_v2/stub/stub_model_manager_listener.cpp
-test/framework/ut/model_manager/model_manager_v2/stub/stub_hiai_model_builder.cpp
-test/framework/ut/model_manager/model_manager_v2/stub/stub_hiai_model_manager.cpp
-test/framework/ut/model_manager/model_manager_v2/stub/stub_hiai_built_model_aipp.c
-test/framework/ut/model_manager/model_manager_v2/stub/stub_hiai_model_build_types.cpp
-test/framework/ut/model_manager/model_manager_v2/stub/control_c.cpp
-test/framework/ut/model_manager/model_manager_v2/stub/stub_hiai_nd_tensor_desc.cpp
-test/framework/ut/model_manager/model_manager_v2/stub/stub_hiai_model_manager_types.c
-test/framework/ut/model_manager/model_manager_v2/stub/control_c.h
-test/framework/ut/model_manager/model_manager_v2/test/common.h
-test/framework/ut/model_manager/model_manager_v2/test/model_manager_ut.cpp
-test/framework/ut/model_manager/model_manager_v2/test/common.cpp
-test/framework/ut/model_manager/model_manager_v2/test/dynamic_shape_ut.cpp
-test/framework/ut/model_manager/model_manager_v2/test/model_device_config_ut.cpp
-test/framework/ut/model_manager/model_manager_v2/test/built_model_ut.cpp
-test/framework/ut/model_manager/model_manager_v2/test/load_model_ut.cpp
-test/framework/ut/model_manager/model_manager_v2/test/hiai_ir_build_ut.cpp
-test/framework/ut/model_manager/model_manager_v2/test/static_shape_ut.cpp
-test/framework/ut/model_manager/model_manager_v2/test/model_manager_aipp_ut.cpp
-test/framework/ut/model_manager/ddk/create_aitensor_ut.cpp
-test/framework/ut/model_manager/ddk/file_util_ut.cpp
-test/framework/ut/model_manager/ddk/create_aipppara_ut.cpp
-test/framework/ut/model_manager/ddk/check_model_compatibility_ut.cpp
-test/framework/ut/model_manager/ddk/set_model_priority_ut.cpp
-test/framework/ut/model_manager/ddk/local_buffer_ut.cpp
-test/framework/ut/model_manager/ddk/base_buffer_ut.cpp
-test/framework/ut/model_manager/ddk/aipp_para_v2_ut.cpp
-test/framework/ut/model_manager/ddk/create_membuffer_ut.cpp
-test/framework/ut/model_manager/ddk/image_tensor_buffer_ut.cpp
-test/framework/ut/model_manager/ddk/process_ut.cpp
-test/framework/ut/model_manager/ddk/nd_tensor_buffer_ut.cpp
-test/framework/ut/model_manager/ddk/dynamic_load_helper_ut.cpp
-test/framework/ut/model_manager/ddk/main.cpp
-test/framework/ut/model_manager/ddk/process_dynamic_aipp_ut.cpp
-test/framework/ut/model_manager/ddk/src/common_utils.h
-test/framework/ut/model_manager/ddk/src/stub_load_models.h
-test/framework/ut/model_manager/ddk/src/common_utils.cpp
-test/framework/ut/model_manager/ddk/src/stub_load_models.cpp
-test/framework/ut/model_manager/direct_model_runtime/direct_model_manager_ut.cpp
-test/framework/ut/model_manager/direct_model_runtime/direct_model_manager_aipp_ut.cpp
-test/framework/ut/model_manager/direct_model_runtime/direct_model_builder_ut.cpp
-test/framework/ut/model_manager/direct_model_runtime/direct_built_model_ut.cpp
-test/framework/ut/model_manager/direct_model_runtime/direct_built_model_aipp_ut.cpp
-test/framework/ut/model_manager/direct_model_runtime/main.cpp
-test/framework/ut/graph/testcase/main.cc
-test/framework/ut/graph/testcase/ge_ir/ge_graph_unittest.cpp
-test/framework/ut/graph/testcase/ge_ir/ge_buffer_unittest.cpp
-test/framework/ut/graph/testcase/ge_ir/ge_attr_holder_unittest.cpp
-test/framework/ut/graph/testcase/ge_ir/ge_shape_unittest.cpp
-test/framework/ut/graph/testcase/ge_ir/ge_operator_graph_builder_unittest.cpp
-test/framework/ut/graph/testcase/ge_ir/ge_operator_unittest.cpp
-test/framework/ut/graph/testcase/ge_ir/ge_model_unittest.cpp
-test/framework/ut/graph/testcase/ge_ir/ge_tensor_unittest.cpp
-test/framework/ut/graph/testcase/ge_ir/ge_operator_attr_unittest.cpp
-test/framework/ut/graph/testcase/ge_graph/ge_tensor_utils_unittest.cpp
-test/framework/ut/graph/testcase/ge_graph/ge_node_unittest.cpp
-test/framework/ut/graph/testcase/ge_graph/ge_model_serialize_unittest.cpp
-test/framework/ut/graph/testcase/ge_graph/ge_anchor_utils_unittest.cpp
-test/framework/ut/graph/testcase/ge_graph/ge_opdesc_unittest.cpp
-test/framework/ut/graph/testcase/ge_graph/ge_graph_anchor_unittest.cpp
-test/framework/ut/graph/testcase/ge_graph/ge_def_type_unittest.cpp
-test/framework/ut/graph/testcase/ge_graph/ge_node_utils_unittest.cpp
-test/framework/ut/graph/testcase/ge_graph/ge_tensor_unittest.cpp
-test/framework/bin/llt/framework/domi/modelmanager/tf_use_origin_format.om
-test/framework/bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om
-test/framework/bin/llt/framework/domi/modelmanager/tf_softmax_v100.om
-test/framework/bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om
-test/framework/bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om
-test/framework/bin/llt/framework/domi/modelmanager/aipp.om
-test/framework/bin/llt/framework/domi/modelmanager/tf_softmax_hcs_npucl.om
-test/framework/bin/llt/framework/domi/modelmanager/tf_conv_opversion_5.om
-test/framework/bin/llt/framework/domi/modelmanager/om/tf_softmax_infershaped.om
-test/framework/bin/llt/framework/domi/modelmanager/om/tf_softmax_v100.om
-test/framework/bin/llt/framework/domi/modelmanager/om/tf_softmax_no_infershaped.om
-test/framework/bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om
-test/framework/bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_npucl.om
-test/framework/stubs/hiai_ddk/src/stub_hiai_foundation_dl_helper.c
-test/framework/stubs/hiai_ir_build_ddk/src/stub_hiai_ir_build.cpp
-test/framework/stubs/ai_client/src/control_client.h
-test/framework/stubs/ai_client/src/hiai_nd_tensor_buffer.h
-test/framework/stubs/ai_client/src/control_client.cpp
-test/framework/stubs/ai_client/src/stub_hiai_model_manager.cpp

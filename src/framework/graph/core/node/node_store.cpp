@@ -95,29 +95,29 @@ void NodeStore::SetOwnerComputeGraph(const ComputeGraphPtr& graph)
     graph_ = std::weak_ptr<ComputeGraph>(graph);
 }
 
-std::vector<InDataAnchorPtr>& NodeStore::InDataAnchors() const
+std::vector<InDataAnchorPtr>& NodeStore::InDataAnchors()
 {
-    return const_cast<std::vector<InDataAnchorPtr>&>(inDataAnchors_);
+    return inDataAnchors_;
 }
 
-std::vector<OutDataAnchorPtr>& NodeStore::OutDataAnchors() const
+std::vector<OutDataAnchorPtr>& NodeStore::OutDataAnchors()
 {
-    return const_cast<std::vector<OutDataAnchorPtr>&>(outDataAnchors_);
+    return outDataAnchors_;
 }
 
-InControlAnchorPtr& NodeStore::InCtrlAnchor() const
+InControlAnchorPtr& NodeStore::InCtrlAnchor()
 {
-    return const_cast<InControlAnchorPtr&>(inControlAnchor_);
+    return inControlAnchor_;
 }
 
-OutControlAnchorPtr& NodeStore::OutCtrlAnchor() const
+OutControlAnchorPtr& NodeStore::OutCtrlAnchor()
 {
-    return const_cast<OutControlAnchorPtr&>(outControlAnchor_);
+    return outControlAnchor_;
 }
 
-OpDescPtr& NodeStore::OpDesc() const
+OpDescPtr& NodeStore::OpDesc()
 {
-    return const_cast<OpDescPtr&>(op_);
+    return op_;
 }
 
 InDataAnchorPtr NodeStore::InDataAnchor(std::size_t idx) const

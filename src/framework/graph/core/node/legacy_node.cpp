@@ -127,7 +127,7 @@ LegacyNode::Vistor<OutDataAnchorPtr> LegacyNode::GetAllOutDataAnchors() const
 
 InDataAnchorPtr LegacyNode::GetInDataAnchor(int idx) const
 {
-    return ROLE(NodeStore).InDataAnchor(static_cast<std::size_t>(idx));
+    return ROLE(NodeStore).InDataAnchor(static_cast<unsigned int>(idx));
 }
 
 GraphErrCodeStatus LegacyNode::RemoveInDataAnchor(int idx)
@@ -143,7 +143,7 @@ GraphErrCodeStatus LegacyNode::RemoveInDataAnchor(int idx)
 
 OutDataAnchorPtr LegacyNode::GetOutDataAnchor(int idx) const
 {
-    return ROLE(NodeStore).OutDataAnchor(static_cast<std::size_t>(idx));
+    return ROLE(NodeStore).OutDataAnchor(static_cast<unsigned int>(idx));
 }
 
 InControlAnchorPtr LegacyNode::GetInControlAnchor() const
