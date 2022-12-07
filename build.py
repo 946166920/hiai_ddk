@@ -57,7 +57,7 @@ def check_argv(argv):
             is_run_test = True
         else:
             errmsg_invalid_para = \
-            "ERROR]: Unknown options and parameters.\n" \
+            "[ERROR]: Unknown options and parameters.\n" \
             "[INFO] : You can run the following command to obtain more information:\n" \
             "         'python build.py --help'"
             print(errmsg_invalid_para)

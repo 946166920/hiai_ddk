@@ -24,7 +24,7 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 
 | 硬件平台   |                                                              | 状态 |
 | :--------- | :----------------------------------------------------------- | :--- |
-| Kirin 平台 | Kirin 810 、Kirin 820、Kirin 985 、<br />Kirin 990 、Kirin 990 5G 、Kirin 990E 、Kirin 9000E 、Kirin 9000 | ✔️    |
+| Kirin 平台 | Kirin 810 、Kirin 820、Kirin 985 、<br />Kirin 990 、Kirin 990 5G 、Kirin 990E 、Kirin 9000 、Kirin 9000E | ✔️    |
 
 （[硬件平台和手机型号对应关系表](./doc/MappingHardWarePlatformAndPhoneModel.md)）
 
@@ -66,26 +66,28 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 | googletest     | 1.8.1    | https://codeload.github.com/google/googletest/tar.gz/release-1.8.1 |
 | mockcpp | 2.7 | https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip |
 | cmake | 3.20.5 | https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz |
-| android-ndk    | r23c     | https://dl.google.com/android/repository/android-ndk-r23c-linux.zip |
+| android-ndk    | r23b    | https://dl.google.com/android/repository/android-ndk-r23b-linux.zip |
 
 只支持在Linux平台Ubuntu 16/18操作系统下进行编译，暂不支持在windows下编译。
 
 
-HiAI DDK编译需要依赖第三方库，编译过程中会去下载所需的第三方软件包，请确保可连接网络，脚本会自动下载所需的源码和工具，下载耗时因网络环境而异。
+HiAI DDK编译需要依赖第三方库，编译过程中脚本会自动下载所需的源码和工具，请确保可连接网络，下载耗时因网络环境而异。
 
-下载过程中会在工程根目录下新建一个`third_party`目录用来存放下载的第三方源码。
-
-
+下载过程中会在工程根目录下新建一个`third_party`目录用来存放下载的第三方源码，其中`libboundscheck`源码使用`build/core/cmake/external/c_sec/CMakeLists.txt`编译生成`libhuawei_c_sec_shared.so`。
 
 本项目编译依赖NDK和CMake编译工具（暂不支持r19c以下的NDK版本。）：
 
 1、本地没有安装NDK和CMake的情况下：
 
-​	如果本地是一个全新的环境，我们的编译脚本会自动去下载依赖的NKD和CMake编译工具，并存放在工程根目录下新建的`buildtools`目录下，开发者可以直接跳到[编译执行](#编译执行)小节，执行编译命令即可，默认会同时编译32bit和64bit架构的so，如果需要修改目标so架构，请参考下面的”配置`ABI`“小节。
+​	如果本地是一个全新的环境，我们的编译脚本会自动去下载依赖的NDK和CMake编译工具，并存放在工程根目录下新建的`buildtools`目录下，开发者可以直接跳到[编译执行](#编译执行)小节，执行编译命令即可，默认只64位架构的so，如果需要修改目标so架构，请参考下面的”配置`ABI`“小节。
 
 2、本地已经安装NDK或者CMake的情况下：
 
-​    如果本地已经下载好编译工具，可以通过修改config目录下的配置文件`build.conf`，指定编译工具路径；如果当前环境中只有部分编译工具，可以只填写当前已有的编译工具路径，其余未配置的编译工具，我们在`build.py`脚本中会自动检测并下载。
+   如果本地已经下载安装好编译工具，且在系统变量中有命令可用，则无需配置，脚本中会自动检测并使用；
+
+   如果想使用工具的其他版本，可以通过修改config目录下的配置文件`build.conf`，指定编译工具路径，编译脚本优先使用配置文件中指定路径的编译工具；
+
+   如果当前环境中只有部分编译工具，可以只填写当前已有的编译工具路径，其余未配置的编译工具，我们在`build.py`脚本中会自动检测并下载。
 
 ​    具体配置项如下所示（注意：配置文件中"="前的变量名请勿修改，编译脚本中会引用到）：
 
@@ -102,10 +104,10 @@ HiAI DDK编译需要依赖第三方库，编译过程中会去下载所需的第
    CMAKE_TOOLCHAIN_FILE=/your/project/path/project_name/buildtools/cmake-3.20.5
    ```
    
-3. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，当前默认配置为both，如下所示
+3. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，当前默认配置为64bit，如下所示
    ```
    # Architecture support for [armeabi-v7a/arm64-v8a/both], 'both' means compile both armeabi-v7a and arm64-v8a
-   ABI=both
+   ABI=arm64-v8a
    ```
 
 
@@ -113,7 +115,7 @@ HiAI DDK编译需要依赖第三方库，编译过程中会去下载所需的第
 
 在编译过程中，会使用`autoreconf`命令编译protobuf源码生成protoc文件，请确保本地环境上已经安装有`autoreconf`命令。
 
-HiAI DDK基于NDK + CMake的命令行构建方式，在确认编译环境配置完成的前提下，安装好python3，运行`build.py`即可执行编译。
+HiAI DDK基于NDK + CMake的命令行构建方式，在确认编译环境配置完成的前提下，安装好python3，在工程根目录下运行`build.py`即可执行编译。
 
 详细命令如下：
 
@@ -128,7 +130,7 @@ python3 build.py --test # 只编译运行测试代码，不编译和打包so
 
 #### 编译输出
 
-编译成功之后会在工程根目录下生成hwhiai-ddk-100.520.020.010.zip压缩包，在压缩包里的ddk/ai_ddk_lib下存放打包的ddk头文件和so（32位so存放在lib目录下，64位so存放在lib64目录下）。
+编译成功之后会在工程根目录下生成hwhiai-ddk-master.zip压缩包，在压缩包里的ddk/ai_ddk_lib下存放打包的头文件和so。
 
 结构如下所示：
 
