@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <class value="head_files">
-        <item source="api/framework/cloud_service/cloud_service.h" destination="ddk/ai_ddk_lib/include/cloud_service.h" isopen="false"/>
-        <item source="api/framework/model_debugger/model_dumper.h" destination="ddk/ai_ddk_lib/include/model_dumper.h" isopen="false"/>
+        <item source="api/framework/cloud_service/cloud_service.h" destination="ddk/ai_ddk_lib/include/cloud_service.h" is_open="false"/>
+        <item source="api/framework/model_debugger/model_dumper.h" destination="ddk/ai_ddk_lib/include/model_dumper.h" is_open="false"/>
         <item source="api/framework/model_builder/hiai_ir_build.h" destination="ddk/ai_ddk_lib/include/hiai_ir_build.h" />
         <item source="api/framework/compatible/HiAiModelBuilderType.h" destination="ddk/ai_ddk_lib/include/compatible/HiAiModelBuilderType.h" />
         <item source="inc/infra/base/hiai_types.h" destination="ddk/ai_ddk_lib/include/hiai_types.h" />
         <item source="api/framework/compatible/HiAiAippPara.h" destination="ddk/ai_ddk_lib/include/HiAiAippPara.h" />
-        <item source="api/framework/model_crypto/HiAiModelCrypto.h" destination="ddk/ai_ddk_lib/include/HiAiModelCrypto.h" isopen="false"/>
+        <item source="api/framework/model_crypto/HiAiModelCrypto.h" destination="ddk/ai_ddk_lib/include/HiAiModelCrypto.h" is_open="false"/>
         <item source="api/framework/compatible/HiAiModelManagerService.h" destination="ddk/ai_ddk_lib/include/HiAiModelManagerService.h" />
         <item source="api/framework/compatible/HiAiModelManagerType.h" destination="ddk/ai_ddk_lib/include/HiAiModelManagerType.h" />
         <item source="api/framework/compatible/AiModelBuilder.h" destination="ddk/ai_ddk_lib/include/compatible/AiModelBuilder.h" />
@@ -67,12 +67,12 @@
         <item source="api/framework/tensor/buffer.h" destination="ddk/ai_ddk_lib/include/tensor/buffer.h" />
         <item source="api/framework/model/model_api_export.h" destination="ddk/ai_ddk_lib/include/model/model_api_export.h" />
         <item source="api/framework/model/built_model.h" destination="ddk/ai_ddk_lib/include/model/built_model.h" />
-        <item source="api/framework/model_builder/model_builder_types.h" destination="ddk/ai_ddk_lib/include/model_builder/model_builder_types.h" macros="false"/>
+        <item source="api/framework/model_builder/model_builder_types.h" destination="ddk/ai_ddk_lib/include/model_builder/model_builder_types.h" has_macros="true"/>
         <item source="api/framework/model_builder/model_builder.h" destination="ddk/ai_ddk_lib/include/model_builder/model_builder.h" />
         <item source="api/framework/model_builder/model_builder_api_export.h" destination="ddk/ai_ddk_lib/include/model_builder/model_builder_api_export.h" />
         <item source="api/framework/model_manager/model_manager.h" destination="ddk/ai_ddk_lib/include/model_manager/model_manager.h" />
         <item source="api/framework/model_manager/model_manager_api_export.h" destination="ddk/ai_ddk_lib/include/model_manager/model_manager_api_export.h" />
-        <item source="api/framework/model_manager/model_manager_types.h" destination="ddk/ai_ddk_lib/include/model_manager/model_manager_types.h" macros="false"/>
+        <item source="api/framework/model_manager/model_manager_types.h" destination="ddk/ai_ddk_lib/include/model_manager/model_manager_types.h" has_macros="true"/>
         <!-- head_file_android -->
         <item source="third_party/cutils/native_handle.h" destination="ddk/ai_ddk_lib/include/native_handle.h" />
     </class>

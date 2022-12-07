@@ -82,12 +82,6 @@ class repack_ddk(object):
 
     def cp_item(self, class_config):
         for item in class_config:
-            if 'isopen' in item.attrib and item.attrib['isopen'] == 'false':
-                continue
-            
-            if 'macros' in item.attrib and item.attrib['macros'] == 'false':
-                # 删除宏包含的代码
-                pass
             src_file = item.attrib['source']
             dest_file = os.path.join(DDK_RELEASE_DIR, 'ddk_external', 'ddk', 'ai_ddk_lib', item.attrib['destination'])
 
@@ -95,5 +89,29 @@ class repack_ddk(object):
 
             if not os.path.exists(dest_dir):
                 os.makedirs(dest_dir)
+            
+            if 'is_open' in item.attrib and item.attrib['is_open'] == 'false':
+                continue
+            
+            if 'has_macros' in item.attrib and item.attrib['has_macros'] == 'true':
+                is_defif = False
+                print("src_file:", src_file)
+                print("dest_file:", dest_file)
+                new_context = []
+                with open(src_file, 'r') as f:
+                    for line in f.readlines():
+                        if line.startswith('#ifdef'):
+                            is_defif = True
+                        if is_defif and line.startswith('#endif'):
+                            is_defif = False
+                            continue
+                        if is_defif:
+                            continue
+                        new_context.append(line)
+            
+                with open(dest_file, 'w') as f:
+                    f.writelines(new_context)
+                continue
+
             cp_cmd = "cp {} {}".format(src_file, dest_file)
             os.system(cp_cmd)

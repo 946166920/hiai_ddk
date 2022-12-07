@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
     # run build and package
     if is_run_build:
-        ddk.run_build()
+        # ddk.run_build()
         ddk.run_repack()
 
     # run test
