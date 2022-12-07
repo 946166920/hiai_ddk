@@ -36,7 +36,6 @@ hi_cc_feature_option(AI_SUPPORT_LEGACY_ROM_COMPATIBLE ON)
 hi_cc_feature_option(AI_SUPPORT_BUILT_MODEL_SAVE ON)
 hi_cc_feature_option(AI_SUPPORT_SPECIAL_3RD_MODEL ON)
 hi_cc_feature_option(AI_SUPPORT_UPGRADE_APK ON)
-hi_cc_feature_option(DYNAMIC_IR_GRAPH_PROTO OFF)
 hi_cc_feature_option(STATIC_IR_GRAPH_PROTO ON)
 
 hi_cc_feature_option(AI_SUPPORT_PRIORITY_EXTEND OFF)

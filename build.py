@@ -28,7 +28,6 @@ from handle_ddk import *
 
 CONFIG_FILE = os.path.join("config", "build.conf")
 
-
 def check_argv(argv):
     is_run_build = True
     is_run_test = True
