@@ -1,12 +1,5 @@
 hi_cc_library_static(
   NAME
-    ai::fmk::graph::persistance::dynamic_proxy_static
-  SRCS
-    dynamic_proto_factory.cpp
-)
-
-hi_cc_library_static(
-  NAME
     ai::fmk::graph::persistance::static_proxy_static
   SRCS
     static_proto_factory.cpp

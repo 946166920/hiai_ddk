@@ -2,26 +2,6 @@ include_guard()
 
 include(hi_utils/hi_message)
 
-# function(hi_filegroup_set_srcs target_name srcs_files excludes_files)
-#   hi_glob(srcs
-#     INCLUDES
-#       ${HI_FILEGROUP_SRCS}
-#     EXCLUDES
-#       ${HI_FILEGROUP_EXCLUDES}
-#   )
-
-#   hi_set_target_properties(${target_name} HI_SRCS "${srcs}")
-
-#   # set absolute srcs
-#   foreach(src IN LISTS srcs)
-#     get_filename_component(abs_src ${src} ABSOLUTE)
-#     list(APPEND abs_srcs ${abs_src})
-#   endforeach()
-#   set_target_properties(${target_name}
-#     PROPERTIES INTERFACE_HI_ABS_SRCS "${abs_srcs}"
-#   )
-# endfunction()
-
 function(hi_filegroup_get_all_srcs target_name all_abs_srcs all_abs_incs)
   hi_get_target_property(${target_name} HI_SOURCE_DIR src_dir)
   hi_get_target_property(${target_name} HI_SRCS fg_srcs)

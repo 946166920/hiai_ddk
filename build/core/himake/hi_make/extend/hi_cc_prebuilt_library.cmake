@@ -108,6 +108,5 @@ function(hi_cc_prebuilt_library)
   if(NOT HI_CC_PREBUIT_LIBRARY_NAME STREQUAL target_name)
     add_library(${HI_CC_PREBUIT_LIBRARY_NAME} ALIAS ${target_name})
   endif()
-  # hi_message(FATAL_ERROR "end of hi_cc_prebuilt_library")
 
 endfunction()

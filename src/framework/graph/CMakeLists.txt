@@ -14,7 +14,7 @@ hi_cc_library_static(
     GRAPH_API_VISIABLE
 )
 
-# libhiai_ir.so external
+# libhiai_ir.so
 hi_cc_library_shared(
   NAME
     ai::fmk::hiai_ir_shared
@@ -37,13 +37,6 @@ hi_cc_function(STATIC_IR_GRAPH_PROTO
   DEPS
     ai::fmk::graph::persistance::proto_impl_static
     ai::fmk::graph::persistance::static_proxy_static
-)
-
-hi_cc_function(DYNAMIC_IR_GRAPH_PROTO
-  NAME
-    ai::fmk::hiai_ir_shared
-  DEPS
-    ai::fmk::graph::persistance::dynamic_proxy_static
 )
 
 hi_target_output_name(ai::fmk::hiai_ir_shared hiai_ir)

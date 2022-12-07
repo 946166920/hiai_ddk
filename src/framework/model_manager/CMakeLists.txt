@@ -61,10 +61,6 @@ hi_cc_library_shared(
     ai::infra::base::process_util_static
     ai::fmk::model_manager_stats_static
 
-    ai::fmk::model_runtime::direct_static
-    ai::fmk::om::om_wrapper_static
-    ai::fmk::tensor::aipp_para_static
-
     ai::infra::log
     huawei::c_sec
   EXCLUDE_STATIC_LIBS
@@ -73,7 +69,6 @@ hi_cc_library_shared(
     ai::fmk::tensor::nd_tensor_static
     ai::fmk::util::dl_helper_static
   COPTS
-    # -march=armv8.2-a+simd+fp16  # 32位时不支持
     -frtti
     -std=c++11
   CDEFS
@@ -83,34 +78,29 @@ hi_cc_library_shared(
     HIAI_UTIL_API_VISIABLE
     HIAI_TENSOR_API_VISIABLE
     OS_TYPE=0
-    AI_SUPPORT_AIPP_API
 )
 
-# hi_cc_function(AI_SUPPORT_LEGACY_ROM_COMPATIBLE
-#   NAME
-#     ai::fmk::model_manager_shared
-#   WHOLE_STATIC_LIBS
-#   # DEPS
-#     ai::fmk::model_runtime::direct_static
-# )
+hi_cc_function(AI_SUPPORT_LEGACY_ROM_COMPATIBLE
+  NAME
+    ai::fmk::model_manager_shared
+  WHOLE_STATIC_LIBS
+    ai::fmk::model_runtime::direct_static
+)
 
-# hi_cc_function(AI_SUPPORT_PLUGIN_COMPATIBLE
-#   NAME
-#     ai::fmk::model_manager_shared
-#   WHOLE_STATIC_LIBS
-#   # DEPS
-#     ai::fmk::om::om_wrapper_static
-#     # ai::infra::dl_helper_static
-# )
+hi_cc_function(AI_SUPPORT_PLUGIN_COMPATIBLE
+  NAME
+    ai::fmk::model_manager_shared
+  WHOLE_STATIC_LIBS
+    ai::fmk::om::om_wrapper_static
+)
 
-# hi_cc_function(AI_SUPPORT_AIPP_API
-#   NAME
-#     ai::fmk::model_manager_shared
-#   WHOLE_STATIC_LIBS
-#   # DEPS
-#     ai::fmk::tensor::aipp_para_static
-#   CDEFS
-#     AI_SUPPORT_AIPP_API
-# )
+hi_cc_function(AI_SUPPORT_AIPP_API
+  NAME
+    ai::fmk::model_manager_shared
+  WHOLE_STATIC_LIBS
+    ai::fmk::tensor::aipp_para_static
+  CDEFS
+    AI_SUPPORT_AIPP_API
+)
 
 hi_target_output_name(ai::fmk::model_manager_shared hiai)

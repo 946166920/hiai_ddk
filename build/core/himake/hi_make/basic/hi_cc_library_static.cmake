@@ -54,10 +54,6 @@ function(hi_cc_library_static)
       PROPERTY HI_INCS ${HI_CC_LIBRARY_STATIC_INCS}
     )
 
-    # foreach(inc IN LISTS HI_CC_LIBRARY_STATIC_INCS)
-    #   list(APPEND target_incs ${ROOT_DIR}/${inc})
-    # endforeach()
-
     # absolute paths
     target_include_directories(${target_name}
       PRIVATE
@@ -75,13 +71,6 @@ function(hi_cc_library_static)
         ${HI_CC_LIBRARY_STATIC_DEPS}
     )
   endif()
-
-  # if(HI_CC_LIBRARY_SHARED_PUB_DEPS)
-  # target_link_libraries(${target_name}
-  #   PUBLIC
-  #     ${HI_CC_LIBRARY_SHARED_PUB_DEPS}
-  # )
-  # endif()
 
   if(HI_CC_LIBRARY_STATIC_PUB_DEPS)
     target_link_libraries(${target_name}

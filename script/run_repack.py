@@ -22,10 +22,10 @@ import zipfile
 import xml.etree.ElementTree as ET
 
 DDK_PACKAGE_NAME = 'hwhiai-ddk-master'
+DDK_ZIP_NAME = DDK_PACKAGE_NAME + '.zip'
 DDK_RELEASE_DIR = os.path.join('out', DDK_PACKAGE_NAME)
 DDK_PACKAGE_FILE = os.path.join('config', 'ddk.xml')
 DDK_LIST = ["libhiai.so", "libhiai_ir.so", "libhiai_ir_build.so", "libhiai_ir_build_aipp.so"]
-DDK_ZIP_NAME = 'hwhiai-ddk-master.zip'
 
 
 class repack_ddk(object):
@@ -83,7 +83,7 @@ class repack_ddk(object):
     def cp_item(self, class_config):
         for item in class_config:
             src_file = item.attrib['source']
-            dest_file = os.path.join(DDK_RELEASE_DIR, 'ddk_external', 'ddk', 'ai_ddk_lib', item.attrib['destination'])
+            dest_file = os.path.join(DDK_RELEASE_DIR, 'ddk_external', item.attrib['destination'])
 
             dest_dir = os.sep.join(dest_file.split(os.sep)[:-1])
 
@@ -95,8 +95,6 @@ class repack_ddk(object):
             
             if 'has_macros' in item.attrib and item.attrib['has_macros'] == 'true':
                 is_defif = False
-                print("src_file:", src_file)
-                print("dest_file:", dest_file)
                 new_context = []
                 with open(src_file, 'r') as f:
                     for line in f.readlines():
