@@ -1724,6 +1724,8 @@ int HIAI_ModelManager_buildModel_v2(HIAI_ModelManager* manager, HIAI_Framework f
     fread(outputModelBuffer->data, 1, fileLength, fp);
 
     *outModelSize = fileLength;
+
+    fclose(fp);
     return 0;
 }
 
