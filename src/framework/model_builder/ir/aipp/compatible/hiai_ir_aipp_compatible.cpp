@@ -375,9 +375,9 @@ public:
         return aippImages_[idx];
     }
 
-    ge::Node* AippNode() const
+    ge::Node& AippNode() const
     {
-        return aipp_;
+        return *aipp_;
     }
 
     ge::Node* DataNode() const
@@ -513,7 +513,7 @@ private:
     {
         config.configDataCnt = 0;
 
-        ge::Node& aippNode = *chain.AippNode();
+        ge::Node& aippNode = chain.AippNode();
 
         for (std::int32_t i = 1; i < chain.Size(); i++) {
             ge::Node& imageNode = *chain[i];

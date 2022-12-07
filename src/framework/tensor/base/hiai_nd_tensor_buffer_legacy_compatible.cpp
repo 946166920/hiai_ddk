@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "hiai_nd_tensor_buffer_legacy_compatible.h"
 
 #include "securec.h"

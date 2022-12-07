@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef DOMI_OMFILE_HELPER_H_
 #define DOMI_OMFILE_HELPER_H_
 

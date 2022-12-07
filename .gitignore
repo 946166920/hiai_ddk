@@ -1,11 +1,7 @@
 buildtools/*
-ddk/*
-out/*
 third_party/*
+out/*
 tests/build/*
 tests/out/*
 script/__pycache__/*
 hwhiai-ddk-master.zip
-ai_ddk_lib_zhuance/*
-out_before/*
-out_modify/*

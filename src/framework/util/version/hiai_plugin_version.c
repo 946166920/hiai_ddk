@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "framework/c/hiai_version.h"
 
 #include <stdint.h>

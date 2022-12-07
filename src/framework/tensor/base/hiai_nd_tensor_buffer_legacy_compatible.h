@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef FRAMEWORK_C_HIAI_ND_TENSOR_BUFFER_LEGACY_COMPATIBLE_H
 #define FRAMEWORK_C_HIAI_ND_TENSOR_BUFFER_LEGACY_COMPATIBLE_H
 

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef DOMI_OMG_COMMON_MATH_MATH_UTIL_H
 #define DOMI_OMG_COMMON_MATH_MATH_UTIL_H
 

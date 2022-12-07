@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef FRAMEWORK_MODEL_MODEL_SERIALIZE_WRAPPER_H
 #define FRAMEWORK_MODEL_MODEL_SERIALIZE_WRAPPER_H
 #include "framework/graph/core/cgraph/compute_graph.h"
