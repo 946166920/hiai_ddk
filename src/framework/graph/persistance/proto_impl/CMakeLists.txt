@@ -38,7 +38,7 @@ hi_cc_library_static(
   CDEFS
     GRAPH_API_VISIABLE
   COPTS
-    -fvisibility=hidden
+    -fvisibility=default
   PUB_DEPS
     google::protobuf_headers
 )

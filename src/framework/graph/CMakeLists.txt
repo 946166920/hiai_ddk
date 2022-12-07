@@ -34,7 +34,7 @@ hi_cc_library_shared(
 hi_cc_function(STATIC_IR_GRAPH_PROTO
   NAME
     ai::fmk::hiai_ir_shared
-  DEPS
+  WHOLE_STATIC_LIBS
     ai::fmk::graph::persistance::proto_impl_static
     ai::fmk::graph::persistance::static_proxy_static
 )
