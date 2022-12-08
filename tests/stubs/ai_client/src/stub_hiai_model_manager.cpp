@@ -761,7 +761,7 @@ void* HIAI_NDTensorBuffer_GetData(const HIAI_NDTensorBuffer* ndBuffer)
 
 void HIAI_NDTensorBuffer_Destroy(HIAI_NDTensorBuffer** ndBuffer)
 {
-    std::cout << __func__ << " " << (void*)(*ndBuffer) << std::endl;
+    std::cout << __func__ << std::endl;
     if (ndBuffer == nullptr || *ndBuffer == nullptr) {
         return;
     }
