@@ -16,6 +16,8 @@
 #include "util/file_util.h"
 
 #include <climits>
+#include <functional>
+
 #include "infra/base/assertion.h"
 #include "infra/base/securestl.h"
 #include "framework/infra/log/log.h"

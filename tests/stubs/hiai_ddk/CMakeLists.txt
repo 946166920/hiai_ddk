@@ -10,6 +10,7 @@ set(HIAI_SRC_FILES
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_builder/om/model_build_options_util.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_builder/om/model_builder_impl.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_manager/core/model_manager_impl.cpp
+    ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_manager/core/open_request_stats.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/infra/buffer/local_buffer.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/infra/buffer/base_buffer.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/infra/buffer/hiai_native_handle.c
@@ -56,6 +57,7 @@ set(HIAI_SRC_FILES
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/om/event_manager/om_wrapper.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/om/event_manager/ai_om_shim.cpp
     ${TOP_DIR}/src/infra/dl_helper/dynamic_load_helper.cpp
+    ${TOP_DIR}/src/infra/base/process_util.cpp
 
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_manager/compatible/AiContext.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_manager/compatible/AiModelBuilder.cpp
@@ -101,6 +103,7 @@ set(CMAKE_C_FLAGS "-pthread -fPIC -Os -ffunction-sections -fdata-sections -Wno-u
 
 set(CMAKE_CXX_FLAGS "-std=c++11 -pthread -fPIC -frtti -Os -ffunction-sections -fdata-sections -Wno-unused-parameter -D_Float16=uint16_t -DOS_TYPE=0 -DHIAI_DDK -DHIAI_MM_API_VISIABLE -DHIAI_MB_API_VISIABLE -DHIAI_M_API_VISIABLE -DHIAI_UTIL_API_VISIABLE -DHIAI_TENSOR_API_VISIABLE -DHIAI_C_API_VISIABLE -DAI_SUPPORT_AIPP_API -DAI_SUPPORT_GRAPH_API -DAI_SUPPORT_BUILT_MODEL_SAVE -DAI_SUPPORT_CL_CUSTOMIZATION -DAI_SUPPORT_SPECIAL_3RD_MODEL -DANDROID -DAI_SUPPORT_LEGACY_APP_COMPATIBLE -DAI_SUPPORT_LEGACY_ROM_COMPATIBLE")
 
+add_definitions(-DAI_DDK_VERSION=\"100.520.020.010\")
 
 set(LIBHIAI_DDK hiai_ddk)
 add_library(${LIBHIAI_DDK} SHARED ${LOCAL_SRC_FILES})

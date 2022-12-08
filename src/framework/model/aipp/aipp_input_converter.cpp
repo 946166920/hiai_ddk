@@ -15,7 +15,10 @@
  */
 
 #include "aipp_input_converter.h"
+
 #include <map>
+#include <functional>
+
 #include "tensor/image_tensor_buffer.h"
 #include "securec.h"
 #include "framework/common/fmk_error_codes.h"
