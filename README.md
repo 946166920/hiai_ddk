@@ -104,10 +104,10 @@ HiAI DDK编译需要依赖第三方库，编译过程中脚本会自动下载所
    CMAKE_TOOLCHAIN_FILE=/your/project/path/project_name/buildtools/cmake-3.20.5
    ```
    
-3. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，当前默认配置为64bit，如下所示
+3. 配置`ABI`，此选项用于区分最终的目标文件是基于32bit架构还是64bit架构，此字段只支持三种选项，当前默认配置为both，如下所示
    ```
    # Architecture support for [armeabi-v7a/arm64-v8a/both], 'both' means compile both armeabi-v7a and arm64-v8a
-   ABI=arm64-v8a
+   ABI=both
    ```
 
 
