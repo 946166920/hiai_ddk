@@ -71,6 +71,7 @@ if __name__ == '__main__':
     # read build config
     if not config.get_config():
         print("get_config error.")
+        sys.exit(-1)
 
     # init
     ddk = HandleDDK(config)
