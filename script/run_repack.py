@@ -83,7 +83,7 @@ class repack_ddk(object):
     def cp_item(self, class_config):
         for item in class_config:
             src_file = item.attrib['source']
-            dest_file = os.path.join(DDK_RELEASE_DIR, 'ddk_external', item.attrib['destination'])
+            dest_file = os.path.join(DDK_RELEASE_DIR, item.attrib['destination'])
 
             dest_dir = os.sep.join(dest_file.split(os.sep)[:-1])
 
