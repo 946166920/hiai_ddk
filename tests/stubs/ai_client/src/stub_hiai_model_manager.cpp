@@ -615,9 +615,6 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromFormat(const HIAI_NDTensorDes
 
     size_t totalBytes = totalDimNum / dimC;
 
-std::cout << "ysj format = " << format << std::endl;
-    std::cout << "ysj totalDimNum = " << totalDimNum << std::endl;
-    std::cout << "ysj scaleFactor = " << scaleFactor << std::endl;
     totalBytes = static_cast<size_t>(totalBytes * scaleFactor);
 
     size_t newDimNum = HIAI_NDTensorDesc_GetDimNum_stub(desc);
@@ -640,8 +637,6 @@ std::cout << "ysj format = " << format << std::endl;
     buffer->size = totalBytes;
     buffer->data = malloc(totalBytes);
     buffer->handle = malloc(1);
-
-     std::cout << "ysj totalBytes = " << totalBytes << std::endl;
 
     return buffer;
 }
@@ -750,7 +745,6 @@ size_t HIAI_NDTensorBuffer_GetSize(const HIAI_NDTensorBuffer* tensorBuffer)
 {
     std::cout << __func__ << std::endl;
     if (tensorBuffer == nullptr) {
-        std::cout << "ysj HIAI_NDTensorBuffer_GetSize 0000000000\n" << std::endl;
         return 0;
     }
     return tensorBuffer->size;
