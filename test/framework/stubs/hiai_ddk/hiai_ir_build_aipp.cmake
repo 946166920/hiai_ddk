@@ -1,4 +1,4 @@
-set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../)
+set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../../)
 set(FRAMEWORK_BASE_DIR_FOR_INC_DIRS ${TOP_DIR}/src/framework)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
 set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/bounds_checking_function/)
@@ -10,14 +10,6 @@ set(LOCAL_SRC_FILES
 )
 
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--gc-sections")
-
-set(CMAKE_C_FLAGS
-    -DAI_SUPPORT_AIPP_API
-    -DAI_SUPPORT_GRAPH_API 
-    -DAI_SUPPORT_SPECIAL_3RD_MODEL 
-)
-
-set(CMAKE_CXX_FLAGS "-std=c++11 -pthread -fPIC -frtti -Os -ffunction-sections -fdata-sections -fno-asynchronous-unwind-tables -fno-exceptions -Wno-unused-parameter -fomit-frame-pointer -fno-unwind-tables -DHAVE_PTHREAD -D_FORTIFY_SOURCE=2 -DHOST_VISIBILITY -DGRAPH_API_VISIABLE")
 
 set(LIBHIAI_IR_BUILD_AIPP_DDK hiai_ir_build_aipp_ddk)
 add_library(${LIBHIAI_IR_BUILD_AIPP_DDK} SHARED ${LOCAL_SRC_FILES})
@@ -49,5 +41,3 @@ target_include_directories(${LIBHIAI_IR_BUILD_AIPP_DDK}
 target_link_libraries(${LIBHIAI_IR_BUILD_AIPP_DDK}
     hiai_ir_ddk
 )
-
-

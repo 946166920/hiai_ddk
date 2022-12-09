@@ -287,13 +287,32 @@ TEST_F(CreateAippParaUTest, AippPara_SetPaddingPara_batchIndex)
     status = aippPara->SetPaddingPara(batchIndex, std::move(paddingPara));
     EXPECT_TRUE(status == AI_SUCCESS);
 
+    printf("---AippPara_SetPaddingPara_batchIndex_succ_005 start----\n");
+    paddingPara.paddingSizeTop = 1;
+    paddingPara.paddingSizeBottom = 1;
+    paddingPara.paddingSizeLeft = 1;
+    paddingPara.paddingSizeRight = 1;
+    batchIndex = -1;
+    status = aippPara->SetPaddingPara(batchIndex, std::move(paddingPara));
+    EXPECT_TRUE(status == AI_SUCCESS);
+
+    printf("---AippPara_SetPaddingPara_batchIndex_succ_006 start----\n");
+    paddingPara.paddingSizeTop = 1;
+    paddingPara.paddingSizeBottom = 1;
+    paddingPara.paddingSizeLeft = 1;
+    paddingPara.paddingSizeRight = 1;
+    batchIndex = -1;
+    status = aippPara->SetPaddingPara(batchIndex, std::move(paddingPara));
+    EXPECT_TRUE(status == AI_SUCCESS);
+
     printf("---AippPara_SetPaddingPara_batchIndex_fail_001 start----\n");
     paddingPara.paddingSizeTop = 16;
     paddingPara.paddingSizeBottom = 16;
     paddingPara.paddingSizeLeft = 16;
     paddingPara.paddingSizeRight = 16;
-    status = aippPara->SetPaddingPara(std::move(paddingPara));
-    EXPECT_TRUE(status == AI_SUCCESS);
+    batchIndex = -2;
+    status = aippPara->SetPaddingPara(batchIndex, std::move(paddingPara));
+    EXPECT_TRUE(status == AI_FAILED);
 
     printf("---AippPara_SetPaddingPara_batchIndex_fail_002 start----\n");
     paddingPara.paddingSizeTop = 16;
@@ -327,7 +346,8 @@ TEST_F(CreateAippParaUTest, AippPara_ResizePara_batchIndex)
     printf("---AippPara_SetResizePara_batchIndex_succ_002 start----\n");
     resizePara.resizeOutputSizeW = 300;
     resizePara.resizeOutputSizeH = 400;
-    status = aippPara->SetResizePara(std::move(resizePara));
+    batchIndex = -1;
+    status = aippPara->SetResizePara(batchIndex, std::move(resizePara));
     EXPECT_TRUE(status == AI_SUCCESS);
 
     printf("---AippPara_SetResizePara_batchIndex_succ_003 start----\n");
@@ -343,6 +363,13 @@ TEST_F(CreateAippParaUTest, AippPara_ResizePara_batchIndex)
     batchIndex = numberBatchCount - 1;
     status = aippPara->SetResizePara(batchIndex, std::move(resizePara));
     EXPECT_TRUE(status == AI_SUCCESS);
+
+    printf("---AippPara_SetResizePara_batchIndex_fail_001 start----\n");
+    resizePara.resizeOutputSizeW = 300;
+    resizePara.resizeOutputSizeH = 400;
+    batchIndex = -2;
+    status = aippPara->SetResizePara(batchIndex, std::move(resizePara));
+    EXPECT_TRUE(status == AI_FAILED);
 
     printf("---AippPara_SetResizePara_batchIndex_fail_002 start----\n");
     resizePara.resizeOutputSizeW = 300;
@@ -380,7 +407,8 @@ TEST_F(CreateAippParaUTest, AippPara_SetCropPara_batchIndex)
     EXPECT_TRUE(status == AI_SUCCESS);
 
     printf("---AippPara_SetCropPara_batchIndex_succ_003 start----\n");
-    status = aippPara->SetCropPara(std::move(cropPara));
+    batchIndex = -1;
+    status = aippPara->SetCropPara(batchIndex, std::move(cropPara));
     EXPECT_TRUE(status == AI_SUCCESS);
 
     printf("---AippPara_SetCropPara_batchIndex_succ_004 start----\n");
@@ -390,6 +418,11 @@ TEST_F(CreateAippParaUTest, AippPara_SetCropPara_batchIndex)
 
     printf("---AippPara_SetCropPara_batchIndex_fail_001 start----\n");
     batchIndex = numberBatchCount;
+    status = aippPara->SetCropPara(batchIndex, std::move(cropPara));
+    EXPECT_TRUE(status == AI_FAILED);
+
+    printf("---AippPara_SetCropPara_batchIndex_fail_002 start----\n");
+    batchIndex = -2;
     status = aippPara->SetCropPara(batchIndex, std::move(cropPara));
     EXPECT_TRUE(status == AI_FAILED);
 }
@@ -414,7 +447,8 @@ TEST_F(CreateAippParaUTest, AippPara_ResizePara)
     EXPECT_TRUE(para.resizeOutputSizeH == resizePara.resizeOutputSizeH);
 
     printf("---AippPara_SetResizePara_succ_002 start----\n");
-    status = aippPara->SetResizePara(std::move(resizePara));
+    batchIndex = -1;
+    status = aippPara->SetResizePara(batchIndex, std::move(resizePara));
     EXPECT_TRUE(status == AI_SUCCESS);
 
     printf("---AippPara_SetResizePara_succ_003 start----\n");
@@ -424,6 +458,11 @@ TEST_F(CreateAippParaUTest, AippPara_ResizePara)
 
     printf("---AippPara_SetResizePara_fail_001 start----\n");
     batchIndex = numberBatchCount;
+    status = aippPara->SetResizePara(batchIndex, std::move(resizePara));
+    EXPECT_TRUE(status == AI_FAILED);
+
+    printf("---AippPara_SetResizePara_fail_002 start----\n");
+    batchIndex = -2;
     status = aippPara->SetResizePara(batchIndex, std::move(resizePara));
     EXPECT_TRUE(status == AI_FAILED);
 }
@@ -453,7 +492,8 @@ TEST_F(CreateAippParaUTest, AippPara_DtcPara)
     EXPECT_TRUE(status == AI_SUCCESS);
 
     printf("---AippPara_SetDtcPara_succ_003 start----\n");
-    status = aippPara->SetDtcPara(std::move(dtcPara));
+    batchIndex = -1;
+    status = aippPara->SetDtcPara(batchIndex, std::move(dtcPara));
     EXPECT_TRUE(status == AI_SUCCESS);
 
     printf("---AippPara_SetDtcPara_succ_004 start----\n");
@@ -478,6 +518,11 @@ TEST_F(CreateAippParaUTest, AippPara_DtcPara)
 
     printf("---AippPara_SetDtcPara_fail_001 start----\n");
     batchIndex = numberBatchCount;
+    status = aippPara->SetDtcPara(batchIndex, std::move(dtcPara));
+    EXPECT_TRUE(status == AI_FAILED);
+
+    printf("---AippPara_SetDtcPara_fail_002 start----\n");
+    batchIndex = -2;
     status = aippPara->SetDtcPara(batchIndex, std::move(dtcPara));
     EXPECT_TRUE(status == AI_FAILED);
 }

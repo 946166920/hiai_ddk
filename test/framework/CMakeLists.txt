@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8.0)
 
-set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
+set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../..)
 set(BASE_DIR ${CMAKE_CURRENT_LIST_DIR})
 if (EXISTS ${TOP_DIR}/third_party/protobuf)
   set(PROTOBUF_DIR ${TOP_DIR}/third_party/protobuf)
@@ -8,11 +8,11 @@ endif()
 
 set(CMAKE_INSTALL_LIBDIR ${BASE_DIR}/build)
 
-include(../cmake/external_libs/protoc.cmake)
+include(${TOP_DIR}/cmake/external_libs/protoc.cmake)
 
-include(../cmake/external_libs/gtest.cmake)
+include(${TOP_DIR}/cmake/external_libs/gtest.cmake)
 
-include(../cmake/external_libs/mockcpp.cmake)
+include(${TOP_DIR}/cmake/external_libs/mockcpp.cmake)
 
 if (POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)

@@ -1,4 +1,4 @@
-set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../../)
+set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../../../)
 set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
 set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/bounds_checking_function/)
 
@@ -52,7 +52,7 @@ include_directories(ddk_model_manager_ut
     ${TOP_DIR}/src/framework/inc
     ${TOP_DIR}/src/framework/graph
     ${TOP_DIR}/src/inc
-    ${TOP_DIR}/tests/stubs/ai_client/src
+    ${TOP_DIR}/test/framework/stubs/hiai_ddk/src
     ${TESTCASES_FILES_PATH}/src
     ${THIRD_PARTY_CSEC_PATH}/include
     ${GTEST_DIR}/googletest/include

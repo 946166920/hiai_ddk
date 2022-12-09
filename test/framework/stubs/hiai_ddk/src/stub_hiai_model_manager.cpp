@@ -615,6 +615,9 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromFormat(const HIAI_NDTensorDes
 
     size_t totalBytes = totalDimNum / dimC;
 
+std::cout << "ysj format = " << format << std::endl;
+    std::cout << "ysj totalDimNum = " << totalDimNum << std::endl;
+    std::cout << "ysj scaleFactor = " << scaleFactor << std::endl;
     totalBytes = static_cast<size_t>(totalBytes * scaleFactor);
 
     size_t newDimNum = HIAI_NDTensorDesc_GetDimNum_stub(desc);
@@ -637,6 +640,8 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromFormat(const HIAI_NDTensorDes
     buffer->size = totalBytes;
     buffer->data = malloc(totalBytes);
     buffer->handle = malloc(1);
+
+     std::cout << "ysj totalBytes = " << totalBytes << std::endl;
 
     return buffer;
 }
@@ -745,6 +750,7 @@ size_t HIAI_NDTensorBuffer_GetSize(const HIAI_NDTensorBuffer* tensorBuffer)
 {
     std::cout << __func__ << std::endl;
     if (tensorBuffer == nullptr) {
+        std::cout << "ysj HIAI_NDTensorBuffer_GetSize 0000000000\n" << std::endl;
         return 0;
     }
     return tensorBuffer->size;
@@ -761,7 +767,7 @@ void* HIAI_NDTensorBuffer_GetData(const HIAI_NDTensorBuffer* ndBuffer)
 
 void HIAI_NDTensorBuffer_Destroy(HIAI_NDTensorBuffer** ndBuffer)
 {
-    std::cout << __func__ << std::endl;
+    std::cout << __func__ << " " << (void*)(*ndBuffer) << std::endl;
     if (ndBuffer == nullptr || *ndBuffer == nullptr) {
         return;
     }
@@ -1718,8 +1724,6 @@ int HIAI_ModelManager_buildModel_v2(HIAI_ModelManager* manager, HIAI_Framework f
     fread(outputModelBuffer->data, 1, fileLength, fp);
 
     *outModelSize = fileLength;
-
-    fclose(fp);
     return 0;
 }
 
