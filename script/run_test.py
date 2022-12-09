@@ -21,11 +21,10 @@ import sys
 class RunTest(object):
     def __init__(self, cmake_bin_path):
         self.cmake_bin_path = cmake_bin_path
-        
 
     def run_test(self):
         prj_root_path = os.getcwd()
-        test_build_dir = os.path.join(prj_root_path, "tests", "build")
+        test_build_dir = os.path.join(prj_root_path, "test", "framework", "build")
         if os.path.exists(test_build_dir):
             os.system("rm -r {}".format(test_build_dir))
         os.makedirs(test_build_dir)
@@ -51,6 +50,3 @@ class RunTest(object):
         if os.path.exists(test_build_dir):
             os.system("rm -rf {}".format(test_build_dir))
 
-        test_out_dir = os.path.join(prj_root_path, "tests", "out")
-        if os.path.exists(test_out_dir):
-            os.system("rm -rf {}".format(test_out_dir))
