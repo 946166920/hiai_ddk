@@ -8,11 +8,11 @@ endif()
 
 set(CMAKE_INSTALL_LIBDIR ${BASE_DIR}/build)
 
-include(${TOP_DIR}/cmake/external_libs/protoc.cmake)
+include(${TOP_DIR}/test/cmake/external_libs/protoc.cmake)
 
-include(${TOP_DIR}/cmake/external_libs/gtest.cmake)
+include(${TOP_DIR}/test/cmake/external_libs/gtest.cmake)
 
-include(${TOP_DIR}/cmake/external_libs/mockcpp.cmake)
+include(${TOP_DIR}/test/cmake/external_libs/mockcpp.cmake)
 
 if (POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
