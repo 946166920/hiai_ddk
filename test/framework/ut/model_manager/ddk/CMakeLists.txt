@@ -52,7 +52,7 @@ include_directories(ddk_model_manager_ut
     ${TOP_DIR}/src/framework/inc
     ${TOP_DIR}/src/framework/graph
     ${TOP_DIR}/src/inc
-    ${TOP_DIR}/test/framework/stubs/hiai_ddk/src
+    ${TOP_DIR}/test/framework/stubs/depends/hiai_ddk/src
     ${TESTCASES_FILES_PATH}/src
     ${THIRD_PARTY_CSEC_PATH}/include
     ${GTEST_DIR}/googletest/include
