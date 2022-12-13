@@ -220,8 +220,8 @@ TEST_F(FileUtilUt, model_manager_file_util_008)
     data = nullptr;
 
     FileUtil fileUtil;
-    FILE *fp = fileUtil.GetFileSize(modelPath);
-    EXPECT_TRUE(fp != nullptr);
+    long length = fileUtil.GetFileSize(modelPath);
+    EXPECT_TRUE(length == 204800); // 204800 the model length
     remove(modelPath.c_str());
 }
 

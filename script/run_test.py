@@ -24,6 +24,7 @@ class RunTest(object):
 
     def run_test(self):
         prj_root_path = os.getcwd()
+
         test_build_dir = os.path.join(prj_root_path, "test", "framework", "build")
         if os.path.exists(test_build_dir):
             os.system("rm -r {}".format(test_build_dir))
@@ -32,6 +33,11 @@ class RunTest(object):
         bin_src_dir = os.path.join(prj_root_path, "test", "framework", "bin")
         bin_dst_dir = os.path.join(test_build_dir, "bin")
         os.symlink(bin_src_dir, bin_dst_dir)
+
+        test_out_dir = os.path.join(test_build_dir, "out")
+        if os.path.exists(test_out_dir):
+            os.system("rm -r {}".format(test_out_dir))
+        os.makedirs(test_out_dir)
 
         os.chdir(test_build_dir)
 
