@@ -19,7 +19,6 @@ set(TESTCASES_FILES
     ${TESTCASES_FILES_PATH}/local_buffer_ut.cpp
     ${TESTCASES_FILES_PATH}/nd_tensor_buffer_ut.cpp
     ${TESTCASES_FILES_PATH}/process_dynamic_aipp_ut.cpp
-    ${TESTCASES_FILES_PATH}/process_ut.cpp
     ${TESTCASES_FILES_PATH}/set_model_priority_ut.cpp
 )
 
