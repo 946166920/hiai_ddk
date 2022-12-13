@@ -32,10 +32,7 @@
 #include "c/hiai_version.h"
 #include "infra/base/dynamic_load_helper.h"
 
-#include "cl_manager/ops_kernel_store_manager.h"
 #include "graph/model.h"
-#include "general_compute/model_buffer_helper.h"
-#include "general_compute/general_compiled_model.h"
 #include "graph/attr_value.h"
 #include "graph/core/op/op_desc.h"
 #include "graph/utils/graph_utils.h"
