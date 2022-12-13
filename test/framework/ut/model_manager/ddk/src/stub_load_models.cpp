@@ -29,7 +29,7 @@ void StubLoadModels::LoadModelsByV1()
     client->Init(nullptr);
 
     string modelName1 = "tf_softmax_infershaped";
-    string modelPath1 = "../bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
+    string modelPath1 = "bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
     MemBuffer* buffer1 = builder->InputMemBufferCreate(modelPath1);
     if (buffer1 == nullptr) {
         std::cout << modelPath1 << " open failed" << std::endl;
@@ -40,7 +40,7 @@ void StubLoadModels::LoadModelsByV1()
     desc1->SetModelBuffer(buffer1->GetMemBufferData(), buffer1->GetMemBufferSize());
 
     string modelName2 = "tf_softmax_no_infershaped";
-    const string modelPath2 = "../bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
+    const string modelPath2 = "bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
     MemBuffer* buffer2 = builder->InputMemBufferCreate(modelPath2);
     if (buffer2 == nullptr) {
         std::cout << modelPath2 << " open failed" << std::endl;
