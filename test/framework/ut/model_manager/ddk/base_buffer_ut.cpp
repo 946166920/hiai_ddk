@@ -45,10 +45,10 @@ public:
 TEST_F(BaseBufferUt, model_manager_base_buffer_001)
 {
      uint8_t *data = new (std::nothrow) uint8_t[100];
-     BaseBuffer test1(data, 100, false);
+     BaseBuffer test1(data, 100, false); // 100 申请的长度
      BaseBuffer test2 = test1;
      EXPECT_TRUE(test1.GetSize() == test2.GetSize());
-     delete(data);
+     delete[] data;
 }
 
 /*

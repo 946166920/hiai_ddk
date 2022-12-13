@@ -57,6 +57,7 @@ public:
         return grayFloatDesc;
     }
 
+private:
     const int INPUT_CHANNEL = 1;
     const int RESIZE_WIDTH = 224;
     const int RESIZE_HEIGHT = 224;
