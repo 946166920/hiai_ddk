@@ -40,7 +40,7 @@ public:
     {
         stubLoadModels.UnloadModels();
     }
-
+private:
     shared_ptr<AiModelMngerClient> client{nullptr};
     StubLoadModels stubLoadModels;
 };
