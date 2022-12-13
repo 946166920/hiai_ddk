@@ -1711,7 +1711,7 @@ int HIAI_ModelManager_buildModel_v2(HIAI_ModelManager* manager, HIAI_Framework f
     unsigned int* outModelSize, bool useOriginFormat)
 {
     std::cout << __func__ << std::endl;
-    FILE* fp = fopen("../bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om", "r+");
+    FILE* fp = fopen("bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om", "r+");
     if (fp == nullptr) {
         printf("HIAI_ModelManager_buildModel_v2 ERROR: open the model file failed.\n");
         return -1;

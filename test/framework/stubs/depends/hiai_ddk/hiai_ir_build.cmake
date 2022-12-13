@@ -1,8 +1,3 @@
-set(TOP_DIR ${CMAKE_CURRENT_LIST_DIR}/../../../../)
-set(FRAMEWORK_BASE_DIR_FOR_INC_DIRS ${TOP_DIR}/src/framework)
-set(THIRD_PARTY_PATH ${TOP_DIR}/third_party/)
-set(THIRD_PARTY_CSEC_PATH ${THIRD_PARTY_PATH}/bounds_checking_function/)
-
 set(LOCAL_SRC_FILES
     ${CMAKE_CURRENT_LIST_DIR}/../hiai_ddk/src/stub_hiai_ir_build.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_builder/compatible/BuildOptionUtil.cpp

@@ -50,3 +50,8 @@ class RunTest(object):
         if os.path.exists(test_build_dir):
             os.system("rm -rf {}".format(test_build_dir))
 
+        test_out_dir = os.path.join(prj_root_path, "test", "framework", "out")
+        if os.path.exists(test_out_dir):
+            os.system("rm -rf {}".format(test_out_dir))
+
+

@@ -1,1 +1,1 @@
-add_subdirectory(hiai_ddk)
+add_subdirectory(depends)
