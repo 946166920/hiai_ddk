@@ -14,7 +14,6 @@ set(TESTCASES_FILES
     ${TESTCASES_FILES_PATH}/create_aipppara_ut.cpp
     ${TESTCASES_FILES_PATH}/create_aitensor_ut.cpp
     ${TESTCASES_FILES_PATH}/create_membuffer_ut.cpp
-    ${TESTCASES_FILES_PATH}/dynamic_load_helper_ut.cpp
     ${TESTCASES_FILES_PATH}/file_util_ut.cpp
     ${TESTCASES_FILES_PATH}/image_tensor_buffer_ut.cpp
     ${TESTCASES_FILES_PATH}/local_buffer_ut.cpp

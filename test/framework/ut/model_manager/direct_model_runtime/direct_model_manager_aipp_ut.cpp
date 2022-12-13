@@ -40,7 +40,7 @@ struct ManagerAippTestParams {
 };
 
 static vector<ManagerAippTestParams> g_TestParams = {
-    {"../bin/llt/framework/domi/modelmanager/aipp.om", false}, {"../bin/llt/framework/domi/modelmanager/aipp.om", true}};
+    {"bin/llt/framework/domi/modelmanager/aipp.om", false}, {"bin/llt/framework/domi/modelmanager/aipp.om", true}};
 
 static void OnRunDone(void* userData, HIAI_Status errCode, HIAI_NDTensorBuffer* outputs[], int32_t outputNum)
 {
@@ -191,7 +191,7 @@ INSTANTIATE_TEST_CASE_P(runAippModelV2, DirectModelManagerAipp_UTest, testing::V
 TEST_F(DirectModelManagerAipp_UTest, runAippModelV2_001)
 {
     HIAI_Status ret = HIAI_SUCCESS;
-    string modelFile = "../bin/llt/framework/domi/modelmanager/aipp.om";
+    string modelFile = "bin/llt/framework/domi/modelmanager/aipp.om";
     modelBuffer = FileUtil::LoadToBuffer(modelFile);
     if (modelBuffer != nullptr) {
         builtModel = HIAI_DIRECT_BuiltModel_Restore(modelBuffer->MutableData(), modelBuffer->GetSize());
@@ -316,7 +316,7 @@ TEST_P(DirectModelManagerAipp_UTest, runAippModelV2_002)
 TEST_F(DirectModelManagerAipp_UTest, runAippModelV2_003)
 {
     HIAI_Status ret = HIAI_SUCCESS;
-    string modelFile = "../bin/llt/framework/domi/modelmanager/aipp.om";
+    string modelFile = "bin/llt/framework/domi/modelmanager/aipp.om";
     modelBuffer = FileUtil::LoadToBuffer(modelFile);
     if (modelBuffer != nullptr) {
         builtModel = HIAI_DIRECT_BuiltModel_Restore(modelBuffer->MutableData(), modelBuffer->GetSize());
@@ -364,7 +364,7 @@ TEST_F(DirectModelManagerAipp_UTest, runAippModelV2_003)
 TEST_F(DirectModelManagerAipp_UTest, runAippModelV2_004)
 {
     HIAI_Status ret = HIAI_SUCCESS;
-    string modelFile = "../bin/llt/framework/domi/modelmanager/aipp.om";
+    string modelFile = "bin/llt/framework/domi/modelmanager/aipp.om";
     modelBuffer = FileUtil::LoadToBuffer(modelFile);
     if (modelBuffer != nullptr) {
         builtModel = HIAI_DIRECT_BuiltModel_Restore(modelBuffer->MutableData(), modelBuffer->GetSize());

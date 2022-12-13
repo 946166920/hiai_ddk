@@ -27,12 +27,10 @@ class CreateMemBuffer : public testing::Test {
 public:
     void SetUp()
     {
-        mkdir("../out", S_IRUSR | S_IWUSR | S_IXUSR); // 700
     }
 
     void TearDown()
     {
-        remove("../out");
         GlobalMockObject::verify();
     }
 };
@@ -49,7 +47,7 @@ public:
 */
 TEST_F(CreateMemBuffer, model_manager_create_membuffer_from_file)
 {
-    std::string path = "../bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
+    std::string path = "bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
     shared_ptr<AiModelBuilder> builder = make_shared<AiModelBuilder>();
     auto buffer1 = builder->InputMemBufferCreate(path);
     EXPECT_TRUE(buffer1 != nullptr);
@@ -228,7 +226,7 @@ TEST_F(CreateMemBuffer, model_manager_membuffer_exportfile_success)
     EXPECT_TRUE(buffer->GetMemBufferData() != nullptr);
     const uint32_t bufferSize = 200*1024*1024;
     EXPECT_EQ(bufferSize, buffer->GetMemBufferSize());
-    const std::string exportPath = "../out/export.om";
+    const std::string exportPath = "out/export.om";
     auto ret = builder->MemBufferExportFile(buffer, bufferSize, exportPath);
     EXPECT_EQ(SUCCESS, ret);
     builder->MemBufferDestroy(buffer);
@@ -275,7 +273,7 @@ TEST_F(CreateMemBuffer, model_manager_membuffer_exportfile_fail_02)
     shared_ptr<AiModelBuilder> builder = make_shared<AiModelBuilder>();
     MemBuffer* buffer =nullptr;
     const uint32_t bufferSize = 200*1024*1024;
-    const std::string exportPath = "../out/export.om";
+    const std::string exportPath = "out/export.om";
     auto ret = builder->MemBufferExportFile(buffer, bufferSize, exportPath);
     EXPECT_EQ(FAILURE, ret);
 }
@@ -298,7 +296,7 @@ TEST_F(CreateMemBuffer, model_manager_membuffer_exportfile_fail_03)
     EXPECT_TRUE(buffer != nullptr);
     EXPECT_TRUE(buffer->GetMemBufferData() != nullptr);
     const uint32_t bufferSize = 300*1024*1024;
-    const std::string exportPath = "../out/export.om";
+    const std::string exportPath = "out/export.om";
     auto ret = builder->MemBufferExportFile(buffer, bufferSize, exportPath);
     EXPECT_EQ(FAILURE, ret);
     builder->MemBufferDestroy(buffer);

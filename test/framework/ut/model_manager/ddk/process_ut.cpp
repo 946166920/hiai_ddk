@@ -170,3 +170,108 @@ TEST_F(ProcessModel, model_manager_process_002)
     EXPECT_EQ(AI_SUCCESS, ret);
 }
 
+/*
+* 测试用例名称   : model_manager_process_003
+* 测试用例描述： 模型走HCL接口，异步推理
+* 预置条件 :
+* 操作步骤: 1、加载模型
+           2、获取模型的输入输出维度
+           3、创建输入输出tensor
+           4、调用推理接口
+* 预期结果 : 推理成功
+* 修改历史 :
+*/
+TEST_F(ProcessModel, model_manager_process_003)
+{
+    shared_ptr<AiModelBuilder> builder = make_shared<AiModelBuilder>();
+    shared_ptr<AiModelMngerClient> client_hcl = make_shared<AiModelMngerClient>();
+    shared_ptr<V1Listener> listener = make_shared<V1Listener>();
+    client_hcl->Init(listener);
+
+    string modelName = "tf_softmax_hcl";
+    string modelPath = "bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
+    MemBuffer* buffer = builder->InputMemBufferCreate(modelPath);
+    shared_ptr<AiModelDescription> desc = make_shared<AiModelDescription>(modelName, 3, 0, 0, 0);
+    TensorDimension dims(1,2,3,4);
+    std::vector<TensorDimension> inputDims = {dims};
+    desc->SetInputDims(inputDims);
+    desc->SetModelBuffer(buffer->GetMemBufferData(), buffer->GetMemBufferSize());
+
+    vector<shared_ptr<AiModelDescription>> modelDescs;
+    modelDescs.push_back(desc);
+
+    client_hcl->Load(modelDescs);
+    builder->MemBufferDestroy(buffer);
+
+    vector<TensorDimension> inputDimensions;
+    vector<TensorDimension> outputDimensions;
+    client_hcl->GetModelIOTensorDim(modelName, inputDimensions, outputDimensions);
+
+    vector<shared_ptr<AiTensor>> inputTensor;
+    vector<shared_ptr<AiTensor>> outputTensor;
+    CreateNNTensorV1(inputDimensions, inputTensor);
+    CreateNNTensorV1(outputDimensions, outputTensor);
+
+    AiContext context;
+    context.SetPara("model_name", modelName);
+    int taskId = 0;
+
+    AIStatus ret = client_hcl->Process(context, inputTensor, outputTensor, 100, taskId);
+    EXPECT_EQ(AI_SUCCESS, ret);
+    // 等待回调线程结束
+    this_thread::sleep_for(chrono::seconds(1));
+}
+
+/*
+* 测试用例名称   : model_manager_process_004
+* 测试用例描述： 模型走HCL接口，异步推理过程取消
+* 预置条件 :
+* 操作步骤:1、加载模型
+           2、获取模型的输入输出维度
+           3、创建输入输出tensor
+           4、调用推理接口
+           5、取消推理
+* 预期结果 : 取消成功
+* 修改历史 :
+*/
+TEST_F(ProcessModel, model_manager_process_004)
+{
+    shared_ptr<AiModelBuilder> builder = make_shared<AiModelBuilder>();
+    shared_ptr<AiModelMngerClient> client_hcl = make_shared<AiModelMngerClient>();
+    shared_ptr<V1Listener> listener = make_shared<V1Listener>();
+    client_hcl->Init(listener);
+
+    string modelName = "tf_softmax_hcl";
+    string modelPath = "bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
+    MemBuffer* buffer = builder->InputMemBufferCreate(modelPath);
+    shared_ptr<AiModelDescription> desc = make_shared<AiModelDescription>(modelName, 3, 0, 0, 0);
+    TensorDimension dims(1,2,3,4);
+    std::vector<TensorDimension> inputDims = {dims};
+    desc->SetInputDims(inputDims);
+    desc->SetModelBuffer(buffer->GetMemBufferData(), buffer->GetMemBufferSize());
+
+    vector<shared_ptr<AiModelDescription>> modelDescs;
+    modelDescs.push_back(desc);
+
+    client_hcl->Load(modelDescs);
+    builder->MemBufferDestroy(buffer);
+
+    vector<TensorDimension> inputDimensions;
+    vector<TensorDimension> outputDimensions;
+    client_hcl->GetModelIOTensorDim(modelName, inputDimensions, outputDimensions);
+
+    vector<shared_ptr<AiTensor>> inputTensor;
+    vector<shared_ptr<AiTensor>> outputTensor;
+    CreateNNTensorV1(inputDimensions, inputTensor);
+    CreateNNTensorV1(outputDimensions, outputTensor);
+
+    AiContext context;
+    context.SetPara("model_name", modelName);
+    int taskId = 0;
+
+    AIStatus ret = client_hcl->Process(context, inputTensor, outputTensor, 100, taskId);
+    EXPECT_EQ(AI_SUCCESS, ret);
+    client_hcl->Cancel(modelName);
+    // 等待回调线程结束
+    this_thread::sleep_for(chrono::seconds(1));
+}

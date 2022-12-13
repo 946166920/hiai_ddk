@@ -63,7 +63,7 @@ TEST_P(DynamicShapeUt, DynamicShape)
     options.dynamicShapeConfig.cacheMode = CACHE_LOADED_MODEL;
 
     ControlC::GetInstance().SetBuildOptions(options); // 用于build中校验
-    const std::string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
+    const std::string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
     std::shared_ptr<IBuiltModel> builtModel = nullptr;
     EXPECT_EQ(param.expectStatus, modelBuilder_->Build(options, "default", modelFile, builtModel));
 }

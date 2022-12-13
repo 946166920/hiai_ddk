@@ -89,7 +89,7 @@ TEST_F(ProcessDynamicShapeModel, DynamicShapeModel_001)
 
     ModelInfo info = {
         .modelName = "tf_conv_opversion_5",
-        .modelPath = "../bin/llt/framework/domi/modelmanager/tf_conv_opversion_5.om",
+        .modelPath = "bin/llt/framework/domi/modelmanager/tf_conv_opversion_5.om",
         .frequency = 3,
         .inputDims = {dims},
         .dynamicShape = dynamicShape,

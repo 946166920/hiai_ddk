@@ -64,7 +64,7 @@ TEST_P(ModelDeviceConfigUt, ModelDeviceConfigModel)
     options.modelDeviceConfig.deviceMemoryReusePlan = DeviceMemoryReusePlan::LOW;
 
     ControlC::GetInstance().SetBuildOptions(options); // 用于build中校验
-    const std::string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
+    const std::string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
     std::shared_ptr<IBuiltModel> builtModel = nullptr;
     EXPECT_EQ(param.expectStatus, modelBuilder_->Build(options, "default", modelFile, builtModel));
 }
@@ -86,7 +86,7 @@ TEST_P(ModelDeviceConfigUt, ModelDeviceConfigOp)
     options.modelDeviceConfig.clCustomizations["bb"] = "hijklmn";
 
     ControlC::GetInstance().SetBuildOptions(options); // 用于build中校验
-    const std::string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
+    const std::string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
     std::shared_ptr<IBuiltModel> builtModel = nullptr;
     EXPECT_EQ(param.expectStatus, modelBuilder_->Build(options, "default", modelFile, builtModel));
 }
@@ -105,7 +105,7 @@ TEST_P(ModelDeviceConfigUt, ModelDeviceConfig_op_SetError)
     options.modelDeviceConfig.opDeviceOrder["bb"] = device2;
 
     ControlC::GetInstance().SetExpectStatus(C_BUILD_OPTIONS_OPDEVICE_CREATE, FAILURE, 2);
-    const std::string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
+    const std::string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
     std::shared_ptr<IBuiltModel> builtModel = nullptr;
     EXPECT_EQ(FAILURE, modelBuilder_->Build(options, "default", modelFile, builtModel));
 }
@@ -119,7 +119,7 @@ TEST_P(ModelDeviceConfigUt, ModelDeviceConfig_op_DeviceOrder)
     options.modelDeviceConfig.deviceConfigMode = DeviceConfigMode::MODEL_LEVEL;
     options.modelDeviceConfig.fallBackMode = FallBackMode::DISABLE;
 
-    const std::string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
+    const std::string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";
     std::shared_ptr<IBuiltModel> builtModel = nullptr;
     EXPECT_EQ(FAILURE, modelBuilder_->Build(options, "default", modelFile, builtModel));
 }

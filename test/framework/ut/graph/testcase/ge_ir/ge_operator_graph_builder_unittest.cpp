@@ -30,6 +30,7 @@
 #include <string>
 #include <unordered_map>
 using namespace ge;
+using namespace std;
 using namespace hiai;
 using testing::Test;
 using testing::WithParamInterface;

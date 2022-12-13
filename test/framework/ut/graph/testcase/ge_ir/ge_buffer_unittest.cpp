@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "graph/attr_value.h"
 #include "graph/compatible/all_ops.h"
 #include "graph/compatible/operator_reg.h"
@@ -29,6 +28,7 @@
 #include <string>
 #include <unordered_map>
 using namespace ge;
+using namespace std;
 using testing::Test;
 using testing::WithParamInterface;
 

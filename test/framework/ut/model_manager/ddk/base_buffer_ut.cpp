@@ -48,7 +48,7 @@ TEST_F(BaseBufferUt, model_manager_base_buffer_001)
      BaseBuffer test1(data, 100, false);
      BaseBuffer test2 = test1;
      EXPECT_TRUE(test1.GetSize() == test2.GetSize());
-     free(data);
+     delete(data);
 }
 
 /*
