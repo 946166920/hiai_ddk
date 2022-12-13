@@ -37,9 +37,9 @@ struct AippInfoTestParams {
 
 static vector<AippInfoTestParams> g_AippInfoParams = {
     {"", 0, HIAI_FAILURE}, // 校验入参builtModel为空场景
-    {"../bin/llt/framework/domi/modelmanager/aipp.om", INT_MAX, HIAI_FAILURE}, // 校验入参index非法场景
-    {"../bin/llt/framework/domi/modelmanager/aipp.om", -1, HIAI_SUCCESS}, // 获取全部TensorAippInfo场景
-    {"../bin/llt/framework/domi/modelmanager/aipp.om", 0, HIAI_SUCCESS}, // 获取指定TensorAippInfo场景
+    {"bin/llt/framework/domi/modelmanager/aipp.om", INT_MAX, HIAI_FAILURE}, // 校验入参index非法场景
+    {"bin/llt/framework/domi/modelmanager/aipp.om", -1, HIAI_SUCCESS}, // 获取全部TensorAippInfo场景
+    {"bin/llt/framework/domi/modelmanager/aipp.om", 0, HIAI_SUCCESS}, // 获取指定TensorAippInfo场景
 };
 
 class DirectBuiltModelAipp_UTest : public testing::TestWithParam<AippInfoTestParams> {
@@ -99,9 +99,9 @@ struct AippParaParams {
 
 vector<AippParaParams> g_AippParaParams = {
     {"", 0, 1, HIAI_FAILURE}, // 入参builtModel为空场景
-    {"../bin/llt/framework/domi/modelmanager/aipp.om", INT_MAX, 1, HIAI_FAILURE}, // 入参index非法场景
-    {"../bin/llt/framework/domi/modelmanager/aipp.om", -1, 0, HIAI_FAILURE}, // 入参aippParaNum为0场景
-    {"../bin/llt/framework/domi/modelmanager/aipp.om", -1, 1, HIAI_SUCCESS}, // 成功场景
+    {"bin/llt/framework/domi/modelmanager/aipp.om", INT_MAX, 1, HIAI_FAILURE}, // 入参index非法场景
+    {"bin/llt/framework/domi/modelmanager/aipp.om", -1, 0, HIAI_FAILURE}, // 入参aippParaNum为0场景
+    {"bin/llt/framework/domi/modelmanager/aipp.om", -1, 1, HIAI_SUCCESS}, // 成功场景
 };
 
 class DirectBuiltModelAipp_GetTensorAippPara_UTest : public testing::TestWithParam<AippParaParams> {

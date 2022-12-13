@@ -78,32 +78,3 @@ TEST_F(UTEST_ge_anchor_utils, InsertTransNode_InDataAnchor)
     std::vector<OpDescPtr> vecOpDesc{descPtr1, descPtr2};
     EXPECT_EQ(GraphUtils::InsertTransNode(*graphPtr, a2, vecOpDesc), 3);
 }
-
-TEST_F(UTEST_ge_anchor_utils, InsertTransNode_OutDataAnchor)
-{
-    ComputeGraphPtr graphPtr = ge::ComputeGraph::Make("graph_1");
-
-    OpDescPtr descPtr1 = std::make_shared<OpDesc>("op_1", "type");
-    descPtr1->AddOutputDesc(TensorDesc());
-    Node* node1 = graphPtr->ROLE(GraphModifier).AddNode(descPtr1);
-
-    OpDescPtr descPtr2 = std::make_shared<OpDesc>("op_2", "type");
-    descPtr2->AddInputDesc(TensorDesc());
-    Node* node2 = graphPtr->ROLE(GraphModifier).AddNode(descPtr2);
-
-    EXPECT_EQ(graphPtr->ROLE(GraphModifier).AddEdge({*node1, 0}, {*node2, 0}), GRAPH_SUCCESS);
-
-    OpDescPtr insertOpDescPtr1 = std::make_shared<OpDesc>("insert_op_1", "type");
-    EXPECT_EQ(insertOpDescPtr1->AddInputDesc("x", TensorDesc(Shape({1, 16, 16, 16}), FORMAT_NCHW)), GRAPH_SUCCESS);
-    EXPECT_EQ(insertOpDescPtr1->AddInputDesc("w", TensorDesc(Shape({1, 1, 1, 1}), FORMAT_NCHW)), GRAPH_SUCCESS);
-    EXPECT_EQ(insertOpDescPtr1->AddOutputDesc("y", TensorDesc(Shape({1, 32, 8, 8}), FORMAT_NCHW)), GRAPH_SUCCESS);
-
-    OpDescPtr insertOpDescPtr2 = std::make_shared<OpDesc>("insert_op_2", "type");
-    EXPECT_EQ(insertOpDescPtr2->AddInputDesc("x", TensorDesc(Shape({1, 16, 16, 16}), FORMAT_NCHW)), GRAPH_SUCCESS);
-    EXPECT_EQ(insertOpDescPtr2->AddInputDesc("w", TensorDesc(Shape({1, 1, 1, 1}), FORMAT_NCHW)), GRAPH_SUCCESS);
-    EXPECT_EQ(insertOpDescPtr2->AddOutputDesc("y", TensorDesc(Shape({1, 32, 8, 8}), FORMAT_NCHW)), GRAPH_SUCCESS);
-
-    std::vector<OpDescPtr> vecOpDesc{insertOpDescPtr1, insertOpDescPtr2};
-    EXPECT_EQ(GraphUtils::InsertTransNode(*graphPtr, node1->GetOutDataAnchor(0), vecOpDesc), GRAPH_SUCCESS);
-    EXPECT_EQ(graphPtr->ROLE(GraphSpec).NodesNum(), 4);
-}

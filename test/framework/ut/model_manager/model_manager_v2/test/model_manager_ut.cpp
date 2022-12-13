@@ -16,6 +16,7 @@
 #include <gtest/gtest.h>
 #include <mockcpp/mockcpp.hpp>
 #include <mockcpp/mockable.h>
+#include <dlfcn.h>
 
 #include "model_manager/model_manager.h"
 #include "model/built_model_aipp.h"
@@ -30,7 +31,7 @@ public:
     void SetUp()
     {
         builtModel_ = CreateBuiltModel();
-        const char* file = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+        const char* file = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
         builtModel_->RestoreFromFile(file);
 
         modelManager_ = CreateModelManager();
@@ -69,6 +70,10 @@ TEST_F(ModelManagerUt, Model_Manager_Run_001)
     std::vector<std::shared_ptr<INDTensorBuffer>> inputs;
     std::vector<std::shared_ptr<INDTensorBuffer>> outputs;
     EXPECT_EQ(SUCCESS, modelManager_->Run(inputs, outputs));
+
+    uint32_t stats = 0;
+    MOCKER(dlsym).stubs().will(returnValue(reinterpret_cast<void*>(&stats)));
+    EXPECT_NE(SUCCESS, modelManager_->Init(options, builtModel_, nullptr));
 }
 
 /*

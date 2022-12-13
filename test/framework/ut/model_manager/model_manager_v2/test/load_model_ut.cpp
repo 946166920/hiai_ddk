@@ -47,7 +47,7 @@ public:
 TEST_F(LoadModelUt, Load_Model_Options_001)
 {
     std::shared_ptr<IBuiltModel> builtModel = CreateBuiltModel();
-    const char* file = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
     builtModel->RestoreFromFile(file);
     ModelInitOptions options;
     options.buildOptions.dynamicShapeConfig.enable = true;

@@ -28,6 +28,11 @@ class RunTest(object):
         if os.path.exists(test_build_dir):
             os.system("rm -r {}".format(test_build_dir))
         os.makedirs(test_build_dir)
+
+        bin_src_dir = os.path.join(prj_root_path, "test", "framework", "bin")
+        bin_dst_dir = os.path.join(test_build_dir, "bin")
+        os.symlink(bin_src_dir, bin_dst_dir)
+
         os.chdir(test_build_dir)
 
         os.system("{} ..".format(self.cmake_bin_path))

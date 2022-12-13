@@ -604,7 +604,7 @@ HIAI_Status HIAI_ModelBuildOptions_SetTuningStrategy(
 {
     if (options == nullptr || tuningStrategy < HIAI_TUNING_STRATEGY_OFF ||
         tuningStrategy > HIAI_TUNING_STRATEGY_ON_CLOUD_TUNING) {
-        FMK_LOGE("options or tuningStrategy invalid. tuningStrategy = %u", tuningStrategy);
+        FMK_LOGE("options or tuningStrategy invalid.");
         return HIAI_FAILURE;
     }
     options->tuningStrategy = tuningStrategy;

@@ -1585,3 +1585,28 @@ TEST(UTEST_ge_model_unserialize, InputDescIsVaild)
     }
 
 }
+TEST(UTEST_ge_model_unserialize, ModelSaveFail)
+{
+    Model model("model_name", "custom version3.0");
+    auto computeGraph = ge::ComputeGraph::Make("graph_name");
+    // input
+    auto inputOp = std::make_shared<OpDesc>("test", "ConstOp");
+    inputOp->AddOutputDesc(TensorDesc(Shape({44, 1, 493, 824}), FORMAT_NCHW, DT_INT32));
+    auto input = CreateNode(inputOp, *computeGraph);
+    std::vector<float> data(44 * 493 * 824* 50, 0);
+    TensorDesc tensorDesc(Shape({44, 50, 493, 824}), FORMAT_NCHW, DT_INT32);
+    TensorPtr tensorConvFilter = make_shared<Tensor>(tensorDesc, (uint8_t*)data.data(), 893710400);
+    std::vector<float> data1(44 * 493 * 824* 50, 0);
+    TensorDesc tensorDesc1(Shape({44, 50, 493, 824}), FORMAT_NCHW, DT_INT32);
+    TensorPtr tensorConvFilter1 = make_shared<Tensor>(tensorDesc1, (uint8_t*)data1.data(), 893710400);
+    std::vector<float> data2(44 * 493 * 824* 50, 0);
+    TensorDesc tensorDesc2(Shape({44, 50, 493, 824}), FORMAT_NCHW, DT_INT32);
+    TensorPtr tensorConvFilter2 = make_shared<Tensor>(tensorDesc1, (uint8_t*)data2.data(), 893710400);
+    vector<TensorPtr> tensorVec = {tensorConvFilter, tensorConvFilter1, tensorConvFilter2};
+    OpDescUtils::SetWeights(*input, tensorVec);
+    Graph graph = GraphUtils::CreateGraphFromComputeGraph(computeGraph);
+    model.SetGraph(graph);
+    ge::Buffer buffer;
+    model.Save(buffer);
+    ASSERT_GE(buffer.GetSize(), 0);
+}

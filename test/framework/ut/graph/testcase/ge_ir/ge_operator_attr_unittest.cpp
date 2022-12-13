@@ -32,6 +32,7 @@
 #include <unordered_map>
 using namespace ge;
 using namespace hiai;
+using namespace std;
 using testing::Test;
 using testing::WithParamInterface;
 

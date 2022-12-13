@@ -33,6 +33,7 @@
 #include <unordered_map>
 
 using namespace ge;
+using namespace std;
 using testing::Test;
 using testing::WithParamInterface;
 using GraphPtr = std::shared_ptr<ge::Graph>;

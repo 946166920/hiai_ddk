@@ -35,7 +35,7 @@ public:
     void SetUp()
     {
         builtModel_ = CreateBuiltModel();
-        const char* file = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+        const char* file = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
         builtModel_->RestoreFromFile(file);
 
         modelManager_ = CreateModelManager();

@@ -36,13 +36,11 @@ class BuiltModelUt : public testing::Test {
 public:
     void SetUp()
     {
-        mkdir("../out", S_IRUSR | S_IWUSR | S_IXUSR); // 700
         builtModel_ = CreateBuiltModel();
     }
 
     void TearDown()
     {
-        remove("../out");
         GlobalMockObject::verify();
     }
 
@@ -152,7 +150,7 @@ TEST_F(BuiltModelUt, Built_Model_restore_003)
  */
 TEST_F(BuiltModelUt, Built_Model_restore_004)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
     std::shared_ptr<BaseBuffer> buffer = FileUtil::LoadToBuffer(file);
     std::shared_ptr<IBuffer> localBuffer =
         CreateLocalBuffer(static_cast<void*>(buffer->MutableData()), buffer->GetSize(), false);
@@ -167,7 +165,7 @@ TEST_F(BuiltModelUt, Built_Model_restore_004)
  */
 TEST_F(BuiltModelUt, Built_Model_restore_005)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
     std::shared_ptr<BaseBuffer> buffer = FileUtil::LoadToBuffer(file);
     std::shared_ptr<IBuffer> localBuffer =
         CreateLocalBuffer(static_cast<void*>(buffer->MutableData()), buffer->GetSize(), false);
@@ -190,7 +188,7 @@ void CreateV2AippModelFile(const char* file)
  */
 TEST_F(BuiltModelUt, Built_Model_restore_006)
 {
-    const char* file = "../out/v2AippMode.om";
+    const char* file = "out/v2AippMode.om";
     CreateV2AippModelFile(file);
 
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
@@ -203,7 +201,7 @@ TEST_F(BuiltModelUt, Built_Model_restore_006)
  */
 TEST_F(BuiltModelUt, Built_Model_restore_007)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
 }
 
@@ -214,7 +212,7 @@ TEST_F(BuiltModelUt, Built_Model_restore_007)
  */
 TEST_F(BuiltModelUt, Built_Model_restore_008)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
     EXPECT_EQ(FAILURE, builtModel_->RestoreFromFile(file));
 }
@@ -226,7 +224,7 @@ TEST_F(BuiltModelUt, Built_Model_restore_008)
  */
 TEST_F(BuiltModelUt, Built_Model_save_001)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
 
     std::shared_ptr<IBuffer> externBuffer = CreateLocalBuffer(500);
@@ -242,7 +240,7 @@ TEST_F(BuiltModelUt, Built_Model_save_001)
  */
 TEST_F(BuiltModelUt, Built_Model_save_002)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
 
     AippPreprocessConfig aippPreprocessConfig;
@@ -265,7 +263,7 @@ TEST_F(BuiltModelUt, Built_Model_save_002)
  */
 TEST_F(BuiltModelUt, Built_Model_save_003)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
 
     AippPreprocessConfig aippPreprocessConfig;
@@ -288,13 +286,13 @@ TEST_F(BuiltModelUt, Built_Model_save_003)
  */
 TEST_F(BuiltModelUt, Built_Model_save_004)
 {
-    const char* omfile = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_npucl.om";
+    const char* omfile = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_npucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(omfile));
 
     // file 为null
     EXPECT_EQ(FAILURE, builtModel_->SaveToFile(nullptr));
 
-    const char* file = "../out/test_built_model_save_004.om";
+    const char* file = "out/test_built_model_save_004.om";
     EXPECT_EQ(SUCCESS, builtModel_->SaveToFile(file));
 }
 
@@ -305,7 +303,7 @@ TEST_F(BuiltModelUt, Built_Model_save_004)
  */
 TEST_F(BuiltModelUt, Built_Model_save_005)
 {
-    const char* omfile = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+    const char* omfile = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(omfile));
 
     AippPreprocessConfig aippPreprocessConfig;
@@ -316,7 +314,7 @@ TEST_F(BuiltModelUt, Built_Model_save_005)
 
     builtModel_->SetCustomData(customModelData);
 
-    const char* file = "../out/test_built_model_save_005.om";
+    const char* file = "out/test_built_model_save_005.om";
     EXPECT_EQ(SUCCESS, builtModel_->SaveToFile(file));
 }
 
@@ -327,7 +325,7 @@ TEST_F(BuiltModelUt, Built_Model_save_005)
  */
 TEST_F(BuiltModelUt, Built_Model_save_006)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
 
     std::shared_ptr<IBuffer> bufferToUser = nullptr;
@@ -341,7 +339,7 @@ TEST_F(BuiltModelUt, Built_Model_save_006)
  */
 TEST_F(BuiltModelUt, Built_Model_save_007)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
 
     AippPreprocessConfig aippPreprocessConfig;
@@ -363,7 +361,7 @@ TEST_F(BuiltModelUt, Built_Model_save_007)
  */
 TEST_F(BuiltModelUt, Built_Model_inputDesc_001)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
 
     std::vector<NDTensorDesc> desc = builtModel_->GetInputTensorDescs();
@@ -381,7 +379,7 @@ TEST_F(BuiltModelUt, Built_Model_inputDesc_001)
  */
 TEST_F(BuiltModelUt, Built_Model_inputDesc_002)
 {
-    const char* file = "../bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
+    const char* file = "bin/llt/framework/domi/modelmanager/om/tf_softmax_hcs_cpucl.om";
     EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
 
     AippPreprocessConfig aippPreprocessConfig;

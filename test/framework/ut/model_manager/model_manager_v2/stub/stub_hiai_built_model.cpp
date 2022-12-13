@@ -48,6 +48,12 @@ HIAI_BuiltModel* HIAI_BuiltModel_RestoreFromFile(const char* file)
     return builtModel;
 }
 
+HIAI_BuiltModel* HIAI_BuiltModel_RestoreFromFileWithShapeIndex(const char* file, uint8_t multiShapeIndex)
+{
+    HIAI_BuiltModel* builtModel = (HIAI_BuiltModel*)malloc(1);
+    return builtModel;
+}
+
 HIAI_Status HIAI_BuiltModel_CheckCompatibility(
     const HIAI_BuiltModel* model, HIAI_BuiltModel_Compatibility* compatibility)
 {

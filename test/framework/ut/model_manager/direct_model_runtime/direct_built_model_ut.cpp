@@ -42,9 +42,9 @@ static vector<BuiltModelTestParams> g_TestParams = {
     {nullptr, DEFAULT_MODEL_SIZE, HIAI_BUILTMODEL_COMPATIBLE, HIAI_FAILURE},
     {"", DEFAULT_MODEL_SIZE, HIAI_BUILTMODEL_COMPATIBLE, HIAI_FAILURE},
     {".", DEFAULT_MODEL_SIZE, HIAI_BUILTMODEL_COMPATIBLE, HIAI_FAILURE},
-    {"../bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om", DEFAULT_MODEL_SIZE, HIAI_BUILTMODEL_COMPATIBLE,
+    {"bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om", DEFAULT_MODEL_SIZE, HIAI_BUILTMODEL_COMPATIBLE,
         HIAI_SUCCESS},
-    {"../bin/llt/framework/domi/modelmanager/tf_softmax_hcs_npucl.om", DEFAULT_MODEL_SIZE, HIAI_BUILTMODEL_COMPATIBLE,
+    {"bin/llt/framework/domi/modelmanager/tf_softmax_hcs_npucl.om", DEFAULT_MODEL_SIZE, HIAI_BUILTMODEL_COMPATIBLE,
         HIAI_SUCCESS},
 };
 
@@ -370,7 +370,7 @@ TEST_P(DirectBuiltModel_UTest, CheckCompatibility_001)
 */
 TEST_F(DirectBuiltModel_UTest, CheckCompatibility_002)
 {
-    string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
+    string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
     modelBuffer = FileUtil::LoadToBuffer(modelFile);
     if (modelBuffer != nullptr) {
         builtModel = HIAI_DIRECT_BuiltModel_Restore(modelBuffer->MutableData(), modelBuffer->GetSize());
@@ -576,7 +576,7 @@ TEST_P(DirectBuiltModel_UTest, GetOutputTensorNum_001)
 */
 TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_002)
 {
-    string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
+    string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
     modelBuffer = FileUtil::LoadToBuffer(modelFile);
     if (modelBuffer != nullptr) {
         builtModel = HIAI_DIRECT_BuiltModel_Restore(modelBuffer->MutableData(), modelBuffer->GetSize());
@@ -625,7 +625,7 @@ TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_002)
 */
 TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_003)
 {
-    string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
+    string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
     modelBuffer = FileUtil::LoadToBuffer(modelFile);
     if (modelBuffer != nullptr) {
         builtModel = HIAI_DIRECT_BuiltModel_Restore(modelBuffer->MutableData(), modelBuffer->GetSize());
@@ -669,7 +669,7 @@ TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_003)
 */
 TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_004)
 {
-    string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
+    string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
     modelBuffer = FileUtil::LoadToBuffer(modelFile);
     if (modelBuffer != nullptr) {
         builtModel = HIAI_DIRECT_BuiltModel_Restore(modelBuffer->MutableData(), modelBuffer->GetSize());
@@ -751,7 +751,7 @@ TEST_P(DirectBuiltModel_UTest, GetOutputTensorDesc)
 */
 TEST_F(DirectBuiltModel_UTest, exception)
 {
-    string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
+    string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
     // MOCKER(HIAI_Foundation_GetSymbol).expects(once()).will(returnValue((void*)nullptr));
     MOCKER(HIAI_Foundation_GetSymbol).stubs().will(returnValue((void*)nullptr));
     modelBuffer = FileUtil::LoadToBuffer(modelFile);

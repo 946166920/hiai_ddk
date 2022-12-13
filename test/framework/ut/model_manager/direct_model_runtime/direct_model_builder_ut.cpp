@@ -32,7 +32,10 @@
 #include "c/hiai_version.h"
 #include "infra/base/dynamic_load_helper.h"
 
+#include "cl_manager/ops_kernel_store_manager.h"
 #include "graph/model.h"
+#include "general_compute/model_buffer_helper.h"
+#include "general_compute/general_compiled_model.h"
 #include "graph/attr_value.h"
 #include "graph/core/op/op_desc.h"
 #include "graph/utils/graph_utils.h"
@@ -56,11 +59,11 @@ struct BuilderTestParams {
 #define DEFAULT_MODEL_SIZE 1024
 
 static vector<BuilderTestParams> g_TestParams = {
-    { nullptr, "../bin/llt/framework/domi/modelmanager/aipp.om", DEFAULT_MODEL_SIZE, HIAI_FAILURE}, // 入参modelName为nullptr场景
-    { "", "../bin/llt/framework/domi/modelmanager/aipp.om", DEFAULT_MODEL_SIZE, HIAI_SUCCESS }, // modelName为空字符串场景
+    { nullptr, "bin/llt/framework/domi/modelmanager/aipp.om", DEFAULT_MODEL_SIZE, HIAI_FAILURE}, // 入参modelName为nullptr场景
+    { "", "bin/llt/framework/domi/modelmanager/aipp.om", DEFAULT_MODEL_SIZE, HIAI_SUCCESS }, // modelName为空字符串场景
     { "aipp", "", DEFAULT_MODEL_SIZE, HIAI_FAILURE }, // 入参inputModelData为空场景
-    { "aipp", "../bin/llt/framework/domi/modelmanager/aipp.om", 0, HIAI_FAILURE }, // size为0场景
-    { "origin_format", "../bin/llt/framework/domi/modelmanager/tf_use_origin_format.om", DEFAULT_MODEL_SIZE, HIAI_SUCCESS }, // 成功场景
+    { "aipp", "bin/llt/framework/domi/modelmanager/aipp.om", 0, HIAI_FAILURE }, // size为0场景
+    { "origin_format", "bin/llt/framework/domi/modelmanager/tf_use_origin_format.om", DEFAULT_MODEL_SIZE, HIAI_SUCCESS }, // 成功场景
 };
 
 class DirectModelBuilder_UTest : public testing::TestWithParam<BuilderTestParams> {
@@ -138,7 +141,7 @@ TEST_P(DirectModelBuilder_UTest, build_001)
 TEST_F(DirectModelBuilder_UTest, build_002)
 {
     HIAI_Status ret = HIAI_SUCCESS;
-    string modelFile = "../bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
+    string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
     string modelName = "tf_softmax_infershaped.om";
 
     void* inputModelData = nullptr;

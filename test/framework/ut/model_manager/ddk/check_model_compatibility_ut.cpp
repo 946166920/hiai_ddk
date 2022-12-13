@@ -73,7 +73,7 @@ TEST_F(CheckModelCompatibility, model_manager_check_model_compatibility_001)
 
     ModelInfo info = {
         .modelName = "tf_softmax_infershaped",
-        .modelPath = "../bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om",
+        .modelPath = "bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om",
         .frequency = 3,
         .inputDims = {dims},
         .dynamicShape = dynamicShape,
