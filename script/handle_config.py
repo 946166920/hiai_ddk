@@ -122,13 +122,12 @@ class HandleConfig(object):
             os.mkdir(THIRD_PARTY_DIR)
 
         for item in self.THIRD_PARTY_LINK_LIST:
-            if not os.path.exists(os.path.join(THIRD_PARTY_DIR, self.THIRD_PARTY_LINK_LIST[item][1])):
-                self.download_package(THIRD_PARTY_DIR, self.THIRD_PARTY_LINK_LIST[item][0])
-            else:
-                return
-            # decompress
-            self.THIRD_PARTY_LINK_LIST[item][2](self.THIRD_PARTY_LINK_LIST[item][1])
-
+            if not os.path.exists(os.path.join(THIRD_PARTY_DIR, item)):
+                if not os.path.exists(os.path.join(THIRD_PARTY_DIR, self.THIRD_PARTY_LINK_LIST[item][1])):
+                    # download
+                    self.download_package(THIRD_PARTY_DIR, self.THIRD_PARTY_LINK_LIST[item][0])
+                # decompress
+                self.THIRD_PARTY_LINK_LIST[item][2](self.THIRD_PARTY_LINK_LIST[item][1])
 
     # build tools
     # ndk
@@ -139,18 +138,17 @@ class HandleConfig(object):
                 print("[ERROR] : FAIL! The path of the NDK is invalid.")
                 return False
         else:
-            if not os.path.exists(os.path.join(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["ndk"][1])):
-                self.download_package(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["ndk"][0])
-            else:
-                return True
+            if not os.path.exists(os.path.join(BUILDTOOLS_DIR, "android-ndk-r23b")):
+                if not os.path.exists(os.path.join(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["ndk"][1])):
+                    self.download_package(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["ndk"][0])
 
-            print("[INFO] Decompressing package {} ...".format(self.BUILDTOOLS_LINK_LIST["ndk"][1]))
-            unzip_cmd = "unzip -q -o -d {} {} ".format(
-                BUILDTOOLS_DIR, os.path.join(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["ndk"][1]))
-            os.system(unzip_cmd)
-            # add permissions to ndk executable files.
-            chmod_ndk = "chmod -R u+x {}/android-ndk-r23b".format(BUILDTOOLS_DIR)
-            os.system(chmod_ndk)
+                print("[INFO] Decompressing package {} ...".format(self.BUILDTOOLS_LINK_LIST["ndk"][1]))
+                unzip_cmd = "unzip -q -o -d {} {} ".format(
+                    BUILDTOOLS_DIR, os.path.join(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["ndk"][1]))
+                os.system(unzip_cmd)
+                # add permissions to ndk executable files.
+                chmod_ndk = "chmod -R u+x {}/android-ndk-r23b".format(BUILDTOOLS_DIR)
+                os.system(chmod_ndk)
         return True
 
 
@@ -164,18 +162,15 @@ class HandleConfig(object):
             if self.check_exists_in_system("cmake"):
                 return True
 
-            if not os.path.exists(os.path.join(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["cmake"][1])):
-                self.download_package(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["cmake"][0])
-            else:
-                self.cmake_path = os.path.join(self.cmake_path, "bin", "cmake")
-                return True
+            if not os.path.exists(os.path.join(BUILDTOOLS_DIR, "cmake-3.20.5")):
+                if not os.path.exists(os.path.join(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["cmake"][1])):
+                    self.download_package(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["cmake"][0])
+                print("[INFO] Decompressing package {} ...".format(self.BUILDTOOLS_LINK_LIST["cmake"][1]))
+                with tarfile.open(os.path.join(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["cmake"][1])) as t:
+                    t.extractall(BUILDTOOLS_DIR)
 
-            print("[INFO] Decompressing package {} ...".format(self.BUILDTOOLS_LINK_LIST["cmake"][1]))
-            with tarfile.open(os.path.join(BUILDTOOLS_DIR, self.BUILDTOOLS_LINK_LIST["cmake"][1])) as t:
-                t.extractall(BUILDTOOLS_DIR)
-            
-            mv_cmake_dir_name = "mv {}/cmake-3.20.5-linux-x86_64 {}/cmake-3.20.5".format(BUILDTOOLS_DIR, BUILDTOOLS_DIR)
-            os.system(mv_cmake_dir_name)
+                mv_cmake_dir_name = "mv {}/cmake-3.20.5-linux-x86_64 {}/cmake-3.20.5".format(BUILDTOOLS_DIR, BUILDTOOLS_DIR)
+                os.system(mv_cmake_dir_name)
 
         self.cmake_path = os.path.join(self.cmake_path, "bin", "cmake")
         return True
@@ -199,8 +194,7 @@ class HandleConfig(object):
         res = which_cmd.readlines()
         if len(res) != 0:
             path = res[0].strip()
-            if tool == "cmake":
-                self.cmake_path = path
+            self.cmake_path = path
             return True
         return False
 
