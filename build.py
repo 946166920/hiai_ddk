@@ -21,12 +21,12 @@ import sys
 import zipfile
 import tarfile
 
-sys.path.append("script")
+sys.path.append("build/script")
 from handle_config import *
 from handle_ddk import *
 
 
-CONFIG_FILE = os.path.join("config", "build.conf")
+CONFIG_FILE = "build/config/build.conf"
 
 def check_argv(argv):
     is_run_build = True

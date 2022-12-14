@@ -3,5 +3,5 @@ third_party/*
 out/*
 tests/build/*
 tests/out/*
-script/__pycache__/*
+build/script/__pycache__/*
 hwhiai-ddk-master.zip
