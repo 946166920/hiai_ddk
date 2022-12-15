@@ -71,7 +71,7 @@ struct LoadModelOptions {
     int32_t priority = 0;
     uint32_t pid = 0;
     std::string key;
-    OMOptions omOptions;
+    OMOptions omOptions1;
     bool usePipeline = false;
     bool isSupportTask = false;
     DynamicShape dynamicShape;
