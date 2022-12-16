@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <dlfcn.h>
 #include <gtest/gtest.h>
 #include <mockcpp/mockcpp.hpp>
 #include <mockcpp/mockable.h>
@@ -21,7 +21,6 @@
 #include "tensor/base/nd_tensor_buffer_impl.h"
 #include "framework/c/hiai_nd_tensor_desc.h"
 #include "framework/c/compatible/hiai_tensor_buffer.h"
-#include "mmpa/mmpa_api.h"
 #include "control_client.h"
 #include "tensor/base/hiai_nd_tensor_buffer_legacy_compatible.h"
 #include "model_runtime/core/hiai_model_manager_impl.h"
