@@ -17,6 +17,7 @@
 
 import os
 import sys
+import shutil
 
 class RunTest(object):
     def __init__(self, cmake_bin_path):
@@ -31,7 +32,10 @@ class RunTest(object):
         os.makedirs(test_build_dir)
 
         bin_src_dir = os.path.join(prj_root_path, "test", "framework", "bin")
-        bin_dst_dir = os.path.join(test_build_dir, "bin")
+        bin_dst_dir = os.path.join(test_build_dir, "bin", "llt", "framework", "domi")
+        os.makedirs(bin_dst_dir)
+
+        bin_dst_dir = os.path.join(bin_dst_dir, "modelmanager")
         os.symlink(bin_src_dir, bin_dst_dir)
 
         test_out_dir = os.path.join(test_build_dir, "out")
