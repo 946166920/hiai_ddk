@@ -1,0 +1,57 @@
+nn_ops:
+  Const:
+    comment: "Constant tensor"
+    add_version: 100.300.010.011
+    outputs:
+      y:
+        comment: "Output tensor containing the same value of the provided tensor"
+        tensor_types: DT_FLOAT, DT_INT8, DT_INT32, DT_BOOL
+    attrs:
+      value:
+        comment: "Value for the elements of the output tensor"
+        type: TENSOR
+        default: ""
+    examples: |-
+      "    TensorDesc constTensorDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr constTensor = std::make_shared<hiai::Tensor>(constTensorDesc);
+          vector<float> dataValue(4* 5 * 6 * 7, 0);
+          constTensor->SetData((uint8_t*)dataValue.data(), 4* 5 * 6 * 7 * sizeof(float));
+          auto constTemp = hiai::op::Const("constTemp").set_attr_value(constTensor);
+      "
+  QuantizedConst:
+    comment: "Quantized constant tensor.Used only for quantized const weight for quantize ops scenarios."
+    add_version: 100.515.020.100
+    outputs:
+      y:
+        comment: |-
+          "Output tensor containing the same value of the provided tensor.Supported data type:
+          DT_INT8, DT_INT4, DT_2BIT.
+          DT_INT4 and DT_2BIT can only be supported by Omg tools with quantize config currently.
+          "
+        tensor_types: DT_INT8, DT_INT4, DT_2BIT
+    attrs:
+      value:
+        comment: "Value for the elements of the output tensor"
+        type: TENSOR
+        default: ""
+      scale:
+        comment: "Quantize scale values. If quant Per Layer, scale value nums is 1."
+        type: LIST_FLOAT
+        required: true
+      offset:
+        comment: "Quantize offset values. offset value nums is equal to scale values nums."
+        type: LIST_FLOAT
+        required: true
+    examples: |-
+      "    TensorDesc constTensorDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_INT8);
+          TensorPtr constTensor = std::make_shared<hiai::Tensor>(constTensorDesc);
+          vector<int8_t> dataValue(4* 5 * 6 * 7, 0);
+          constTensor->SetData((uint8_t*)dataValue.data(), 4* 5 * 6 * 7 * sizeof(int8_t));
+          vector<float> scales(4, 0.1f);
+          vector<float> offsets(4, 0.0f);
+          auto constTemp = hiai::op::QuantizedConst("constTemp")
+                               .set_attr_value(constTensor)
+                               .set_attr_scale(scales)
+                               .set_attr_offset(offsets);
+      "
+

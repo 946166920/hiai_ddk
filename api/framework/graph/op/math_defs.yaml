@@ -1,0 +1,1257 @@
+nn_ops:
+  Add:
+    comment:  |-
+      "Performs tensor addition.
+      Inputs 'x1' and 'x2' must meet the following constraints:
+          1. The input shape can be 1D-4D.
+              1D: 1 is added to the front and 2 is added in the back. For example, 5 is padded into: 1,5,1,1
+              2D: 1 is added to the front and back. For example, 5,5 is padded into: 1,5,5,1
+              3D: 1 is added to the front. For example, 5,5,5 is padded into: 1,5,5,5
+          2. For the two inputs, the corresponding dimensions must have the same value, or one of them is 1.
+      "
+    add_version: 100.300.010.011
+    inputs:
+      x1:
+        comment: "First operand"
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Second operand"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Result of same element type as the two inputs"
+        tensor_types: DT_FLOAT
+    examples: |-
+      "    TensorDesc xDesc1(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x1 = hiai::op::Data("x1");
+          x1.update_input_desc_x(xDesc1);
+
+          TensorDesc xdesc2(Shape({1, 5, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x2 = hiai::op::Data("x2");
+          x2.update_input_desc_x(xdesc2);
+
+          auto add = hiai::op::Add("add")
+                     .set_input_x1(x1)
+                     .set_input_x2(x2);
+      "
+
+  Mul:
+    comment: "Performs tensor multiplication."
+    add_version: 100.300.010.011
+    inputs:
+      x1:
+        comment: "A Tensor"
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "A Tensor, Must have the same type and dimensions as x"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Result of the same element type as the two inputs"
+        tensor_types: DT_FLOAT
+
+  Expm1:
+    comment: "Computes exp(x) - 1 element-wise. y = exp(x) - 1"
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "A Tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "A Tensor. Has the same type as x."
+        tensor_types: DT_FLOAT
+
+  Ceil:
+    comment: "Computes smallest integer not less than x."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "A Tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "A Tensor. Has the same type as x."
+        tensor_types: DT_FLOAT
+
+  Sin:
+    comment: "Computes sin of 'x' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "A Tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "A Tensor. Has the same type as x."
+        tensor_types: DT_FLOAT
+
+  Cos:
+    comment: "Computes cos of 'x' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "A Tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "A Tensor. Has the same type as x."
+        tensor_types: DT_FLOAT
+
+  Floor:
+    comment: "Computes element-wise largest integer not greater than 'x'."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "A Tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "A Tensor. Has the same type as x."
+        tensor_types: DT_FLOAT
+
+  Log1p:
+    comment: "Computes natural logarithm of (1 + x) element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "A Tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "A Tensor. Has the same type as x."
+        tensor_types: DT_FLOAT
+
+  LogicalAnd:
+    comment: "Returns the logical and truth value of 'x1' and 'x2' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "First input operand"
+        tensor_types: DT_BOOL
+      x2:
+        comment: "Second input operand"
+        tensor_types: DT_BOOL
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_BOOL
+
+  LogicalNot:
+    comment: "Returns the truth value of NOT 'x' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_BOOL
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_BOOL
+
+  Maximum:
+    comment:  |-
+      "Computes the maximum of input tensors 'x1' and 'x2' element-wise.
+      The dimension of 'x1' and 'x2' must be the same unless 'x2' is a scalar.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "Input tensor. Must be non const OP"
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Input tensor. Must be non const OP"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Maximum of 'x1' and 'x2'"
+        tensor_types: DT_FLOAT
+
+  Minimum:
+    comment: "Computes the minimum of input tensors 'x1' and 'x2' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+      x2:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+    outputs:
+      y:
+        comment: "Minimum of 'x1' and 'x2'"
+        tensor_types: DT_FLOAT, DT_INT32
+    examples: |-
+      "    TensorDesc xDesc1(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x1 = hiai::op::Data("x1");
+          x1.update_input_desc_x(xDesc1);
+
+          TensorDesc xDesc2(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x2 = hiai::op::Data("x2");
+          x2.update_input_desc_x(xDesc2);
+
+          auto minimum = hiai::op::Minimum("minimum")
+                         .set_input_x1(x1)
+                         .set_input_x2(x2);
+      "
+
+  Equal:
+    comment: "Calculates whether the input tensors 'x1' and 'x2' are equal, if equal, returns the truth value element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "First input operand"
+        tensor_types: DT_UINT8, DT_FLOAT, DT_BOOL, DT_INT32
+      x2:
+        comment: "Second input operand"
+        tensor_types: DT_UINT8, DT_FLOAT, DT_BOOL, DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_BOOL
+
+  Reciprocal:
+    comment: "Computes the reciprocal of the input tensor 'x' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Tensor of the same type as 'x'"
+        tensor_types: DT_FLOAT
+
+  Sqrt:
+    comment: "Computes the square root of the input tensor 'x' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Tensor of the same type as 'x'"
+        tensor_types: DT_FLOAT
+
+  Square:
+    comment: "Computes the square of the input tensor 'x' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  CastT:
+    comment: "Casts 'x' of input type 'src_dtype' to 'y' of 'dst_dtype'."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor to be cast. Must be non const OP."
+        tensor_types: DT_BOOL, DT_INT32, DT_UINT8, DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor with the same shape as input"
+        tensor_types: DT_BOOL, DT_INT32, DT_UINT8, DT_FLOAT
+    attrs:
+      src_dtype:
+        comment:  |-
+          "Data type of the input tensor, same as x
+          DT_FLOAT(0), DT_INT32(3), DT_UINT8(4), DT_BOOL(12)
+          "
+        type: INT
+        required: true
+      dst_dtype:
+        comment:  |-
+          "Data type which will be cast to, same as y
+          DT_FLOAT(0), DT_INT32(3), DT_UINT8(4), DT_BOOL(12)
+          "
+        type: INT
+        required: true
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto castT = hiai::op::CastT("castT")
+                       .set_input_x(x)
+                       .set_attr_src_dtype(0)
+                       .set_attr_dst_dtype(12);
+      "
+
+  Sign:
+    comment: "Returns an indication of the sign of a number."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "A Tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Tensor of the same type as 'x'"
+        tensor_types: DT_FLOAT
+
+  Exp:
+    comment: "Computes exponential of 'x' element-wise. y = base^(scale*x+shift)"
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      base:
+        comment: "Default -1 for a value of e"
+        type: FLOAT
+        default: "-1.0"
+      scale:
+        comment: "The scale"
+        type: FLOAT
+        default: "1.0"
+      shift:
+        comment: "The shift"
+        type: FLOAT
+        default: "0.0"
+
+  FloorMod:
+    comment: "Computes element-wise remainder of division, discarding decimal places in the negative infinity direction."
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "First input tensor"
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Second input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  GreaterEqual:
+    comment: "Returns the truth value of (x1 >= x2) element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "First input tensor"
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Second input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_BOOL
+
+  Greater:
+    comment: "Returns the truth value of (x1 > x2) element-wise."
+    add_version: 100.500.010.010
+    inputs:
+      x1:
+        comment: "First input tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_INT8, DT_UINT8
+      x2:
+        comment: "Second input tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_INT8, DT_UINT8
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_BOOL
+    examples: |-
+      "    TensorDesc xDesc1(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x1 = hiai::op::Data("x1");
+          x1.update_input_desc_x(xDesc1);
+
+          TensorDesc xDesc2(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x2 = hiai::op::Data("x2");
+          x2.update_input_desc_x(xDesc2);
+
+          auto greater = hiai::op::Greater("greater")
+                         .set_input_x1(x1)
+                         .set_input_x2(x2);
+      "
+
+  Less:
+    comment: "Returns the truth value of (x1 < x2) element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "First input tensor"
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Second input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_BOOL
+
+  MatMul:
+    comment:  |-
+      "Multiplies matrix 'x1' by matrix 'x2'.
+      The inputs must be two-dimensional matrices and the inner dimension of 'x1' (after being
+      transposed if 'transpose_x1' is true)
+      must match the outer dimension of 'x2' (after being transposed if 'transposed_x2' is true).
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "First input tensor."
+        tensor_types: DT_FLOAT, DT_UINT8
+      x2:
+        comment: "Second input tensor."
+        tensor_types: DT_FLOAT, DT_INT8
+      bias:
+        comment: "Reserved - Optional input tensor, bias data"
+        tensor_types: DT_FLOAT, DT_INT32
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+    attrs:
+      transpose_x1:
+        comment: "If true, 'x1' is transposed before multiplication."
+        type: BOOL
+        default: "false"
+      transpose_x2:
+        comment: "If true, 'x2' is transposed before multiplication."
+        type: BOOL
+        default: "false"
+    examples: |-
+      "    TensorDesc xDesc1(Shape({4, 20}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x1 = hiai::op::Data("x1");
+          x1.update_input_desc_x(xDesc1);
+
+          TensorDesc xDesc2(Shape({20, 2}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x2 = hiai::op::Data("x2");
+          x2.update_input_desc_x(xDesc2);
+
+          auto matMul = hiai::op::MatMul("matMul")
+                        .set_input_x1(x1)
+                        .set_input_x2(x2)
+                        .set_attr_transpose_x1(false)
+                        .set_attr_transpose_x2(false);
+      "
+
+  QuantizedMatMul:
+    comment:  |-
+      "Multiplies matrix 'x1' by matrix 'x2'.
+      The inputs must be two-dimensional matrices and the inner dimension of 'x1' (after being
+      transposed if 'transpose_x1' is true)
+      must match the outer dimension of 'x2' (after being transposed if 'transposed_x2' is true).
+      "
+    add_version: 100.500.010.010
+    inputs:
+      x1:
+        comment: "First input tensor. Must be non const OP"
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Second input tensor. Must be const OP"
+        tensor_types: DT_FLOAT, DT_INT8
+      bias:
+        comment: "Optional input tensor, bias data. If x2_quant_type = 1, shall use type 'tensor(int32)'."
+        tensor_types: DT_FLOAT, DT_INT32
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      transpose_x1:
+        comment: "If true, 'x1' is transposed before multiplication."
+        type: BOOL
+        default: "false"
+      transpose_x2:
+        comment: "If true, 'x2' is transposed before multiplication."
+        type: BOOL
+        default: "false"
+      x1_quant_type:
+        comment: "Either 0-No quant or 1-Quant8 (linear); Reserved: 2-Quant4 (linear), 3-Quant2 (linear)"
+        type: INT
+        default: "0"
+      x2_quant_type:
+        comment: "Either 0-No quant or 1-Quant8 (linear); Reserved: 2-Quant4 (linear), 3-Quant2 (linear)"
+        type: INT
+        default: "0"
+      x1_quant_scale:
+        comment: "If x1_quant_type > 0, this Attr is required."
+        type: FLOAT
+        default: "1.0"
+      x1_quant_offset:
+        comment: "x1 offset"
+        type: INT
+        default: "0"
+      x2_quant_scales:
+        comment: "If x2_quant_type > 0, this Attr is required. The number must be 1."
+        type: LIST_FLOAT
+        default: ""
+
+  GemmD:
+    comment:  |-
+      "Computes an inner product with an input tensor, a set of learned weights and adds biases.
+      if shape of a is M*K, shape of b is  K*N, shape of c must be N or (1,N).
+      "
+    add_version: 100.500.010.010
+    inputs:
+      a:
+        comment: "Input tensor."
+        tensor_types: DT_FLOAT
+      b:
+        comment: "Input tensor."
+        tensor_types: DT_FLOAT
+      c:
+        comment: "Input tensor."
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      alpha:
+        comment: "Scalar multiplier for the product of input tensors a * b."
+        type: FLOAT
+        default: "1.0f"
+      beta:
+        comment: "Scalar multiplier for input tensor c."
+        type: FLOAT
+        default: "1.0f"
+      transpose_a:
+        comment: "Whether a should be transposed."
+        type: BOOL
+        default: "false"
+      transpose_b:
+        comment: "Whether b should be transposed."
+        type: BOOL
+        default: "false"
+
+  RealDiv:
+    comment:  |-
+      "Returns x1/x2 element-wise for real types.
+      For the two inputs, the corresponding dimensions must have the same value, or one of them is 1.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "First input tensor"
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Second input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  Rint:
+    comment:  |-
+      "Finds and returns the integer closest to 'x', and if the result is between two representable values,
+      select an even representation.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  Round:
+    comment: "Rounds the value of tensor to the nearest integer by element."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  Rsqrt:
+    comment: "Calculates the reciprocal of the square root for input 'x'."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "the output tensor, has the same type as x"
+        tensor_types: DT_FLOAT
+
+  Sub:
+    comment:  |-
+      "Returns x1 - x2.
+      For the two inputs, the corresponding dimensions must have the same value, or one of them is 1.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "First input tensor"
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Second input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  Range:
+    comment: "According to the input requirements, creates a sequence of numbers."
+    add_version: 100.310.010.013
+    inputs:
+      start:
+        comment: "0-D Tensor (scalar). Acts as first entry in the range"
+        tensor_types: DT_FLOAT, DT_INT32
+      limit:
+        comment: "0-D Tensor (scalar). Upper limit of sequence"
+        tensor_types: DT_FLOAT, DT_INT32
+      delta:
+        comment: "0-D Tensor (scalar). Number that increments 'start'."
+        tensor_types: DT_FLOAT, DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+
+  Acos:
+    comment: "Computes acos of input 'x'."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor, of range [-1, 1]"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor of range [0, pi]. Has the same type as 'x'."
+        tensor_types: DT_FLOAT
+
+  Asin:
+    comment: "Computes asin of input 'x'."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor, of range [-1, 1]"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor of range [-pi/2, pi/2]. Has the same type as 'x'."
+        tensor_types: DT_FLOAT
+
+  Log:
+    comment:  |-
+      "LogLayer computes outputs y = log_base(shift + scale * x), for base > 0.
+      Or if base is set to the default (-1), base is set to e,
+      so y = ln(shift + scale * x) = log_e(shift + scale * x)
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output Tensor."
+        tensor_types: DT_FLOAT
+    attrs:
+      base:
+        comment: "float, default is -1, which means set base to e"
+        type: FLOAT
+        default: "-1.0"
+      scale:
+        comment: "float, default is 1, which multiplies x"
+        type: FLOAT
+        default: "1.0"
+      shift:
+        comment: "float, default is 0, which adds to scale*x"
+        type: FLOAT
+        default: "0.0"
+
+  LogicalOr:
+    comment: "Computes natural logarithm of input 'x'."
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "Tensor of type bool"
+        tensor_types: DT_BOOL
+      x2:
+        comment: "Tensor of type bool"
+        tensor_types: DT_BOOL
+    outputs:
+      y:
+        comment: "Tensor of type bool"
+        tensor_types: DT_BOOL
+
+  Neg:
+    comment: "Computes numerical negative value input."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  ReduceProdD:
+    comment: "Returns the product of elements across dimensions of the input tensor."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+    attrs:
+      axes:
+        comment: "Dimensions to reduce. Must be in the range [-rank(x), rank(x))."
+        type: LIST_INT
+        required: true
+      keep_dims:
+        comment: "If true, retains reduced dimensions with length 1."
+        type: BOOL
+        default: "false"
+
+  ReduceSum:
+    comment: "Returns the sum of elements across dimensions of the input tensor."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Tensor to reduce"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+      axes:
+        comment: "Dimensions to reduce"
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+    attrs:
+      keep_dims:
+        comment: "If true, retains reduced dimensions with length 1."
+        type: BOOL
+        default: "false"
+
+  Tan:
+    comment: "Computes tan of input 'x'."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  Power:
+    comment: "Computes y = (alpha*x + beta)^gamma, as specified by the scale:alpha, shift:beta, and power:gamma."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "the input tensor, must be non const op."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "the computed outputs y = (alpha*x + beta)^gamma."
+        tensor_types: DT_FLOAT
+    attrs:
+      scale:
+        comment: "(optional, default 1) the scale : alpha."
+        type: FLOAT
+        default: "1.0"
+      shift:
+        comment: "(optional, default 0) the shift : beta."
+        type: FLOAT
+        default: "0.0"
+      power:
+        comment: "(optional, default 1) the power : gamma."
+        type: FLOAT
+        default: "1.0"
+
+  Pow:
+    comment: "Computes x1^x2 for corresponding elements in x1 and x2."
+    add_version: 100.320.010.010
+    inputs:
+      x1:
+        comment: "the input tensor."
+        tensor_types: DT_FLOAT, DT_INT32
+      x2:
+        comment: "the exponent value, the datatype of x1 and x2 must be equal."
+        tensor_types: DT_FLOAT, DT_INT32
+    outputs:
+      y:
+        comment: "return a tensor for the result of x1^x2."
+        tensor_types: DT_FLOAT, DT_INT32
+
+  ArgMaxExt2:
+    comment: "Determine the largest value of inputs. Returns the index with the largest value across axis of a tensor."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "First input tensor"
+        tensor_types: DT_FLOAT
+      axis:
+        comment: "Second input tensor, must be const op. Axis of the input tensor to reduce"
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor, max value index or max value"
+        tensor_types: DT_INT32, DT_INT64
+    attrs:
+      output_type:
+        comment: "Data type of output tensor"
+        type: INT
+        default: "3"
+      keep_dims:
+        comment:  |-
+          "If false,the rank of the tensor is reduced by 1 for each entry in axis.
+          If true, the reduced dimensions are retained with length 1.
+          "
+        type: BOOL
+        default: "false"
+      outmaxval:
+        comment:  |-
+          "If true, the max value is returned; if false, the max value index or value is returned.
+          Only outmaxval = false is supported.
+          "
+        type: BOOL
+        default: "false"
+      topk:
+        comment: "(Optional) Only topk = 1 is supported."
+        type: INT
+        default: "1"
+
+  FloorDiv:
+    comment: "Divides x1/x2 element-wise, rounding toward the most negative integer."
+    add_version: 100.310.010.013
+    inputs:
+      x1:
+        comment: "First input tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+      x2:
+        comment: "Second input tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+
+  NotEqual:
+    comment: "Returns the truth value of (x1 != x2) element-wise."
+    add_version: 100.320.010.010
+    inputs:
+      x1:
+        comment: "Tensor of type float."
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Tensor of the same type as 'x1'."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Tensor of type bool"
+        tensor_types: DT_BOOL
+
+  LessEqual:
+    comment: "Returns the truth value of (x1 <= x2) element-wise."
+    add_version: 100.320.010.010
+    inputs:
+      x1:
+        comment: "Tensor of type float."
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Tensor of the same type as 'x1'."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Tensor of type bool."
+        tensor_types: DT_BOOL
+
+  SquaredDifference:
+    comment: "Returns a new tensor of (x1 - x2)(x1 - x2)."
+    add_version: 100.320.010.010
+    inputs:
+      x1:
+        comment: "the first input tensor."
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "the second input tensor."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "the output tensor."
+        tensor_types: DT_FLOAT
+
+  Atan:
+    comment: "Computes the trignometric inverse tangent of x input."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "the input tensor."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "the output tensor."
+        tensor_types: DT_FLOAT
+
+  Erf:
+    comment: "Calculates the error function of the given input tensor, element-wise."
+    add_version: 100.500.010.010
+    inputs:
+      x:
+        comment: "input tensor"
+        tensor_types: DT_UINT8, DT_FLOAT, DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_UINT8, DT_FLOAT, DT_INT32
+
+  BatchMatMul:
+    comment: "Multiplies slices of two tensors in batches."
+    add_version: 100.320.010.010
+    inputs:
+      x1:
+        comment: "The input tensor"
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "The input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "The output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      adj_x1:
+        comment:  |-
+          "adj_x1 is true, the input tensor x1  is  transposed, otherwise it will not be transposed.
+          Default is false (The current version only supports false).
+          "
+        type: BOOL
+        default: "false"
+      adj_x2:
+        comment:  |-
+          "adj_x2 is true, the input tensor x2  is  transposed, otherwise it will not be transposed.
+          Default is false.
+          "
+        type: BOOL
+        default: "false"
+
+  ClipByValue:
+    comment:  |-
+      "Given a tensor x, this operation returns a tensor of the same type and shape as x with its values clipped to
+      clip_value_min and clip_value_max. Any values less than clip_value_min are set to clip_value_min.
+      Any values greater than clip_value_max are set to clip_value_max.
+      "
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "A Tensor or IndexedSlices"
+        tensor_types: DT_FLOAT
+      clip_value_min:
+        comment:  |-
+          "The value is a 0-D (scalar) Tensor, or a Tensor with the same shape as x.
+          The minimum value to clip by.
+          "
+        tensor_types: DT_FLOAT
+      clip_value_max:
+        comment:  |-
+          "The value is a 0-D (scalar) Tensor, or a Tensor with the same shape as x.
+          The maximum value to clip by.
+          "
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "the output tensor."
+        tensor_types: DT_FLOAT
+
+  L2Normalize:
+    comment: "Standardize the specified dimension using the L2 norm."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "the input 4D tensor to be standardized."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "the output tensor with the same shape as x."
+        tensor_types: DT_FLOAT
+    attrs:
+      axis:
+        comment: "the dimension which to be standardized. Support { 1 }."
+        type: LIST_INT
+        default: "1"
+      eps:
+        comment:  |-
+          "the lower limit of the standardization, when the calculated sum of the squares of the elements
+          of x is less than eps, using eps instead of the sum of the elements of x.
+          "
+        type: FLOAT
+        default: "1e-4f"
+
+  ReduceMax:
+    comment: "Computes the maximum of elements across dimensions of a tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The tensor to reduce. Should have real numeric type."
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+      axes:
+        comment: "The dimensions to reduce.Must be in the range [-rank(x), rank(x)). Const Op."
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "the output tensor."
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+    attrs:
+      keep_dims:
+        comment: "If true, retains reduced dimensions with length 1."
+        type: BOOL
+        default: "false"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc axesTensorDesc(Shape({2}), FORMAT_NCHW, DT_INT32);
+          TensorPtr axesTensor = std::make_shared<hiai::Tensor>(axesTensorDesc);
+          vector<int32_t> dataValue = {0, 1};
+          axesTensor->SetData((uint8_t*)dataValue.data(), 2 * sizeof(int32_t));
+          auto axes = hiai::op::Const("axes").set_attr_value(axesTensor);
+
+          auto reduceMax = hiai::op::ReduceMax("ReduceMax")
+                           .set_input_x(x)
+                           .set_input_axes(axes)
+                           .set_attr_keep_dims(false);
+      "
+
+  ReduceMin:
+    comment: "Computes the minimum of elements across dimensions of a tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The tensor to reduce. Should have real numeric type."
+        tensor_types: DT_FLOAT
+      axes:
+        comment: "The dimensions to reduce.Must be in the range [-rank(x), rank(x)). Const Op."
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+    attrs:
+      keep_dims:
+        comment: "If true, retains reduced dimensions with length 1."
+        type: BOOL
+        default: "false"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc axesTensorDesc(Shape({1}), FORMAT_NCHW, DT_INT32);
+          TensorPtr axesTensor = std::make_shared<hiai::Tensor>(axesTensorDesc);
+          vector<int32_t> dataValue = {1};
+          axesTensor->SetData((uint8_t*)dataValue.data(), 1 * sizeof(int32_t));
+          auto axes = hiai::op::Const("axes").set_attr_value(axesTensor);
+
+          auto reduceMin = hiai::op::ReduceMin("ReduceMin")
+                           .set_input_x(x)
+                           .set_input_axes(axes)
+                           .set_attr_keep_dims(false);
+      "
+
+  ReduceMean:
+    comment: "The function of ReduceMean operator is computing the mean of elements across dimensions of a tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor, with the type of Data."
+        tensor_types: DT_FLOAT
+      axes:
+        comment:  |-
+          "Const tensor. Describes the dimensions to reduce.
+          Must be in the range [-rank(input_tensor), rank(input_tensor)).
+          "
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "The reduced tensor."
+        tensor_types: DT_FLOAT
+    attrs:
+      keep_dims:
+        comment: "If true, retains reduced dimensions with length 1."
+        type: BOOL
+        default: "false"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc axesTensorDesc(Shape({1}), FORMAT_NCHW, DT_INT32);
+          TensorPtr axesTensor = std::make_shared<hiai::Tensor>(axesTensorDesc);
+          vector<int32_t> dataValue = {1};
+          axesTensor->SetData((uint8_t*)dataValue.data(), 1 * sizeof(int32_t));
+          auto axes = hiai::op::Const("axes").set_attr_value(axesTensor);
+
+          auto reduceMean = hiai::op::ReduceMean("reduceMean")
+                            .set_input_x(x)
+                            .set_input_axes(axes)
+                            .set_attr_keep_dims(false);
+      "
+
+  ReduceLogSumExp:
+    comment: "Computes log(sum(exp(elements across dimensions of a tensor)))."
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      axes:
+        comment:  |-
+          "The dimensions to reduce.
+          Must be in the range [-rank(x), rank(x)).
+          "
+        type: LIST_INT
+        required: true
+      keepdims:
+        comment:  |-
+          "If false,the rank of the tensor is reduced by 1 for each entry in axis.
+          If true, the reduced dimensions are retained with length 1.
+          "
+        type: BOOL
+        default: "false"
+
+  ReduceL2D:
+    comment: "Computes the L2 norm of the input tensor's element along the provided axes."
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      axes:
+        comment: "The dimensions to reduce. Must be in the range [-rank(x), rank(x))."
+        type: LIST_INT
+        required: true
+      keep_dims:
+        comment:  |-
+          "If keep_dims is false, the rank of the tensor is reduced by 1 for each entry in axis.
+          If keep_dims is true, the reduced dimensions are retained with length 1.
+          "
+        type: BOOL
+        default: "false"
+
+  Reduction:
+    comment:  |-
+      "Use the sum or mean operation to apply the dimension specified by the input BLOB based on the given parameter.
+      (Generally speaking, the input feature graph is summed or averaged based on a given dimension.)
+      "
+    add_version: 100.500.010.010
+    inputs:
+      x:
+        comment: "First input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      operation:
+        comment: "default = ASUM, enum ReductionOp { SUM = 1; ASUM = 2; SUMSQ = 3; MEAN = 4; }"
+        type: STR
+        default: "ASUM"
+      axis:
+        comment:  |-
+          "Dimensions to reduce. If None (the default), reduces all dimensions.
+          Must be in the range [-rank(x), rank(x)).
+          "
+        type: INT
+        default: "0"
+      coeff:
+        comment: "default = 1.0 coefficient for output."
+        type: FLOAT
+        default: "1.0"
+
+  TruncateDiv:
+    comment: "Returns x1/x2 element-wise for integer types."
+    add_version: 100.500.010.010
+    inputs:
+      x1:
+        comment: "First input tensor."
+        tensor_types: DT_UINT8
+      x2:
+        comment: "Second input tensor, must have the same type as x1."
+        tensor_types: DT_UINT8
+    outputs:
+      y:
+        comment: "Output tensor."
+        tensor_types: DT_UINT8
+
+  Xlogy:
+    comment: "Computes x multiplied by the logarithm of y element-wise, if x == 0, returns 0."
+    add_version: 100.500.010.010
+    inputs:
+      x1:
+        comment: "First input tensor of type float32."
+        tensor_types: DT_FLOAT
+      x2:
+        comment: "Second input tensor, must have the same type as x1."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor of type float32."
+        tensor_types: DT_FLOAT
+
+  SparseToDense:
+    comment: "Converts a sparse representation into a dense tensor."
+    add_version: 100.500.010.010
+    inputs:
+      indices:
+        comment: "A 0-D, 1-D, or 2-D Tensor of type int32."
+        tensor_types: DT_INT32
+      output_shape:
+        comment: "A 1-D Tensor of type int32, must be a Const-OP."
+        tensor_types: DT_INT32
+      values:
+        comment: "A 0-D or 1-D Tensor of type float32."
+        tensor_types: DT_FLOAT
+      default_value:
+        comment: "A 0-D Tensor of type float32."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Tensor of shape output_shape.  Has the same type as values."
+        tensor_types: DT_FLOAT
+    attrs:
+      validate_indices:
+        comment:  |-
+          "Bool scalar, If True, indices are checked to make sure they are sorted in l
+          exicographic order and that there are no repeats. Now only supports False.
+          "
+        type: BOOL
+        default: "false"
+

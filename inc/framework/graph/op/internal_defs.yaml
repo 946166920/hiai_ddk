@@ -1,0 +1,933 @@
+nn_ops:
+  TruncateMod:
+    comment: "Return element-wise remainder of division."
+    add_version: 100.320.010.010
+    inputs:
+      x1:
+        comment: "The input tensor."
+        tensor_types: DT_INT32, DT_FLOAT
+      x2:
+        comment: "The input tensor has same element type as x."
+        tensor_types: DT_INT32, DT_FLOAT
+    outputs:
+      y:
+        comment: "Result has same element type as x."
+        tensor_types: DT_INT32, DT_FLOAT
+
+  Switch:
+    comment: "Switch Operator"
+    add_version: 100.500.010.011
+    inputs:
+      data:
+        comment:  |-
+          "Input tensor.
+          The tensor to be forwarded to the appropriate output.
+          "
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+      pred:
+        comment: "A scalar that specifies which output port will receive data."
+        tensor_types: DT_BOOL
+    outputs:
+      outputFalse:
+        comment: "If pred is false, data will be forwarded to this output."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+      outputTrue:
+        comment: "If pred is true, data will be forwarded to this output."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+
+  Merge:
+    comment: "Merge Operator"
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "The input tensors, exactly one of which will become available."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+        dynamic: true
+    outputs:
+      y:
+        comment: "Will be set to the available input tensor."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+      value_index:
+        comment: "The index of the chosen input tensor in inputs."
+        tensor_types: DT_INT32
+
+  Enter:
+    comment: "Enter Operator"
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "input tensor."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+    outputs:
+      y:
+        comment: "output tensor."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+    attrs:
+      frame_name:
+        comment: "the frame name of the loop body."
+        type: STR
+        required: true
+      is_constant:
+        comment: "Describes whether the input of the Enter operator is a const operator.The default value is false."
+        type: BOOL
+        default: "false"
+
+  Exit:
+    comment: "Exit Operator"
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "input tensor."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+    outputs:
+      y:
+        comment: "output tensor."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+
+  NextIteration:
+    comment: "NextIteration Operator"
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "The tensor to be made available to the next iteration."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+    outputs:
+      y:
+        comment: "The same tensor as data."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+
+  LoopCond:
+    comment: "LoopCond Operator"
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "A boolean scalar, representing the branch predicate of the Switch op."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+    outputs:
+      y:
+        comment: "The same tensor as input."
+        tensor_types: DT_FLOAT16, DT_FLOAT, DT_DOUBLE, DT_INT8, DT_INT16, DT_INT32, DT_INT64, DT_UINT8, DT_UINT16, DT_UINT32, DT_UINT64, DT_BOOL
+
+  OnesLike:
+    comment: "Returns a tensor of the same shape and type with all elements set to one."
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "Input tensor, of the same type as Data"
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_BOOL
+    outputs:
+      y:
+        comment: "A Tensor with all elements set to 1."
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_BOOL
+
+  Correlation:
+    comment: "Consumes an input tensor and a filter, and computes the output."
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "Input tensor with size [N, Ci, Hi, Wi]."
+        tensor_types: DT_FLOAT
+      filter:
+        comment: "With shape [Co, Ci/group, Hk, Wk]."
+        tensor_types: DT_FLOAT
+      bias:
+        comment: "With shape [Co], must be a Const-OP."
+        tensor_types: DT_FLOAT
+        optional: true
+      offset_w:
+        comment: "Reserved. For quantized."
+        tensor_types: DT_INT8
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      strides:
+        comment: "Stride along each axis."
+        type: LIST_INT
+        required: true
+      dilations:
+        comment: "Dilation value along each axis of the filter."
+        type: LIST_INT
+        default: "1, 1"
+      pads:
+        comment: "Padding for the beginning and ending along each axis [hh, ht, wh, wt]."
+        type: LIST_INT
+        default: "0, 0, 0, 0"
+      pad_mode:
+        comment: "Pad mode, SPECIFIC(Default): not set, using pads; SAME, or VALID"
+        type: STR
+        default: "SPECIFIC"
+      groups:
+        comment:  |-
+          "Number of groups input channels and output channels are divided into.
+          When groups = 1, traditional convolution will be performed;
+          When groups > 1, feature maps are grouped by group_count, and then each groups
+          is convoluted separately. Specially, 'groups' equal to the number of input feature
+          maps indicates Depthwise Convolution.
+          "
+        type: INT
+        default: "1"
+      data_format:
+        comment: "Format of operator, 'NCHW' or 'NHWC'. Default is 'NCHW'"
+        type: STR
+        default: "NCHW"
+      offset_x:
+        comment: "Reserved. For quantized."
+        type: INT
+        default: "0"
+
+  ImageMultiFrameJoint:
+    comment: "Multi frame joint the input image tensor, It use bilinear or nearest neighbor algorithm to support scale up and down"
+    add_version: 100.xxx.xxx.xxx
+    inputs:
+      x:
+        comment: "the input tensor."
+        tensor_types: DT_UINT8, DT_INT8, DT_FLOAT
+    outputs:
+      y:
+        comment: "the output tensor"
+        tensor_types: DT_UINT8, DT_INT8, DT_FLOAT
+    attrs:
+      frame_num:
+        comment: "frame number"
+        type: INT
+        required: true
+
+  Transpose:
+    comment: "Permutes the dimensions of the input according to a given pattern."
+    add_version: 100.500.010.010
+    inputs:
+      x:
+        comment: "Input tensor."
+        tensor_types: DT_FLOAT, DT_UINT8, DT_INT32, DT_INT64, DT_BOOL
+      perm:
+        comment:  |-
+          "Tuple of dimension indices indicating the permutation pattern, list of dimension indices.
+          When order is -1, it means reverse order.
+          "
+        tensor_types: DT_INT32, DT_INT64
+    outputs:
+      y:
+        comment: "Has the same shape as the input, but with the dimensions re-ordered according to the specified pattern."
+        tensor_types: DT_FLOAT, DT_UINT8, DT_INT32, DT_INT64, DT_BOOL
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc permTensorDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          TensorPtr permTensor = std::make_shared<hiai::Tensor>(permTensorDesc);
+          vector<int32_t> permDataValue = {0, 3, 1, 2};
+          permTensor->SetData((uint8_t*)permDataValue.data(), 4 * sizeof(int32_t));
+          auto strides = hiai::op::Const("perm").set_attr_value(permTensor);
+
+          auto Transpose = hiai::op::Transpose("transpose")
+                         .set_input_x(x)
+                         .set_input_perm(perm)
+      "
+
+  ReduceAllD:
+    comment:  |-
+      "Computes the 'logical and' of elements across dimensions of a tensor. Reduces 'input_tensor'
+      along the dimensions given in 'axis'.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Boolean tensor"
+        tensor_types: DT_BOOL
+    outputs:
+      y:
+        comment: "Reduced tensor"
+        tensor_types: DT_BOOL
+    attrs:
+      axes:
+        comment:  |-
+          "The dimensions to reduce. If None (the default), reduces all dimensions.
+          Must be in the range [-rank(x), rank(x)).
+          "
+        type: LIST_INT
+        required: true
+      keep_dims:
+        comment:  |-
+          "If false,the rank of the tensor is reduced by 1 for each entry in axis.
+          If true, the reduced dimensions are retained with length 1.
+          "
+        type: BOOL
+        default: "false"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_BOOL);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto reduceAllD = hiai::op::ReduceAllD("ReduceAllD")
+                            .set_input_x(x)
+                            .set_attr_axes({0, 1})
+                            .set_attr_keep_dims(false);
+      "
+
+  DetectionPostprocessing:
+    comment: "Apply postprocessing steps to bounding box detections"
+    add_version: 100.320.010.010
+    inputs:
+      score:
+        comment: "the score of each anchor with each class."
+        tensor_types: DT_FLOAT
+      bbox_delta:
+        comment: "the bounding box deltas."
+        tensor_types: DT_FLOAT
+      anchors:
+        comment: "the shape of each predefined anchor."
+        tensor_types: DT_FLOAT
+    outputs:
+      detect_scores:
+        comment: "the score of each output detections."
+        tensor_types: DT_FLOAT
+      rois:
+        comment: "the coordinates of each output bounding box,with format [detect_scores, score, rois, bbox_delta]."
+        tensor_types: DT_FLOAT
+      detect_class:
+        comment: "the class label for each output detection."
+        tensor_types: DT_INT32
+      actual_rois_num:
+        comment: "the number of valid output detections for each batch."
+        tensor_types: DT_INT32
+    attrs:
+      scale_y:
+        comment: "the scaling factor for dy in bounding box deltas."
+        type: FLOAT
+        required: true
+      scale_x:
+        comment: "the scaling factor for dx in bounding box deltas."
+        type: FLOAT
+        required: true
+      scale_h:
+        comment: "the scaling factor for dh in bounding box deltas."
+        type: FLOAT
+        required: true
+      scale_w:
+        comment: "the scaling factor for dw in bounding box deltas."
+        type: FLOAT
+        required: true
+      max_num_detections:
+        comment:  |-
+          "the maxmum number of boxes for the output Boxes with the lowest scores are descarded to
+          meet the limit.
+          "
+        type: INT
+        required: true
+      score_threshold:
+        comment:  |-
+          "the score threshold, boxes with scores lower than the threshold are filtered before sending
+          to the NMS algorithm.
+          "
+        type: FLOAT
+        required: true
+      iou_threshold:
+        comment: "the iou threshold for hard NMS."
+        type: FLOAT
+        required: true
+      use_regular_nms:
+        comment:  |-
+          "setting to true to use regular multi-class NMS algorithm that do NMS separately for each class
+          and false for a faster algorithm that only do one single NMS using the highest class score
+          "
+        type: BOOL
+        default: "false"
+      max_classes_per_detection:
+        comment:  |-
+          "using when use_regular_nms is set to false, specifying the maximum number of classes
+          per detection.
+          "
+        type: INT
+        default: "1"
+      max_detections_per_class:
+        comment:  |-
+          "using when use_regular_nms is set to true, specifying the maximum number of detections
+          when applying NMS algorithm for each single class.
+          "
+        type: INT
+        default: "1"
+      is_bg_in_label:
+        comment:  |-
+          "set to true to include background class in the list of label map for the output, set fo false
+          to not include the background.
+
+          "
+        type: BOOL
+        default: "false"
+
+  Acosh:
+    comment: "Computes inverse hyperbolic cosine of the input tensor 'x' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  Asinh:
+    comment: "Computes inverse hyperbolic sine of the input tensor 'x' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  Cosh:
+    comment: "Computes and returns hyperbolic cosine of 'x' element-wise"
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  Sinh:
+    comment: "Computes and returns hyperbolic sine of 'x' element-wise."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  Atanh:
+    comment: "Returns a new tensor with the inverse hyperbolic tangent of input 'x'."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor, of range [-1, 1]"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Tensor of the same type as 'x'"
+        tensor_types: DT_FLOAT
+
+  ChannelAxpy:
+    comment:  |-
+      "z = a*x + y. x,y are the same dimension vectors,
+      a is the coefficient, a*x + y represents two vectors, and adds them by elements.
+      "
+    add_version: 100.320.010.010
+    inputs:
+      a:
+        comment: "The input tensor,x1H,x1W must be 1."
+        tensor_types: DT_FLOAT
+      x:
+        comment: "The input tensor,x2N,x2C must be the same with x1N,x1C."
+        tensor_types: DT_FLOAT
+      y:
+        comment: "The input tensor,dimension vectors must be the same with x."
+        tensor_types: DT_FLOAT
+    outputs:
+      z:
+        comment: "the output tensor"
+        tensor_types: DT_FLOAT
+
+  SegmentMax:
+    comment: "Computes the maximum along segments of a tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT
+      segment_ids:
+        comment:  |-
+          "A 1-D const,not supports negative index,starts from 0
+          and should be sorted in ascending order and can be repeated.
+          whose size is equal to the size of x first dimension.
+          "
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+
+  SegmentMin:
+    comment: "Computes the minimum along segments of a tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT
+      segment_ids:
+        comment:  |-
+          "A 1-D const,not supports negative index,starts from 0
+          and should be sorted in ascending order and can be repeated.
+          whose size is equal to the size of x's first dimension.
+          "
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+
+  SegmentMean:
+    comment: "Computes the mean along segments of a tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT
+      segment_ids:
+        comment:  |-
+          "A 1-D const,not supports negative index,starts from 0
+          and should be sorted in ascending order and can be repeated.
+          whose size is equal to the size of x's first dimension.
+          "
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+
+  SegmentSum:
+    comment: "Computes the sum along segments of a tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT
+      segment_ids:
+        comment:  |-
+          "A 1-D const,not supports negative index,starts from 0
+          and should be sorted in ascending order and can be repeated.
+          whose size is equal to the size of x's first dimension.
+          "
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+
+  SegmentProd:
+    comment: "Computes the product along segments of a tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT
+      segment_ids:
+        comment:  |-
+          "A 1-D const,not supports negative index,starts from 0
+          and should be sorted in ascending order and can be repeated.
+          whose size is equal to the size of x's first dimension.
+          "
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+
+  InvertPermutation:
+    comment: "Returns the inverse permutation of a tensor."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_INT32
+    examples: |-
+      "    TensorDesc xDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto invertPermutation = hiai::op::InvertPermutation("invertPermutation")
+                                   .set_input_x(x);
+      "
+
+  ReverseSequence:
+    comment: "Reverses variable length slices."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "A rank R >0 tensor to reverse"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+      seq_lengths:
+        comment: "1-D with length input, seq_lengths.dimension[0] == x.dimension[batch_dim]"
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+    attrs:
+      seq_dim:
+        comment:  |-
+          "dimension partially reversed. 'seq_dim' should not equal to 'batch_dim'.
+          'seq_dim' must be in range [-R, R).
+          "
+        type: INT
+        required: true
+      batch_dim:
+        comment:  |-
+          "dimension along which reversal is performed, default to 0.
+          'batch_dim' must not equal to 'seq_dim'.
+          'batch_dim' must be in range [-R, R).
+          "
+        type: INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc seqLengthsTensorDesc(Shape({5}), FORMAT_NCHW, DT_INT32);
+          TensorPtr seqLengthsTensor = std::make_shared<hiai::Tensor>(seqLengthsTensorDesc);
+          vector<int32_t> dataValue(5, 1);
+          seqLengthsTensor->SetData((uint8_t*)dataValue.data(), 5 * sizeof(int32_t));
+          auto seqLengths = hiai::op::Const("seqLengths").set_attr_value(seqLengthsTensor);
+
+          auto reverseSequence = hiai::op::ReverseSequence("reverseSequence")
+                                 .set_input_x(x)
+                                 .set_input_seq_lengths(seqLengths)
+                                 .set_attr_batch_dim(1)
+                                 .set_attr_seq_dim(2);
+      "
+
+  BatchReindex:
+    comment: "Extracts, rearranges, and combines input data."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+      reindex:
+        comment: "Index of input tensor"
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+
+  ScatterUpdate:
+    comment: "Scatter 'updates' into a new tensor according to 'indices'."
+    add_version: 100.500.010.010
+    inputs:
+      var:
+        comment: "Input tensor."
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_BOOL
+      indices:
+        comment: "An Index tensor."
+        tensor_types: DT_INT32, DT_INT64
+      updates:
+        comment: "A tensor."
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_BOOL
+    outputs:
+      var:
+        comment: "A Tensor. Has the same type and format as input \"var\"."
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_BOOL
+    attrs:
+      use_locking:
+        comment: "An optional bool. Defaults to \"False\". If \"True\", the operation will be protected by a lock."
+        type: BOOL
+        default: "false"
+      axis:
+        comment:  |-
+          "Which axis to scatter on. Negative value means counting dimensions from the back.Accepted range is
+          [-r, r-1] where r = rank(data).
+          "
+        type: INT
+        default: "0"
+
+  FractionalPooling:
+    comment: "Performs fractional average or max pooling on the input."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "4-D Tensor with shape [batch, height, width, channels]"
+        tensor_types: DT_FLOAT, DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+      row_pooling_sequence:
+        comment: "Tensor of type int64"
+        tensor_types: DT_INT64
+      col_pooling_sequence:
+        comment: "Tensor of type int64"
+        tensor_types: DT_INT64
+    attrs:
+      mode:
+        comment: "Either 0 (Max pooling) or 1 (Avg pooling)"
+        type: INT
+        default: "0"
+      pooling_ratio:
+        comment:  |-
+          "List of floats (>= 1.0) that has length 4. Only the row <= height  and column <= width
+          dimensions are supported. For example, a valid pooling ratio looks like [1.0, 1.44, 1.73, 1.0]
+          "
+        type: LIST_FLOAT
+        default: ""
+      pseudo_random:
+        comment:  |-
+          "(Optional) bool. Defaults to False.
+          If True, generates the pooling sequence in a pseudorandom fashion, otherwise, in a
+          random fashion.
+          "
+        type: BOOL
+        default: "false"
+      overlapping:
+        comment:  |-
+          "(Optional) bool. Defaults to False.
+          If True, it means when pooling, the values at the boundary of adjacent pooling cells
+          are used by both cells.
+          "
+        type: BOOL
+        default: "false"
+      deterministic:
+        comment:  |-
+          "(Optional) bool. Defaults to False.
+          If True, a fixed pooling region will be used when iterating over a FractionalMaxPool
+          node in the computation graph.
+          "
+        type: BOOL
+        default: "false"
+      seed:
+        comment:  |-
+          "(Optional) int. Defaults to 0. If either 'seed' or 'seed2' is set to be non-zero,
+          the random number generator is seeded by the given seed. Otherwise, it is seeded
+          by a random seed.
+          "
+        type: INT
+        default: "0"
+      seed2:
+        comment: "(Optional) int. Defaults to 1. Used to avoid seed collision."
+        type: INT
+        default: "1"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto permute = hiai::op::Permute("permute")
+                         .set_input_x(x)
+                         .set_attr_order({0, 2, 3, 1});
+
+          auto fractionalPooling = hiai::op::FractionalPooling("fractionalPooling")
+                                   .set_input_x(permute)
+                                   .set_attr_mode(1)
+                                   .set_attr_pooling_ratio({1.0, 1.3, 1.4, 1.0})
+                                   .set_attr_overlapping(true)
+                                   .set_attr_deterministic(true);
+      "
+
+  PSROIPooling:
+    comment: "Pooling operations for some position sensitive areas of interest."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "feature map, must be non const op, roisN can be devided by xN."
+        tensor_types: DT_FLOAT
+      rois:
+        comment: "region of interest, must be non const op and roisC, roisH, roisW must be equal to 5, 1, 1."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "the output tensor, all input and output must have same datatype."
+        tensor_types: DT_FLOAT
+    attrs:
+      spatial_scale:
+        comment: "spatial scale, must be greater than 0."
+        type: FLOAT
+        required: true
+      output_dim:
+        comment: "number of output channels, must be greater than 0."
+        type: INT
+        required: true
+      group_size:
+        comment: "number of groups encoding position sensitive score maps, must be greater than 0."
+        type: INT
+        required: true
+
+  BidirectionLSTM:
+    comment: "Bidirection Long Short-Term Memory layer, using an internal network unrolled in time."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor for LSTM cell. Shape is [B, T, X]."
+        tensor_types: DT_FLOAT
+      seq_len:
+        comment: "A batch element's sequence length. Shape is [B]."
+        tensor_types: DT_INT32
+        optional: true
+      w_fw:
+        comment: "Forward weight tensor, must be const op. Two dimensions [x(t -1) + h(t -1), 4 * hidden-size]."
+        tensor_types: DT_FLOAT
+      w_bw:
+        comment: "Backward weight tensor, must be const op. Two dimensions [x(t -1) + h(t -1), 4 * hidden-size]."
+        tensor_types: DT_FLOAT
+      c_0_fw:
+        comment: "The forward initial memory cells for next input layer. Shape is [4 * hidden-size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      h_0_fw:
+        comment: "The forward initial state of memory cells for next input layer. Shape is [4 * hidden-size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      c_0_bw:
+        comment: "The backward initial memory cells for next input layer. Shape is [4 * hidden-size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      h_0_bw:
+        comment: "The backward initial state of memory cells for next input layer. Shape is [4 * hidden-size]."
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      y_fw:
+        comment: "Output of forward."
+        tensor_types: DT_FLOAT
+      y_bw:
+        comment: "Output of backward."
+        tensor_types: DT_FLOAT
+      h_t_fw:
+        comment: "Output state of forward hidden."
+        tensor_types: DT_FLOAT
+      c_t_fw:
+        comment: "Output state of forward cell."
+        tensor_types: DT_FLOAT
+      h_t_bw:
+        comment: "Output state of backward cell."
+        tensor_types: DT_FLOAT
+      c_t_bw:
+        comment: "Output state of backward hidden."
+        tensor_types: DT_FLOAT
+    attrs:
+      forget_bias:
+        comment: "The forget gate bias."
+        type: FLOAT
+        default: "1.0"
+      num_layers:
+        comment: "Number of lstm layers, only support 1 now."
+        type: INT
+        default: "1"
+      activation:
+        comment: "The activation function. \"Sigmoid\" \"Tanh\" \"ReLU\" \"ReLU1\" \"ReLU6\""
+        type: STR
+        default: "Tanh"
+      cell_type:
+        comment: "Reserved. Only supprot 'LSTM' now."
+        type: STR
+        default: "LSTM"
+      state_is_tuple:
+        comment: "Reserved. Only support true now."
+        type: BOOL
+        default: "true"
+
+  RandomUniformNoSeed:
+    comment: "Outputs random values from a uniform distribution."
+    add_version: 100.310.010.013
+    inputs:
+      shape:
+        comment: "1-D const, shape of the output tensor. Only a 1D-4D tensor can be generated."
+        tensor_types: DT_INT32
+      minval:
+        comment: "0-D const, lower bound on the range of random values to generate."
+        tensor_types: DT_FLOAT
+      maxval:
+        comment: "0-D const, upper bound on the range of random values to generate."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Result tensor of the same element shape as 'shape'."
+        tensor_types: DT_FLOAT
+
+  RandomNormalNoSeed:
+    comment: "generate random values from a normal distributions."
+    add_version: 100.320.010.010
+    inputs:
+      shape:
+        comment: "1-D const, shape of the output tensor. Only a 1D-4D tensor can be generated."
+        tensor_types: DT_INT32
+      mean:
+        comment: "0-D const. The mean of the normal distribution."
+        tensor_types: DT_FLOAT
+      stddev:
+        comment: "0-D const. The standard deviation of the normal distribution."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Result tensor of the same element shape as 'shape'."
+        tensor_types: DT_FLOAT
+
+  RandomShuffleNoSeed:
+    comment: "Randomly shuffles a tensor along its first dimension"
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "A tensor."
+        tensor_types: DT_UINT8, DT_FLOAT, DT_BOOL, DT_INT32
+    outputs:
+      y:
+        comment: "A tensor"
+        tensor_types: DT_UINT8, DT_FLOAT, DT_BOOL, DT_INT32
+
+  Aipp:
+    comment: "Aipp"
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "A tensor"
+        tensor_types: DT_UINT8, DT_FLOAT, DT_BOOL, DT_INT32
+      config:
+        comment: "a aipp v2 param operator"
+        tensor_types: DT_UINT8, DT_FLOAT, DT_BOOL, DT_INT32
+    outputs:
+      y:
+        comment: "A tensor"
+        tensor_types: DT_UINT8, DT_FLOAT, DT_BOOL, DT_INT32
+
+  AippConfigFusion:
+    comment: "AippConfigFusion"
+    add_version: 100.320.010.010
+    inputs:
+      crop:
+        comment: "A cropv2 param operator"
+        tensor_types: DT_UINT8
+        optional: true
+      swap:
+        comment: "A swapv2 param operator"
+        tensor_types: DT_UINT8
+        optional: true
+      csc:
+        comment: "A cscv2 param operator"
+        tensor_types: DT_UINT8
+        optional: true
+      resize:
+        comment: "A resizev2 param operator"
+        tensor_types: DT_UINT8
+        optional: true
+      dtc:
+        comment: "A dtcv2 param operator"
+        tensor_types: DT_UINT8
+        optional: true
+      rotate:
+        comment: "A rotatev2 param operator"
+        tensor_types: DT_UINT8
+        optional: true
+      pad:
+        comment: "A padv2 param operator"
+        tensor_types: DT_UINT8
+        optional: true
+    outputs:
+      y:
+        comment: "A tensor"
+        tensor_types: DT_UINT8

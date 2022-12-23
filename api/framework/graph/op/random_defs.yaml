@@ -1,0 +1,35 @@
+nn_ops:
+  Multinomial:
+    comment: "Extract samples from multiple distributions."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor, only support 2-D."
+        tensor_types: DT_FLOAT
+      num_samples:
+        comment:  |-
+          "0-D, number of independent samples to draw for each row slice. If the datatype of size is
+          DT_FOLAT, the elements must be >= 1.
+          "
+        tensor_types: DT_INT32, DT_FLOAT, DT_UINT8
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_INT32
+    attrs:
+      dtype:
+        comment: "The datatype of output, now only support DT_INT32."
+        type: INT
+        default: "3"
+      seed:
+        comment:  |-
+          "If either 'seed' or 'seed2' is set to non-zero, the internal random number generator is seeded by
+          the given seed. Otherwise, a random seed is used.
+          "
+        type: INT
+        default: "0"
+      seed2:
+        comment: "Second seed to avoid seed collision"
+        type: INT
+        default: "0"
+

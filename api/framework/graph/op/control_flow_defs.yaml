@@ -1,0 +1,59 @@
+nn_ops:
+  If:
+    comment: "If Operator"
+    add_version: 100.500.010.010
+    inputs:
+      cond:
+        comment:  |-
+          "Input tensor.
+          If the tensor is a scalar of non-boolean type, the scalar is converted to a boolean according to the
+          following rule:
+          if the scalar is a numerical value, non-zero means True and zero means False;
+          if the scalar is a string, non-empty means True and empty means False.
+          If the tensor is not a scalar, being empty means False and being non-empty means True.
+          "
+        tensor_types: DT_BOOL
+      x:
+        comment: "A list of input tensors"
+        tensor_types: DT_FLOAT, DT_INT8, DT_INT32, DT_BOOL
+        dynamic: true
+    outputs:
+      y:
+        comment: "= cond ? then_branch(input) : else_branch(input)"
+        tensor_types: DT_FLOAT, DT_INT8, DT_INT32, DT_BOOL
+        dynamic: true
+    graphs:
+      then_branch:
+        comment: "then subgraph name"
+      else_branch:
+        comment: "else subgraph name"
+    attrs:
+      output_shapes:
+        comment: "a list of output tensor desc"
+        type: LIST_TENSOR_DESC
+        default: ""
+
+  While:
+    comment: "While operator"
+    add_version: 100.500.010.010
+    inputs:
+      x:
+        comment: "A list of input tensors"
+        tensor_types: DT_FLOAT, DT_INT8, DT_INT32, DT_BOOL
+        dynamic: true
+    outputs:
+      y:
+        comment: "A list of output tensors"
+        tensor_types: DT_FLOAT, DT_INT8, DT_INT32, DT_BOOL
+        dynamic: true
+    graphs:
+      cond:
+        comment: "cond subgraph name"
+      body:
+        comment: "else subgraph name"
+    attrs:
+      output_shapes:
+        comment: "a list of output tensor desc"
+        type: LIST_TENSOR_DESC
+        default: ""
+

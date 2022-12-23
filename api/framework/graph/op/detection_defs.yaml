@@ -1,0 +1,147 @@
+nn_ops:
+  Permute:
+    comment: "Permutes the dimensions of the input according to a given pattern."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor."
+        tensor_types: DT_FLOAT, DT_UINT8, DT_INT32, DT_INT64, DT_BOOL
+    outputs:
+      y:
+        comment: "Has the same shape as the input, but with the dimensions re-ordered according to the specified pattern."
+        tensor_types: DT_FLOAT, DT_UINT8, DT_INT32, DT_INT64, DT_BOOL
+    attrs:
+      order:
+        comment:  |-
+          "Tuple of dimension indices indicating the permutation pattern, list of dimension indices.
+          When order is -1, it means reverse order.
+          "
+        type: LIST_INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto permute = hiai::op::Permute("permute")
+                         .set_input_x(x)
+                         .set_attr_order({0, 3, 1, 2});
+      "
+
+  FSRDetectionOutput:
+    comment:  |-
+      "A layer in Faster R-CNN net, the role of FSRDetectionOutput is to generate the  number and coordinate of label boxes
+      according to position offset of prior box and adjusting parameters(nms threshold and confidence threshold).
+      "
+    add_version: 100.320.010.010
+    inputs:
+      rois:
+        comment: "The coordinate of prior boxes."
+        tensor_types: DT_FLOAT
+      bbox_delta:
+        comment: "The position offset."
+        tensor_types: DT_FLOAT
+      score:
+        comment: "The probability score of all prior boxes."
+        tensor_types: DT_FLOAT
+      im_info:
+        comment: "The image information. Const Op. (img_height, img_width)"
+        tensor_types: DT_INT32
+      actual_rois_num:
+        comment: "Reserved."
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      actual_bbox_num:
+        comment: "The number of output box."
+        tensor_types: DT_INT32
+      box:
+        comment: "The coordinate of output box."
+        tensor_types: DT_FLOAT
+    attrs:
+      num_classes:
+        comment: "The number of classes, and must be larger than 1."
+        type: INT
+        required: true
+      score_threshold:
+        comment: "Confidence threshold parameter, and must be between 0 and 1."
+        type: FLOAT
+        required: true
+      iou_threshold:
+        comment: "Non maximum suppression threshold and must be between 0 and 1."
+        type: FLOAT
+        required: true
+      batch_rois:
+        comment:  |-
+          "The parameter of batch_size, and must be between 1 and 65535.
+          N (number of rois) / batch_size should be a multiple of 16.
+          "
+        type: INT
+        default: "1"
+
+  SSDDetectionOutput:
+    comment:  |-
+      "A layer in SSD net, the role of SSDDetectionOutput is to generate the  number and coordinate of label boxes
+      according to position offset of prior box and adjusting parameters(nms threshold and confidence threshold).
+      only support in CPUCL
+      "
+    add_version: 100.500.010.010
+    inputs:
+      bbox_delta:
+        comment: "Frame position offset data."
+        tensor_types: DT_FLOAT
+      score:
+        comment: "Confidence data."
+        tensor_types: DT_FLOAT
+      anchors:
+        comment: "Preselection box data."
+        tensor_types: DT_FLOAT
+    outputs:
+      out_boxnum:
+        comment: "The number of output box."
+        tensor_types: DT_INT32
+      y:
+        comment: "Output box data."
+        tensor_types: DT_FLOAT
+    attrs:
+      num_classes:
+        comment: "The number of classes."
+        type: INT
+        required: true
+      share_location:
+        comment: "if true, bounding box are shared among different classes."
+        type: BOOL
+        default: "true"
+      background_label_id:
+        comment: "Background label id. If there is no background class,set it as -1."
+        type: INT
+        default: "0"
+      iou_threshold:
+        comment: "Non maximum suppression threshold and must be between 0 and 1."
+        type: FLOAT
+        default: "0.3f"
+      top_k:
+        comment: "Number of bboxes to be considered for per class before NMS."
+        type: INT
+        default: "200"
+      eta:
+        comment: "Parameter for adaptive nms."
+        type: FLOAT
+        default: "1.0f"
+      variance_encoded_in_target:
+        comment: "If true, variance is encoded in target;"
+        type: BOOL
+        default: "false"
+      code_type:
+        comment: "Type of coding method for bbox."
+        type: INT
+        default: "1"
+      keep_top_k:
+        comment: "Number of total bboxes to be kept per image after nms step."
+        type: INT
+        default: "200"
+      confidence_threshold:
+        comment: "Confidence threshold parameter, and must be between 0 and 1."
+        type: FLOAT
+        default: "0.0f"
+
