@@ -1,6 +1,17 @@
-/*
- * Copyright (c) Huawei Technologies Co., Ltd. 2018-2022. All rights reserved.
- * Description: array_defs
+/**
+ * Copyright 2019-2022 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 #ifndef INC_API_GRAPH_OP_ARRAY_DEFS_H
 #define INC_API_GRAPH_OP_ARRAY_DEFS_H
@@ -8,7 +19,6 @@
 
 // clang-format off
 namespace hiai {
-
 /*
  * Data tensor
  * <Input>
@@ -1030,8 +1040,6 @@ REG_OP(BroadcastTo)
  *                 Currently round_mode is not supported, param is reserved.
  *    sqrt_mode : Quantize with square root calculations. If true, sqrt the input data.
  *                Currently sqrt_mode is not supported, param is reserved.
- * <Added in HiAI version>
- *    100.515.020.100
  * <Examples>
  *    hiai::op::Data data("data");
  *    std::vector<float> inputScales = { 0.0023456 };
@@ -1043,6 +1051,8 @@ REG_OP(BroadcastTo)
  *                                              .set_attr_dtype(ge::DT_UINT8);
  *    hiai::op::Convolution conv1 = hiai::op::Convolution1("conv1")
  *                                      .set_input_x(conv1Quantize);
+ * <Added in HiAI version>
+ *    100.515.020.100
  */
 REG_OP(QuantizeV2)
 .INPUT(x, TensorType({ DT_FLOAT }))
@@ -1066,21 +1076,20 @@ REG_OP(QuantizeV2)
  *    sqrt_mode : Quantize with square root calculations. If true, sqrt the input data.
  *                  Currently sqrt_mode is not supported, param is reserved.
  *    relu_flag : Specifing whether to perform ReLU.
- * <Added in HiAI version>
- *    100.515.020.100
  * <Examples>
  *    hiai::op::Convolution conv1 = hiai::op::Convolution("conv1");
  *    hiai::op::DequantizeV2 conv1Dequantize = hiai::op::DequantizeV2("conv1_dequantize")
  *                                   .set_input_x(conv1);
+ * <Added in HiAI version>
+ *    100.515.020.100
  */
 REG_OP(DequantizeV2)
 .INPUT(x, TensorType({ DT_INT32 }))
 .OUTPUT(y, TensorType({ DT_FLOAT }))
-.ATTR(deq_scale, AttrValue::LIST_FLOAT ({}))
+.ATTR(deq_scale, AttrValue::LIST_FLOAT {})
 .ATTR(sqrt_mode, AttrValue::BOOL { false })
 .ATTR(relu_flag, AttrValue::BOOL { false })
 .OP_END()
-
 } // namespace hiai
 // clang-format on
 
