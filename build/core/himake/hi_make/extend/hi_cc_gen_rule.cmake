@@ -5,6 +5,8 @@ include(CMakeParseArguments)
 include(hi_utils/hi_message)
 include(hi_make/extend/hi_cc_prebuilt_library)
 
+set(Python_EXECUTABLE "/usr/bin/python3")
+
 function(hi_cc_gen_rule)
   set(opt)
 
@@ -106,7 +108,13 @@ function(hi_cc_gen_rule)
     )
   endif()
 
+  hi_message("cxxxxxx 1224 target:${target_name}")
+  hi_message("cxxxxxx 1224 all_outs:${all_outs}")
+
   add_custom_command(
+    # TARGET 
+    #   ${target_name}
+    # PRE_BUILD
     OUTPUT
       ${all_outs}
     COMMAND

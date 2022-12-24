@@ -15,6 +15,8 @@
 # limitations under the License.
 # ============================================================================
 
+import yaml
+
 class TensorSchema(object):
     def __init__(self, name, types, comments):
         self.name_ = name

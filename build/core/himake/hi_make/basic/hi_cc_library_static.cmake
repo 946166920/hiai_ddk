@@ -26,6 +26,7 @@ function(hi_cc_library_static)
     COPTS_CXX
     LOPTS
     LPATHS
+    GENS
   )
 
   cmake_parse_arguments(HI_CC_LIBRARY_STATIC "${opts}" "${single_args}" "${multi_args}" ${ARGN})
@@ -49,7 +50,7 @@ function(hi_cc_library_static)
   endif()
 
   if(HI_CC_LIBRARY_STATIC_INCS)
-    # reltive paths
+    # relative paths
     set_property(TARGET ${target_name} 
       PROPERTY HI_INCS ${HI_CC_LIBRARY_STATIC_INCS}
     )

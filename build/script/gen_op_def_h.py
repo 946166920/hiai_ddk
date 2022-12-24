@@ -17,7 +17,7 @@
 
 import os
 import sys
-import yaml
+
 # import logging
 # logging.basicConfig(
 #     filename="py_log.txt",
@@ -26,10 +26,7 @@ import yaml
 from schema_parser import *
 from schema_header_dump import *
 
-def main():
-    py_path = os.getcwd()
-    print("py_path:", py_path)
-    out_h_path = "out"
+def main(root_path):
     schema_files = [
         ['api/framework/graph/op', 'inc_api_graph_op_', 'graph/op/',
             ['array_defs', 'const_defs', 'control_flow_defs', 'detection_defs', 'image_defs',
@@ -39,10 +36,11 @@ def main():
         ]
 
     for schema_file in schema_files:
-        path = os.path.join(py_path, schema_file[0])
+        path = os.path.join(root_path, schema_file[0])
+        print("cxxxx path", path)
 
         # 头文件生成路径
-        out_h_gen_dir = os.path.join(out_h_path, schema_file[2])
+        out_h_gen_dir = os.path.join(root_path, "out", "opDefs", schema_file[2])
         if not os.path.exists(out_h_gen_dir):
             os.makedirs(out_h_gen_dir)
         
@@ -50,8 +48,8 @@ def main():
         macro = schema_file[1]
         for file in schema_file[3]:
             dest_head_file = os.path.join(path, file + '.h')
-            if os.path.exists(dest_head_file):
-                continue
+            # if os.path.exists(dest_head_file):
+            #     continue
 
             yaml_path = os.path.join(path, file + '.yaml')
 
@@ -73,4 +71,4 @@ def main():
 if __name__ == "__main__":
     os.system("pwd")
     print("len of sys.argv", len(sys.argv))
-    main()
+    main(sys.argv[1])

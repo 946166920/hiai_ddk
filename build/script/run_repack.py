@@ -45,7 +45,7 @@ class repack_ddk(object):
                 if os.path.exists(os.path.join(os.getcwd(), "out", "hiai", abi, "lib", so_name)):
                     print("[INFO] : PASS! {} has successfully generated!".format(so_name))
                 else:
-                    print("[ERROR] : PASS! {} is not generated!".format(so_name))
+                    print("[ERROR] : FAIL! {} is not generated!".format(so_name))
                     sys.exit(-1)
 
 
