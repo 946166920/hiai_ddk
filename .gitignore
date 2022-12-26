@@ -5,3 +5,15 @@ test/framework/build/*
 test/out/*
 build/script/__pycache__/*
 hwhiai-ddk-master.zip
+
+api/framework/graph/op/image_defs.h
+api/framework/graph/op/array_defs.h
+api/framework/graph/op/nn_defs.h
+api/framework/graph/op/random_defs.h
+api/framework/graph/op/control_flow_defs.h
+api/framework/graph/op/detection_defs.h
+api/framework/graph/op/const_defs.h
+api/framework/graph/op/math_defs.h
+inc/framework/graph/op/internal_defs.h
+inc/framework/graph/op/data_flow_defs.h
+inc/framework/graph/op/internal_nn_defs.h
