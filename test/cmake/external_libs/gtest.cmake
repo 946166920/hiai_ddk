@@ -43,6 +43,6 @@ set(INSTALL_LIBRARY_DIR lib)
 install(FILES ${GTEST_PKG_DIR}/lib/libgtest.so ${GTEST_PKG_DIR}/lib/libgtest_main.so OPTIONAL
         DESTINATION ${INSTALL_LIBRARY_DIR})
 
-add_dependencies(gtest gtest_build)
+add_dependencies(gtest gtest_build api_inc_ops)
 
 set(HAVE_GTEST TRUE)

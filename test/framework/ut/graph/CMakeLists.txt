@@ -265,5 +265,4 @@ target_link_libraries(ut_graph
 )
 
 add_test(NAME ut_graph COMMAND ut_graph)
-
-
+add_dependencies(ut_graph api_inc_ops)

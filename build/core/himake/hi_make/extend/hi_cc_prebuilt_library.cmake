@@ -5,16 +5,17 @@ include(hi_utils/hi_message)
 include(hi_utils/hi_runtime)
 
 function(hi_cc_prebuilt_library_import_location target_name lib)
-  if(TARGET ${lib})
-    get_target_property(import_loc ${lib} HI_GEN_LIB)
+  string(REPLACE :: _ target_lib ${lib})
+  if(TARGET ${target_lib})
+    get_target_property(import_loc ${target_lib} HI_GEN_LIB)
 
-    add_dependencies(${target_name} ${lib})
+    add_dependencies(${target_name} ${target_lib})
 
     set_property(TARGET ${target_name}
-      APPEND PROPERTY HI_CUSTOM_TARGET_DEPS ${lib}
+      APPEND PROPERTY HI_CUSTOM_TARGET_DEPS ${target_lib}
     )
   else()
-    set(import_loc ${lib})
+    set(import_loc ${target_lib})
   endif()
 
   set_target_properties(${target_name}

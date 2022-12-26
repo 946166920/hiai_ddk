@@ -8,8 +8,8 @@ function(hi_extract_srcs_targets target_srcs out_filegroups out_genrules)
   endif()
 
   foreach(src IN LISTS target_srcs)
+    string(REPLACE :: _ src ${src})
     if(TARGET ${src})
-      string(REPLACE :: _ src ${src})
       hi_get_target_property(${src} HI_TYPE target_type)
 
       if(target_type STREQUAL HI_FILEGROUP)
@@ -78,6 +78,7 @@ endfunction()
 # glob will extract to exact path
 function(hi_extract_all_srcs target_srcs all_srcs_out all_incs_out)
   foreach(src IN LISTS target_srcs)
+    string(REPLACE :: _ src ${src})
     if(NOT TARGET ${src})
       hi_extract_srcs_from_path(${src} extract_path_srcs)
       list(APPEND srcs ${extract_path_srcs})
@@ -106,11 +107,10 @@ function(extract_all_srcs_and_record_seperatly target_name target_srcs target_ex
   set(all_srcs)
 
   foreach(src IN LISTS target_srcs)
+    string(REPLACE :: _ src ${src})
     if(NOT TARGET ${src})
       list(APPEND direct_src_files ${src})
     else()
-      string(REPLACE :: _ src ${src})
-
       hi_get_target_property(${src} HI_TYPE target_type)
       if(${target_type} STREQUAL HI_GEN_SRCS)
         list(APPEND src_genrules ${src})

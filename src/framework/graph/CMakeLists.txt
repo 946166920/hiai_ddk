@@ -12,6 +12,9 @@ hi_cc_library_static(
     ./*.cpp
   CDEFS
     GRAPH_API_VISIABLE
+  DEPS
+    hiai::api::ops
+    hiai::inc::ops
 )
 
 # libhiai_ir.so

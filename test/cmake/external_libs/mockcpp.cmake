@@ -34,5 +34,5 @@ set(INSTALL_LIBRARY_DIR lib)
 install(FILES ${MOCKCPP_PKG_DIR}/lib/libmockcpp.a OPTIONAL
         DESTINATION ${INSTALL_LIBRARY_DIR})
 
-add_dependencies(mockcpp mockcpp_build)
+add_dependencies(mockcpp mockcpp_build api_inc_ops)
 

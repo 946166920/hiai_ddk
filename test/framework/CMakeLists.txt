@@ -29,6 +29,33 @@ add_definitions(-fPIC -pthread -DHAVE_PTHREAD -D_FORTIFY_SOURCE=2 -ffunction-sec
 add_definitions(-DHIAI_IR_ONLINE_BUILD -DBUILDING_WITH_GTEST)
 add_definitions(-DENABLE_MIX_COMPILE)
 
+set(op_h_file_list
+  api/framework/graph/op/image_defs.h
+  api/framework/graph/op/array_defs.h
+  api/framework/graph/op/nn_defs.h
+  api/framework/graph/op/random_defs.h
+  api/framework/graph/op/control_flow_defs.h
+  api/framework/graph/op/detection_defs.h
+  api/framework/graph/op/const_defs.h
+  api/framework/graph/op/math_defs.h
+  inc/framework/graph/op/internal_defs.h
+  inc/framework/graph/op/data_flow_defs.h
+  inc/framework/graph/op/internal_nn_defs.h
+)
+
+foreach(h_file ${op_h_file_list})
+  list(APPEND op_h_files ${TOP_DIR}/${h_file})
+endforeach()
+
+add_custom_command(OUTPUT ${op_h_files}
+    PRE_BUILD
+    COMMAND
+    python3 ${TOP_DIR}/build/script/gen_op_def_h.py ${TOP_DIR} api
+    COMMAND
+    python3 ${TOP_DIR}/build/script/gen_op_def_h.py ${TOP_DIR} inc
+)
+add_custom_target(api_inc_ops ALL DEPENDS ${op_h_files})
+
 ##################################################################
 add_subdirectory(ut)
 add_subdirectory(stubs)

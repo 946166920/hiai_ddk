@@ -26,7 +26,6 @@ function(hi_cc_library_static)
     COPTS_CXX
     LOPTS
     LPATHS
-    GENS
   )
 
   cmake_parse_arguments(HI_CC_LIBRARY_STATIC "${opts}" "${single_args}" "${multi_args}" ${ARGN})

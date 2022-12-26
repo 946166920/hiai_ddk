@@ -37,10 +37,19 @@ function(hi_cc_headers)
        PROPERTY INTERFACE_HI_INCS
         ${HI_CC_HEADERS_INCS}
     )
-
     if(NOT {HI_CC_HEADERS_INCS} STREQUAL '.')
       foreach(inc IN LISTS HI_CC_HEADERS_INCS)
-        list(APPEND target_incs ${ROOT_DIR}/${inc})
+      string(REPLACE :: _ inc ${inc})
+        if(TARGET ${inc})
+          hi_get_target_property(${inc} HI_GEN_INCS gen_inc)
+          if(NOT gen_inc)
+            hi_message(FATAL_ERROR "target ${inc} need contain HI_GEN_INCS value")
+          endif()
+          list(APPEND target_incs ${gen_inc})
+          add_dependencies(${target_name} ${inc})
+        else()
+          list(APPEND target_incs ${ROOT_DIR}/${inc})
+        endif()
       endforeach()
     endif()
 

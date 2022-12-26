@@ -1,7 +1,7 @@
 buildtools/*
 third_party/*
 out/*
-tests/build/*
-tests/out/*
+test/framework/build/*
+test/out/*
 build/script/__pycache__/*
 hwhiai-ddk-master.zip

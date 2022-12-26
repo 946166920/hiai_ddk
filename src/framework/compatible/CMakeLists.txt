@@ -12,4 +12,7 @@ hi_cc_library_static(
     math_op_transformer.cpp
     nn_op_transformer.cpp
     transformer_utils.cpp
+  DEPS
+    hiai::api::ops
+    hiai::inc::ops
 )

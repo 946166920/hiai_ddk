@@ -5,8 +5,6 @@ include(CMakeParseArguments)
 include(hi_utils/hi_message)
 include(hi_make/extend/hi_cc_prebuilt_library)
 
-set(Python_EXECUTABLE "/usr/bin/python3")
-
 function(hi_cc_gen_rule)
   set(opt)
 
@@ -87,6 +85,7 @@ function(hi_cc_gen_rule)
   endif()
 
   if(HI_CC_GENRULE_PYTHON)
+    string(REPLACE "," " " args "${HI_CC_GENRULE_ARGS}")
     set(cmd ${Python_EXECUTABLE} -B ${HI_CC_GENRULE_CWD}/${HI_CC_GENRULE_PYTHON} ${args} ${HI_CC_GENRULE_OUT_DIR} ${srcs})
   endif()
 
@@ -95,26 +94,8 @@ function(hi_cc_gen_rule)
   endif()
 
   string(REPLACE :: _ target_name ${HI_CC_GENRULE_NAME})
-  if(NOT TARGET ${target_name})
-    add_library(${target_name} MODULE)
-
-    set_target_properties(${target_name}
-      PROPERTIES HI_TYPE HI_GEN_RULE
-    )
-
-    hi_enable_empty_srcs(
-      NAME
-        ${target_name}
-    )
-  endif()
-
-  hi_message("cxxxxxx 1224 target:${target_name}")
-  hi_message("cxxxxxx 1224 all_outs:${all_outs}")
 
   add_custom_command(
-    # TARGET 
-    #   ${target_name}
-    # PRE_BUILD
     OUTPUT
       ${all_outs}
     COMMAND
@@ -125,6 +106,11 @@ function(hi_cc_gen_rule)
       ${HI_CC_GENRULE_SRCS}
     COMMENT
       "hi_genrule generates files"
+  )
+
+  add_custom_target(${target_name} DEPENDS ${all_outs})
+  set_target_properties(${target_name}
+    PROPERTIES HI_TYPE HI_GEN_RULE
   )
 
   # record info for gen
@@ -175,16 +161,6 @@ function(hi_cc_gen_srcs)
 
   # record gen rule info for himake gen
   string(REPLACE :: _ target_name ${HI_CC_GENSRCS_NAME})
-  add_library(${target_name} MODULE)
-
-  set_target_properties(${target_name}
-    PROPERTIES HI_TYPE HI_GEN_RULE
-  )
-
-  hi_enable_empty_srcs(
-    NAME
-      ${target_name}
-  )
 
   hi_cc_gen_rule(
     NAME
@@ -227,10 +203,6 @@ function(hi_cc_gen_srcs)
     NAME
       ${target_name}
   )
-
-  if(NOT HI_CC_GENSRCS_NAME STREQUAL target_name)
-    add_library(${HI_CC_GENSRCS_NAME} ALIAS ${target_name})
-  endif()
 endfunction()
 
 function(hi_cc_gen_lib)
@@ -262,16 +234,6 @@ function(hi_cc_gen_lib)
   endif()
 
   string(REPLACE :: _ target_name ${HI_CC_GENLIB_NAME})
-
-  add_library(${target_name} MODULE)
-  set_target_properties(${target_name}
-    PROPERTIES HI_TYPE HI_GEN_RULE
-  )
-
-  hi_enable_empty_srcs(
-    NAME
-      ${target_name}
-  )
 
   hi_cc_gen_rule(
     NAME
@@ -305,8 +267,4 @@ function(hi_cc_gen_lib)
     NAME
       ${target_name}
   )
-
-  if(NOT HI_CC_GENLIB_NAME STREQUAL target_name)
-    add_library(${HI_CC_GENLIB_NAME} ALIAS ${target_name})
-  endif()
 endfunction()

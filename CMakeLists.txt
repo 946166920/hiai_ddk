@@ -11,6 +11,8 @@ set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 list(APPEND CMAKE_MODULE_PATH ${ROOT_DIR}/build/core/himake)
 include(hi_make)
 
+find_package(Python)
+
 ### redirect output directory
 set(output_prefix ${ROOT_DIR}/out/hiai/${ANDROID_ABI})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${output_prefix}/bin)
@@ -57,6 +59,8 @@ hi_cc_default(
 
 ## external deps
 hi_add_subdirectory(build/core/cmake/external)
+hi_add_subdirectory(api/framework)
+hi_add_subdirectory(inc/framework)
 
 ### src
 hi_add_subdirectory(src/infra)

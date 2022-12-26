@@ -6,4 +6,7 @@ hi_cc_library_static(
     infershape/aipp_infershape_util.cpp
     converter/aipp_param_info_converter.cpp
     compatible/hiai_ir_aipp_compatible.cpp
+  DEPS
+    hiai::api::ops
+    hiai::inc::ops
 )

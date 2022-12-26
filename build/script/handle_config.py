@@ -37,64 +37,34 @@ class HandleConfig(object):
         self.is_configed_cmake = False
         self.abi = "both"
 
-        # self.BUILDTOOLS_LINK_LIST = {
-        #     "cmake": [
-        #         "https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz",
-        #         "cmake-3.20.5-linux-x86_64.tar.gz"],
-        #     "ndk": [
-        #         "https://dl.google.com/android/repository/android-ndk-r23b-linux.zip",
-        #         "android-ndk-r23b-linux.zip"],
-        #     }
-        # self.THIRD_PARTY_LINK_LIST = {
-        #     "cutils": [
-        #         "https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/ \
-        #             cutils.tar.gz",
-        #         "core-refs_heads_master-libcutils-include-cutils.tar.gz",
-        #         self.decompress_cutils],
-        #     "bounds_checking_function": [
-        #         "https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip",
-        #         "libboundscheck-1.1.11.zip",
-        #         self.decompress_bounds_checking_function],
-        #     "protobuf": [
-        #         "https://github.com/protocolbuffers/protobuf/archive/v3.13.0.zip",
-        #         "protobuf-3.13.0.zip",
-        #         self.decompress_protobuf],
-        #     "mockcpp-2.7": [
-        #         "https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip",
-        #         "mockcpp-2.7.zip",
-        #         self.decompress_mockcpp],
-        #     "googletest-release-1.8.1": [
-        #         "https://codeload.github.com/google/googletest/tar.gz/release-1.8.1",
-        #         "googletest-release-1.8.1.tar.gz",
-        #         self.decompress_googletest],
-        #     }
         self.BUILDTOOLS_LINK_LIST = {
-            "ndk": [
-                "http://10.136.104.231:4543/android-ndk-r23b-linux.zip",
-                "android-ndk-r23b-linux.zip"],
             "cmake": [
-                "http://10.136.104.231:4543/cmake-3.20.5-linux-x86_64.tar.gz",
+                "https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz",
                 "cmake-3.20.5-linux-x86_64.tar.gz"],
+            "ndk": [
+                "https://dl.google.com/android/repository/android-ndk-r23b-linux.zip",
+                "android-ndk-r23b-linux.zip"],
             }
         self.THIRD_PARTY_LINK_LIST = {
             "cutils": [
-                "http://10.136.104.231:4543/core-refs_heads_master-libcutils-include-cutils.tar.gz",
+                "https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/ \
+                    cutils.tar.gz",
                 "core-refs_heads_master-libcutils-include-cutils.tar.gz",
                 self.decompress_cutils],
             "bounds_checking_function": [
-                "http://10.136.104.231:4543/libboundscheck-1.1.11.zip",
+                "https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip",
                 "libboundscheck-1.1.11.zip",
                 self.decompress_bounds_checking_function],
             "protobuf": [
-                "http://10.136.104.231:4543/protobuf-3.13.0.zip",
+                "https://github.com/protocolbuffers/protobuf/archive/v3.13.0.zip",
                 "protobuf-3.13.0.zip",
                 self.decompress_protobuf],
             "mockcpp-2.7": [
-                "http://10.136.104.231:4543/mockcpp-2.7.zip",
+                "https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip",
                 "mockcpp-2.7.zip",
                 self.decompress_mockcpp],
             "googletest-release-1.8.1": [
-                "http://10.136.104.231:4543/googletest-release-1.8.1.tar.gz",
+                "https://codeload.github.com/google/googletest/tar.gz/release-1.8.1",
                 "googletest-release-1.8.1.tar.gz",
                 self.decompress_googletest],
             }

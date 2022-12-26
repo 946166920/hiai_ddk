@@ -18,57 +18,47 @@
 import os
 import sys
 
-# import logging
-# logging.basicConfig(
-#     filename="py_log.txt",
-#     filemode='w',
-# )
 from schema_parser import *
 from schema_header_dump import *
 
-def main(root_path):
-    schema_files = [
-        ['api/framework/graph/op', 'inc_api_graph_op_', 'graph/op/',
+
+def main(root_path, target_component):
+    schema_files = {
+        'api': ['api/framework/graph/op', 'inc_api_graph_op_', 'graph/op/',
             ['array_defs', 'const_defs', 'control_flow_defs', 'detection_defs', 'image_defs',
             'math_defs', 'nn_defs', 'random_defs']],
-        ['inc/framework/graph/op', 'inc_framework_graph_op_', 'framework/graph/op/',
+        'inc': ['inc/framework/graph/op', 'inc_framework_graph_op_', 'framework/graph/op/',
             ['data_flow_defs', 'internal_defs', 'internal_nn_defs']]
-        ]
+    }
 
-    for schema_file in schema_files:
-        path = os.path.join(root_path, schema_file[0])
-        print("cxxxx path", path)
+    schema_file = schema_files[target_component]
+    path = os.path.join(root_path, schema_file[0])
 
-        # 头文件生成路径
-        out_h_gen_dir = os.path.join(root_path, "out", "opDefs", schema_file[2])
-        if not os.path.exists(out_h_gen_dir):
-            os.makedirs(out_h_gen_dir)
-        
-        # path = schema_file[0]
-        macro = schema_file[1]
-        for file in schema_file[3]:
-            dest_head_file = os.path.join(path, file + '.h')
-            # if os.path.exists(dest_head_file):
-            #     continue
+    # 头文件生成路径
+    out_h_gen_dir = os.path.join(root_path, "out", "opDefs", schema_file[2])
+    if not os.path.exists(out_h_gen_dir):
+        os.makedirs(out_h_gen_dir)
+    
+    macro = schema_file[1]
+    for file in schema_file[3]:
+        dest_head_file = os.path.join(path, file + '.h')
 
-            yaml_path = os.path.join(path, file + '.yaml')
+        yaml_path = os.path.join(path, file + '.yaml')
 
-            yaml_file = open(yaml_path, 'r')
-            yaml_parser = YamlSchemaParser()
-            yaml_result = yaml_parser.parse(yaml_file)
-            yaml_file.close()
+        yaml_file = open(yaml_path, 'r')
+        yaml_parser = YamlSchemaParser()
+        yaml_result = yaml_parser.parse(yaml_file)
+        yaml_file.close()
 
-            generate_header_path = os.path.join(out_h_gen_dir,  file + '.h')
+        generate_header_path = os.path.join(out_h_gen_dir,  file + '.h')
 
-            head_file = open(generate_header_path, 'w')
-            header_macro = macro + file + "_h"
-            dumper = SchemaHeaderDump(yaml_result)
-            dumper.dump(head_file, file, header_macro)
-            head_file.close()
+        head_file = open(generate_header_path, 'w')
+        header_macro = macro + file + "_h"
+        dumper = SchemaHeaderDump(yaml_result)
+        dumper.dump(head_file, file, header_macro)
+        head_file.close()
 
-            os.system("cp " + generate_header_path + " " + path)
+        os.system("cp " + generate_header_path + " " + path)
 
 if __name__ == "__main__":
-    os.system("pwd")
-    print("len of sys.argv", len(sys.argv))
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2])
