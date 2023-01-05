@@ -8,12 +8,15 @@
 #include <cmath>
 
 #include "securec.h"
+
+#include "infra/base/assertion.h"
+
+#include "framework/infra/log/log.h"
 #include "framework/common/hcs_types.h"
 #include "framework/graph/core/def_types.h"
 #include "framework/graph/core/cgraph/compute_graph.h"
 #include "framework/graph/utils/op_desc_utils.h"
 #include "framework/common/fmk_error_codes.h"
-#include "common/util.h"
 #include "quantize_types.h"
 #include "omg/quantize_optimizer/quantize_types.h"
 
@@ -39,11 +42,11 @@ public:
      */
     template <typename Dtype> static hiai::Status NnSet(const int32_t n, const Dtype alpha, Dtype* output)
     {
-        DOMI_CHECK_NOTNULL(output);
+        HIAI_EXPECT_NOT_NULL_R(output, hiai::PARAM_INVALID);
 
         if (fabs(alpha) < 1e-9) {
             int err = memset_s(output, sizeof(Dtype) * n, 0, sizeof(Dtype) * n);
-            DOMI_CHK_BOOL_RET_STATUS(err == 0, hiai::PARAM_INVALID, "memset_s err");
+            HIAI_EXPECT_TRUE_R(err == 0, hiai::PARAM_INVALID);
         }
 
         for (int32_t i = 0; i < n; ++i) {

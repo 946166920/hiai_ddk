@@ -27,7 +27,7 @@
 static const char* g_RomVersion = NULL;
 
 typedef char* (*HIAI_GetVersion_ptr)(void);
-const char* HIAI_MR_GetVersion(void)
+const char* HIAI_GetVersion(void)
 {
     if (g_RomVersion != NULL) {
         return g_RomVersion;
