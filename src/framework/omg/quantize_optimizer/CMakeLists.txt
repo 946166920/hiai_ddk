@@ -1,0 +1,9 @@
+hi_cc_library_static(
+  NAME
+    ai::fmk::omg::quantize_util_static
+  SRCS
+    quantize_math_util.cpp
+    quantize_util.cpp
+  DEPS
+    huawei::c_sec
+)

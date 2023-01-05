@@ -21,7 +21,6 @@ target_include_directories(${LIBHIAI_IR_BUILD_AIPP_DDK}
     ${TOP_DIR}/inc/framework/util
     ${TOP_DIR}/inc/infra
     ${TOP_DIR}/inc/infra/om
-    ${TOP_DIR}/inc/infra/mmpa
     ${TOP_DIR}/api
     ${TOP_DIR}/api/infra
     ${TOP_DIR}/api/framework

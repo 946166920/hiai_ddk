@@ -25,7 +25,12 @@ DDK_PACKAGE_NAME = 'hwhiai-ddk-master'
 DDK_ZIP_NAME = DDK_PACKAGE_NAME + '.zip'
 DDK_RELEASE_DIR = os.path.join('out', DDK_PACKAGE_NAME)
 DDK_PACKAGE_FILE = os.path.join('build','config', 'ddk.xml')
-DDK_LIST = ["libhiai.so", "libhiai_ir.so", "libhiai_ir_build.so", "libhiai_ir_build_aipp.so"]
+DDK_LIST = ["libhiai.so",
+            "libhiai_ir.so",
+            "libhiai_ir_build.so",
+            "libhiai_ir_build_aipp.so",
+            "libhiai_model_compatible.so",
+            "libhiai_enhance.so"]
 
 
 class repack_ddk(object):

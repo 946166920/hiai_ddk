@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <class value="head_files">
-        <item source="api/framework/cloud_service/cloud_service.h" destination="ddk/ai_ddk_lib/include/cloud_service.h" is_open="false"/>
+        <item source="api/framework/cloud_service/cloud_service.h" destination="ddk/ai_ddk_lib/include/cloud_service.h" />
         <item source="api/framework/model_debugger/model_dumper.h" destination="ddk/ai_ddk_lib/include/model_dumper.h" is_open="false"/>
         <item source="api/framework/model_builder/hiai_ir_build.h" destination="ddk/ai_ddk_lib/include/hiai_ir_build.h" />
         <item source="api/framework/compatible/HiAiModelBuilderType.h" destination="ddk/ai_ddk_lib/include/compatible/HiAiModelBuilderType.h" />
@@ -81,11 +81,15 @@
         <item source="out/hiai/armeabi-v7a/lib/libhiai_ir.so" destination="ddk/ai_ddk_lib/lib/libhiai_ir.so"/>
         <item source="out/hiai/armeabi-v7a/lib/libhiai_ir_build.so" destination="ddk/ai_ddk_lib/lib/libhiai_ir_build.so"/>
         <item source="out/hiai/armeabi-v7a/lib/libhiai_ir_build_aipp.so" destination="ddk/ai_ddk_lib/lib/libhiai_ir_build_aipp.so"/>
+        <item source="out/hiai/armeabi-v7a/lib/libhiai_model_compatible.so" destination="ddk/ai_ddk_lib/lib/libhiai_model_compatible.so"/>
+        <item source="out/hiai/armeabi-v7a/lib/libhiai_enhance.so" destination="ddk/ai_ddk_lib/lib/libhiai_enhance.so"/>
     </class>
     <class value="so_files_64">
         <item source="out/hiai/arm64-v8a/lib/libhiai.so" destination="ddk/ai_ddk_lib/lib64/libhiai.so"/>
         <item source="out/hiai/arm64-v8a/lib/libhiai_ir.so" destination="ddk/ai_ddk_lib/lib64/libhiai_ir.so"/>
         <item source="out/hiai/arm64-v8a/lib/libhiai_ir_build.so" destination="ddk/ai_ddk_lib/lib64/libhiai_ir_build.so"/>
         <item source="out/hiai/arm64-v8a/lib/libhiai_ir_build_aipp.so" destination="ddk/ai_ddk_lib/lib64/libhiai_ir_build_aipp.so"/>
+        <item source="out/hiai/arm64-v8a/lib/libhiai_model_compatible.so" destination="ddk/ai_ddk_lib/lib64/libhiai_model_compatible.so"/>
+        <item source="out/hiai/arm64-v8a/lib/libhiai_enhance.so" destination="ddk/ai_ddk_lib/lib64/libhiai_enhance.so"/>
     </class>
 </config>
