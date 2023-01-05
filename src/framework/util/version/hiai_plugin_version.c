@@ -18,10 +18,11 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <pthread.h>
+#include <dlfcn.h>
 
 #include "securec.h"
 
-#include "infra/mmpa/mmpa_api.h"
 #include "framework/infra/log/log.h"
 
 #include "util/hiai_foundation_dl_helper.h"
