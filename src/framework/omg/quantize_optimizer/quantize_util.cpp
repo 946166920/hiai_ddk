@@ -25,7 +25,6 @@
 #include "framework/graph/core/edge/edge.h"
 #include "framework/graph/core/edge/edge_visitor.h"
 #include "omg/quantize_optimizer/quantize_math_util.h"
-#include "common/debug/log.h"
 #include "common/math/math_util.h"
 #include "infra/base/securestl.h"
 #include "infra/base/assertion.h"
@@ -153,7 +152,7 @@ Status TransFilterINT4ToINT8(Tensor& filter)
         return hiai::FAILURE;
     }
     unique_ptr<int8_t[]> weightDataInt8(new (std::nothrow) int8_t[filterSize]());
-    DOMI_CHK_BOOL_EXEC(weightDataInt8 != nullptr, return hiai::FAILURE, "Make unique_ptr weightDataInt8 failed.");
+    HIAI_EXPECT_NOT_NULL(weightDataInt8);
     const int8_t* weightDataInt4 = reinterpret_cast<const int8_t*>(filter.GetData().GetData());
 
     for (uint32_t i = 0; i < realfilterSize; ++i) {
@@ -210,7 +209,7 @@ Status TransFilterINT8ToFP32(const Node& peerNode, Tensor& filter, const vector<
 Status DeCompressFilters(const Node& node, const vector<float>& weightScale)
 {
     TensorPtr filter = QuantizeUtil::GetFilterTensor(&node);
-    DOMI_CHECK_NOTNULL(filter);
+    HIAI_EXPECT_NOT_NULL_R(filter, hiai::PARAM_INVALID);
     ge::DataType dataType = filter->GetTensorDesc().GetDataType();
     if (dataType == DT_INT4) {
         if (TransFilterINT4ToINT8(*filter) != hiai::SUCCESS) {
@@ -220,7 +219,7 @@ Status DeCompressFilters(const Node& node, const vector<float>& weightScale)
     }
 
     Node* peerNode = node.ROLE(NodeWalker).OutDataNode(0, 0);
-    DOMI_CHECK_NOTNULL(peerNode);
+    HIAI_EXPECT_NOT_NULL_R(peerNode, hiai::PARAM_INVALID);
     OpDesc& opDesc = node.ROLE(NodeSpec).OpDesc();
     if (TransFilterINT8ToFP32(*peerNode, *filter, weightScale) != hiai::SUCCESS) {
         FMK_LOGE("Op %s excute TransFilterINT8ToFP32 failed.", node.ROLE(NodeSpec).Name().c_str());
@@ -365,7 +364,7 @@ Status DequantizeOldIR(const ge::Node& node)
     uint32_t filterIndex = QuantizeUtil::GetFilterIndex(&node);
     HIAI_EXPECT_TRUE(filterIndex < constNodes.size());
     Node* filterNode = constNodes[filterIndex];
-    DOMI_CHECK_NOTNULL(filterNode);
+    HIAI_EXPECT_NOT_NULL_R(filterNode, hiai::PARAM_INVALID);
 
     HIAI_EXPECT_EXEC(DeCompressFilters(*filterNode, weightScale));
     HIAI_EXPECT_EXEC(DeCompressBias(node, quantInfo));
@@ -468,12 +467,12 @@ Status GetOpOutChannelNum(const Node& node, int32_t& outChannelNum)
     if (node.ROLE(NodeSpec).Type() == hiai::op::Const::TYPE ||
         node.ROLE(NodeSpec).Type() == hiai::op::QuantizedConst::TYPE) {
         Node* nextNode = node.ROLE(NodeWalker).OutDataNode(0, 0);
-        DOMI_CHECK_NOTNULL(nextNode);
+        HIAI_EXPECT_NOT_NULL_R(nextNode, hiai::PARAM_INVALID);
         return GetOpOutChannelNum(*nextNode, outChannelNum);
     }
 
     TensorPtr filter = QuantizeUtil::GetFilterTensor(&node);
-    DOMI_CHECK_NOTNULL(filter);
+    HIAI_EXPECT_NOT_NULL_R(filter, hiai::PARAM_INVALID);
     const uint32_t fcWeightScaleCount = 1;
     if (node.ROLE(NodeSpec).Type() == hiai::op::Convolution::TYPE ||
         node.ROLE(NodeSpec).Type() == hiai::op::ConvolutionDepthwise::TYPE) {
@@ -593,7 +592,7 @@ Status TransFilterFP32ToINT8(
     const ge::Node& node, TensorPtr filter, const vector<float>& weightScale, ge::DataType weightDataType)
 {
     Node* peerNode = node.ROLE(NodeWalker).OutDataNode(0, 0);
-    DOMI_CHECK_NOTNULL(peerNode);
+    HIAI_EXPECT_NOT_NULL_R(peerNode, hiai::PARAM_INVALID);
     OpDesc& opDesc = node.ROLE(NodeSpec).OpDesc();
 
     uint32_t kernelNum = 0;
@@ -611,10 +610,9 @@ Status TransFilterFP32ToINT8(
     }
 
     unique_ptr<int8_t[]> weightDataInt8(new (std::nothrow) int8_t[weightDataSize]());
-    DOMI_CHK_BOOL_EXEC(weightDataInt8 != nullptr, return hiai::FAILED, "Make unique_ptr weightDataInt8 failed.");
+    HIAI_EXPECT_NOT_NULL(weightDataInt8);
     int8_t zero = 0;
-    DOMI_RETURN_WITH_LOG_IF_ERROR(
-        QuantizeUtil::NnSet(weightDataSize, zero, reinterpret_cast<int8_t*>(weightDataInt8.get())), "NnSet failed.");
+    HIAI_EXPECT_EXEC(QuantizeUtil::NnSet(weightDataSize, zero, reinterpret_cast<int8_t*>(weightDataInt8.get())));
     int8_t* weightDataNew = weightDataInt8.get();
 
     filter->MutableTensorDesc().SetDataType(weightDataType);
@@ -649,7 +647,7 @@ Status QuantizeUtil::CheckOpQuantizeInfo(const ge::Node& node, const QuantizeCon
         return hiai::FAILURE;
     }
     const float* weightOffset = reinterpret_cast<const float*>(&quantizeConfig.weightOffset[0]);
-    DOMI_CHECK_NOTNULL(weightOffset);
+    HIAI_EXPECT_NOT_NULL_R(weightOffset, hiai::PARAM_INVALID);
     for (auto i = 0; i < outChannelNum; i++) {
         if (fabs(weightOffset[i]) > eps) {
             FMK_LOGE("Weight Quantize type only support HALF_OFFSET, but op %s weight offset is not 0.",
@@ -681,7 +679,7 @@ Status QuantizeUtil::GetOpQuantizeInfo(const Node& node, QuantizeConfig& config)
                 return hiai::FAILURE;
             }
             ge::TensorPtr filter = QuantizeUtil::GetFilterTensor(&preNode);
-            DOMI_CHECK_NOTNULL(filter);
+            HIAI_EXPECT_NOT_NULL_R(filter, hiai::PARAM_INVALID);
             config.weightDataType = filter->GetTensorDesc().GetDataType();
         }
         return hiai::SUCCESS;
@@ -811,7 +809,7 @@ Status QuantizeUtil::QuantizeWeight(ge::Node& weightNode, const QuantizeConfig& 
 {
     OpDesc& filterOpDesc = weightNode.ROLE(NodeSpec).OpDesc();
     ge::TensorPtr filter = GetFilterTensor(&weightNode);
-    DOMI_CHECK_NOTNULL(filter);
+    HIAI_EXPECT_NOT_NULL_R(filter, hiai::PARAM_INVALID);
 
     /* 完成权值数据量化 */
     if (TransFilterFP32ToINT8(

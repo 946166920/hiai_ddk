@@ -10,7 +10,6 @@
 #include "framework/infra/log/log.h"
 #include "framework/graph/core/node/node_spec.h"
 #include "graph/op/nn_defs.h"
-#include "common/debug/log.h"
 #include "common/math/math_util.h"
 
 using namespace std;
@@ -280,9 +279,7 @@ Status CalcDeconvInt8Data(
             uint32_t windowSize = hDim * wDim;
             for (uint32_t i = 0; i < windowSize; i++) {
                 uint32_t index = (nIndex * CoutDim + cIndex) * windowSize + i;
-                DOMI_CHK_STATUS_RET(CompressInt8Data(weightData[index], weightDataNew[index], scaleWeight),
-                    "calculate int8 weight data failed. dim info:[nIndex:%u,cIndex:%u, window index:%u]", nIndex,
-                    cIndex, i);
+                HIAI_EXPECT_EXEC(CompressInt8Data(weightData[index], weightDataNew[index], scaleWeight));
             }
         }
     }
@@ -432,10 +429,10 @@ Status QuantizeMathUtil::CompressWeightToINT8(Tensor& weight, ge::DataType dataT
         FMK_LOGE("data type [%d] is invalid.", dataType);
         return hiai::FAILED;
     }
-    DOMI_CHK_BOOL_EXEC((size != 0), return hiai::FAILED, "Compress 2bit/int4 size is zero.");
+    HIAI_EXPECT_TRUE(size != 0);
     vector<int8_t> weightDataVec(size);
     int8_t* weightDataInt = weightDataVec.data();
-    DOMI_CHK_BOOL_EXEC(weightDataInt != nullptr, return hiai::FAILED, "weightDataInt is null.");
+    HIAI_EXPECT_NOT_NULL(weightDataInt);
     for (uint32_t index = 0; index < size; index++) {
         weightDataInt[index] = weightData[index];
     }

@@ -1,3 +1,5 @@
+hi_add_subdirectory(model_compatible)
+
 hi_cc_library_static(
   NAME
     ai::fmk::model_runtime::direct_static
