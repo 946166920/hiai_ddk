@@ -24,14 +24,14 @@ extern "C" {
 #endif
 
 typedef struct HIAI_ModelManager_Impl {
-    HIAI_ModelManager* runtimeModelManager;
+    HIAI_MR_ModelManager* runtimeModelManager;
     const HIAI_ModelRuntime* runtime;
 } HIAI_ModelManager_Impl;
 
-HIAI_ModelManager_Impl* HIAI_ModelManager_ToModelManagerImpl(HIAI_ModelManager* manager);
+HIAI_ModelManager_Impl* HIAI_ModelManager_ToModelManagerImpl(HIAI_MR_ModelManager* manager);
 
-HIAI_Status HIAI_ModelManager_PreRun(const HIAI_ModelRuntime* runtime, HIAI_NDTensorBuffer* input[], int32_t inputNum,
-    HIAI_NDTensorBuffer* output[], int32_t outputNum);
+HIAI_Status HIAI_ModelManager_PreRun(const HIAI_ModelRuntime* runtime, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum);
 
 #ifdef __cplusplus
 }

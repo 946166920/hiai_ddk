@@ -37,22 +37,24 @@ struct OmFileContext {
 
 class OmFileLoadHelper {
 public:
-    Status Init(const ModelData* model);
+    Status Init(const uint8_t* model, uint32_t modelSize);
 
-    Status Init(uint8_t* modelData, uint32_t modelDataSize);
+    const ModelFileHeader* GetModelFileHeader()
+    {
+        return modelHeader_;
+    }
 
     Status GetModelPartition(ModelPartitionType type, ModelPartition& partition) const;
 
 public:
+    const ModelFileHeader* modelHeader_;
     OmFileContext context_;
 
 private:
-    Status CheckModelValid(const ModelData* model);
-
     // check MODEL_DEF partition must exist, other partitions can not repeat
-    Status CheckModelPartitionTable(uint8_t* modelData, uint32_t size);
+    Status CheckModelPartitionTable(const uint8_t* modelData, uint32_t size);
 
-    Status LoadModelPartitionTable(uint8_t* modelData, uint32_t size);
+    Status LoadModelPartitionTable(const uint8_t* modelData, uint32_t size);
 
 private:
     bool isInited_ {false};
@@ -62,7 +64,7 @@ class OmFileSaveHelper {
 public:
     ModelFileHeader& GetModelFileHeader()
     {
-        return model_header_;
+        return modelHeader_;
     }
 
     uint32_t GetModelDataSize()
@@ -79,7 +81,7 @@ public:
     Status UpdataModelWeights(uint8_t* weightData, uint32_t weightSize);
 
 public:
-    ModelFileHeader model_header_;
+    ModelFileHeader modelHeader_;
     OmFileContext context_;
 };
 } // namespace hiai

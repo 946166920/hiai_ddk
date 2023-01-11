@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <mockcpp/mockcpp.hpp>
 #include <mockcpp/mockable.h>
 #include <gtest/gtest.h>

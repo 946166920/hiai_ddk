@@ -26,13 +26,13 @@ extern "C" {
 #endif
 
 typedef struct HIAI_BuiltModel_Impl {
-    HIAI_BuiltModel* runtimeBuiltModel;
+    HIAI_MR_BuiltModel* runtimeBuiltModel;
     const HIAI_ModelRuntime* runtime;
 } HIAI_BuiltModel_Impl;
 
-HIAI_BuiltModel_Impl* HIAI_BuiltModel_ToBuiltModelImpl(const HIAI_BuiltModel* model);
+HIAI_BuiltModel_Impl* HIAI_BuiltModel_ToBuiltModelImpl(const HIAI_MR_BuiltModel* model);
 
-HIAI_BuiltModel_Impl* HIAI_BuiltModel_CreateModelImpl(HIAI_BuiltModel* model, const HIAI_ModelRuntime* runtime);
+HIAI_BuiltModel_Impl* HIAI_BuiltModel_CreateModelImpl(HIAI_MR_BuiltModel* model, const HIAI_ModelRuntime* runtime);
 
 HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreOnRuntime(const void* data, size_t size, const HIAI_ModelRuntime* runtime);
 

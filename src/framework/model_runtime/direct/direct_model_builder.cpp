@@ -15,23 +15,28 @@
  */
 #include "direct_model_builder.h"
 
+// api/framework
+#include "tensor/buffer.h"
+
+// inc
+#include "infra/base/base_buffer.h"
+#include "framework/model/model_type_util.h"
 #include "framework/infra/log/log.h"
 #include "infra/base/securestl.h"
-#include "framework/util/base_buffer.h"
-#include "tensor/buffer.h"
+#include "infra/base/assertion.h"
+
+// src/framework
+#include "util/hiai_foundation_dl_helper.h"
+
 #include "direct_built_model_impl.h"
 #include "direct_common_util.h"
-#include "infra/base/assertion.h"
-#include "framework/util/model_type_util.h"
-
-#include "util/hiai_foundation_dl_helper.h"
 
 namespace hiai {
 using HIAI_ModelManager = struct HIAI_ModelManager;
 using HIAI_ModelManagerListener = struct HIAI_ModelManagerListener;
 
-static HIAI_Status BuildModel(HIAI_MemBuffer* inputBuffer, HIAI_Framework fmkType, HIAI_FORMAT_MODE_OPTION& fmtOption,
-    std::shared_ptr<IBuffer>& outputBuffer, uint32_t& outputSize)
+static HIAI_Status BuildModel(std::shared_ptr<BaseBuffer>& inputBuffer, HIAI_Framework fmkType,
+    HIAI_FORMAT_MODE_OPTION& fmtOption, std::shared_ptr<IBuffer>& outputBuffer, uint32_t& outputSize)
 {
     void* modelManagerCreateFunc = HIAI_Foundation_GetSymbol("HIAI_ModelManager_create");
     void* modelManagerBuildFunc = HIAI_Foundation_GetSymbol("HIAI_ModelManager_buildModel");
@@ -53,8 +58,10 @@ static HIAI_Status BuildModel(HIAI_MemBuffer* inputBuffer, HIAI_Framework fmkTyp
         return HIAI_FAILURE;
     }
 
-    HIAI_MemBuffer* inMemBuffers[] = {inputBuffer};
     HIAI_MemBuffer outMemBuffer {static_cast<unsigned int>(outputBuffer->GetSize()), outputBuffer->GetData()};
+    HIAI_MemBuffer inMemBuffer {static_cast<unsigned int>(inputBuffer->GetSize()),
+                                static_cast<void*>(const_cast<uint8_t*>(inputBuffer->GetData()))};
+    HIAI_MemBuffer* inMemBuffers[] = {&inMemBuffer};
 
     using BuildModelFunc = int (*)(
         HIAI_ModelManager*, HIAI_Framework, HIAI_MemBuffer*[], const unsigned int, HIAI_MemBuffer*, unsigned int*);
@@ -86,8 +93,8 @@ static HIAI_Status BuildModel(HIAI_MemBuffer* inputBuffer, HIAI_Framework fmkTyp
 }
 
 namespace {
-inline HIAI_Status CheckParameters(const HIAI_ModelBuildOptions* options, const char* modelName,
-    const void* inputModelData, const size_t &inputModelSize)
+inline HIAI_Status CheckParameters(const HIAI_MR_ModelBuildOptions* options, const char* modelName,
+    const void* inputModelData, const size_t& inputModelSize)
 {
     // 入参校验
     if (modelName == nullptr || inputModelData == nullptr || inputModelSize == 0) {
@@ -96,7 +103,7 @@ inline HIAI_Status CheckParameters(const HIAI_ModelBuildOptions* options, const 
     }
 
     // options 参数检查
-    if (options != nullptr && !DirectCommonUtil::CheckBuildOptions(options)) {
+    if (options != nullptr && !DirectCommonUtil::IsSupportBuildOptions(options)) {
         FMK_LOGE("BuildOption isn't supported, please reset.");
         return HIAI_FAILURE;
     }
@@ -104,8 +111,8 @@ inline HIAI_Status CheckParameters(const HIAI_ModelBuildOptions* options, const 
 }
 }
 
-HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options, const char* modelName,
-    const void* inputModelData, size_t inputModelSize, HIAI_BuiltModel** builtModel)
+HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_MR_ModelBuildOptions* options, const char* modelName,
+    const void* inputModelData, size_t inputModelSize, HIAI_MR_BuiltModel** builtModel)
 {
     // WARNING[begin]: These log used for SUT test. Must confirm with tester before modification.
     FMK_LOGI("start to build model by direct");
@@ -122,9 +129,9 @@ HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options
         return HIAI_FAILURE;
     }
 
-    HIAI_FORMAT_MODE_OPTION formatOption = HIAI_ModelBuildOptions_GetFormatModeOption(options);
+    HIAI_FORMAT_MODE_OPTION formatOption = HIAI_MR_ModelBuildOptions_GetFormatModeOption(options);
 
-    size_t estimatedOutputSize = HIAI_ModelBuildOptions_GetEstimatedOutputSize(options);
+    size_t estimatedOutputSize = HIAI_MR_ModelBuildOptions_GetEstimatedOutputSize(options);
     if (estimatedOutputSize > MAX_COMPILED_TARGET_SIZE) {
         FMK_LOGE("estimatedOutputSize is too large.");
         return HIAI_FAILURE;
@@ -155,12 +162,10 @@ HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options
     }
 
     // 兼容性处理
-    HIAI_MemBuffer modelBuffer {static_cast<unsigned int>(inputModelSize), const_cast<void*>(inputModelData)};
-    HIAI_MemBuffer* aferCompatibleBuffer = nullptr;
-    bool isNeedRelease = false;
-    if (DirectCommonUtil::MakeCompatibleModel(&modelBuffer, &aferCompatibleBuffer, isNeedRelease) != HIAI_SUCCESS) {
-        return HIAI_FAILURE;
-    }
+    auto buffer = static_cast<uint8_t*>(const_cast<void*>(inputModelData));
+    auto input = make_shared_nothrow<BaseBuffer>(buffer, static_cast<size_t>(inputModelSize), false);
+    auto compatibleBuffer = DirectCommonUtil::MakeCompatibleBuffer(input);
+    HIAI_EXPECT_NOT_NULL_R(compatibleBuffer, HIAI_FAILURE);
 
     // 申请输出内存，由builtModel释放
     std::unique_ptr<void, std::function<void(void*)>> outputData(malloc(estimatedOutputSize),
@@ -173,22 +178,22 @@ HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options
     uint32_t outputModelSize = 0;
 
     // 模型编译
-    auto ret = BuildModel(aferCompatibleBuffer, fmkType, formatOption, outputBuffer, outputModelSize);
-    if (isNeedRelease) {
-        DirectCommonUtil::DestroyBuffer(aferCompatibleBuffer);
-    }
-
+    auto ret = BuildModel(compatibleBuffer, fmkType, formatOption, outputBuffer, outputModelSize);
     if (ret != HIAI_SUCCESS || outputModelSize == 0) {
         FMK_LOGE("Build model failed.");
         return HIAI_FAILURE;
     }
 
-    std::shared_ptr<BaseBuffer> realBuffer =
-        make_shared_nothrow<BaseBuffer>(static_cast<uint8_t*>(outputBuffer->GetData()), outputModelSize);
+    std::function<void (uint8_t*)> freeFunc = [](uint8_t* p) {
+        HIAI_EXPECT_NOT_NULL_VOID(p);
+        free(p);
+    };
+    std::shared_ptr<BaseBuffer> realBuffer = make_shared_nothrow<BaseBuffer>(
+            static_cast<uint8_t*>(outputBuffer->GetData()), outputModelSize, freeFunc);
     HIAI_EXPECT_NOT_NULL(realBuffer);
 
     outputData.release();
-    *builtModel = (HIAI_BuiltModel*) new (std::nothrow) DirectBuiltModelImpl(realBuffer, modelName, true);
+    *builtModel = (HIAI_MR_BuiltModel*)new (std::nothrow) DirectBuiltModelImpl(realBuffer, modelName);
     return HIAI_SUCCESS;
 }
 } // namespace hiai

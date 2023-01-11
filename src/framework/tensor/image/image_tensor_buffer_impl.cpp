@@ -110,7 +110,7 @@ static Status InitTensorInfo(const int32_t b, const int32_t h, const int32_t w, 
 }
 
 Status ImageBufferInit(const int32_t b, const int32_t h, const int32_t w, const ImageFormat format,
-    ImageTensorBufferInfo& bufferInfo, NDTensorDesc& desc, HIAI_NDTensorBuffer** tensor)
+    ImageTensorBufferInfo& bufferInfo, NDTensorDesc& desc, HIAI_MR_NDTensorBuffer** tensor)
 {
     size_t size = 0;
     if (InitTensorInfo(b, h, w, format, bufferInfo, size) != SUCCESS) {
@@ -122,7 +122,7 @@ Status ImageBufferInit(const int32_t b, const int32_t h, const int32_t w, const 
     desc.dataType = DataType::UINT8;
     desc.format = hiai::Format::NCHW;
 
-    HIAI_NDTensorBuffer* ndTensor = CreateHIAINDTensorBuffer(desc, size, static_cast<HIAI_ImageFormat>(format));
+    HIAI_MR_NDTensorBuffer* ndTensor = CreateHIAINDTensorBuffer(desc, size, static_cast<HIAI_ImageFormat>(format));
     if (ndTensor == nullptr) {
         FMK_LOGE("ndTensor is nullptr");
         return FAILURE;
@@ -134,7 +134,7 @@ Status ImageBufferInit(const int32_t b, const int32_t h, const int32_t w, const 
 }
 
 Status ImageBufferInit(const int32_t b, const int32_t h, const int32_t w, const ImageFormat format,
-    const NativeHandle& handle, ImageTensorBufferInfo& bufferInfo, NDTensorDesc& desc, HIAI_NDTensorBuffer** tensor)
+    const NativeHandle& handle, ImageTensorBufferInfo& bufferInfo, NDTensorDesc& desc, HIAI_MR_NDTensorBuffer** tensor)
 {
     size_t size = 0;
     if (InitTensorInfo(b, h, w, format, bufferInfo, size) != SUCCESS) {
@@ -146,7 +146,7 @@ Status ImageBufferInit(const int32_t b, const int32_t h, const int32_t w, const 
     desc.dataType = DataType::UINT8;
     desc.format = hiai::Format::NCHW;
 
-    HIAI_NDTensorBuffer* ndTensor = CreateHIAINDTensorBuffer(desc, handle);
+    HIAI_MR_NDTensorBuffer* ndTensor = CreateHIAINDTensorBuffer(desc, handle);
     if (ndTensor == nullptr) {
         FMK_LOGE("ndTensor is nullptr");
         return FAILURE;

@@ -17,14 +17,14 @@
 #include "framework/infra/log/log.h"
 #include "control_c.h"
 
-HIAI_Status HIAI_ModelBuilder_Build(const HIAI_ModelBuildOptions* options, const char* modelName,
-    const void* inputModelData, size_t inputModelSize, HIAI_BuiltModel** builtModel)
+HIAI_Status HIAI_MR_ModelBuilder_Build(const HIAI_MR_ModelBuildOptions* options, const char* modelName,
+    const void* inputModelData, size_t inputModelSize, HIAI_MR_BuiltModel** builtModel)
 {
     if (!hiai::ControlC::GetInstance().CheckBuildOptions(options)) {
         FMK_LOGE("build options is error.");
         return HIAI_FAILURE;
     }
 
-    *builtModel = (HIAI_BuiltModel*)malloc(1);
+    *builtModel = (HIAI_MR_BuiltModel*)malloc(1);
     return HIAI_SUCCESS;
 }

@@ -17,15 +17,16 @@
 #ifndef FRAMEWORK_GRAH_PERSISTENCE_PROTO_PROTO_GRAPH_DEF_H
 #define FRAMEWORK_GRAH_PERSISTENCE_PROTO_PROTO_GRAPH_DEF_H
 #include "graph/persistance/interface/graph_def.h"
+#include "proto_wrapper.h"
 #include "proto_func_macro_def.h"
 
 namespace hiai {
 class ProtoGraphDef : public IGraphDef {
 public:
-    ProtoGraphDef();
-    ProtoGraphDef(hiai::proto::GraphDef* graphDef, bool isOwner = false);
+    ProtoGraphDef(hiai::proto::GraphDef& graphDef);
     ~ProtoGraphDef() override;
 
+private:
     SerializeType GetSerializeType() const override;
     void CopyFrom(const IGraphDef* other) override;
 
@@ -42,9 +43,17 @@ public:
     DEF_PROTO_PERSISTENCE_CUSTOM_MEMBER_PURE_FUNC(IAttrMapDef, attr);
 
 private:
-    hiai::proto::GraphDef* graphDef_;
-    bool isOwner_;
+    hiai::proto::GraphDef& graphDef_;
 };
+
+class DefaultProtoGraphDef : private ProtoWrapper<hiai::proto::GraphDef>, public ProtoGraphDef {
+public:
+    DefaultProtoGraphDef() : ProtoGraphDef(GetProto())
+    {
+    }
+    ~DefaultProtoGraphDef() override = default;
+};
+
 } // namespace hiai
 
 #endif

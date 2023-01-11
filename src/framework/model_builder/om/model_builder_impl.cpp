@@ -28,7 +28,7 @@
 #include "util/file_util.h"
 #include "framework/common/types.h"
 #include "model/built_model/customdata_util.h"
-#include "framework/util/model_type_util.h"
+#include "framework/model/model_type_util.h"
 #include "framework/c/hiai_model_builder.h"
 
 namespace hiai {
@@ -39,17 +39,17 @@ static Status BuildModel(const ModelBuildOptions& options, const std::string& mo
     auto buildOptions = ModelBuildOptionsUtil::ConvertToCBuildOptions(options);
     HIAI_EXPECT_NOT_NULL(buildOptions);
 
-    HIAI_BuiltModel* builtModelImpl = nullptr;
-    auto ret = HIAI_ModelBuilder_Build(
+    HIAI_MR_BuiltModel* builtModelImpl = nullptr;
+    auto ret = HIAI_MR_ModelBuilder_Build(
         buildOptions, modelName.c_str(), modelBuffer->GetData(), modelBuffer->GetSize(), &builtModelImpl);
-    HIAI_ModelBuildOptions_Destroy(&buildOptions);
+    HIAI_MR_ModelBuildOptions_Destroy(&buildOptions);
     if (ret != HIAI_SUCCESS || builtModelImpl == nullptr) {
         FMK_LOGE("build model failed.");
         return FAILURE;
     }
 
-    builtModel = make_shared_nothrow<BuiltModelImpl>(
-        std::shared_ptr<HIAI_BuiltModel>(builtModelImpl, [](HIAI_BuiltModel* p) { HIAI_BuiltModel_Destroy(&p); }),
+    builtModel = make_shared_nothrow<BuiltModelImpl>(std::shared_ptr<HIAI_MR_BuiltModel>(builtModelImpl,
+                                                         [](HIAI_MR_BuiltModel* p) { HIAI_MR_BuiltModel_Destroy(&p); }),
         std::const_pointer_cast<IBuffer>(modelBuffer));
     if (builtModel != nullptr) {
         FMK_LOGI("build model success.");

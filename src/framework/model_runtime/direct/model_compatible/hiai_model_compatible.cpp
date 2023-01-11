@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "hiai_model_compatible.h"
 #include "securec.h"
 
@@ -66,7 +65,7 @@ static std::map<std::string, std::string> notSupportedDeconvVersion = {
     {"100.320.010", "100.320.010.021"},
     {"100.320.011", "100.320.011.017"},
 };
-const std::string baltimoreC10Version = "100.500";
+const std::string hiaiVersionC10 = "100.500";
 const std::string supportExtremeVersion = "100.333";
 const std::string buildModelBaseVersion = "100.320";
 } // namespace
@@ -253,7 +252,7 @@ static HIAI_Status UnmergedWeightGraph(const OmFileLoadHelper& omFileHelper, ge:
 static bool IsNeedForwardCompatible(const std::string& version)
 {
     if (version.compare(0, ROM_VERSION_CHIP_LEN, supportExtremeVersion, 0, ROM_VERSION_CHIP_LEN) <= 0 ||
-        version.compare(0, ROM_VERSION_CHIP_LEN, baltimoreC10Version, 0, ROM_VERSION_CHIP_LEN) == 0) {
+        version.compare(0, ROM_VERSION_CHIP_LEN, hiaiVersionC10, 0, ROM_VERSION_CHIP_LEN) == 0) {
         return true;
     }
     return false;
@@ -713,13 +712,13 @@ HIAI_Status SaveModel(
 }
 
 static std::map<std::string, std::string> IR_QUANT_PRODUCT_NOUSUPPORT_VERSION = {
-    {"100.320.010", "100.320.010.023"}, // PhoenixC20 Rom版本
-    {"100.320.011", "100.320.011.019"}, // DenverC10 Rom版本
-    {"100.320.012", "100.320.012.011"}, // OrlandoC20 Rom版本
-    {"100.330.010", "100.330.010.011"}, // PhoenixC30 UX11.0 Rom版本
-    {"100.330.011", "100.330.011.011"}, // DenverC20 UX11.0 Rom版本
-    {"100.330.012", "100.330.012.011"}, // OrlandoC30 UX11.0 Rom版本
-    {"100.500.010", "100.500.010.011"}, // BaltimoreC10 UX11.0 Rom版本
+    {"100.320.010", "100.320.010.023"},
+    {"100.320.011", "100.320.011.019"},
+    {"100.320.012", "100.320.012.011"},
+    {"100.330.010", "100.330.010.011"},
+    {"100.330.011", "100.330.011.011"},
+    {"100.330.012", "100.330.012.011"},
+    {"100.500.010", "100.500.010.011"},
 };
 
 bool IsSupportQuantize(const string& romVersion)
@@ -827,7 +826,7 @@ HIAI_Status HIAI_MakeDirectCompatibleModel(const HIAI_MemBuffer* input, HIAI_Mem
     }
 
     OmFileLoadHelper omFileHelper;
-    if (omFileHelper.Init((uint8_t*)input->data + FILE_HEAD_LENGTH, input->size - FILE_HEAD_LENGTH) != hiai::SUCCESS) {
+    if (omFileHelper.Init((uint8_t*)input->data, input->size) != hiai::SUCCESS) {
         FMK_LOGE("Invalid Model Data.");
         return HIAI_FAILURE;
     }

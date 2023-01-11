@@ -25,30 +25,30 @@ extern "C" {
 #endif
 namespace hiai {
 HIAI_Status HIAI_DIRECT_BuiltModel_SaveToExternalBuffer(
-    const HIAI_BuiltModel* model, void* data, size_t size, size_t* realSize);
-HIAI_Status HIAI_DIRECT_BuiltModel_Save(const HIAI_BuiltModel* model, void** data, size_t* size);
-HIAI_Status HIAI_DIRECT_BuiltModel_SaveToFile(const HIAI_BuiltModel* model, const char* file);
+    const HIAI_MR_BuiltModel* model, void* data, size_t size, size_t* realSize);
+HIAI_Status HIAI_DIRECT_BuiltModel_Save(const HIAI_MR_BuiltModel* model, void** data, size_t* size);
+HIAI_Status HIAI_DIRECT_BuiltModel_SaveToFile(const HIAI_MR_BuiltModel* model, const char* file);
 
-HIAI_BuiltModel* HIAI_DIRECT_BuiltModel_Restore(const void* data, size_t size);
+HIAI_MR_BuiltModel* HIAI_DIRECT_BuiltModel_Restore(const void* data, size_t size);
 
-HIAI_BuiltModel* HIAI_DIRECT_BuiltModel_RestoreFromFile(const char* file);
+HIAI_MR_BuiltModel* HIAI_DIRECT_BuiltModel_RestoreFromFile(const char* file);
 
 HIAI_Status HIAI_DIRECT_BuiltModel_CheckCompatibility(
-    const HIAI_BuiltModel* model, HIAI_BuiltModel_Compatibility* compatibility);
+    const HIAI_MR_BuiltModel* model, HIAI_BuiltModel_Compatibility* compatibility);
 
-const char* HIAI_DIRECT_BuiltModel_GetName(const HIAI_BuiltModel* model);
+const char* HIAI_DIRECT_BuiltModel_GetName(const HIAI_MR_BuiltModel* model);
 
-HIAI_Status HIAI_DIRECT_BuiltModel_SetName(const HIAI_BuiltModel* model, const char* name);
+HIAI_Status HIAI_DIRECT_BuiltModel_SetName(const HIAI_MR_BuiltModel* model, const char* name);
 
-int32_t HIAI_DIRECT_BuiltModel_GetInputTensorNum(const HIAI_BuiltModel* model);
+int32_t HIAI_DIRECT_BuiltModel_GetInputTensorNum(const HIAI_MR_BuiltModel* model);
 // the return value need to destroy by HIAI_NDTensorDesc_Destroy
-HIAI_NDTensorDesc* HIAI_DIRECT_BuiltModel_GetInputTensorDesc(const HIAI_BuiltModel* model, size_t index);
+HIAI_NDTensorDesc* HIAI_DIRECT_BuiltModel_GetInputTensorDesc(const HIAI_MR_BuiltModel* model, size_t index);
 
-int32_t HIAI_DIRECT_BuiltModel_GetOutputTensorNum(const HIAI_BuiltModel* model);
+int32_t HIAI_DIRECT_BuiltModel_GetOutputTensorNum(const HIAI_MR_BuiltModel* model);
 // the return value need to destroy by HIAI_NDTensorDesc_Destroy
-HIAI_NDTensorDesc* HIAI_DIRECT_BuiltModel_GetOutputTensorDesc(const HIAI_BuiltModel* model, size_t index);
+HIAI_NDTensorDesc* HIAI_DIRECT_BuiltModel_GetOutputTensorDesc(const HIAI_MR_BuiltModel* model, size_t index);
 
-void HIAI_DIRECT_BuiltModel_Destroy(HIAI_BuiltModel** model);
+void HIAI_DIRECT_BuiltModel_Destroy(HIAI_MR_BuiltModel** model);
 } // namespace hiai
 
 #ifdef __cplusplus

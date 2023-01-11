@@ -44,10 +44,10 @@ public:
     HIAI_Status GetExpectStatus(CKey key);
     void SetExpectStatus(CKey key, HIAI_Status expectStatus = HIAI_FAILURE, int witchTimeError = -1);
     void SetBuildOptions(ModelBuildOptions& buildOptions);
-    bool CheckBuildOptions(const HIAI_ModelBuildOptions* options);
+    bool CheckBuildOptions(const HIAI_MR_ModelBuildOptions* options);
 
     void SetInitOptions(ModelInitOptions& initOptions);
-    bool CheckInitOptions(const HIAI_ModelInitOptions* options);
+    bool CheckInitOptions(const HIAI_MR_ModelInitOptions* options);
 
     void ChangeNowTimes();
     int GetNowTime();

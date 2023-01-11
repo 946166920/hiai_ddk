@@ -18,7 +18,7 @@
 #include "securec.h"
 #include "framework/infra/log/log.h"
 #include "framework/c/hiai_built_model_aipp.h"
-#include "framework/util/base_buffer.h"
+#include "infra/base/base_buffer.h"
 #include "util/file_util.h"
 // src/framework/inc
 #include "infra/base/assertion.h"
@@ -121,7 +121,7 @@ std::shared_ptr<IBuffer> SplitCustomData(const std::shared_ptr<IBuffer>& buffer,
 {
     size_t modelDataOffset = strlen(CUST_DATA_TAG) + sizeof(int32_t);
 
-    int customDataTypeLen;
+    int32_t customDataTypeLen;
     HIAI_EXPECT_TRUE_R(CheckOffsetValid(buffer, modelDataOffset + sizeof(int32_t)), nullptr);
 
     if (memcpy_s(&customDataTypeLen, sizeof(int32_t),
@@ -138,9 +138,9 @@ std::shared_ptr<IBuffer> SplitCustomData(const std::shared_ptr<IBuffer>& buffer,
     std::string type((reinterpret_cast<char*>(buffer->GetData()) + modelDataOffset), customDataTypeLen);
     customModelData.type = type;
 
-    modelDataOffset += static_cast<size_t>(customDataTypeLen);
+    modelDataOffset += static_cast<size_t>(static_cast<uint32_t>(customDataTypeLen));
 
-    int customDataValueLen;
+    int32_t customDataValueLen;
     if (!CheckOffsetValid(buffer, modelDataOffset + sizeof(int32_t))) {
         return nullptr;
     }
@@ -152,12 +152,13 @@ std::shared_ptr<IBuffer> SplitCustomData(const std::shared_ptr<IBuffer>& buffer,
     modelDataOffset += sizeof(int32_t);
 
     HIAI_EXPECT_TRUE_R(customDataValueLen > 0, nullptr);
-    HIAI_EXPECT_TRUE_R(CheckOffsetValid(buffer, modelDataOffset + static_cast<size_t>(customDataValueLen)), nullptr);
+    HIAI_EXPECT_TRUE_R(CheckOffsetValid(
+        buffer, modelDataOffset + static_cast<size_t>(static_cast<uint32_t>(customDataValueLen))), nullptr);
 
     std::string value((reinterpret_cast<char*>(buffer->GetData()) + modelDataOffset), customDataValueLen);
     customModelData.value = value;
 
-    modelDataOffset += static_cast<size_t>(customDataValueLen);
+    modelDataOffset += static_cast<size_t>(static_cast<uint32_t>(customDataValueLen));
 
     size_t modelDataSize = buffer->GetSize() - modelDataOffset;
     HIAI_EXPECT_TRUE_R(modelDataSize > 0, nullptr);

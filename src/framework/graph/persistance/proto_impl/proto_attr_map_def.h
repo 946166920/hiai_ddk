@@ -16,7 +16,6 @@
 
 #ifndef FRAMEWORK_GRAH_PERSISTENCE_PROTO_PROTO_ATTR_MAP_DEF_H
 #define FRAMEWORK_GRAH_PERSISTENCE_PROTO_PROTO_ATTR_MAP_DEF_H
-#include "proto_func_macro_def.h"
 #include "proto_attr_def.h"
 #include "graph/persistance/interface/attr_map_def.h"
 
@@ -32,25 +31,32 @@ namespace hiai {
 namespace proto {
 class AttrDef;
 }
-} // namespace ge
+} // namespace hiai
 
 namespace hiai {
 using ProtoMap = ::google::protobuf::Map<::std::string, ::hiai::proto::AttrDef>;
 
 class ProtoAttrMapDef : public IAttrMapDef {
 public:
-    ProtoAttrMapDef();
-    ProtoAttrMapDef(ProtoMap* attrMapDef, bool isOwner = false);
+    ProtoAttrMapDef(ProtoMap& attrMapDef);
     ~ProtoAttrMapDef() override;
 
+private:
     void CopyFrom(const IAttrMapDef* other) override;
     SerializeType GetSerializeType() const override;
 
     DEF_PROTO_PERSISTENCE_CUSTOM_MAP_MEMBER_PURE_FUNC(std::string, IAttrDef, attr);
 
 private:
-    ProtoMap* attrMapDef_;
-    bool isOwner_;
+    ProtoMap& attrMapDef_;
+};
+
+class DefaultProtoAttrMapDef : private ProtoWrapper<ProtoMap>, public ProtoAttrMapDef {
+public:
+    DefaultProtoAttrMapDef() : ProtoAttrMapDef(GetProto())
+    {
+    }
+    ~DefaultProtoAttrMapDef() override = default;
 };
 
 } // namespace hiai

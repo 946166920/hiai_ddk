@@ -17,12 +17,12 @@
 #include "hiai_model_manager_impl.h"
 #include "framework/infra/log/log.h"
 
-typedef HIAI_Status (*HIAI_ModelManager_runAippModelV2_Ptr)(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[],
-    int32_t inputNum, HIAI_TensorAippPara* aippPara[], int32_t aippParaNum, HIAI_NDTensorBuffer* output[],
-    int32_t outputNum, int32_t timeoutInMS, void* userData);
-HIAI_Status HIAI_ModelManager_runAippModelV2(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[], int32_t inputNum,
-    HIAI_TensorAippPara* aippPara[], int32_t aippParaNum, HIAI_NDTensorBuffer* output[], int32_t outputNum,
-    int32_t timeoutInMS, void* userData)
+typedef HIAI_Status (*HIAI_ModelManager_runAippModelV2_Ptr)(HIAI_MR_ModelManager* manager,
+    HIAI_MR_NDTensorBuffer* input[], int32_t inputNum, HIAI_MR_TensorAippPara* aippPara[], int32_t aippParaNum,
+    HIAI_MR_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData);
+HIAI_Status HIAI_MR_ModelManager_runAippModelV2(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_TensorAippPara* aippPara[], int32_t aippParaNum, HIAI_MR_NDTensorBuffer* output[],
+    int32_t outputNum, int32_t timeoutInMS, void* userData)
 {
     HIAI_ModelManager_Impl* managerImpl = HIAI_ModelManager_ToModelManagerImpl(manager);
     if (managerImpl == NULL) {

@@ -37,9 +37,9 @@ void HIAI_NDTensorBuffer_ReleaseTensorBuffer(HIAI_TensorBuffer** buffer)
     *buffer = nullptr;
 }
 
-void HIAI_NDTensorBuffer_ReleaseNDTensorBuffer(HIAI_NDTensorBuffer** buffer)
+void HIAI_NDTensorBuffer_ReleaseNDTensorBuffer(HIAI_MR_NDTensorBuffer** buffer)
 {
-    auto releaseFunc = (void (*)(HIAI_NDTensorBuffer**))HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_Destroy");
+    auto releaseFunc = (void (*)(HIAI_MR_NDTensorBuffer**))HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_Destroy");
     if (releaseFunc == nullptr) {
         FMK_LOGE("sym not found.");
         return;
@@ -70,7 +70,7 @@ static int32_t HIAI_NDTensorBuffer_GetSizeFromTensorBuffer(HIAI_TensorBuffer* bu
     return getSizeFunc(buffer);
 }
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromTensorBuffer(
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromTensorBuffer(
     const HIAI_NDTensorDesc* desc, HIAI_TensorBuffer* buffer)
 {
     if (buffer == nullptr) {
@@ -84,12 +84,12 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromTensorBuffer(
     }
     void* data = HIAI_NDTensorBuffer_GetDataFromTensorBuffer(buffer);
 
-    return HIAI_NDTensorBuffer_Create(desc, data, static_cast<size_t>(size), static_cast<void*>(buffer), true, true);
+    return HIAI_MR_NDTensorBuffer_Create(desc, data, static_cast<size_t>(size), static_cast<void*>(buffer), true, true);
 }
 
-void* HIAI_NDTensorBuffer_GetDataFromNDTensorBuffer(HIAI_NDTensorBuffer* buffer)
+void* HIAI_NDTensorBuffer_GetDataFromNDTensorBuffer(HIAI_MR_NDTensorBuffer* buffer)
 {
-    auto getDataFunc = (void* (*)(HIAI_NDTensorBuffer*))HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_GetData");
+    auto getDataFunc = (void* (*)(HIAI_MR_NDTensorBuffer*))HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_GetData");
     if (getDataFunc == nullptr) {
         FMK_LOGE("sym not found.");
         return nullptr;
@@ -98,9 +98,9 @@ void* HIAI_NDTensorBuffer_GetDataFromNDTensorBuffer(HIAI_NDTensorBuffer* buffer)
     return getDataFunc(buffer);
 }
 
-size_t HIAI_NDTensorBuffer_GetSizeFromNDTensorBuffer(HIAI_NDTensorBuffer* buffer)
+size_t HIAI_NDTensorBuffer_GetSizeFromNDTensorBuffer(HIAI_MR_NDTensorBuffer* buffer)
 {
-    auto getSizeFunc = (size_t(*)(HIAI_NDTensorBuffer*))HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_GetSize");
+    auto getSizeFunc = (size_t(*)(HIAI_MR_NDTensorBuffer*))HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_GetSize");
     if (getSizeFunc == nullptr) {
         FMK_LOGE("sym not found.");
         return 0;
@@ -109,8 +109,8 @@ size_t HIAI_NDTensorBuffer_GetSizeFromNDTensorBuffer(HIAI_NDTensorBuffer* buffer
     return getSizeFunc(buffer);
 }
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(
-    const HIAI_NDTensorDesc* desc, HIAI_NDTensorBuffer* buffer)
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(
+    const HIAI_NDTensorDesc* desc, HIAI_MR_NDTensorBuffer* buffer)
 {
     if (buffer == nullptr) {
         FMK_LOGE("buffer is nullptr.");
@@ -123,10 +123,10 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(
     }
     void* data = HIAI_NDTensorBuffer_GetDataFromNDTensorBuffer(buffer);
 
-    return HIAI_NDTensorBuffer_Create(desc, data, size, static_cast<void*>(buffer), true, false);
+    return HIAI_MR_NDTensorBuffer_Create(desc, data, size, static_cast<void*>(buffer), true, false);
 }
 
-static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferWithFormat(
+static HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferWithFormat(
     const HIAI_NDTensorDesc* desc, HIAI_ImageFormat format, void* createFun)
 {
     int32_t dims[] = {1, 1, 1, 1};
@@ -140,39 +140,40 @@ static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferWithFormat(
     HIAI_TensorBuffer* buffer =
         ((HIAI_TensorBuffer* (*)(int, int, int, HIAI_ImageFormat)) createFun)(dims[0], dims[2], dims[3], format);
 
-    HIAI_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromTensorBuffer(desc, buffer);
+    HIAI_MR_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromTensorBuffer(desc, buffer);
     if (ndBuffer == nullptr) {
         HIAI_NDTensorBuffer_ReleaseTensorBuffer(&buffer);
     }
     return ndBuffer;
 }
 
-static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferWithFormatV3(
+static HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferWithFormatV3(
     const HIAI_NDTensorDesc* desc, const HIAI_ImageFormat format, void* createFun)
 {
-    HIAI_NDTensorBuffer* buffer =
-        ((HIAI_NDTensorBuffer* (*)(const HIAI_NDTensorDesc*, HIAI_ImageFormat)) createFun)(desc, format);
+    HIAI_MR_NDTensorBuffer* buffer =
+        ((HIAI_MR_NDTensorBuffer* (*)(const HIAI_NDTensorDesc*, HIAI_ImageFormat)) createFun)(desc, format);
 
-    HIAI_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(desc, buffer);
+    HIAI_MR_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(desc, buffer);
     if (ndBuffer == nullptr) {
         HIAI_NDTensorBuffer_ReleaseNDTensorBuffer(&buffer);
     }
     return ndBuffer;
 }
 
-static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedNDBufferWithSize(
+static HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedNDBufferWithSize(
     const HIAI_NDTensorDesc* desc, size_t size, void* createFun)
 {
-    HIAI_NDTensorBuffer* buffer = ((HIAI_NDTensorBuffer* (*)(const HIAI_NDTensorDesc*, size_t)) createFun)(desc, size);
+    HIAI_MR_NDTensorBuffer* buffer =
+        ((HIAI_MR_NDTensorBuffer* (*)(const HIAI_NDTensorDesc*, size_t)) createFun)(desc, size);
 
-    HIAI_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(desc, buffer);
+    HIAI_MR_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(desc, buffer);
     if (ndBuffer == nullptr) {
         HIAI_NDTensorBuffer_ReleaseNDTensorBuffer(&buffer);
     }
     return ndBuffer;
 }
 
-static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferWithSize(
+static HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferWithSize(
     const HIAI_NDTensorDesc* desc, size_t size, void* createFun)
 {
     int32_t dims[] = {1, 1, 1, 1};
@@ -188,27 +189,25 @@ static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferWithSize(
     HIAI_TensorBuffer* buffer =
         ((HIAI_TensorBuffer* (*)(int, int, int, int, int)) createFun)(dims[0], dims[1], dims[2], dims[3], size);
 
-    HIAI_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromTensorBuffer(desc, buffer);
+    HIAI_MR_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromTensorBuffer(desc, buffer);
     if (ndBuffer == nullptr) {
         HIAI_NDTensorBuffer_ReleaseTensorBuffer(&buffer);
     }
     return ndBuffer;
 }
 
-static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferV3(
-    const HIAI_NDTensorDesc* desc, void* createFun)
+static HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferV3(const HIAI_NDTensorDesc* desc, void* createFun)
 {
-    HIAI_NDTensorBuffer* buffer = ((HIAI_NDTensorBuffer* (*)(const HIAI_NDTensorDesc*)) createFun)(desc);
+    HIAI_MR_NDTensorBuffer* buffer = ((HIAI_MR_NDTensorBuffer* (*)(const HIAI_NDTensorDesc*)) createFun)(desc);
 
-    HIAI_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(desc, buffer);
+    HIAI_MR_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(desc, buffer);
     if (ndBuffer == nullptr) {
         HIAI_NDTensorBuffer_ReleaseNDTensorBuffer(&buffer);
     }
     return ndBuffer;
 }
 
-static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferV2(
-    const HIAI_NDTensorDesc* desc, void* createFun)
+static HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferV2(const HIAI_NDTensorDesc* desc, void* createFun)
 {
     size_t totalByteSize = HIAI_NDTensorDesc_GetByteSize(desc);
     if (totalByteSize == 0) {
@@ -219,7 +218,7 @@ static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBufferV2(
     return HIAI_NDTensorBuffer_CreateSharedBufferWithSize(desc, totalByteSize, createFun);
 }
 
-static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBuffer(const HIAI_NDTensorDesc* desc, void* createFun)
+static HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBuffer(const HIAI_NDTensorDesc* desc, void* createFun)
 {
     if (HIAI_NDTensorDesc_GetDimNum(desc) != NCHW_DIM_NUM) {
         FMK_LOGE("only supoort 4 dims.");
@@ -234,14 +233,14 @@ static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBuffer(const HIAI_ND
     HIAI_TensorBuffer* buffer =
         ((HIAI_TensorBuffer* (*)(int, int, int, int)) createFun)(dims[0], dims[1], dims[2], dims[3]);
 
-    HIAI_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromTensorBuffer(desc, buffer);
+    HIAI_MR_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromTensorBuffer(desc, buffer);
     if (ndBuffer == nullptr) {
         HIAI_NDTensorBuffer_ReleaseTensorBuffer(&buffer);
     }
     return ndBuffer;
 }
 
-static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBuffer_WithDataType(
+static HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBuffer_WithDataType(
     const HIAI_NDTensorDesc* desc, void* createFun)
 {
     if (HIAI_NDTensorDesc_GetDimNum(desc) != NCHW_DIM_NUM) {
@@ -257,16 +256,16 @@ static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateSharedBuffer_WithDataType(
     HIAI_TensorBuffer* buffer = ((HIAI_TensorBuffer* (*)(int, int, int, int, HIAI_DataType)) createFun)(
         dims[0], dims[1], dims[2], dims[3], HIAI_NDTensorDesc_GetDataType(desc));
 
-    HIAI_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromTensorBuffer(desc, buffer);
+    HIAI_MR_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromTensorBuffer(desc, buffer);
     if (ndBuffer == nullptr) {
         HIAI_NDTensorBuffer_ReleaseTensorBuffer(&buffer);
     }
     return ndBuffer;
 }
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNDTensorDescLegacy(const HIAI_NDTensorDesc* desc)
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNDTensorDescLegacy(const HIAI_NDTensorDesc* desc)
 {
-    HIAI_NDTensorBuffer* buffer = nullptr;
+    HIAI_MR_NDTensorBuffer* buffer = nullptr;
     void* createV3Func = HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_CreateFromNDTensorDesc");
     if (createV3Func != nullptr) {
         return HIAI_NDTensorBuffer_CreateSharedBufferV3(desc, createV3Func);
@@ -299,7 +298,7 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNDTensorDescLegacy(const HIAI
     return nullptr;
 }
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromSizeLegacy(const HIAI_NDTensorDesc* desc, size_t size)
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromSizeLegacy(const HIAI_NDTensorDesc* desc, size_t size)
 {
     void* createV3Func = HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_CreateFromSize");
     if (createV3Func != nullptr) {
@@ -314,10 +313,10 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromSizeLegacy(const HIAI_NDTenso
     return nullptr;
 }
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromFormatLegacy(
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromFormatLegacy(
     const HIAI_NDTensorDesc* desc, size_t size, HIAI_ImageFormat format)
 {
-    HIAI_NDTensorBuffer* buffer = nullptr;
+    HIAI_MR_NDTensorBuffer* buffer = nullptr;
     void* createNDImageFunc = HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_CreateFromFormat");
     if (createNDImageFunc != nullptr) {
         buffer = HIAI_NDTensorBuffer_CreateSharedBufferWithFormatV3(desc, format, createNDImageFunc);
@@ -350,7 +349,7 @@ static int32_t HIAI_NDTensorBuffer_GetFdV3(void* buffer)
         return -1;
     }
 
-    int32_t fd = ((int32_t(*)(const HIAI_NDTensorBuffer*))getFdFunc)((const HIAI_NDTensorBuffer*)buffer);
+    int32_t fd = ((int32_t(*)(const HIAI_MR_NDTensorBuffer*))getFdFunc)((const HIAI_MR_NDTensorBuffer*)buffer);
     if (fd < 0) {
         FMK_LOGE("Get nd Fd failed. fd:[%d]", fd);
         return -1;
@@ -396,7 +395,7 @@ static int32_t HIAI_NDTensorBuffer_GetOriginFdV3(void* buffer)
         return -1;
     }
 
-    int32_t fd = ((int32_t(*)(const HIAI_NDTensorBuffer*))getOriginFdFunc)((const HIAI_NDTensorBuffer*)buffer);
+    int32_t fd = ((int32_t(*)(const HIAI_MR_NDTensorBuffer*))getOriginFdFunc)((const HIAI_MR_NDTensorBuffer*)buffer);
     if (fd < 0) {
         FMK_LOGW("Get origin fd failed. fd:[%d]", fd);
         return -1;
@@ -438,6 +437,6 @@ void HIAI_NDTensorBuffer_DestroyLegacy(void* buffer, bool isLegacy)
     if (isLegacy) {
         HIAI_NDTensorBuffer_ReleaseTensorBuffer(reinterpret_cast<HIAI_TensorBuffer**>(&buffer));
     } else {
-        HIAI_NDTensorBuffer_ReleaseNDTensorBuffer(reinterpret_cast<HIAI_NDTensorBuffer**>(&buffer));
+        HIAI_NDTensorBuffer_ReleaseNDTensorBuffer(reinterpret_cast<HIAI_MR_NDTensorBuffer**>(&buffer));
     }
 }

@@ -26,8 +26,8 @@ extern "C" {
 
 namespace hiai {
 // build interface
-HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_ModelBuildOptions* options, const char* modelName,
-    const void* inputModelData, size_t inputModelSize, HIAI_BuiltModel** builtModel);
+HIAI_Status HIAI_DIRECT_ModelBuilder_Build(const HIAI_MR_ModelBuildOptions* options, const char* modelName,
+    const void* inputModelData, size_t inputModelSize, HIAI_MR_BuiltModel** builtModel);
 } // namespace hiai
 #ifdef __cplusplus
 }

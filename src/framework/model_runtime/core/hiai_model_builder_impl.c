@@ -17,16 +17,16 @@
 #include "hiai_built_model_impl.h"
 #include "framework/infra/log/log.h"
 
-typedef HIAI_Status (*HIAI_ModelBuilder_Build_Ptr)(const HIAI_ModelBuildOptions* options, const char* modelName,
-    const void* inputModelData, size_t inputModelSize, HIAI_BuiltModel** builtModel);
+typedef HIAI_Status (*HIAI_ModelBuilder_Build_Ptr)(const HIAI_MR_ModelBuildOptions* options, const char* modelName,
+    const void* inputModelData, size_t inputModelSize, HIAI_MR_BuiltModel** builtModel);
 
-HIAI_BuiltModel_Impl* HIAI_ModelBuilder_BuildOnRuntime(const HIAI_ModelBuildOptions* options, const char* modelName,
+HIAI_BuiltModel_Impl* HIAI_ModelBuilder_BuildOnRuntime(const HIAI_MR_ModelBuildOptions* options, const char* modelName,
     const void* inputModelData, size_t inputModelSize, HIAI_ModelRuntime* runtime)
 {
     if (runtime == NULL) {
         return NULL;
     }
-    HIAI_BuiltModel* builtModel = NULL;
+    HIAI_MR_BuiltModel* builtModel = NULL;
 
     HIAI_ModelBuilder_Build_Ptr buildV2Func =
         (HIAI_ModelBuilder_Build_Ptr)runtime->symbolList[HRANI_MODELBUILDER_BUILDV2];

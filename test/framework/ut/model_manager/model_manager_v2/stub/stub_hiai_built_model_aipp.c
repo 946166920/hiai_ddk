@@ -15,14 +15,39 @@
  */
 #include "framework/c/hiai_built_model_aipp.h"
 
-HIAI_Status HIAI_BuiltModel_GetTensorAippInfo(
-    const HIAI_BuiltModel* model, int32_t index, uint32_t* aippParaNum, uint32_t* batchCount)
+struct HIAI_TensorAippPara {
+    size_t size;
+    void* data;
+    void* handle;
+};
+
+HIAI_Status HIAI_MR_BuiltModel_GetTensorAippInfo(
+    const HIAI_MR_BuiltModel* model, int32_t index, uint32_t* aippParaNum, uint32_t* batchCount)
 {
+    if (model == NULL || aippParaNum == NULL || batchCount == NULL) {
+        return HIAI_FAILURE;
+    }
+    *aippParaNum = 2; /* 2:AippParaNum打桩 */
+    *batchCount = 1;
+
     return HIAI_SUCCESS;
 }
 
-HIAI_Status HIAI_BuiltModel_GetTensorAippPara(const HIAI_BuiltModel* model, int32_t index,
-    HIAI_TensorAippPara* aippParas[], uint32_t aippParaNum, uint32_t batchCount)
+HIAI_Status HIAI_MR_BuiltModel_GetTensorAippPara(const HIAI_MR_BuiltModel* model, int32_t index,
+    HIAI_MR_TensorAippPara* aippParas[], uint32_t aippParaNum, uint32_t batchCount)
 {
+    uint32_t getAippNum = 0;
+    uint32_t getbatchCount = 0;
+    HIAI_Status ret = HIAI_MR_BuiltModel_GetTensorAippInfo(model, index, &getAippNum, &getbatchCount);
+    if (ret != HIAI_SUCCESS || getAippNum != aippParaNum || getbatchCount != batchCount) {
+        return HIAI_FAILURE;
+    }
+
+    for (uint32_t i = 0; i < aippParaNum; i++) {
+        aippParas[i] = HIAI_MR_TensorAippPara_Create(batchCount);
+        if (aippParas[i] == NULL) {
+            return HIAI_FAILURE;
+        }
+    }
     return HIAI_SUCCESS;
 }

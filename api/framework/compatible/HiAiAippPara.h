@@ -252,6 +252,7 @@ public:
     AippDtcPara GetDtcPara(uint32_t batchIndex);
 
     std::shared_ptr<IAIPPPara> GetAIPPPara();
+    void SetAIPPPara(std::shared_ptr<IAIPPPara>& para);
 
 private:
     std::shared_ptr<IAIPPPara> aippParaBase_;

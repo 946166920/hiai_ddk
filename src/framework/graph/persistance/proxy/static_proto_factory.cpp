@@ -49,7 +49,7 @@ void ProtoFactory::DestroyModelDef(IModelDef* modelDef)
 
 IGraphDef* ProtoFactory::CreateGraphDef()
 {
-    return new (std::nothrow) ProtoGraphDef();
+    return new (std::nothrow) DefaultProtoGraphDef();
 }
 
 void ProtoFactory::DestroyGraphDef(IGraphDef* graphDef)
@@ -59,7 +59,7 @@ void ProtoFactory::DestroyGraphDef(IGraphDef* graphDef)
 
 IOpDef* ProtoFactory::CreateOpDef()
 {
-    return new (std::nothrow) ProtoOpDef();
+    return new (std::nothrow) DefaultProtoOpDef();
 }
 
 void ProtoFactory::DestroyOpDef(IOpDef* opDef)
@@ -69,7 +69,7 @@ void ProtoFactory::DestroyOpDef(IOpDef* opDef)
 
 ITensorDescDef* ProtoFactory::CreateTensorDescDef()
 {
-    return new (std::nothrow) ProtoTensorDescDef();
+    return new (std::nothrow) DefaultProtoTensorDescDef();
 }
 
 void ProtoFactory::DestroyTensorDescDef(ITensorDescDef* tensorDescDef)
@@ -79,7 +79,7 @@ void ProtoFactory::DestroyTensorDescDef(ITensorDescDef* tensorDescDef)
 
 ITensorDef* ProtoFactory::CreateTensorDef()
 {
-    return new (std::nothrow) ProtoTensorDef();
+    return new (std::nothrow) DefaultProtoTensorDef();
 }
 
 void ProtoFactory::DestroyTensorDef(ITensorDef* tensorDef)
@@ -89,7 +89,7 @@ void ProtoFactory::DestroyTensorDef(ITensorDef* tensorDef)
 
 IShapeDef* ProtoFactory::CreateShapeDef()
 {
-    return new (std::nothrow) ProtoShapeDef();
+    return new (std::nothrow) DefaultProtoShapeDef();
 }
 
 void ProtoFactory::DestroyShapeDef(IShapeDef* shapeDef)
@@ -99,7 +99,7 @@ void ProtoFactory::DestroyShapeDef(IShapeDef* shapeDef)
 
 IAttrDef* ProtoFactory::CreateAttrDef()
 {
-    return new (std::nothrow) ProtoAttrDef();
+    return new (std::nothrow) DefaultProtoAttrDef();
 }
 
 void ProtoFactory::DestroyAttrDef(IAttrDef* attrDef)
@@ -109,7 +109,7 @@ void ProtoFactory::DestroyAttrDef(IAttrDef* attrDef)
 
 IAttrMapDef* ProtoFactory::CreateAttrMapDef()
 {
-    return new (std::nothrow) ProtoAttrMapDef();
+    return new (std::nothrow) DefaultProtoAttrMapDef();
 }
 
 void ProtoFactory::DestroyAttrMapDef(IAttrMapDef* attrMapDef)
@@ -119,7 +119,7 @@ void ProtoFactory::DestroyAttrMapDef(IAttrMapDef* attrMapDef)
 
 INamedAttrDef* ProtoFactory::CreateNamedAttrDef()
 {
-    return new (std::nothrow) ProtoNamedAttrDef();
+    return new (std::nothrow) DefaultProtoNamedAttrDef();
 }
 
 void ProtoFactory::DestroyNamedAttrDef(INamedAttrDef* namedDef)

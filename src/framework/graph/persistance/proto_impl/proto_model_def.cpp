@@ -33,16 +33,14 @@
 #include "framework/graph/debug/ge_graph_attr_define.h"
 
 namespace hiai {
-ProtoModelDef::ProtoModelDef() : modelDef_(new (std::nothrow) hiai::proto::ModelDef())
+ProtoModelDef::ProtoModelDef()
 {
-    if (modelDef_ != nullptr) {
-        auto attrMap = modelDef_->mutable_attr();
-        if (attrMap != nullptr) {
-            (*attrMap)[hiai::ATTR_MODEL_MEMORY_SIZE].set_i(0);
-            (*attrMap)[hiai::ATTR_MODEL_STREAM_NUM].set_i(0);
-            (*attrMap)[hiai::ATTR_MODEL_EVENT_NUM].set_i(0);
-            (*attrMap)[hiai::ATTR_MODEL_WEIGHT_SIZE].set_i(0);
-        }
+    auto attrMap = modelDef_.mutable_attr();
+    if (attrMap != nullptr) {
+        (*attrMap)[hiai::ATTR_MODEL_MEMORY_SIZE].set_i(0);
+        (*attrMap)[hiai::ATTR_MODEL_STREAM_NUM].set_i(0);
+        (*attrMap)[hiai::ATTR_MODEL_EVENT_NUM].set_i(0);
+        (*attrMap)[hiai::ATTR_MODEL_WEIGHT_SIZE].set_i(0);
     }
 }
 
@@ -50,9 +48,6 @@ ProtoModelDef::~ProtoModelDef()
 {
     IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(graph);
     IMPL_PROTO_CUSTOM_MEMBER_FREE(attr);
-
-    delete modelDef_;
-    modelDef_ = nullptr;
 }
 
 SerializeType ProtoModelDef::GetSerializeType() const
@@ -62,13 +57,13 @@ SerializeType ProtoModelDef::GetSerializeType() const
 
 bool ProtoModelDef::LoadFrom(const uint8_t* data, size_t len)
 {
-    if (data == nullptr || len == 0 || modelDef_ == nullptr || len > INT_MAX) {
+    if (data == nullptr || len == 0 || len > INT_MAX) {
         return false;
     }
     google::protobuf::io::CodedInputStream coded_stream(data, len);
     coded_stream.SetTotalBytesLimit(INT32_MAX);
 
-    return modelDef_->ParseFromCodedStream(&coded_stream);
+    return modelDef_.ParseFromCodedStream(&coded_stream);
 }
 
 bool ProtoModelDef::SaveTo(uint8_t* data, size_t len) const
@@ -76,32 +71,25 @@ bool ProtoModelDef::SaveTo(uint8_t* data, size_t len) const
     if (len > INT_MAX) {
         return false;
     }
-    if (modelDef_ != nullptr) {
-        return modelDef_->SerializeToArray(data, len);
-    }
-    return false;
+    return modelDef_.SerializeToArray(data, len);
 }
 
 size_t ProtoModelDef::GetModelDefSize() const
 {
-    if (modelDef_ == nullptr) {
-        return 0;
-    }
 #if GOOGLE_PROTOBUF_VERSION < 3013000
-    return modelDef_->ByteSize();
+    return modelDef_.ByteSize();
 #else
-    return modelDef_->ByteSizeLong();
+    return modelDef_.ByteSizeLong();
 #endif
 }
 
 bool ProtoModelDef::Dump(const std::string& file) const
 {
-    (void)file;
-#if defined(GRAPH_HOST) || defined(GRAPH_DEVICE)
     char path[PATH_MAX + 1] = {0x00};
     if (file.size() > PATH_MAX || realpath(file.c_str(), path) == nullptr) {
         return false;
     }
+#if defined(GRAPH_HOST) || defined(GRAPH_DEVICE)
     int fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (fd < 0) {
         return false;
@@ -111,7 +99,7 @@ bool ProtoModelDef::Dump(const std::string& file) const
         close(fd);
         return false;
     }
-    google::protobuf::TextFormat::Print(*modelDef_, output);
+    google::protobuf::TextFormat::Print(modelDef_, output);
     delete output;
     close(fd);
     return true;

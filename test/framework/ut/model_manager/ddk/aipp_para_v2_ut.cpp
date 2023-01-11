@@ -36,7 +36,7 @@ static const AIStatus AI_INVALID_API = 7;
 static const AIStatus AI_INVALID_POINTER = 8;
 
 class AippPara_v2_ut : public testing::Test {
-public:
+protected:
     static void SetUpTestCase()
     {
         std::cout << __func__ << std::endl;
@@ -65,6 +65,7 @@ public:
         aippPara_ = CreateAIPPPara(batchCount);
     }
 
+private:
     std::shared_ptr<IAIPPPara> aippPara_ = nullptr;
 };
 

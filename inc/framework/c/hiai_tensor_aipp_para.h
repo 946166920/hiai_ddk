@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-typedef struct HIAI_TensorAippBatchPara {
+typedef struct HIAI_MR_TensorAippBatchPara {
     int8_t cropSwitch; // crop switch
     int8_t scfSwitch; // resize switch
     int8_t paddingSwitch; // 0: unable padding, 1: padding config value,sfr_filling_hblank_ch0 sfr_filling_hblank_ch2
@@ -59,9 +59,9 @@ typedef struct HIAI_TensorAippBatchPara {
     uint16_t paddingValueChn2; // padding value of channle 2
     uint16_t paddingValueChn3; // padding value of channle 3
     int8_t reserve1[8]; // 8B assign, for ub copy
-} HIAI_TensorAippBatchPara;
+} HIAI_MR_TensorAippBatchPara;
 
-typedef struct HIAI_TensorAippCommPara {
+typedef struct HIAI_MR_TensorAippCommPara {
     uint8_t inputFormat; // input format YUV420SP_U8/XRGB8888_U8/RGB888_U8
     int8_t cscSwitch; // csc switch
     int8_t rbuvSwapSwitch; // rb/ub swap switch
@@ -88,26 +88,28 @@ typedef struct HIAI_TensorAippCommPara {
     uint8_t cscInputBiasR2; // input Bias for YUV to RGB, element of row 2, unsigned number
     uint8_t reserve3[2];
     int8_t reserve4[16];
-    HIAI_TensorAippBatchPara aippBatchPara[0]; // allow transfer several batch para.
-} HIAI_TensorAippCommPara;
+    HIAI_MR_TensorAippBatchPara aippBatchPara[0]; // allow transfer several batch para.
+} HIAI_MR_TensorAippCommPara;
 
-typedef struct HIAI_TensorAippPara HIAI_TensorAippPara;
+typedef struct HIAI_MR_TensorAippPara HIAI_MR_TensorAippPara;
 
-AICP_C_API_EXPORT HIAI_TensorAippPara* HIAI_TensorAippPara_Create(uint32_t batchNum);
-AICP_C_API_EXPORT HIAI_TensorAippPara* HIAI_TensorAippPara_CreateWithHandle(void* data, size_t size, void* handle);
+AICP_C_API_EXPORT HIAI_MR_TensorAippPara* HIAI_MR_TensorAippPara_Create(uint32_t batchNum);
+AICP_C_API_EXPORT HIAI_MR_TensorAippPara* HIAI_MR_TensorAippPara_CreateWithHandle(
+    void* data, size_t size, void* handle);
 
-AICP_C_API_EXPORT void* HIAI_TensorAippPara_GetRawBuffer(HIAI_TensorAippPara* tensorAippPara);
-AICP_C_API_EXPORT int32_t HIAI_TensorAippPara_GetRawBufferSize(HIAI_TensorAippPara* tensorAippPara);
-AICP_C_API_EXPORT void* HIAI_TensorAippPara_GetHandle(HIAI_TensorAippPara* tensorAippPara);
+AICP_C_API_EXPORT void* HIAI_MR_TensorAippPara_GetRawBuffer(HIAI_MR_TensorAippPara* tensorAippPara);
+AICP_C_API_EXPORT int32_t HIAI_MR_TensorAippPara_GetRawBufferSize(HIAI_MR_TensorAippPara* tensorAippPara);
+AICP_C_API_EXPORT void* HIAI_MR_TensorAippPara_GetHandle(HIAI_MR_TensorAippPara* tensorAippPara);
 
-AICP_C_API_EXPORT int32_t HIAI_TensorAippPara_GetInputIndex(HIAI_TensorAippPara* tensorAippPara);
-AICP_C_API_EXPORT void HIAI_TensorAippPara_SetInputIndex(HIAI_TensorAippPara* tensorAippPara, uint32_t inputIndex);
+AICP_C_API_EXPORT int32_t HIAI_MR_TensorAippPara_GetInputIndex(HIAI_MR_TensorAippPara* tensorAippPara);
+AICP_C_API_EXPORT void HIAI_MR_TensorAippPara_SetInputIndex(
+    HIAI_MR_TensorAippPara* tensorAippPara, uint32_t inputIndex);
 
-AICP_C_API_EXPORT int32_t HIAI_TensorAippPara_GetInputAippIndex(HIAI_TensorAippPara* tensorAippPara);
-AICP_C_API_EXPORT void HIAI_TensorAippPara_SetInputAippIndex(
-    HIAI_TensorAippPara* tensorAippPara, uint32_t inputAippIndex);
+AICP_C_API_EXPORT int32_t HIAI_MR_TensorAippPara_GetInputAippIndex(HIAI_MR_TensorAippPara* tensorAippPara);
+AICP_C_API_EXPORT void HIAI_MR_TensorAippPara_SetInputAippIndex(
+    HIAI_MR_TensorAippPara* tensorAippPara, uint32_t inputAippIndex);
 
-AICP_C_API_EXPORT void HIAI_TensorAippPara_Destroy(HIAI_TensorAippPara** aippParas);
+AICP_C_API_EXPORT void HIAI_MR_TensorAippPara_Destroy(HIAI_MR_TensorAippPara** aippParas);
 
 #ifdef __cplusplus
 }

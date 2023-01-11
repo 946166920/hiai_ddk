@@ -26,16 +26,17 @@
 #include "model/aipp/aipp_input_converter.h"
 #include "framework/c/hiai_built_model_aipp.h"
 #include "framework/c/hiai_tensor_aipp_para.h"
+#include "tensor/aipp/aipp_para_impl.h"
 #include "framework/c/hiai_built_model.h"
 
 namespace hiai {
 
-BuiltModelImpl::BuiltModelImpl(std::shared_ptr<HIAI_BuiltModel> builtModel, std::shared_ptr<IBuffer> modelBuffer)
+BuiltModelImpl::BuiltModelImpl(std::shared_ptr<HIAI_MR_BuiltModel> builtModel, std::shared_ptr<IBuffer> modelBuffer)
     : builtModelImpl_(std::move(builtModel)), modelBuffer_(modelBuffer)
 {
 }
 
-std::shared_ptr<HIAI_BuiltModel> BuiltModelImpl::GetBuiltModelImpl()
+std::shared_ptr<HIAI_MR_BuiltModel> BuiltModelImpl::GetBuiltModelImpl()
 {
     return builtModelImpl_;
 }
@@ -54,7 +55,7 @@ Status BuiltModelImpl::SaveToExternalBuffer(std::shared_ptr<IBuffer>& buffer, si
         HIAI_EXPECT_EXEC(CustomDataUtil::CopyCustomDataToBuffer(buffer, offset, customModelData_));
     }
 
-    if (HIAI_BuiltModel_SaveToExternalBuffer(builtModelImpl_.get(),
+    if (HIAI_MR_BuiltModel_SaveToExternalBuffer(builtModelImpl_.get(),
         reinterpret_cast<void*>(reinterpret_cast<char*>(buffer->GetData()) + offset), buffer->GetSize() - offset,
         &realSize) == HIAI_SUCCESS) {
         realSize += offset;
@@ -75,7 +76,7 @@ Status BuiltModelImpl::SaveToBuffer(std::shared_ptr<IBuffer>& buffer) const
     HIAI_EXPECT_NOT_NULL(builtModelImpl_);
     void* data = nullptr;
     size_t size = 0;
-    HIAI_EXPECT_EXEC(HIAI_BuiltModel_Save(builtModelImpl_.get(), &data, &size));
+    HIAI_EXPECT_EXEC(HIAI_MR_BuiltModel_Save(builtModelImpl_.get(), &data, &size));
     buffer = CustomDataUtil::SaveCustomDataToBuffer(data, size, customModelData_);
     HIAI_EXPECT_NOT_NULL(buffer);
 
@@ -93,7 +94,7 @@ Status BuiltModelImpl::SaveToFile(const char* file) const
     HIAI_EXPECT_NOT_NULL(file);
     HIAI_EXPECT_EXEC(FileUtil::CreateEmptyFile(file));
     HIAI_EXPECT_EXEC(CustomDataUtil::WriteCustomDataToFile(file, customModelData_));
-    if (HIAI_BuiltModel_SaveToFile(builtModelImpl_.get(), file) != HIAI_SUCCESS) {
+    if (HIAI_MR_BuiltModel_SaveToFile(builtModelImpl_.get(), file) != HIAI_SUCCESS) {
         FMK_LOGE("save to file failed.");
         return FAILURE;
     }
@@ -116,8 +117,8 @@ Status BuiltModelImpl::RestoreFromBuffer(const std::shared_ptr<IBuffer>& buffer)
     HIAI_EXPECT_NOT_NULL(outBuffer);
     modelBuffer_ = outBuffer;
 
-    builtModelImpl_.reset(HIAI_BuiltModel_Restore(outBuffer->GetData(), outBuffer->GetSize()),
-        [](HIAI_BuiltModel* p) { HIAI_BuiltModel_Destroy(&p); });
+    builtModelImpl_.reset(HIAI_MR_BuiltModel_Restore(outBuffer->GetData(), outBuffer->GetSize()),
+        [](HIAI_MR_BuiltModel* p) { HIAI_MR_BuiltModel_Destroy(&p); });
     HIAI_EXPECT_NOT_NULL(builtModelImpl_);
 
     return SUCCESS;
@@ -138,8 +139,8 @@ Status BuiltModelImpl::RestoreFromFile(const char* file)
         return RestoreFromBuffer(buffer);
     }
 
-    builtModelImpl_.reset(HIAI_BuiltModel_RestoreFromFile(file),
-        [](HIAI_BuiltModel* p) { HIAI_BuiltModel_Destroy(&p); });
+    builtModelImpl_.reset(
+        HIAI_MR_BuiltModel_RestoreFromFile(file), [](HIAI_MR_BuiltModel* p) { HIAI_MR_BuiltModel_Destroy(&p); });
 
     HIAI_EXPECT_NOT_NULL(builtModelImpl_);
 
@@ -152,7 +153,7 @@ Status BuiltModelImpl::CheckCompatibility(bool& compatible) const
 
     compatible = false;
     HIAI_BuiltModel_Compatibility compatibleValue;
-    HIAI_EXPECT_EXEC(HIAI_BuiltModel_CheckCompatibility(builtModelImpl_.get(), &compatibleValue));
+    HIAI_EXPECT_EXEC(HIAI_MR_BuiltModel_CheckCompatibility(builtModelImpl_.get(), &compatibleValue));
     compatible = (compatibleValue == HIAI_BUILTMODEL_COMPATIBLE);
 
     return SUCCESS;
@@ -171,11 +172,11 @@ NDTensorDesc ConvertToNDTensorDesc(const HIAI_NDTensorDesc* desc)
     return tmpDesc;
 }
 
-using GetTenorNumFunc = int32_t (*)(const HIAI_BuiltModel*);
-using GetTensorDescFunc = HIAI_NDTensorDesc* (*)(const HIAI_BuiltModel*, size_t);
+using GetTenorNumFunc = int32_t (*)(const HIAI_MR_BuiltModel*);
+using GetTensorDescFunc = HIAI_NDTensorDesc* (*)(const HIAI_MR_BuiltModel*, size_t);
 
 std::vector<NDTensorDesc> GetTensorDescs(
-    HIAI_BuiltModel* builtModel, GetTenorNumFunc getTenorNumFunc, GetTensorDescFunc getTensorDescFunc)
+    HIAI_MR_BuiltModel* builtModel, GetTenorNumFunc getTenorNumFunc, GetTensorDescFunc getTensorDescFunc)
 {
     auto num = getTenorNumFunc(builtModel);
     if (num <= 0) {
@@ -183,7 +184,8 @@ std::vector<NDTensorDesc> GetTensorDescs(
         return std::vector<NDTensorDesc>();
     }
     std::vector<NDTensorDesc> tensorDescVec(num);
-    for (size_t i = 0; i < static_cast<size_t>(num); i++) {
+    size_t count = static_cast<size_t>(static_cast<uint32_t>(num));
+    for (size_t i = 0; i < count; i++) {
         HIAI_NDTensorDesc* tensorDesc = getTensorDescFunc(builtModel, i);
         if (tensorDesc == nullptr) {
             FMK_LOGE("get tensor[%zu] failed.", i);
@@ -205,8 +207,8 @@ std::vector<NDTensorDesc> BuiltModelImpl::GetInputTensorDescs() const
         return std::vector<NDTensorDesc>();
     }
 
-    std::vector<NDTensorDesc> inputTensorDescVec =
-        GetTensorDescs(builtModelImpl_.get(), HIAI_BuiltModel_GetInputTensorNum, HIAI_BuiltModel_GetInputTensorDesc);
+    std::vector<NDTensorDesc> inputTensorDescVec = GetTensorDescs(
+        builtModelImpl_.get(), HIAI_MR_BuiltModel_GetInputTensorNum, HIAI_MR_BuiltModel_GetInputTensorDesc);
 
     AippInputConverter::ConvertInputTensorDesc(customModelData_, inputTensorDescVec);
     return inputTensorDescVec;
@@ -220,7 +222,7 @@ std::vector<NDTensorDesc> BuiltModelImpl::GetOutputTensorDescs() const
     }
 
     return GetTensorDescs(
-        builtModelImpl_.get(), HIAI_BuiltModel_GetOutputTensorNum, HIAI_BuiltModel_GetOutputTensorDesc);
+        builtModelImpl_.get(), HIAI_MR_BuiltModel_GetOutputTensorNum, HIAI_MR_BuiltModel_GetOutputTensorDesc);
 }
 
 std::string BuiltModelImpl::GetName() const
@@ -229,7 +231,7 @@ std::string BuiltModelImpl::GetName() const
         FMK_LOGE("please restore or build first.");
         return "";
     }
-    return HIAI_BuiltModel_GetName(builtModelImpl_.get());
+    return HIAI_MR_BuiltModel_GetName(builtModelImpl_.get());
 }
 
 void BuiltModelImpl::SetName(const std::string& name)
@@ -239,7 +241,7 @@ void BuiltModelImpl::SetName(const std::string& name)
         return;
     }
 
-    HIAI_BuiltModel_SetName(builtModelImpl_.get(), name.data());
+    HIAI_MR_BuiltModel_SetName(builtModelImpl_.get(), name.data());
 }
 
 void BuiltModelImpl::SetCustomData(const CustomModelData& customModelData)
@@ -254,16 +256,17 @@ const CustomModelData& BuiltModelImpl::GetCustomData()
 Status BuiltModelImpl::GetTensorAippInfo(int32_t index, uint32_t* aippParaNum, uint32_t* batchCount)
 {
     HIAI_EXPECT_NOT_NULL(builtModelImpl_);
-    return HIAI_BuiltModel_GetTensorAippInfo(builtModelImpl_.get(), index, aippParaNum, batchCount);
+    return HIAI_MR_BuiltModel_GetTensorAippInfo(builtModelImpl_.get(), index, aippParaNum, batchCount);
 }
 
-Status BuiltModelImpl::GetTensorAippPara(int32_t index, std::vector<void*>& aippParas) const
+Status BuiltModelImpl::GetTensorAippPara(int32_t index, std::vector<std::shared_ptr<IAIPPPara>>& aippParas) const
 {
     HIAI_EXPECT_NOT_NULL(builtModelImpl_);
 
-    int32_t inputNum = HIAI_BuiltModel_GetInputTensorNum(builtModelImpl_.get());
+    int32_t inputNum = HIAI_MR_BuiltModel_GetInputTensorNum(builtModelImpl_.get());
     HIAI_EXPECT_TRUE(inputNum > 0);
 
+    aippParas.clear();
     for (int32_t i = 0; i < inputNum; ++i) {
         if (i != index && index != -1) {
             continue; // skip not specified tensor
@@ -271,24 +274,32 @@ Status BuiltModelImpl::GetTensorAippPara(int32_t index, std::vector<void*>& aipp
 
         uint32_t aippParaNum = 0;
         uint32_t batchCount = 0;
-        HIAI_EXPECT_EXEC(HIAI_BuiltModel_GetTensorAippInfo(builtModelImpl_.get(), i, &aippParaNum, &batchCount));
+        HIAI_EXPECT_EXEC(HIAI_MR_BuiltModel_GetTensorAippInfo(builtModelImpl_.get(), i, &aippParaNum, &batchCount));
         if (aippParaNum == 0) {
             continue;
         }
 
-        std::vector<HIAI_TensorAippPara*> tmpAippParaVec(aippParaNum);
-        HIAI_EXPECT_EXEC(HIAI_BuiltModel_GetTensorAippPara(
-            builtModelImpl_.get(), i, tmpAippParaVec.data(), aippParaNum, batchCount));
+        std::vector<HIAI_MR_TensorAippPara*> modelAippPara(aippParaNum);
+        HIAI_EXPECT_EXEC(HIAI_MR_BuiltModel_GetTensorAippPara(
+            builtModelImpl_.get(), i, modelAippPara.data(), aippParaNum, batchCount));
 
-        for (const auto& tmpPara : tmpAippParaVec) {
-            void* bufferPara = HIAI_TensorAippPara_GetRawBuffer(tmpPara);
-            if (bufferPara == nullptr) {
+        for (const auto& modelAipp : modelAippPara) {
+            std::shared_ptr<AIPPParaImpl> aippParaImpl = make_shared_nothrow<AIPPParaImpl>();
+            if (aippParaImpl == nullptr) {
+                FMK_LOGE("create aippParaImpl failed.");
                 continue;
             }
-            HIAI_TensorAippCommPara* commPara = reinterpret_cast<HIAI_TensorAippCommPara*>(bufferPara);
+            auto ret = aippParaImpl->Init(modelAipp);
+            if (ret != SUCCESS) {
+                FMK_LOGE("create aippPara failed.");
+                continue;
+            }
+
+            HIAI_MR_TensorAippCommPara* commPara =
+                reinterpret_cast<HIAI_MR_TensorAippCommPara*>(aippParaImpl->GetData());
             commPara->batchNum = batchCount;
+            aippParas.push_back(std::dynamic_pointer_cast<IAIPPPara>(aippParaImpl));
         }
-        aippParas.insert(aippParas.cend(), tmpAippParaVec.cbegin(), tmpAippParaVec.cend());
     }
     return SUCCESS;
 }
@@ -300,11 +311,10 @@ std::shared_ptr<IBuiltModel> CreateBuiltModel()
 
 std::shared_ptr<IBuiltModelExt> IBuiltModelExt::RestoreFromFile(const char* file, uint8_t shapeIndex)
 {
-    HIAI_BuiltModel* hiaiBuiltModel = HIAI_BuiltModel_RestoreFromFileWithShapeIndex(file, shapeIndex);
+    HIAI_MR_BuiltModel* hiaiBuiltModel = HIAI_MR_BuiltModel_RestoreFromFileWithShapeIndex(file, shapeIndex);
     HIAI_EXPECT_NOT_NULL_R(hiaiBuiltModel, nullptr);
 
-    return make_shared_nothrow<BuiltModelImpl>(
-        std::shared_ptr<HIAI_BuiltModel>(hiaiBuiltModel, [](HIAI_BuiltModel* p) { HIAI_BuiltModel_Destroy(&p); }),
-        nullptr);
+    return make_shared_nothrow<BuiltModelImpl>(std::shared_ptr<HIAI_MR_BuiltModel>(hiaiBuiltModel,
+            [](HIAI_MR_BuiltModel* p) { HIAI_MR_BuiltModel_Destroy(&p); }), nullptr);
 }
 } // namespace hiai

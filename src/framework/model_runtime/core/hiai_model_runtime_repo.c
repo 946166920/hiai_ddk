@@ -82,7 +82,9 @@ static bool HIAI_ModelRuntime_IsSupportedModelRuntime(HIAI_ModelRuntimeType type
     static const char* runtimeList[HIAI_MAX_MODEL_RUNTIME_NUM] = {
         [PLUGIN_MODEL_RUNTIME_HCL]  = "PLUGIN",
         [HIAI_MODEL_RUNTIME_HCL]    = "LOCALHCL",
+#if !defined(__OHOS__)
         [HIAI_MODEL_RUNTIME_DIRECT] = "DIRECT",
+#endif
         [FMK_MODEL_RUNTIME_HCL]     = "ROMHCL",
         [HIAI_MODEL_RUNTIME_BINARY] = "BINARY",
     };
@@ -116,7 +118,7 @@ static HIAI_ModelRuntime* ModelRuntimeRepo_GetRuntimeFromIndex(size_t index, uin
 }
 
 HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryBuild(
-    const HIAI_ModelBuildOptions* options, const char* modelName, const void* modelData, size_t modelSize)
+    const HIAI_MR_ModelBuildOptions* options, const char* modelName, const void* modelData, size_t modelSize)
 {
 #ifdef HIAI_DDK
     FMK_LOGI("DDK version is beta.");

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #ifndef __IR_BUILD_TRANSFORMER_H__
 #define __IR_BUILD_TRANSFORMER_H__
 

@@ -29,6 +29,7 @@
 #include "HIAIModelManager_internal.h"
 #else
 #include "framework/c/compatible/HIAIModelManager.h"
+#include "framework/c/compatible/hiai_mem_buffer.h"
 #endif
 
 #include "framework/graph/utils/graph_utils.h"

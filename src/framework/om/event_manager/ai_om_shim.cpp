@@ -40,11 +40,15 @@ static void* LoadLibrary()
 {
     void* handle = dlopen(LIB_FILE, RTLD_NOW);
     if (handle == nullptr) {
+#ifndef __OHOS__
         FMK_LOGE("dlopen failed: %s, try open:%s.", dlerror(), OLD_LIB_FILE);
+#endif
         handle = dlopen(OLD_LIB_FILE, RTLD_NOW);
+#ifndef __OHOS__
         if (handle == nullptr) {
             FMK_LOGE("dlopen: %s failed.", OLD_LIB_FILE);
         }
+#endif
     }
     return handle;
 }

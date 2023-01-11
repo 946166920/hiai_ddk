@@ -27,6 +27,7 @@
 #include "HIAIModelManager_internal.h"
 #else
 #include "framework/c/compatible/HIAIModelManager.h"
+#include "framework/c/compatible/hiai_mem_buffer.h"
 #endif
 
 #include "model_builder/model_builder.h"
@@ -40,6 +41,7 @@
 #include "framework/infra/log/log.h"
 
 using namespace std;
+
 namespace hiai {
 #ifdef __LP64__
 static const string AI_CLIENT_SO_PATH = "/vendor/lib64/libai_client_stub_ddk.so";

@@ -22,10 +22,10 @@
 namespace hiai {
 class ProtoAttrListDef : public IAttrListDef {
 public:
-    ProtoAttrListDef();
-    ProtoAttrListDef(hiai::proto::AttrDef_ListValue* attrListDef, bool isOwner = false);
+    ProtoAttrListDef(hiai::proto::AttrDef_ListValue& attrListDef);
     ~ProtoAttrListDef() override;
 
+private:
     ge::AttrValue::ValueType GetValueType() const override;
     void SetValueType(ge::AttrValue::ValueType type) override;
 
@@ -43,10 +43,8 @@ public:
     DEF_PROTO_PERSISTENCE_CUSTOM_LIST_MEMBER_PURE_FUNC(ITensorDescDef, tf);
 
 private:
-    hiai::proto::AttrDef_ListValue* attrListDef_;
-    bool isOwner_;
+    hiai::proto::AttrDef_ListValue& attrListDef_;
 };
-
 } // namespace hiai
 
 #endif

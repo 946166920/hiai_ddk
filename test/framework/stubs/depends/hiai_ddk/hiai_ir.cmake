@@ -132,6 +132,8 @@ set(GRAPH_CORE_SRC_FILES
     ${GRAPH_IR_PATH}/core/node/node_compatibler.cpp
     ${GRAPH_IR_PATH}/core/node/quick_query_nodes.cpp
     ${GRAPH_IR_PATH}/core/node/node_serializer.cpp
+    ${GRAPH_IR_PATH}/core/op/constholder_op_desc.cpp
+    ${GRAPH_IR_PATH}/core/op/op_desc_factory.cpp
     ${GRAPH_IR_PATH}/core/op/op_desc.cpp
     ${GRAPH_IR_PATH}/attr_value.cpp
     ${GRAPH_IR_PATH}/buffer.cpp

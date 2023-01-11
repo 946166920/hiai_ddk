@@ -38,7 +38,7 @@ void* HIAI_TensorAippPara_CreateLocal(uint32_t batchNum)
         return NULL;
     }
 
-    size_t size = sizeof(HIAI_TensorAippCommPara) + sizeof(HIAI_TensorAippBatchPara) * batchNum;
+    size_t size = sizeof(HIAI_MR_TensorAippCommPara) + sizeof(HIAI_MR_TensorAippBatchPara) * batchNum;
     void* buffer = malloc(size);
     if (buffer == NULL) {
         FMK_LOGE("malloc failed.");

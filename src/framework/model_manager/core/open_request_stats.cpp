@@ -60,7 +60,6 @@ Status OpenRequestStats::StatsRequest(const std::string& statsData)
 
 Status OpenRequestStats::CloudDdkVersionStats(const char* clientDdkVersion, const char* interfaceName, int result)
 {
-    FMK_LOGI("Cloud interface data stats start.");
     std::string StatsData;
     std::string uid = std::to_string(getpid());
     StatsData += "uid=" + uid + ",";
@@ -77,7 +76,6 @@ Status OpenRequestStats::CloudDdkVersionStats(const char* clientDdkVersion, cons
     StatsData += "engineType=1,";
     std::string statsResult = std::to_string(result);
     StatsData += "result=" + statsResult;
-    FMK_LOGI("Cloud interface data stats end.");
     return StatsRequest(StatsData);
 }
 } // namespace hiai

@@ -29,139 +29,130 @@ const static std::vector<std::string> NEED_ADD_INPUTDESC = {
     "NonMaxSuppressionV6",
 };
 
-void OptionalInputHandle(hiai::proto::OpDef* opDef)
+void OptionalInputHandle(hiai::proto::OpDef& opDef)
 {
-    auto it = std::find(NEED_ADD_INPUTDESC.begin(), NEED_ADD_INPUTDESC.end(), opDef->type());
+    auto it = std::find(NEED_ADD_INPUTDESC.begin(), NEED_ADD_INPUTDESC.end(), opDef.type());
     if (it == NEED_ADD_INPUTDESC.end()) {
         return;
     }
 
-    if (opDef->input_size() > opDef->input_desc_size()) {
+    if (opDef.input_size() > opDef.input_desc_size()) {
         // copy original input desc
-        auto orgInputDesc = opDef->input_desc();
+        auto orgInputDesc = opDef.input_desc();
         // clear original input desc
-        opDef->clear_input_desc();
+        opDef.clear_input_desc();
         // add new input desc
-        for (int i = 0, j = 0; i < opDef->input_size(); i++) {
-            if (opDef->input(i) == "") {
+        for (int i = 0, j = 0; i < opDef.input_size(); i++) {
+            if (opDef.input(i) == "") {
                 ::hiai::proto::TensorDescriptor td;
                 td.set_has_out_attr(true);
-                *opDef->add_input_desc() = td;
+                *opDef.add_input_desc() = td;
             } else {
-                *opDef->add_input_desc() = orgInputDesc.Get(j);
+                *opDef.add_input_desc() = orgInputDesc.Get(j);
                 j++;
             }
         }
     }
 }
 
-using ATTR_MAP_FUNC = std::function<void(hiai::proto::OpDef*, const hiai::proto::AttrDef&)>;
+using ATTR_MAP_FUNC = std::function<void(hiai::proto::OpDef&, const hiai::proto::AttrDef&)>;
 
 const static std::map<std::string, ATTR_MAP_FUNC> OPDEF_COMPATIBLE_MAP = {
-    {"id", [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) { opDef->set_id(attrDef.i()); }},
+    {"id", [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) { opDef.set_id(attrDef.i()); }},
     {"stream_id",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) { opDef->set_stream_id(attrDef.i()); }},
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) { opDef.set_stream_id(attrDef.i()); }},
     {"input_name",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
             for (const auto& s : attrDef.list().s()) {
-                opDef->add_input_name(s);
+                opDef.add_input_name(s);
             }
         }},
     {"src_name",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
             for (const auto& s : attrDef.list().s()) {
-                opDef->add_src_name(s);
+                opDef.add_src_name(s);
             }
         }},
     {"src_index",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
             for (auto i : attrDef.list().i()) {
-                opDef->add_src_index(i);
+                opDef.add_src_index(i);
             }
         }},
     {"input",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
             for (auto i : attrDef.list().i()) {
-                opDef->add_input_i(i);
+                opDef.add_input_i(i);
             }
         }},
     {"output",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
             for (auto i : attrDef.list().i()) {
-                opDef->add_output_i(i);
+                opDef.add_output_i(i);
             }
         }},
     {"dst_name",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
             for (const auto& s : attrDef.list().s()) {
-                opDef->add_dst_name(s);
+                opDef.add_dst_name(s);
             }
         }},
     {"dst_index",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
             for (auto i : attrDef.list().i()) {
-                opDef->add_dst_index(i);
+                opDef.add_dst_index(i);
             }
         }},
     {"workspace",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
             for (auto i : attrDef.list().i()) {
-                opDef->add_workspace(i);
+                opDef.add_workspace(i);
             }
         }},
     {"workspace_bytes",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
             for (auto i : attrDef.list().i()) {
-                opDef->add_workspace_bytes(i);
+                opDef.add_workspace_bytes(i);
             }
         }},
     {"is_input_const",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
             for (auto b : attrDef.list().b()) {
-                opDef->add_is_input_const(b);
+                opDef.add_is_input_const(b);
             }
         }},
     {"input_desc",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
-            *opDef->mutable_input_desc() = attrDef.list().tf();
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
+            *opDef.mutable_input_desc() = attrDef.list().tf();
         }},
     {"output_desc",
-        [](hiai::proto::OpDef* opDef, const hiai::proto::AttrDef& attrDef) {
-            *opDef->mutable_output_desc() = attrDef.list().tf();
+        [](hiai::proto::OpDef& opDef, const hiai::proto::AttrDef& attrDef) {
+            *opDef.mutable_output_desc() = attrDef.list().tf();
         }},
 };
 
-void CompatibleMemberHandle(hiai::proto::OpDef* opDef)
+void CompatibleMemberHandle(hiai::proto::OpDef& opDef)
 {
-    if (opDef->has_out_attr()) {
+    if (opDef.has_out_attr()) {
         return;
     }
 
     // 老模型，需要做兼容性处理，从attrMap提取参数设置到成员变量中
-    const auto& attrMap = opDef->attr();
+    const auto& attrMap = opDef.attr();
     for (auto it = attrMap.begin(); it != attrMap.end(); it++) {
         std::map<std::string, ATTR_MAP_FUNC>::const_iterator iter = OPDEF_COMPATIBLE_MAP.find(it->first);
         if (iter != OPDEF_COMPATIBLE_MAP.end()) {
             iter->second(opDef, it->second);
         }
     }
-    opDef->set_has_out_attr(true);
+    opDef.set_has_out_attr(true);
 }
 } // namespace
 
-ProtoOpDef::ProtoOpDef() : ProtoOpDef(new (std::nothrow) hiai::proto::OpDef(), true)
+ProtoOpDef::ProtoOpDef(hiai::proto::OpDef& opDef) : opDef_(opDef)
 {
-    if (opDef_ != nullptr) {
-        opDef_->set_has_out_attr(true);
-    }
-}
-
-ProtoOpDef::ProtoOpDef(hiai::proto::OpDef* opDef, bool isOwner) : opDef_(opDef), isOwner_(isOwner)
-{
-    if (opDef_ != nullptr) {
-        OptionalInputHandle(opDef_);
-        CompatibleMemberHandle(opDef_);
-    }
+    OptionalInputHandle(opDef_);
+    CompatibleMemberHandle(opDef_);
 }
 
 ProtoOpDef::~ProtoOpDef()
@@ -169,17 +160,12 @@ ProtoOpDef::~ProtoOpDef()
     IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(input_desc);
     IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(output_desc);
     IMPL_PROTO_CUSTOM_MEMBER_FREE(attr);
-
-    if (isOwner_) {
-        delete opDef_;
-    }
-    opDef_ = nullptr;
 }
 
 void ProtoOpDef::CopyFrom(const IOpDef* other)
 {
-    if (opDef_ != nullptr && other != nullptr && other->GetSerializeType() == PROTOBUF) {
-        *opDef_ = *(static_cast<const ProtoOpDef*>(other)->opDef_);
+    if (other != nullptr && other->GetSerializeType() == PROTOBUF) {
+        opDef_ = static_cast<const ProtoOpDef*>(other)->opDef_;
         IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(input_desc);
         IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(output_desc);
         IMPL_PROTO_CUSTOM_MEMBER_FREE(attr);
@@ -193,13 +179,13 @@ SerializeType ProtoOpDef::GetSerializeType() const
 
 bool ProtoOpDef::LoadFrom(const uint8_t* data, size_t len)
 {
-    if (data == nullptr || len == 0 || opDef_ == nullptr) {
+    if (data == nullptr || len == 0) {
         return false;
     }
 
     google::protobuf::io::CodedInputStream coded_stream(data, len);
     coded_stream.SetTotalBytesLimit(INT32_MAX);
-    if (!opDef_->ParseFromCodedStream(&coded_stream)) {
+    if (!opDef_.ParseFromCodedStream(&coded_stream)) {
         return false;
     }
 
@@ -210,21 +196,15 @@ bool ProtoOpDef::LoadFrom(const uint8_t* data, size_t len)
 
 bool ProtoOpDef::SaveTo(uint8_t* data, size_t len)
 {
-    if (opDef_ != nullptr) {
-        return opDef_->SerializeToArray(data, len);
-    }
-    return false;
+    return opDef_.SerializeToArray(data, len);
 }
 
 size_t ProtoOpDef::GetOpDefSize() const
 {
-    if (opDef_ == nullptr) {
-        return 0;
-    }
 #if GOOGLE_PROTOBUF_VERSION < 3013000
-    return opDef_->ByteSize();
+    return opDef_.ByteSize();
 #else
-    return opDef_->ByteSizeLong();
+    return opDef_.ByteSizeLong();
 #endif
 }
 
@@ -251,7 +231,11 @@ IMPL_PROTO_PERSISTENCE_CUSTOM_LIST_MEMBER_PURE_FUNC(
 
 extern "C" GRAPH_API_EXPORT IOpDef* CreateOpDef()
 {
-    return new (std::nothrow) ProtoOpDef();
+    auto op = new (std::nothrow) DefaultProtoOpDef();
+    if (op != nullptr) {
+        op->set_has_out_attr(true);
+    }
+    return op;
 }
 
 extern "C" GRAPH_API_EXPORT void DestroyOpDef(IOpDef* opDef)

@@ -13,30 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef FRAMEWORK_MODEL_MANAGER_DIRECT_MODEL_RUNTIME_MODEL_RUNTIME_IMPL_H
-#define FRAMEWORK_MODEL_MANAGER_DIRECT_MODEL_RUNTIME_MODEL_RUNTIME_IMPL_H
-#include "direct_built_model_impl.h"
-#include "framework/c/compatible/HIAIModelManager.h"
-#include "framework/c/hiai_model_manager_types.h"
-#include "om/event_manager/om_wrapper.h"
-#include "direct_model_util.h"
+#ifndef FRAMEWORK_MODEL_RUNTIME_DIRECT_DIRECT_MODEL_MANAGER_IMPL_H
+#define FRAMEWORK_MODEL_RUNTIME_DIRECT_DIRECT_MODEL_MANAGER_IMPL_H
 
 #include <mutex>
 #include <condition_variable>
 
+// api/infra
+#include "base/error_types.h"
+
+// inc
+#include "framework/c/compatible/HIAIModelManager.h"
+#include "framework/c/hiai_model_manager_types.h"
+#include "framework/c/hiai_tensor_aipp_para.h"
+
+#include "direct_built_model_impl.h"
+#include "direct_model_manager_util.h"
+
 #ifdef AI_SUPPORT_AIPP_API
 #include "model_manager/model_manager_aipp.h"
 #endif
-#include "base/error_types.h"
 
 namespace hiai {
-class ProfEventListener;
-
 typedef struct HIAI_NDTensorBuffers {
     int32_t inputNum;
     int32_t outputNum;
-    HIAI_NDTensorBuffer** input;
-    HIAI_NDTensorBuffer** output;
+    HIAI_MR_NDTensorBuffer** input;
+    HIAI_MR_NDTensorBuffer** output;
+
+    HIAI_NDTensorBuffers(int32_t inN, int32_t outN, HIAI_MR_NDTensorBuffer** inBuf, HIAI_MR_NDTensorBuffer** outBuf)
+        : inputNum(inN), outputNum(outN), input(inBuf), output(outBuf) {}
 } HIAI_NDTensorBuffers;
 
 class DirectModelManagerImpl {
@@ -44,39 +50,37 @@ public:
     DirectModelManagerImpl() = default;
     ~DirectModelManagerImpl();
 
-    Status Init(const HIAI_ModelInitOptions* options, const HIAI_ModelManagerListener* listener);
-
+    Status Init(const DirectBuiltModelImpl& builtModel, const HIAI_MR_ModelInitOptions& options,
+                        const HIAI_MR_ModelManagerListener* listener);
     Status SetPriority(HIAI_ModelPriority priority);
 
     Status Run(HIAI_NDTensorBuffers& buffers);
-
-    Status RunAsync(HIAI_NDTensorBuffers& buffers, int32_t timeoutInMS, void* userData);
-
+    Status RunAsync(HIAI_NDTensorBuffers& buffers, int32_t timeStamp, void* userData);
 #ifdef AI_SUPPORT_AIPP_API
-    Status RunAipp(HIAI_NDTensorBuffers& buffers, HIAI_TensorAippPara* aippPara[], int32_t aippParaNum,
+    Status RunAipp(HIAI_NDTensorBuffers& buffers, HIAI_MR_TensorAippPara* aippPara[], int32_t aippParaNum,
         int32_t timeoutInMS, void* userData);
 #endif
     void Cancel();
-
     void DeInit();
 
 private:
-    int NDTensorProcess(HIAI_NDTensorBuffers& buffers, int32_t timeout, void* func);
-
-    int TensorProcess(HIAI_NDTensorBuffers& buffers, int32_t timeout, void* func);
-
-    Status Process(HIAI_NDTensorBuffers& buffers, int32_t timeoutInMS, int& stamp);
+    Status CreateLegacyListener(const HIAI_MR_ModelManagerListener* listener,
+                                HIAI_ModelManagerListenerLegacy*& cListener);
+    std::shared_ptr<HIAI_ModelManager> CreateLegacyManager(
+        const HIAI_ModelManagerListenerLegacy* cListener);
+    Status InitSync(HIAI_ModelManager* manager, const ModelLoadInfo& loadInfo);
+    Status InitAsync(HIAI_ModelManager* manager, const ModelLoadInfo& loadInfo);
+    void UnloadAsync(HIAI_ModelManager* manager);
 
 #ifdef AI_SUPPORT_AIPP_API
-    int NDTensorAippProcess(HIAI_NDTensorBuffers& buffers, HIAI_TensorAippPara* aippPara[], int32_t aippParaNum,
-        int32_t timeout, void* func);
-
-    int TensorAippProcess(HIAI_NDTensorBuffers& buffers, HIAI_TensorAippPara* aippPara[], int32_t aippParaNum,
-        int32_t timeout, void* func);
+    template <typename T>
+    int ProcessAipp(HIAI_NDTensorBuffers& buffers, HIAI_MR_TensorAippPara* aippPara[],
+                    int32_t aippParaNum, int32_t timeout, void* runfunc);
+    int RunAippModel(
+        HIAI_NDTensorBuffers& buffers, HIAI_MR_TensorAippPara* aippPara[], int32_t aippParaNum, int32_t timeoutInMS);
 #endif
 
-    Status InitModelListener(const HIAI_ModelManagerListener* listener);
-
+private:
     static void OnLoadDone(void* userdata, int taskStamp);
     static void OnRunDone(void* userdata, int taskStamp);
     static void OnUnloadDone(void* userdata, int taskStamp);
@@ -84,29 +88,10 @@ private:
     static void OnError(void* userdata, int taskStamp, int errCode);
     static void OnServiceDied(void* userdata);
 
-    void ClearCallbckcb();
-
-    Status AsyncWaitResult();
-
 private:
-    bool isLoadCallBack_ {false};
-    bool isLoadStatus_ {false};
-    bool isUnloadCallBack_ {false};
-
-    HIAI_ModelManagerListener* userListener_ {nullptr};
-    HIAI_ModelManagerListenerLegacy* listener_ {nullptr};
-
-    std::mutex syncStopmutex_;
-    std::mutex syncRunMutex_;
-    std::condition_variable conditionUnLoad_;
-    std::condition_variable condition_;
-    std::shared_ptr<ProfEventListener> profEventListener_ {nullptr};
-
-    std::shared_ptr<DirectModelUtil> currentModelUtil_ {nullptr};
-
-public:
-    std::shared_ptr<SharedManagerInfos> SharedManagerInfos_ {nullptr};
-    bool isLoaded_ {false};
+    const HIAI_MR_ModelManagerListener* userListener_ {nullptr};
+    std::shared_ptr<HIAI_ModelManager> manager_ {nullptr};
+    std::string modelName_ {};
 };
 } // namespace hiai
-#endif // FRAMEWORK_MODEL_MANAGER_DIRECT_MODEL_RUNTIME_MODEL_RUNTIME_IMPL_H
+#endif // FRAMEWORK_MODEL_RUNTIME_DIRECT_DIRECT_MODEL_MANAGER_IMPL_H

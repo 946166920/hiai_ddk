@@ -64,11 +64,11 @@ void ControlC::SetBuildOptions(ModelBuildOptions& buildOptions)
     expectBuildOptions_ = buildOptions;
 }
 
-bool ControlC::CheckBuildOptions(const HIAI_ModelBuildOptions* options)
+bool ControlC::CheckBuildOptions(const HIAI_MR_ModelBuildOptions* options)
 {
     // check static shape
-    size_t inputNum = HIAI_ModelBuildOptions_GetInputSize(options);
-    HIAI_NDTensorDesc** inputTensorDescs = HIAI_ModelBuildOptions_GetInputTensorDescs(options);
+    size_t inputNum = HIAI_MR_ModelBuildOptions_GetInputSize(options);
+    HIAI_NDTensorDesc** inputTensorDescs = HIAI_MR_ModelBuildOptions_GetInputTensorDescs(options);
     if (expectBuildOptions_.inputTensorDescs.size() != inputNum) {
         FMK_LOGE("ERROR");
         return false;
@@ -99,10 +99,10 @@ bool ControlC::CheckBuildOptions(const HIAI_ModelBuildOptions* options)
     }
 
     // check dynamic shape
-    auto dynamicConfig = HIAI_ModelBuildOptions_GetDynamicShapeConfig(options);
-    auto dynamicEnable = HIAI_DynamicShapeConfig_GetEnableMode(dynamicConfig);
-    size_t dynamicMaxCacheNum = HIAI_DynamicShapeConfig_GetMaxCacheNum(dynamicConfig);
-    auto dynamicCacheMode = HIAI_DynamicShapeConfig_GetCacheMode(dynamicConfig);
+    auto dynamicConfig = HIAI_MR_ModelBuildOptions_GetDynamicShapeConfig(options);
+    auto dynamicEnable = HIAI_MR_DynamicShapeConfig_GetEnableMode(dynamicConfig);
+    size_t dynamicMaxCacheNum = HIAI_MR_DynamicShapeConfig_GetMaxCacheNum(dynamicConfig);
+    auto dynamicCacheMode = HIAI_MR_DynamicShapeConfig_GetCacheMode(dynamicConfig);
     if (expectBuildOptions_.dynamicShapeConfig.enable != dynamicEnable) {
         FMK_LOGE("ERROR");
         return false;
@@ -117,23 +117,23 @@ bool ControlC::CheckBuildOptions(const HIAI_ModelBuildOptions* options)
     }
 
     // check model device config
-    auto modelDeviceConfig = HIAI_ModelBuildOptions_GetModelDeviceConfig(options);
-    auto deviceConfigMode = HIAI_ModelDeviceConfig_GetDeviceConfigMode(modelDeviceConfig);
+    auto modelDeviceConfig = HIAI_MR_ModelBuildOptions_GetModelDeviceConfig(options);
+    auto deviceConfigMode = HIAI_MR_ModelDeviceConfig_GetDeviceConfigMode(modelDeviceConfig);
     if (expectBuildOptions_.modelDeviceConfig.deviceConfigMode != static_cast<DeviceConfigMode>(deviceConfigMode)) {
         FMK_LOGE("ERROR");
         return false;
     }
-    auto fallBackMode = HIAI_ModelDeviceConfig_GetFallBackMode(modelDeviceConfig);
+    auto fallBackMode = HIAI_MR_ModelDeviceConfig_GetFallBackMode(modelDeviceConfig);
     if (expectBuildOptions_.modelDeviceConfig.fallBackMode != static_cast<FallBackMode>(fallBackMode)) {
         FMK_LOGE("ERROR");
         return false;
     }
-    size_t modelNum = HIAI_ModelDeviceConfig_GetConfigModelNum(modelDeviceConfig);
+    size_t modelNum = HIAI_MR_ModelDeviceConfig_GetConfigModelNum(modelDeviceConfig);
     if (expectBuildOptions_.modelDeviceConfig.modelDeviceOrder.size() != modelNum) {
         FMK_LOGE("ERROR");
         return false;
     }
-    auto modelDeviceOrder = HIAI_ModelDeviceConfig_GetModelDeviceOrder(modelDeviceConfig);
+    auto modelDeviceOrder = HIAI_MR_ModelDeviceConfig_GetModelDeviceOrder(modelDeviceConfig);
     for (size_t i = 0; i < modelNum; i++) {
         if (expectBuildOptions_.modelDeviceConfig.modelDeviceOrder[i] !=
             static_cast<ExecuteDevice>(modelDeviceOrder[i])) {
@@ -141,7 +141,7 @@ bool ControlC::CheckBuildOptions(const HIAI_ModelBuildOptions* options)
             return false;
         }
     }
-    size_t opNum = HIAI_ModelDeviceConfig_GetConfigOpNum(modelDeviceConfig);
+    size_t opNum = HIAI_MR_ModelDeviceConfig_GetConfigOpNum(modelDeviceConfig);
     if (expectBuildOptions_.modelDeviceConfig.opDeviceOrder.size() != opNum) {
         FMK_LOGE("ERROR");
         return false;
@@ -154,10 +154,11 @@ void ControlC::SetInitOptions(ModelInitOptions& initOptions)
     expectInitOptions_ = initOptions;
 }
 
-bool ControlC::CheckInitOptions(const HIAI_ModelInitOptions* options)
+bool ControlC::CheckInitOptions(const HIAI_MR_ModelInitOptions* options)
 {
     expectBuildOptions_ = expectInitOptions_.buildOptions;
-    return CheckBuildOptions(HIAI_ModelInitOptions_GetBuildOptions(const_cast<HIAI_ModelInitOptions *>(options)));
+    return CheckBuildOptions(HIAI_MR_ModelInitOptions_GetBuildOptions(
+        const_cast<HIAI_MR_ModelInitOptions *>(options)));
 }
 
 void ControlC::ChangeNowTimes()

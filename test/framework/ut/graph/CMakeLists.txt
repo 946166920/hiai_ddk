@@ -220,7 +220,8 @@ add_compile_options("--coverage")
 
 set(CMAKE_EXE_LINKER_FLAGS_INIT "${CMAKE_EXE_LINKER_FLAGS_INIT} -Wall -fprofile-arcs -ftest-coverage")
 
-set(COVERAGE_COMPILER_FLAGS " -fprofile-arcs -fPIC -O0 -ftest-coverage")
+set(COVERAGE_COMPILER_FLAGS " -fprofile-arcs -fPIC -O0 -fno-access-control -ftest-coverage")
+
 set(CMAKE_CXX_FLAGS "${COVERAGE_COMPILER_FLAGS}")
 
 include_directories(${LIBGRAPH}
@@ -262,6 +263,7 @@ target_link_libraries(ut_graph
     gtest
     gcov
     dl
+    hiai_ir_ddk
 )
 
 add_test(NAME ut_graph COMMAND ut_graph)

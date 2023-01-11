@@ -67,6 +67,10 @@ protected:
     void OptionalInputRegister(const string& name);
     void DynamicInputRegister(const string& name, const unsigned int num);
 
+    void SubgraphCountRegister(const string& name, const unsigned int num);
+    void SetSubgraphBuilder(const string& name, const unsigned int index, const GraphBuilderFn& builder);
+    GraphBuilderFn GetDynamicSubgraphBuilder(const string &name, const unsigned int index) const;
+
     void OutputRegister(const string& name);
     void DynamicOutputRegister(const string& name, const unsigned int num);
 

@@ -40,7 +40,7 @@ bool HasDynamicPara(hiai::AippPreprocessConfig& aippConfig, size_t type, size_t&
     for (int32_t i = 0; i < aippConfig.configDataCnt; i++) {
         if ((static_cast<uint32_t>(aippConfig.configDataInfo[i].type) == type) &&
             (aippConfig.configDataInfo[i].idx >= 0)) {
-            idx = static_cast<size_t>(aippConfig.configDataInfo[i].idx);
+            idx = static_cast<size_t>(static_cast<uint32_t>(aippConfig.configDataInfo[i].idx));
             return true;
         }
     }
@@ -291,7 +291,7 @@ static Status ExtractAippPreprocessConfig(const CustomModelData& customModelData
             return FAILED;
         }
         if (aippConfig.configDataCnt >= 0) {
-            dynamicInputCount += static_cast<size_t>(aippConfig.configDataCnt);
+            dynamicInputCount += static_cast<size_t>(static_cast<uint32_t>(aippConfig.configDataCnt));
         }
         aippConfigVec.push_back(aippConfig);
     }

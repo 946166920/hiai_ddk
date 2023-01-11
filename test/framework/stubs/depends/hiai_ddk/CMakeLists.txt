@@ -10,9 +10,3 @@ include(hiai.cmake)
 include(hiai_ir.cmake)
 include(hiai_ir_build.cmake)
 include(hiai_ir_build_aipp.cmake)
-
-
-
-
-
-

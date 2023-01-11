@@ -21,13 +21,17 @@
 // inc/api
 #include "graph/attr_value.h"
 #include "graph/op/const_defs.h"
+#include "graph/op/array_defs.h"
 
 // inc/common
 #include "infra/base/securestl.h"
+#include "infra/base/assertion.h"
 
 // inc/framework
 #include "framework/graph/core/cgraph/compute_graph.h"
 #include "framework/graph/core/cgraph/graph_modifier.h"
+#include "framework/graph/core/cgraph/graph_spec.h"
+#include "framework/graph/core/cgraph/graph_finder.h"
 #include "framework/graph/core/node/node_spec.h"
 #include "framework/graph/core/node/node_functor.h"
 #include "framework/graph/core/node/node_walker.h"
@@ -47,6 +51,7 @@
 
 // src/framework
 #include "graph/operator_impl.h"
+#include "graph/core/op/constholder_op_desc.h"
 
 using namespace std;
 
@@ -96,21 +101,6 @@ GraphErrCodeStatus OpDescUtils::SetSparseAlgorithmParams(
     namedAttrs.SetAttr("sparseAlgorithmData", AttrValue::CreateFrom(coordGrid.sparseAlgorithmData));
     auto attr = AttrValue::CreateFrom(namedAttrs);
     return opDesc->SetAttr(OP_DESC_SPARSE_ALGORITHM_PARAMS, attr);
-}
-
-TensorPtr OpDescUtils::MutableWeights(OpDesc& opDesc)
-{
-    TensorPtr weight = nullptr;
-    AttrUtils::MutableTensor(&opDesc, hiai::ATTR_NAME_WEIGHTS, weight);
-    return weight;
-}
-
-TensorPtr OpDescUtils::MutableWeights(const OpDescPtr& opDesc)
-{
-    if (!opDesc) {
-        return nullptr;
-    }
-    return MutableWeights(*opDesc);
 }
 
 GraphErrCodeStatus OpDescUtils::SetWeights(OpDesc& opDesc, const TensorPtr weight)
@@ -197,7 +187,59 @@ bool FindNonConstInDataByNode(const ge::Node& node, const size_t indexNonConst, 
     };
     return node.ROLE(NodeWalker).ListInDataEdgesNonConst(std::move(visitor)) == hiai::COMM_EXCEPTION;
 }
+
+Node* GetParentConstNode(const ge::Node& node, const std::string& name)
+{
+    const Node* parentNode = node.ROLE(NodeSpec).OwnerComputeGraph().ROLE(GraphSpec).OwnerNode();
+    if (parentNode != nullptr) {
+        return GetParentConstNode(*parentNode, name);
+    }
+    ComputeGraph& rootGraph = node.ROLE(NodeSpec).OwnerComputeGraph();
+    return rootGraph.ROLE(GraphFinder).FindNode(name);
+}
+
+TensorPtr MutableWeight(const ge::OpDesc& opDesc)
+{
+    TensorPtr weight = nullptr;
+    AttrUtils::GetTensor(&opDesc, hiai::ATTR_NAME_WEIGHTS, weight);
+    return weight;
+}
+
+TensorPtr MutableConstHolderWeight(const ge::Node& node)
+{
+    OpDesc& opDesc = node.ROLE(NodeSpec).OpDesc();
+    ConstHolderOpDesc* constHolderOp = static_cast<ConstHolderOpDesc*>(&opDesc);
+
+    if (constHolderOp->GetHoldedOpDesc() == nullptr) {
+        ge::Node* parentConstNode = GetParentConstNode(node, constHolderOp->GetName());
+        if (parentConstNode == nullptr) {
+            FMK_LOGE("const holder get parent const node:%s fail.", constHolderOp->GetName().c_str());
+            return nullptr;
+        }
+        constHolderOp->SetHoldedOpDesc(&parentConstNode->ROLE(NodeSpec).OpDesc());
+    }
+
+    return MutableWeight(*constHolderOp->GetHoldedOpDesc());
+}
+
+TensorPtr MutableWeight(const Node& node)
+{
+    ge::OpDesc& opDesc = node.ROLE(NodeSpec).OpDesc();
+    if (ConstHolderOpDesc::IsConstHolderOp(opDesc)) {
+        return MutableConstHolderWeight(node);
+    }
+
+    return MutableWeight(opDesc);
+}
 } // namespace
+
+TensorPtr OpDescUtils::MutableWeights(const OpDescPtr& opDesc)
+{
+    if (opDesc == nullptr) {
+        return nullptr;
+    }
+    return MutableWeight(*opDesc);
+}
 
 TensorDesc OpDescUtils::GetNonConstInputTensorDesc(const ge::Node& node, size_t indexNonConst)
 {
@@ -237,8 +279,7 @@ bool OpDescUtils::IsNonConstInput(const ge::Node& node, size_t index)
     bool ret = false;
     auto visitor = [index, &ret](Edge& edge) {
         if (static_cast<unsigned int>(edge.DstIdx()) == index) {
-            ret = edge.SrcNode().ROLE(NodeSpec).Type() != hiai::op::Const::TYPE &&
-                edge.SrcNode().ROLE(NodeSpec).Type() != hiai::op::QuantizedConst::TYPE;
+            ret = !NodeUtils::IsConstNode(edge.SrcNode());
             return hiai::COMM_EXCEPTION;
         }
         return hiai::SUCCESS;
@@ -283,8 +324,7 @@ vector<ge::Node*> OpDescUtils::GetConstInputs(const ge::Node& node)
 {
     vector<ge::Node*> ret;
     (void)node.ROLE(NodeWalker).ListInDataNodes([&ret](ge::Node& peerNode) {
-        if (peerNode.ROLE(NodeSpec).Type() == hiai::op::Const::TYPE ||
-            peerNode.ROLE(NodeSpec).Type() == hiai::op::QuantizedConst::TYPE) {
+        if (NodeUtils::IsConstNode(peerNode)) {
             ret.push_back(&peerNode);
         }
         return hiai::SUCCESS;
@@ -308,26 +348,25 @@ vector<TensorPtr> OpDescUtils::MutableWeights(const ge::Node& node)
 {
     vector<TensorPtr> ret;
     // const算子，直接取权值
-    auto& nodeSpec = node.ROLE(NodeSpec);
-    if (nodeSpec.Type() == hiai::op::Const::TYPE || nodeSpec.Type() == hiai::op::QuantizedConst::TYPE) {
-        auto weight = MutableWeights(nodeSpec.OpDesc());
+    if (NodeUtils::IsConstNode(node)) {
+        TensorPtr weight = MutableWeight(node);
         if (weight == nullptr) {
-            FMK_LOGD("const op has no weight, op name:%s", nodeSpec.Name().c_str());
+            FMK_LOGD("const op has no weight, op name:%s", node.ROLE(NodeSpec).Name().c_str());
             return ret;
         }
         ret.push_back(weight);
         return ret;
     }
     // 其他算子从相连的constop中获取权值
-    auto input_nodes = GetConstInputs(node);
-    for (const auto& input_node : input_nodes) {
-        GE_CHECK_NOTNULL_EXEC(input_node, continue);
-        auto temp_weight = MutableWeights(input_node->ROLE(NodeSpec).OpDesc());
-        if (temp_weight == nullptr) {
-            FMK_LOGE("const op's weight is null, name: %s", input_node->ROLE(NodeSpec).Name().c_str());
+    auto inputNodes = GetConstInputs(node);
+    for (auto it = inputNodes.cbegin(); it != inputNodes.cend(); it++) {
+        GE_CHECK_NOTNULL_EXEC(*it, continue);
+        TensorPtr weight = MutableWeight(**it);
+        if (weight == nullptr) {
+            FMK_LOGE("const op's weight is null, name: %s", (*it)->ROLE(NodeSpec).Name().c_str());
             return vector<TensorPtr>();
         }
-        ret.push_back(temp_weight);
+        ret.push_back(weight);
     }
     return ret;
 }
@@ -342,8 +381,7 @@ vector<TensorPtr> OpDescUtils::MutableWeights(const ge::NodePtr& node)
 
 GraphErrCodeStatus OpDescUtils::SetWeights(ge::Node& node, const vector<ge::TensorPtr>& weights)
 {
-    const auto& type = node.ROLE(NodeSpec).Type();
-    if (type == hiai::op::Const::TYPE || type == hiai::op::QuantizedConst::TYPE) {
+    if (NodeUtils::IsConstNode(node)) {
         const uint32_t constOpNormalWeightSize = 1;
         if (weights.size() == constOpNormalWeightSize) {
             return SetWeights(node.ROLE(NodeSpec).OpDesc(), weights[0]);
@@ -440,8 +478,7 @@ GraphErrCodeStatus OpDescUtils::ClearWeights(ge::Node& node)
     ComputeGraph& graph = node.ROLE(NodeSpec).OwnerComputeGraph();
 
     (void)node.ROLE(NodeWalker).ListInDataNodes([&graph](ge::Node& input) {
-        if (input.ROLE(NodeSpec).Type() == hiai::op::Const::TYPE ||
-            input.ROLE(NodeSpec).Type() == hiai::op::QuantizedConst::TYPE) {
+        if (NodeUtils::IsConstNode(input)) {
             (void)graph.ROLE(GraphModifier).RemoveNode(input);
         }
         return hiai::SUCCESS;

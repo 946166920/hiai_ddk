@@ -82,8 +82,6 @@ TEST_P(ModelDeviceConfigUt, ModelDeviceConfigOp)
     std::vector<ExecuteDevice> device2 = {ExecuteDevice::NPU};
     options.modelDeviceConfig.opDeviceOrder["bb"] = device2;
     options.modelDeviceConfig.deviceMemoryReusePlan = DeviceMemoryReusePlan::HIGH;
-    options.modelDeviceConfig.clCustomizations["aa"] = "abcdefg";
-    options.modelDeviceConfig.clCustomizations["bb"] = "hijklmn";
 
     ControlC::GetInstance().SetBuildOptions(options); // 用于build中校验
     const std::string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_no_infershaped.om";

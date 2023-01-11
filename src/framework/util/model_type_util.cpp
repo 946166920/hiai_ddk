@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "framework/util/model_type_util.h"
+#include "framework/model/model_type_util.h"
 #include <fstream>
 #include <string>
 #include "framework/common/types.h"

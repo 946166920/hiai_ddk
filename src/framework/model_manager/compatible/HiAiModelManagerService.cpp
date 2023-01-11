@@ -23,7 +23,7 @@
 #include "framework/infra/log/log.h"
 #include "compatible/AiTensor.h"
 #include "util/version_util.h"
-#include "framework/util/base_buffer.h"
+#include "infra/base/base_buffer.h"
 #include "framework/common/types.h"
 #include "model_builder/model_builder.h"
 #include "model/built_model_aipp.h"
@@ -494,7 +494,7 @@ static AIStatus GetModelAippParaFromIndex(std::map<std::string, std::shared_ptr<
         return ret;
     }
 
-    std::vector<void*> tensorAippParas;
+    std::vector<std::shared_ptr<IAIPPPara>> tensorAippParas;
     ret = builtModelAipp->GetTensorAippPara(index, tensorAippParas);
     if (ret != AI_SUCCESS) {
         FMK_LOGE("%s GetTensorAippPara index %d return %d", modelName.c_str(), index, ret);
@@ -508,14 +508,7 @@ static AIStatus GetModelAippParaFromIndex(std::map<std::string, std::shared_ptr<
             FMK_LOGE("new AippPara i=%d failed", i);
             return AI_FAILED;
         }
-        auto result = aippParas[i]->Init(batchCount);
-        if (result != AI_SUCCESS) {
-            FMK_LOGE("aipp para init failed");
-            return result;
-        }
-        std::shared_ptr<AIPPParaImpl> aippParaImpl =
-            std::dynamic_pointer_cast<AIPPParaImpl>(aippParas[i]->GetAIPPPara());
-        aippParaImpl->Init(tensorAippParas[i]);
+        aippParas[i]->SetAIPPPara(tensorAippParas[i]);
     }
     return AI_SUCCESS;
 }

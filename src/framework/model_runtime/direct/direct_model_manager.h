@@ -24,24 +24,23 @@ extern "C" {
 #endif
 
 namespace hiai {
-HIAI_ModelManager* HIAI_DIRECT_ModelManager_Create();
-void HIAI_DIRECT_ModelManager_Destroy(HIAI_ModelManager** manager);
+HIAI_MR_ModelManager* HIAI_DIRECT_ModelManager_Create();
+void HIAI_DIRECT_ModelManager_Destroy(HIAI_MR_ModelManager** manager);
 
-HIAI_Status HIAI_DIRECT_ModelManager_Init(HIAI_ModelManager* manager, const HIAI_ModelInitOptions* options,
-    const HIAI_BuiltModel* builtModel, const HIAI_ModelManagerListener* listener);
+HIAI_Status HIAI_DIRECT_ModelManager_Init(HIAI_MR_ModelManager* manager, const HIAI_MR_ModelInitOptions* options,
+    const HIAI_MR_BuiltModel* builtModel, const HIAI_MR_ModelManagerListener* listener);
 
-HIAI_Status HIAI_DIRECT_ModelManager_SetPriority(HIAI_ModelManager* manager, HIAI_ModelPriority priority);
+HIAI_Status HIAI_DIRECT_ModelManager_SetPriority(HIAI_MR_ModelManager* manager, HIAI_ModelPriority priority);
 
-HIAI_Status HIAI_DIRECT_ModelManager_Run(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[], int32_t inputNum,
-    HIAI_NDTensorBuffer* output[], int32_t outputNum);
+HIAI_Status HIAI_DIRECT_ModelManager_Run(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum);
 
-HIAI_Status HIAI_DIRECT_ModelManager_RunAsync(
-    HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[], int32_t inputNum,
-    HIAI_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData);
+HIAI_Status HIAI_DIRECT_ModelManager_RunAsync(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData);
 
-HIAI_Status HIAI_DIRECT_ModelManager_Cancel(HIAI_ModelManager* manager);
+HIAI_Status HIAI_DIRECT_ModelManager_Cancel(HIAI_MR_ModelManager* manager);
 
-HIAI_Status HIAI_DIRECT_ModelManager_Deinit(HIAI_ModelManager* manager);
+HIAI_Status HIAI_DIRECT_ModelManager_Deinit(HIAI_MR_ModelManager* manager);
 } // namespace hiai
 #ifdef __cplusplus
 }

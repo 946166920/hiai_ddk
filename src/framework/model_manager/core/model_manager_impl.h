@@ -16,14 +16,8 @@
 #ifndef FRAMEWORK_INC_MODEL_MANAGER_MODEL_MANAGER_IMPL_H
 #define FRAMEWORK_INC_MODEL_MANAGER_MODEL_MANAGER_IMPL_H
 
-// inc/api
-#ifdef AI_SUPPORT_AIPP_API
-#include "model_manager/model_manager_aipp.h"
-#else
-#include "model_manager/model_manager.h"
-#endif
-
 #include "framework/c/hiai_model_manager.h"
+#include "model_manager/model_manager_ext.h"
 
 #include <mutex>
 
@@ -36,11 +30,11 @@ struct RunAsyncContext {
     std::vector<std::shared_ptr<INDTensorBuffer>> outputs;
 };
 
-#ifdef AI_SUPPORT_AIPP_API
-class ModelManagerImpl : public IModelManagerAipp {
-#else
-class ModelManagerImpl : public IModelManager {
-#endif
+struct MemAllocaterContext {
+    ModelManagerImpl* modelManager;
+};
+
+class ModelManagerImpl : public IModelManagerExt {
 public:
     ModelManagerImpl() = default;
     ~ModelManagerImpl() override;
@@ -48,6 +42,10 @@ public:
 private:
     Status Init(const ModelInitOptions& options, const std::shared_ptr<IBuiltModel>& builtModel,
         const std::shared_ptr<IModelManagerListener>& listener) override;
+
+    Status Init(const ModelInitOptions& options, const std::shared_ptr<IBuiltModel>& builtModel,
+        const std::shared_ptr<IModelManagerListener>& listener,
+        const std::shared_ptr<ISharedMemAllocator>& allocator) override;
 
     Status SetPriority(ModelPriority priority) override;
 
@@ -74,18 +72,27 @@ private:
     void OnRunDone(const Context& context, Status errCode, std::vector<std::shared_ptr<INDTensorBuffer>>& outputs);
     void OnServiceDied();
 
-    static void OnRunDone(void* userData, HIAI_Status errCode, HIAI_NDTensorBuffer* output[], int32_t outputNum);
+    static void OnRunDone(void* userData, HIAI_Status errCode, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum);
     static void OnServiceDied(void* userData);
+
+    Status PrepareSharedMemAllocator(const std::shared_ptr<ISharedMemAllocator>& allocator);
+
+    static void OnAllocate(void* userData, uint32_t requiredSize, HIAI_NativeHandle* handles[], size_t* handlesSize);
+    static void OnFree(void* userData, HIAI_NativeHandle* handles[], size_t handlesSize);
 
     void UnLoad();
 
 private:
     std::mutex modelManagerMutex_;
-    std::shared_ptr<HIAI_ModelManager> modelManager_ {nullptr};
+    std::shared_ptr<HIAI_MR_ModelManager> modelManager_ {nullptr};
 
     std::mutex listenerMutex_;
     std::shared_ptr<IModelManagerListener> listener_ {nullptr};
-    std::shared_ptr<HIAI_ModelManagerListener> cListener_ {nullptr};
+    std::shared_ptr<HIAI_MR_ModelManagerListener> cListener_ {nullptr};
+
+    std::shared_ptr<ISharedMemAllocator> allocator_ {nullptr};
+    std::shared_ptr<HIAI_ModelManagerSharedMemAllocator> cAllocator_ {nullptr};
+    std::vector<std::pair<HIAI_NativeHandle*, hiai::NativeHandle>> nativeHandle_;
 
     CustomModelData customModelData_;
 };

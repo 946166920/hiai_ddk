@@ -24,9 +24,9 @@
 extern "C" {
 #endif
 
-AICP_C_API_EXPORT HIAI_Status HIAI_ModelManager_runAippModelV2(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[],
-    int32_t inputNum, HIAI_TensorAippPara* aippPara[], int32_t aippParaNum, HIAI_NDTensorBuffer* output[],
-    int32_t outputNum, int32_t timeoutInMS, void* userData);
+AICP_C_API_EXPORT HIAI_Status HIAI_MR_ModelManager_runAippModelV2(HIAI_MR_ModelManager* manager,
+    HIAI_MR_NDTensorBuffer* input[], int32_t inputNum, HIAI_MR_TensorAippPara* aippPara[], int32_t aippParaNum,
+    HIAI_MR_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData);
 
 #ifdef __cplusplus
 }

@@ -48,7 +48,8 @@ namespace hiai {
 bool QuantizeUtil::IsSupportQuantOpType(const std::string& opType)
 {
     const std::set<std::string> quantOpTypes = { hiai::op::Convolution::TYPE, hiai::op::ConvolutionDepthwise::TYPE,
-        hiai::op::FullyConnection::TYPE, hiai::op::MatMul::TYPE, hiai::op::ConvTranspose::TYPE };
+        hiai::op::FullyConnection::TYPE, hiai::op::MatMul::TYPE, hiai::op::ConvTranspose::TYPE,
+        hiai::op::GemmD::TYPE };
     if (quantOpTypes.find(opType) == quantOpTypes.end()) {
         return false;
     }
@@ -490,7 +491,8 @@ Status GetOpOutChannelNum(const Node& node, int32_t& outChannelNum)
         // ConvTranspose op weight format:[Cout,Cin, H, W]
         outChannelNum = filter->GetTensorDesc().GetShape().GetDim(0);
     } else if (node.ROLE(NodeSpec).Type() == hiai::op::FullyConnection::TYPE ||
-        node.ROLE(NodeSpec).Type() == hiai::op::MatMul::TYPE) {
+        node.ROLE(NodeSpec).Type() == hiai::op::MatMul::TYPE ||
+        node.ROLE(NodeSpec).Type() == hiai::op::GemmD::TYPE) {
         outChannelNum = fcWeightScaleCount;
     } else if (node.ROLE(NodeSpec).Type() == hiai::op::ConvTranspose::TYPE) {
         // ConvTranspose op weight format:[Cin,Cout, H, W]

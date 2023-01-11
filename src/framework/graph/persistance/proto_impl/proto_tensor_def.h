@@ -17,15 +17,16 @@
 #ifndef FRAMEWORK_GRAH_PERSISTENCE_PROTO_PROTO_TENSOR_DEF_PROTO_H
 #define FRAMEWORK_GRAH_PERSISTENCE_PROTO_PROTO_TENSOR_DEF_PROTO_H
 #include "proto_func_macro_def.h"
+#include "proto_wrapper.h"
 #include "graph/persistance/interface/tensor_def.h"
 
 namespace hiai {
 class ProtoTensorDef : public ITensorDef {
 public:
-    ProtoTensorDef();
-    ProtoTensorDef(hiai::proto::TensorDef* tensorDef, bool isOwner = false);
+    ProtoTensorDef(hiai::proto::TensorDef& tensorDef);
     ~ProtoTensorDef() override;
 
+private:
     void CopyFrom(const ITensorDef* other) override;
     SerializeType GetSerializeType() const override;
 
@@ -33,9 +34,17 @@ public:
     DEF_PROTO_PERSISTENCE_STANDARD_MEMBER_PURE_FUNC(std::string, data);
 
 private:
-    hiai::proto::TensorDef* tensorDef_;
-    bool isOwner_;
+    hiai::proto::TensorDef& tensorDef_;
 };
+
+class DefaultProtoTensorDef : private ProtoWrapper<hiai::proto::TensorDef>, public ProtoTensorDef {
+public:
+    DefaultProtoTensorDef() : ProtoTensorDef(GetProto())
+    {
+    }
+    ~DefaultProtoTensorDef() override = default;
+};
+
 } // namespace hiai
 
 #endif

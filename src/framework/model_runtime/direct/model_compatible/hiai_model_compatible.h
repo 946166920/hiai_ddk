@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #ifndef FRAMEWORK_MODEL_MANAGER_DIRECT_MODEL_MANAGER_HIAI_MODEL_COMPATIBLE_H
 #define FRAMEWORK_MODEL_MANAGER_DIRECT_MODEL_MANAGER_HIAI_MODEL_COMPATIBLE_H
 #include <stdint.h>

@@ -65,6 +65,8 @@ public:
     void OptionalInputRegister(const std::string& name);
     void DynamicInputRegister(const std::string& name, uint32_t num);
 
+    void SubgraphCountRegister(const std::string& name, uint32_t num);
+
     void OutputRegister(const std::string& name);
     void DynamicOutputRegister(const std::string& name, uint32_t num);
 

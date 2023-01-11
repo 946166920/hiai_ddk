@@ -21,7 +21,7 @@
 extern "C" {
 #endif
 
-struct HIAI_TensorAippPara {
+struct HIAI_MR_TensorAippPara {
     size_t size;
     void* data;
     void* handle;

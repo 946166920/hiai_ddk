@@ -110,6 +110,7 @@ const std::vector<OpDefineInputs> OP_DEFINE_OPTIONAL_INPUTS{
     {{hiai::op::ReduceMax::TYPE}, {1}},
     {{hiai::op::ConfigData::TYPE}, {0}},
     {{hiai::op::DequantizeV2::TYPE}, {1}},
+    {{hiai::op::MapIndex::TYPE}, {2}},
 };
 } // namespace
 

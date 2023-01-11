@@ -19,7 +19,7 @@
 #include <memory>
 #include <string>
 
-#include "framework/util/base_buffer.h"
+#include "infra/base/base_buffer.h"
 #include "util/util_api_export.h"
 #include "base/error_types.h"
 

@@ -23,11 +23,11 @@
 extern "C" {
 #endif
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateLocalBufferFromSize(const HIAI_NDTensorDesc* desc, size_t size);
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateLocalBufferFromSize(const HIAI_NDTensorDesc* desc, size_t size);
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateLocalBufferFromNDTensorDesc(const HIAI_NDTensorDesc* desc);
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateLocalBufferFromNDTensorDesc(const HIAI_NDTensorDesc* desc);
 
-void HIAI_NDTensorBuffer_ReleaseLocal(HIAI_NDTensorBuffer** buffer);
+void HIAI_NDTensorBuffer_ReleaseLocal(HIAI_MR_NDTensorBuffer** buffer);
 
 #ifdef __cplusplus
 }

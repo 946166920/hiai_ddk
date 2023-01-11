@@ -24,8 +24,6 @@
 #include "graph/types.h"
 #include "infra/base/hiai_types.h"
 #include "model_builder/model_builder_types.h"
-#include "framework/util/om_options.h"
-#include "framework/util/bin_object.h"
 #include "model_manager/model_manager_types.h"
 
 namespace ge {
@@ -64,26 +62,6 @@ struct ModelConfig {
 };
 
 constexpr int MODEL_VOTE_TIMEOUT_MS = 3000;
-using DynamicShape = hiai::DynamicShapeConfig;
-struct LoadModelOptions {
-    PerfMode perfMode = PerfMode::UNSET;
-    int perfTimeOut = MODEL_VOTE_TIMEOUT_MS;
-    int32_t priority = 0;
-    uint32_t pid = 0;
-    std::string key;
-    OMOptions omOptions;
-    bool usePipeline = false;
-    bool isSupportTask = false;
-    DynamicShape dynamicShape;
-    std::vector<std::vector<int64_t>> inputShapes;
-    bool dedicatedModel = false;
-    int useClientMemModelCnt = 0;
-    std::shared_ptr<MemoryAllocator> memAllocator = nullptr;
-    hiai::PrecisionMode precisionMode = hiai::PrecisionMode::PRECISION_MODE_FP32;
-    hiai::TuningStrategy tuningStrategy = hiai::TuningStrategy::OFF;
-    // 静态多Shape加载模型指定的shape档位
-    uint32_t multiShapeIndex = 0;
-};
 
 const char* const OM_YOLO_DETECTION_TYPE = "YoloPostDetectionOutput";
 const char* const GRAPH_OP_TYPE = "GraphOp";

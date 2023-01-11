@@ -27,6 +27,7 @@
 #include "graph/buffer.h"
 #include "graph/core/cgraph/graph_store.h"
 #include "graph/core/node/node_store.h"
+#include "graph/core/op/op_desc_factory.h"
 #include "graph/persistance/interface/graph_def.h"
 #include "graph/persistance/interface/op_def.h"
 #include "graph/persistance/proxy/proto_factory.h"
@@ -34,6 +35,7 @@
 // framework/inc
 #include "infra/base/assertion.h"
 #include "infra/base/securestl.h"
+#include "framework/infra/log/log.h"
 
 namespace ge {
 bool GraphSerializer::Save(Buffer& buffer) const
@@ -160,7 +162,7 @@ hiai::Status GraphSerializer::CreateAllNodes(
         auto opDef = graphDef->mutable_op(i);
         HIAI_EXPECT_NOT_NULL(opDef);
 
-        OpDescPtr opDesc = hiai::make_shared_nothrow<OpDesc>(opDef, false);
+        OpDescPtr opDesc = OpDescFactory::GetInstance().Create(opDef);
         HIAI_EXPECT_NOT_NULL(opDesc);
 
         HIAI_EXPECT_EXEC(opDesc->UnSerialize());

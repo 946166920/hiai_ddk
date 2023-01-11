@@ -16,26 +16,18 @@
 #include "proto_shape_def.h"
 #include "graph/graph_api_export.h"
 namespace hiai {
-ProtoShapeDef::ProtoShapeDef() : ProtoShapeDef(new (std::nothrow) hiai::proto::ShapeDef(), true)
-{
-}
-
-ProtoShapeDef::ProtoShapeDef(hiai::proto::ShapeDef* shapeDef, bool isOwner) : shapeDef_(shapeDef), isOwner_(isOwner)
+ProtoShapeDef::ProtoShapeDef(hiai::proto::ShapeDef& shapeDef) : shapeDef_(shapeDef)
 {
 }
 
 ProtoShapeDef::~ProtoShapeDef()
 {
-    if (isOwner_) {
-        delete shapeDef_;
-    }
-    shapeDef_ = nullptr;
 }
 
 void ProtoShapeDef::CopyFrom(const IShapeDef* other)
 {
-    if (shapeDef_ != nullptr && other != nullptr && other->GetSerializeType() == PROTOBUF) {
-        *shapeDef_ = *(static_cast<const ProtoShapeDef*>(other)->shapeDef_);
+    if (other != nullptr && other->GetSerializeType() == PROTOBUF) {
+        shapeDef_ = static_cast<const ProtoShapeDef*>(other)->shapeDef_;
     }
 }
 
@@ -48,7 +40,7 @@ IMPL_PROTO_PERSISTENCE_BASIC_LIST_MEMBER_PURE_FUNC(ProtoShapeDef, shapeDef_, int
 
 extern "C" GRAPH_API_EXPORT IShapeDef* CreateShapeDef()
 {
-    return new (std::nothrow) ProtoShapeDef();
+    return new (std::nothrow) DefaultProtoShapeDef();
 }
 
 extern "C" GRAPH_API_EXPORT void DestroyShapeDef(IShapeDef* shapeDef)

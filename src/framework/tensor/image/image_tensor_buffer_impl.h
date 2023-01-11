@@ -35,7 +35,7 @@ struct ImageTensorBufferInfo {
 
 class ImageTensorBufferImpl : public IImageTensorBuffer, public NDTensorBufferImpl {
 public:
-    ImageTensorBufferImpl(ImageTensorBufferInfo& bufferInfo, HIAI_NDTensorBuffer* impl) : NDTensorBufferImpl(impl)
+    ImageTensorBufferImpl(ImageTensorBufferInfo& bufferInfo, HIAI_MR_NDTensorBuffer* impl) : NDTensorBufferImpl(impl)
     {
         bufferInfo_.batch = bufferInfo.batch;
         bufferInfo_.channel = bufferInfo.channel;
@@ -45,7 +45,7 @@ public:
         bufferInfo_.format = bufferInfo.format;
     }
 
-    ImageTensorBufferImpl(ImageTensorBufferInfo& bufferInfo, HIAI_NDTensorBuffer* impl, const NDTensorDesc& desc)
+    ImageTensorBufferImpl(ImageTensorBufferInfo& bufferInfo, HIAI_MR_NDTensorBuffer* impl, const NDTensorDesc& desc)
         : NDTensorBufferImpl(impl, desc)
     {
         bufferInfo_.batch = bufferInfo.batch;
@@ -129,8 +129,8 @@ private:
 };
 
 Status ImageBufferInit(const int32_t b, const int32_t h, const int32_t w, const ImageFormat format,
-    ImageTensorBufferInfo& bufferInfo, NDTensorDesc& desc, HIAI_NDTensorBuffer** tensor);
+    ImageTensorBufferInfo& bufferInfo, NDTensorDesc& desc, HIAI_MR_NDTensorBuffer** tensor);
 Status ImageBufferInit(const int32_t b, const int32_t h, const int32_t w, const ImageFormat format,
-    const NativeHandle& handle, ImageTensorBufferInfo& bufferInfo, NDTensorDesc& desc, HIAI_NDTensorBuffer** tensor);
+    const NativeHandle& handle, ImageTensorBufferInfo& bufferInfo, NDTensorDesc& desc, HIAI_MR_NDTensorBuffer** tensor);
 } // namespace hiai
 #endif // TENSOR_IMAGE_BUFFER_IMPL_H

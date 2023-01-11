@@ -75,7 +75,7 @@ public:
     }
 
 private:
-    HIAI_BuiltModel* builtModel {nullptr};
+    HIAI_MR_BuiltModel* builtModel {nullptr};
     shared_ptr<BaseBuffer> modelBuffer {nullptr};
     uint8_t* data = nullptr;
     size_t size = 0;
@@ -92,9 +92,6 @@ INSTANTIATE_TEST_CASE_P(normal, DirectBuiltModel_UTest, testing::ValuesIn(g_Test
     3.校验size小于实际模型大小场景
     4.保存成功场景
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, SaveToExternalBuffer)
 {
@@ -129,9 +126,6 @@ TEST_P(DirectBuiltModel_UTest, SaveToExternalBuffer)
     1.model restore from file
     2.保存成功场景
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, RestoreFromFile_SaveToExternalBuffer)
 {
@@ -157,9 +151,6 @@ TEST_P(DirectBuiltModel_UTest, RestoreFromFile_SaveToExternalBuffer)
     1.校验入参model为空场景
     2.成功保存场景
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, Save)
 {
@@ -184,9 +175,6 @@ TEST_P(DirectBuiltModel_UTest, Save)
     1.从文件 restore
     2.成功保存场景
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, RestoreFromFile_Save)
 {
@@ -211,9 +199,6 @@ TEST_P(DirectBuiltModel_UTest, RestoreFromFile_Save)
     2.校验入参size为0场景
     3.Restore成功场景
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, Restore)
 {
@@ -243,9 +228,6 @@ TEST_P(DirectBuiltModel_UTest, Restore)
     1.校验入参 file 为空场景
     2.Restore成功场景
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, RestoreFromFile)
 {
@@ -265,10 +247,6 @@ TEST_P(DirectBuiltModel_UTest, RestoreFromFile)
     2.校验入参file为空场景
     3.校验入参file路径非法场景
     4.Save成功场景
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, SaveToFile)
 {
@@ -304,26 +282,40 @@ TEST_P(DirectBuiltModel_UTest, SaveToFile)
 /*
 * 测试用例名称: HIAI_DIRECT_BuiltModel_SaveToFile
 * 测试用例描述:
-    1.model Restore from file
-    2.Save to file成功场景
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
+    异常场景: 模型文件已经存在时候，不需要再保存到file中
 */
-TEST_P(DirectBuiltModel_UTest, RestoreFromFile_SaveToFile)
+TEST_F(DirectBuiltModel_UTest, RestoreFromFile_SaveToFile)
 {
-    BuiltModelTestParams param = GetParam();
-    builtModel = HIAI_DIRECT_BuiltModel_RestoreFromFile(param.modelFile);
-    if (param.expectResult == HIAI_SUCCESS) {
-        EXPECT_TRUE(builtModel != nullptr);
-    } else {
-        EXPECT_TRUE(builtModel == nullptr);
-    }
+    string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_hcs_npucl.om";
+    builtModel = HIAI_DIRECT_BuiltModel_RestoreFromFile(modelFile.c_str());
+    EXPECT_TRUE(builtModel != nullptr);
 
     string saveFile = "./HIAI_DIRECT_BuiltModel_SaveToFile.om";
     HIAI_Status ret = HIAI_DIRECT_BuiltModel_SaveToFile(builtModel, saveFile.c_str());
-    EXPECT_TRUE(ret == param.expectResult);
+    EXPECT_TRUE(ret == HIAI_FAILURE);
+
+    if (ret == HIAI_SUCCESS) {
+        unlink(saveFile.c_str());
+    }
+}
+
+/*
+* 测试用例名称: HIAI_DIRECT_BuiltModel_SaveToFile
+* 测试用例描述:
+    将模型buffer保存到外部的file中
+*/
+TEST_F(DirectBuiltModel_UTest, RestoreFromBuffer_SaveToFile)
+{
+    string modelFile = "bin/llt/framework/domi/modelmanager/tf_softmax_infershaped.om";
+    modelBuffer = FileUtil::LoadToBuffer(modelFile);
+    if (modelBuffer != nullptr) {
+        builtModel = HIAI_DIRECT_BuiltModel_Restore(modelBuffer->MutableData(), modelBuffer->GetSize());
+    }
+    EXPECT_TRUE(builtModel != nullptr);
+
+    string saveFile = "./HIAI_DIRECT_BuiltModel_SaveToFile.om";
+    HIAI_Status ret = HIAI_DIRECT_BuiltModel_SaveToFile(builtModel, saveFile.c_str());
+    EXPECT_TRUE(ret == HIAI_SUCCESS);
 
     if (ret == HIAI_SUCCESS) {
         unlink(saveFile.c_str());
@@ -336,10 +328,6 @@ TEST_P(DirectBuiltModel_UTest, RestoreFromFile_SaveToFile)
     1.校验入参data为空场景
     2.检测兼容模型场景
     3.检测不兼容模型场景
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, CheckCompatibility_001)
 {
@@ -363,10 +351,6 @@ TEST_P(DirectBuiltModel_UTest, CheckCompatibility_001)
 * 测试用例名称: HIAI_DIRECT_BuiltModel_CheckCompatibility
 * 测试用例描述:
     获取符号表失败场景
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_F(DirectBuiltModel_UTest, CheckCompatibility_002)
 {
@@ -388,10 +372,6 @@ TEST_F(DirectBuiltModel_UTest, CheckCompatibility_002)
 * 测试用例描述:
     1、restore from file
     2、检查兼容性
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, RestoreFromFile_CheckCompatibility)
 {
@@ -416,10 +396,6 @@ TEST_P(DirectBuiltModel_UTest, RestoreFromFile_CheckCompatibility)
 * 测试用例描述:
     1.校验入参model为空场景
     2.成功场景
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, GetName)
 {
@@ -449,10 +425,6 @@ TEST_P(DirectBuiltModel_UTest, GetName)
 * 测试用例描述:
     1.校验入参model为空场景
     2.成功场景
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, SetName)
 {
@@ -479,10 +451,6 @@ TEST_P(DirectBuiltModel_UTest, SetName)
 * 测试用例描述:
     1.校验入参model为空场景
     2.成功场景
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, GetInputTensorNum)
 {
@@ -507,10 +475,6 @@ TEST_P(DirectBuiltModel_UTest, GetInputTensorNum)
 * 测试用例描述:
     1.校验入参model为空场景
     2.成功场景
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, GetInputTensorDesc)
 {
@@ -541,10 +505,6 @@ TEST_P(DirectBuiltModel_UTest, GetInputTensorDesc)
 * 测试用例描述:
     1.校验入参model为空场景
     2.成功场景
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, GetOutputTensorNum_001)
 {
@@ -570,9 +530,6 @@ TEST_P(DirectBuiltModel_UTest, GetOutputTensorNum_001)
     1.测试HIAI_ModelManager_GetModelNDTensorInfo失败时,
       HIAI_DIRECT_BuiltModel_GetOutputTensorNum内部调用HIAI_ModelManager_GetModelTensorInfoV2
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_002)
 {
@@ -589,6 +546,8 @@ TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_002)
         {"HIAI_GetVersion", nullptr},
         {"HIAI_MemBuffer_create_from_buffer", nullptr},
         {"HIAI_ModelManager_loadFromModelBuffers", nullptr},
+        {"HIAI_ModelManager_unloadModel", nullptr},
+        {"HIAI_ModelManager_destroy", nullptr},
         {"HIAI_ModelBuffer_create_from_buffer", nullptr},
         {"HIAI_ModelBuffer_destroy", nullptr},
         {"HIAI_MemBuffer_destroy", nullptr},
@@ -608,7 +567,6 @@ TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_002)
 
     // 打桩HIAI_ModelManager_GetModelNDTensorInfo/HIAI_ModelManager_ReleaseModelNDTensorInfo
     MOCKER(&HIAI_Foundation_GetSymbol).stubs().with(endWith("NDTensorInfo")).will(returnValue((void*)nullptr));
-
     int num = HIAI_DIRECT_BuiltModel_GetOutputTensorNum(builtModel);
     EXPECT_TRUE(num > 0);
 }
@@ -619,9 +577,6 @@ TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_002)
     1.测试HIAI_ModelManager_getModelTensorInfoV2/HIAI_ModelManager_GetModelNDTensorInfo失败时
       HIAI_DIRECT_BuiltModel_GetOutputTensorNum内部调用HIAI_ModelManager_getModelTensorInfo
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_003)
 {
@@ -635,6 +590,7 @@ TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_003)
 
     std::map<string, void*> symbolList = {{"HIAI_ModelManager_create", nullptr}, {"HIAI_GetVersion", nullptr},
         {"HIAI_MemBuffer_create_from_buffer", nullptr}, {"HIAI_ModelManager_loadFromModelBuffers", nullptr},
+        {"HIAI_ModelManager_unloadModel", nullptr}, {"HIAI_ModelManager_destroy", nullptr},
         {"HIAI_ModelBuffer_create_from_buffer", nullptr}, {"HIAI_ModelBuffer_destroy", nullptr},
         {"HIAI_MemBuffer_destroy", nullptr}, {"HIAI_ModelManager_getModelTensorInfo", nullptr},
         {"HIAI_ModelManager_releaseModelTensorInfo", nullptr}};
@@ -663,9 +619,6 @@ TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_003)
     1.测试HIAI_ModelManager_GetModelNDTensorInfo/HIAI_ModelTensorInfoV2_getIOCount失败时,
       HIAI_DIRECT_BuiltModel_GetOutputTensorNum内部调用HIAI_ModelManager_getModelTensorInfo
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_004)
 {
@@ -679,6 +632,7 @@ TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_004)
 
     std::map<string, void*> symbolList = {{"HIAI_ModelManager_create", nullptr}, {"HIAI_GetVersion", nullptr},
         {"HIAI_MemBuffer_create_from_buffer", nullptr}, {"HIAI_ModelManager_loadFromModelBuffers", nullptr},
+        {"HIAI_ModelManager_unloadModel", nullptr}, {"HIAI_ModelManager_destroy", nullptr},
         {"HIAI_ModelBuffer_create_from_buffer", nullptr}, {"HIAI_ModelBuffer_destroy", nullptr},
         {"HIAI_MemBuffer_destroy", nullptr}, {"HIAI_ModelManager_getModelTensorInfoV2", nullptr},
         {"HIAI_ModelManager_releaseModelTensorInfoV2", nullptr},
@@ -711,10 +665,6 @@ TEST_F(DirectBuiltModel_UTest, GetOutputTensorNum_004)
     1.校验入参model为空场景
     2.校验非法index场景
     2.成功场景
-* 预置条件:
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, GetOutputTensorDesc)
 {
@@ -745,9 +695,6 @@ TEST_P(DirectBuiltModel_UTest, GetOutputTensorDesc)
 * 测试用例描述:
     获取libai_client符号表失败场景
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_F(DirectBuiltModel_UTest, exception)
 {
@@ -771,9 +718,6 @@ TEST_F(DirectBuiltModel_UTest, exception)
     2.校验入参model非空场景
     3.验证重复Destory场景
 * 预置条件: 模型文件
-* 操作步骤:
-* 预期结果:
-* 修改历史:
 */
 TEST_P(DirectBuiltModel_UTest, destroy)
 {

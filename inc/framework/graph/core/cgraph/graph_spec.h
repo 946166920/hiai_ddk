@@ -43,6 +43,8 @@ public:
     hiai::Status SetName(std::string name);
 
     hiai::Status IsValid() const;
+    const ge::Node* OwnerNode() const;
+    hiai::Status SetOwnerNode(Node* ownerNode);
 
 private:
     USE_ROLE(ComputeGraph);

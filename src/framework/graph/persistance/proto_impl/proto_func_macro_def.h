@@ -21,8 +21,8 @@
 #include <memory>
 
 #include "proto/ge_ir.pb.h"
+
 // basic member
-static const std::string STR_EMPTY  = "";
 #define DEF_PROTO_PERSISTENCE_BASIC_MEMBER_PURE_FUNC(type, name) \
 public: \
     type name() const override; \
@@ -31,13 +31,11 @@ public: \
 #define IMPL_PROTO_PERSISTENCE_BASIC_MEMBER_PURE_FUNC(clazz, proto, type, name, default_value) \
     type clazz::name() const \
     { \
-        return proto != nullptr ? (proto)->name() : default_value; \
+        return proto.name(); \
     } \
     void clazz::set_##name(const type value) \
     { \
-        if (proto != nullptr) { \
-            (proto)->set_##name(value); \
-        } \
+        proto.set_##name(value); \
     }
 
 // standard member
@@ -50,17 +48,15 @@ public: \
 #define IMPL_PROTO_PERSISTENCE_STANDARD_MEMBER_PURE_FUNC(clazz, proto, type, name) \
     const type& clazz::name() const \
     { \
-        return proto != nullptr ? (proto)->name() : STR_EMPTY; \
+        return proto.name(); \
     } \
     type* clazz::mutable_##name() \
     { \
-        return proto != nullptr ? (proto)->mutable_##name() : nullptr; \
+        return proto.mutable_##name(); \
     } \
     void clazz::set_##name(const type& value) \
     { \
-        if (proto != nullptr) { \
-            (proto)->set_##name(value); \
-        } \
+        proto.set_##name(value); \
     }
 
 // custom member
@@ -92,8 +88,8 @@ private: \
     } \
     void clazz::lazy_##name##_init() const \
     { \
-        if (proto != nullptr && name##_ == nullptr) { \
-            name##_ = new (std::nothrow) impl_type((proto)->mutable_##name()); \
+        if (name##_ == nullptr) { \
+            name##_ = new (std::nothrow) impl_type(*proto.mutable_##name()); \
         } \
     }
 
@@ -115,38 +111,26 @@ public: \
 #define IMPL_PROTO_PERSISTENCE_BASIC_LIST_MEMBER_PURE_FUNC(clazz, proto, type, name, default_value) \
     void clazz::clear_##name() \
     { \
-        if (proto != nullptr) { \
-            (proto)->clear_##name(); \
-        } \
+        proto.clear_##name(); \
     } \
     size_t clazz::name##_size() const \
     { \
-        return proto != nullptr ? (proto)->name##_size() : 0; \
+        return proto.name##_size(); \
     } \
     type clazz::name(size_t index) const \
     { \
-        if (proto == nullptr || (proto)->name##_size() < 0) { \
-            return default_value; \
-        } \
-        if (index < static_cast<size_t>((proto)->name##_size())) { \
-            return (proto)->name(index); \
+        if (index < name##_size()) { \
+            return proto.name(index); \
         } \
         return default_value; \
     } \
     void clazz::set_##name(size_t index, type value) \
     { \
-        if (proto == nullptr || (proto)->name##_size() < 0) { \
-            return; \
-        } \
-        if (index < static_cast<size_t>((proto)->name##_size())) { \
-            (proto)->set_##name(index, value); \
-        } \
+        proto.set_##name(index, value); \
     } \
     void clazz::add_##name(type value) \
     { \
-        if (proto != nullptr) { \
-            (proto)->add_##name(value); \
-        } \
+        proto.add_##name(value); \
     }
 
 // standard list member
@@ -162,33 +146,27 @@ public: \
 #define IMPL_PROTO_PERSISTENCE_STANDARD_LIST_MEMBER_PURE_FUNC(clazz, proto, type, name) \
     void clazz::clear_##name() \
     { \
-        if (proto != nullptr) { \
-            (proto)->clear_##name(); \
-        } \
+        proto.clear_##name(); \
     } \
     size_t clazz::name##_size() const \
     { \
-        return proto != nullptr ? (proto)->name##_size() : 0; \
+        return proto.name##_size(); \
     } \
     const type& clazz::name(size_t index) const \
     { \
-        return proto != nullptr ? (proto)->name(index) : STR_EMPTY; \
+        return proto.name(index); \
     } \
     type* clazz::mutable_##name(size_t index) \
     { \
-        return proto != nullptr ? (proto)->mutable_##name(index) : nullptr; \
+        return proto.mutable_##name(index); \
     } \
     void clazz::set_##name(size_t index, const type& value) \
     { \
-        if (proto != nullptr) { \
-            return (proto)->set_##name(index, value); \
-        } \
+        return proto.set_##name(index, value); \
     } \
     void clazz::add_##name(const type& value) \
     { \
-        if (proto != nullptr) { \
-            (proto)->add_##name(value); \
-        } \
+        proto.add_##name(value); \
     }
 
 // custom list member
@@ -211,13 +189,11 @@ private: \
             delete e; \
         } \
         name##_list_.clear(); \
-        if (proto != nullptr) { \
-            (proto)->clear_##name(); \
-        } \
+        proto.clear_##name(); \
     } \
     size_t clazz::name##_size() const \
     { \
-        return proto != nullptr ? (proto)->name##_size() : 0; \
+        return proto.name##_size(); \
     } \
     itf_type* clazz::mutable_##name(size_t index) \
     { \
@@ -238,19 +214,20 @@ private: \
     itf_type* clazz::add_##name() \
     { \
         lazy_##name##_init(); \
-        if (proto != nullptr) { \
-            auto ret = name##_list_.emplace(name##_list_.end(), new (std::nothrow) impl_type((proto)->add_##name())); \
-            if (ret != name##_list_.end()) { \
-                return *ret; \
-            } \
+        auto add = new (std::nothrow) impl_type(*proto.add_##name()); \
+        if (add != nullptr) { \
+            name##_list_.emplace_back(add); \
         } \
-        return nullptr; \
+        return add; \
     } \
     void clazz::lazy_##name##_init() const \
     { \
-        if (proto != nullptr && name##_list_.size() == 0) { \
-            for (int i = 0; i < (proto)->name##_size(); i++) { \
-                name##_list_.push_back(new (std::nothrow) impl_type((proto)->mutable_##name(i))); \
+        if (name##_list_.size() == 0) { \
+            for (int i = 0; i < proto.name##_size(); i++) { \
+                auto add = new (std::nothrow) impl_type(*proto.mutable_##name(i)); \
+                if (add != nullptr) { \
+                    name##_list_.emplace_back(add); \
+                } \
             } \
         } \
     }
@@ -273,7 +250,7 @@ public: \
     const std::map<key_type, itf_value_type*>& name() const override; \
     itf_value_type* add_##name(const key_type& key) override; \
 \
-private: \
+public: \
     mutable std::map<key_type, itf_value_type*> name##_map_
 
 #define IMPL_PROTO_PERSISTENCE_CUSTOM_MAP_MEMBER_PURE_FUNC( \
@@ -284,16 +261,11 @@ private: \
             delete e.second; \
         } \
         name##_map_.clear(); \
-        if (proto != nullptr) { \
-            (proto)->clear(); \
-        } \
+        proto.clear(); \
     } \
     bool clazz::has_##name(const key_type& key) const \
     { \
-        if (proto != nullptr) { \
-            return (proto)->find(key) != (proto)->end(); \
-        } \
-        return false; \
+        return proto.find(key) != proto.end(); \
     } \
     void clazz::del_##name(const key_type& key) \
     { \
@@ -302,17 +274,15 @@ private: \
             delete it->second; \
             name##_map_.erase(it); \
         } \
-        if (proto != nullptr) { \
-            auto itProto = (proto)->find(key); \
-            if (itProto != (proto)->end()) { \
-                (proto)->erase(itProto); \
-            } \
+        auto iter = proto.find(key); \
+        if (iter != proto.end()) { \
+            proto.erase(iter); \
         } \
     } \
     itf_value_type* clazz::add_##name(const key_type& key) \
     { \
-        if (proto != nullptr) { \
-            itf_value_type* add = new (std::nothrow) impl_value_type(&((*proto)[key])); \
+        auto add = new (std::nothrow) impl_value_type(proto[key]); \
+        if (add != nullptr) { \
             auto ret = name##_map_.emplace(key, add); \
             if (ret.second) { \
                 return ret.first->second; \
@@ -324,9 +294,21 @@ private: \
     } \
     itf_value_type* clazz::mutable_##name(const key_type& key) \
     { \
-        const itf_value_type* ret = name(key); \
-        if (ret != nullptr) { \
-            return const_cast<itf_value_type*>(ret); \
+        auto it = name##_map_.find(key); \
+        if (it != name##_map_.end()) { \
+            return it->second; \
+        } \
+        auto iter = proto.find(key); \
+        if (iter != proto.end()) { \
+            auto add = new (std::nothrow) impl_value_type(iter->second); \
+            if (add != nullptr) { \
+                auto ret = name##_map_.emplace(key, add); \
+                if (ret.second) { \
+                    return ret.first->second; \
+                } else { \
+                    delete add; \
+                } \
+            } \
         } \
         return add_##name(key); \
     } \
@@ -336,10 +318,10 @@ private: \
         if (it != name##_map_.end()) { \
             return it->second; \
         } \
-        if (proto != nullptr) { \
-            auto itProto = (proto)->find(key); \
-            if (itProto != (proto)->end()) { \
-                itf_value_type* add = new (std::nothrow) impl_value_type(&itProto->second); \
+        auto iter = proto.find(key); \
+        if (iter != proto.end()) { \
+            auto add = new (std::nothrow) impl_value_type(iter->second); \
+            if (add != nullptr) { \
                 auto ret = name##_map_.emplace(key, add); \
                 if (ret.second) { \
                     return ret.first->second; \
@@ -352,13 +334,9 @@ private: \
     } \
     std::map<key_type, itf_value_type*>& clazz::mutable_##name() \
     { \
-        return const_cast<std::map<key_type, itf_value_type*>&>(name()); \
-    } \
-    const std::map<key_type, itf_value_type*>& clazz::name() const \
-    { \
-        if (proto != nullptr) { \
-            for (auto it = (proto)->begin(); it != (proto)->end(); it++) { \
-                itf_value_type* add = new (std::nothrow) impl_value_type(&it->second); \
+        for (auto it = proto.begin(); it != proto.end(); it++) { \
+            auto add = new (std::nothrow) impl_value_type(it->second); \
+            if (add != nullptr) { \
                 auto ret = name##_map_.emplace(it->first, add); \
                 if (!ret.second) { \
                     delete add; \
@@ -367,6 +345,19 @@ private: \
         } \
         return name##_map_; \
     } \
+    const std::map<key_type, itf_value_type*>& clazz::name() const \
+    { \
+        for (auto it = proto.begin(); it != proto.end(); it++) { \
+            auto add = new (std::nothrow) impl_value_type(it->second); \
+            if (add != nullptr) { \
+                auto ret = name##_map_.emplace(it->first, add); \
+                if (!ret.second) { \
+                    delete add; \
+                } \
+            } \
+        } \
+        return name##_map_; \
+    }
 
 #define IMPL_PROTO_CUSTOM_MAP_MEMBER_FREE(name) \
     for (auto& it : name##_map_) { \

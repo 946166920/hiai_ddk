@@ -168,7 +168,8 @@ enum ModelType {
     SPECIAL_3RD_MODEL,
     IR_API_GRAPH_MODEL, /* IR API构造经序列化后的模型, 无模型头 */
     UTINY_MODEL, /* Pha模型，枚举值修改后，需要修改sensorhub侧代码 */
-    MULTI_SHAPE_MODEL
+    MULTI_SHAPE_MODEL,
+    ENUM_SHAPE_MODEL /* 枚举Shape模型 */
 };
 
 // 当前模型partition数目

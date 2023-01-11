@@ -1,19 +1,7 @@
-/**
- * Copyright 2019-2022 Huawei Technologies Co., Ltd
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+ * Copyright (c) Huawei Technologies Co., Ltd. 2017-2020. All rights reserved.
+ * Description: hiai model manager
  */
-
 #include <map>
 #include <string>
 #include <vector>
@@ -511,10 +499,12 @@ int32_t GetChannelIndex(const HIAI_NDTensorDesc* desc)
 {
     int32_t cIndex = -1;
     HIAI_Format format = HIAI_NDTensorDesc_GetFormat(desc);
-    if (format == HIAI_FORMAT_NCHW) {
+    if (format == HIAI_FORMAT_NCHW || format == HIAI_FORMAT_NCDHW) {
         cIndex = 1;
     } else if (format == HIAI_FORMAT_NHWC) {
         cIndex = 3;
+    } else if (format == HIAI_FORMAT_NDHWC) {
+        cIndex = 4;
     }
     return cIndex;
 }
@@ -760,7 +750,7 @@ void* HIAI_NDTensorBuffer_GetData(const HIAI_NDTensorBuffer* ndBuffer)
 
 void HIAI_NDTensorBuffer_Destroy(HIAI_NDTensorBuffer** ndBuffer)
 {
-    std::cout << __func__ << " " << (void*)(*ndBuffer) << std::endl;
+    std::cout << __func__ << std::endl;
     if (ndBuffer == nullptr || *ndBuffer == nullptr) {
         return;
     }
@@ -902,7 +892,7 @@ PrivateHandleInfo* HIAI_GetHandleInfo_From_BufferHandle(buffer_handle_t handle)
     }
     const int privateFormat = 16;
     auto info = static_cast<PrivateHandleInfo*>(malloc(sizeof(PrivateHandleInfo)));
-    (void)memset_s(info, sizeof(PrivateHandleInfo), 0, sizeof(PrivateHandleInfo));
+    memset(info, 0x0, sizeof(PrivateHandleInfo));
     info->fd = 0;
     info->size = 1024;
     info->offset = 0;
@@ -1062,6 +1052,7 @@ HIAI_ModelNDTensorInfo* HIAI_ModelManager_GetModelNDTensorInfo(HIAI_ModelManager
         return nullptr;
     }
     vector<int32_t> dims = {1, 3, 64, 64};
+    // HIAI_DataType dType = HIAI_DataType::DT_FLOAT;
 
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dims.size(), (HIAI_DataType)0, (HIAI_Format)0);
     info->inputShape[0] = desc; // sizeof(HIAI_ModelNDTensorInfo)
@@ -1185,7 +1176,8 @@ HIAI_TensorDescriptionV2* HIAI_ModelTensorInfoV2_getTensorDescription(
     const HIAI_ModelTensorInfoV2* tensorInfo, HIAI_IO_TYPE type, int index)
 {
     std::cout << __func__ << std::endl;
-    HIAI_TensorDescriptionV2* descPointer = nullptr;
+    HIAI_TensorDescriptionV2 desc = HIAI_TENSOR_DESCRIPTION_V2_INIT;
+    HIAI_TensorDescriptionV2* descPointer = &desc;
     if (tensorInfo != nullptr)
         descPointer = (type == HIAI_IO_INPUT ? tensorInfo->inputShape : tensorInfo->outputShape);
     return descPointer;
@@ -1252,7 +1244,12 @@ int HIAI_ModelManger_getTensorAippInfo(HIAI_ModelManager* manager, const char* m
     if (index > 0) {
         return 1;
     }
-    *aippCount = 1;
+    int value = ControlClient::GetInstance().GetExpectValue(CLIENT_AIPP_PARA_AIPPCOUNT);
+    if (value != -1) {
+        *aippCount = value;
+    } else {
+        *aippCount = 1;
+    }
     *batchCount = 1;
     return 0;
 }
@@ -1705,10 +1702,6 @@ int HIAI_ModelManager_buildModel_v2(HIAI_ModelManager* manager, HIAI_Framework f
 {
     std::cout << __func__ << std::endl;
     FILE* fp = fopen("bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om", "r+");
-    if (fp == nullptr) {
-        printf("HIAI_ModelManager_buildModel_v2 ERROR: open the model file failed.\n");
-        return -1;
-    }
     long fileLength = 0;
     int result = fseek(fp, 0, SEEK_END);
     fileLength = ftell(fp);
@@ -1716,7 +1709,10 @@ int HIAI_ModelManager_buildModel_v2(HIAI_ModelManager* manager, HIAI_Framework f
 
     fread(outputModelBuffer->data, 1, fileLength, fp);
 
+    // *outModelSize = 400 * 1024;
     *outModelSize = fileLength;
+
+    fclose(fp);
     return 0;
 }
 

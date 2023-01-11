@@ -590,7 +590,9 @@ const std::vector<TensorPtr> AttrValue::GetTensorList() const
     if (listDef != nullptr) {
         for (size_t i = 0; i < listDef->t_size(); i++) {
             auto tensorPtr = hiai::make_shared_nothrow<Tensor>(listDef->mutable_t(i), false);
-            result.push_back(tensorPtr);
+            if (tensorPtr != nullptr) {
+                result.push_back(tensorPtr);
+            }
         }
     }
     return result;

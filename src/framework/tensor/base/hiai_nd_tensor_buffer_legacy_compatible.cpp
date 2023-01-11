@@ -23,9 +23,9 @@
 #include "framework/c/compatible/hiai_tensor_buffer.h"
 #include "hiai_nd_tensor_buffer_legacy.h"
 
-static void* HIAI_NDTensorBuffer_GetHandleFromNDTensorBuffer(HIAI_NDTensorBuffer* buffer)
+static void* HIAI_NDTensorBuffer_GetHandleFromNDTensorBuffer(HIAI_MR_NDTensorBuffer* buffer)
 {
-    auto getHandleFunc = (void* (*)(HIAI_NDTensorBuffer*))HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_GetHandle");
+    auto getHandleFunc = (void* (*)(HIAI_MR_NDTensorBuffer*))HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_GetHandle");
     if (getHandleFunc == nullptr) {
         FMK_LOGE("sym not found.");
         return nullptr;
@@ -34,9 +34,9 @@ static void* HIAI_NDTensorBuffer_GetHandleFromNDTensorBuffer(HIAI_NDTensorBuffer
     return getHandleFunc(buffer);
 }
 
-static HIAI_NDTensorDesc* HIAI_NDTensorBuffer_GetNDTensorDescFromNDTensorBuffer(HIAI_NDTensorBuffer* buffer)
+static HIAI_NDTensorDesc* HIAI_NDTensorBuffer_GetNDTensorDescFromNDTensorBuffer(HIAI_MR_NDTensorBuffer* buffer)
 {
-    auto getNDTensorDescFunc = (HIAI_NDTensorDesc* (*)(HIAI_NDTensorBuffer*))
+    auto getNDTensorDescFunc = (HIAI_NDTensorDesc* (*)(HIAI_MR_NDTensorBuffer*))
         HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_GetNDTensorDesc");
     if (getNDTensorDescFunc == nullptr) {
         FMK_LOGE("sym not found.");
@@ -46,7 +46,7 @@ static HIAI_NDTensorDesc* HIAI_NDTensorBuffer_GetNDTensorDescFromNDTensorBuffer(
     return getNDTensorDescFunc(buffer);
 }
 
-static HIAI_TensorBuffer* ConvertNDTensorBufferToTensorBuffer(HIAI_NDTensorBuffer* ndBuffer)
+static HIAI_TensorBuffer* ConvertNDTensorBufferToTensorBuffer(HIAI_MR_NDTensorBuffer* ndBuffer)
 {
     HIAI_TensorBuffer* buffer = (HIAI_TensorBuffer*)malloc(sizeof(HIAI_TensorBuffer));
     MALLOC_NULL_CHECK_RET_VALUE(buffer, nullptr);
@@ -73,7 +73,7 @@ static HIAI_TensorBuffer* ConvertNDTensorBufferToTensorBuffer(HIAI_NDTensorBuffe
     return buffer;
 }
 
-bool HIAI_ChangeNDTensorBuffersHandleToTensorBuffers(HIAI_NDTensorBuffer* buffers[], int32_t num)
+bool HIAI_ChangeNDTensorBuffersHandleToTensorBuffers(HIAI_MR_NDTensorBuffer* buffers[], int32_t num)
 {
     for (int32_t i = 0; i < num; i++) {
         HIAI_NDTensorBufferV2* buffersV2 = reinterpret_cast<HIAI_NDTensorBufferV2*>(buffers[i]);
@@ -82,7 +82,7 @@ bool HIAI_ChangeNDTensorBuffersHandleToTensorBuffers(HIAI_NDTensorBuffer* buffer
             return true;
         }
 
-        HIAI_TensorBuffer* buffer = ConvertNDTensorBufferToTensorBuffer((HIAI_NDTensorBuffer*)(buffersV2->handle));
+        HIAI_TensorBuffer* buffer = ConvertNDTensorBufferToTensorBuffer((HIAI_MR_NDTensorBuffer*)(buffersV2->handle));
         if (buffer == nullptr) {
             FMK_LOGE("convert buffer failed.");
             return false;

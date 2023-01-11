@@ -19,18 +19,18 @@
 #include "framework/c/hiai_tensor_aipp_para.h"
 
 namespace hiai {
-using TensorAippCommPara = std::pair<HIAI_TensorAippCommPara*, uint8_t>;
+using TensorAippCommPara = std::pair<HIAI_MR_TensorAippCommPara*, uint8_t>;
 
 class AIPPParaBufferImpl {
 public:
-    HIAI_TensorAippPara* Init(uint32_t batchCount);
-    Status Release(HIAI_TensorAippPara* paraBuff);
-    void* GetRawBuffer(HIAI_TensorAippPara* paraBuff);
-    uint32_t GetRawBufferSize(HIAI_TensorAippPara* paraBuff);
-    int GetInputIndex(HIAI_TensorAippPara* paraBuff);
-    void SetInputIndex(HIAI_TensorAippPara* paraBuff, uint32_t inputIndex);
-    int GetInputAippIndex(HIAI_TensorAippPara* paraBuff);
-    void SetInputAippIndex(HIAI_TensorAippPara* paraBuff, uint32_t inputAippIndex);
+    static HIAI_MR_TensorAippPara* Init(uint32_t batchCount);
+    static Status Release(HIAI_MR_TensorAippPara* paraBuff);
+    static void* GetRawBuffer(HIAI_MR_TensorAippPara* paraBuff);
+    static uint32_t GetRawBufferSize(HIAI_MR_TensorAippPara* paraBuff);
+    static int GetInputIndex(HIAI_MR_TensorAippPara* paraBuff);
+    static void SetInputIndex(HIAI_MR_TensorAippPara* paraBuff, uint32_t inputIndex);
+    static int GetInputAippIndex(HIAI_MR_TensorAippPara* paraBuff);
+    static void SetInputAippIndex(HIAI_MR_TensorAippPara* paraBuff, uint32_t inputAippIndex);
 };
 
 class HIAI_TENSOR_API_EXPORT AIPPParaImpl : public IAIPPPara {
@@ -41,7 +41,7 @@ public:
     AIPPParaImpl& operator=(const AIPPParaImpl&) = delete;
 
     Status Init(uint32_t batchCount);
-    Status Init(void* paraBuff);
+    Status Init(HIAI_MR_TensorAippPara* paraBuff);
 
     uint32_t GetBatchCount() override;
     Status SetInputIndex(uint32_t inputIndex) override;
@@ -84,7 +84,7 @@ public:
 
     size_t GetSize() const override;
 
-    HIAI_TENSOR_API_EXPORT HIAI_TensorAippPara* GetParaBuffer();
+    HIAI_TENSOR_API_EXPORT HIAI_MR_TensorAippPara* GetParaBuffer();
 
 public:
     bool GetEnableCrop(uint32_t batchIndex);
@@ -99,7 +99,7 @@ protected:
     Status GetAippParaBufferImpl(std::shared_ptr<AIPPParaBufferImpl>& aippParaImpl);
 
 private:
-    ImageFormat GetInputFormat(HIAI_TensorAippCommPara* commPara);
+    ImageFormat GetInputFormat(HIAI_MR_TensorAippCommPara* commPara);
     Status InitAippPara(uint32_t batchCount);
 
     TensorAippCommPara GetTensorAippCommPara();
@@ -111,10 +111,10 @@ private:
     Status SetAippFuncPara(uint32_t batchIndex, T&& funcPara, UpdateParaFunc updateParaFunc);
 
 private:
-    std::shared_ptr<AIPPParaBufferImpl> aippParaImpl_ {nullptr};
-    HIAI_TensorAippPara* paraBuff_ {nullptr};
+    HIAI_MR_TensorAippPara* paraBuff_ {nullptr};
     void* rawBuffer_ {nullptr};
 };
-HIAI_TENSOR_API_EXPORT HIAI_TensorAippPara* GetTensorAippParaFromAippPara(const std::shared_ptr<IAIPPPara>& aippPara);
+HIAI_TENSOR_API_EXPORT HIAI_MR_TensorAippPara* GetTensorAippParaFromAippPara(
+    const std::shared_ptr<IAIPPPara>& aippPara);
 } // namespace hiai
 #endif

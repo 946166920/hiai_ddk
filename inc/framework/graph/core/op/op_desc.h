@@ -77,7 +77,7 @@ public:
 
     OpDesc& operator=(const OpDesc& other) = delete;
 
-    OpDescPtr Clone();
+    virtual OpDescPtr Clone();
 
     GraphErrCodeStatus Save(Buffer& buffer) const;
 
@@ -141,23 +141,23 @@ public:
 
     GraphErrCodeStatus UpdateOutputDesc(const string& name, const TensorDesc& tensorDesc);
 
-    const TensorDesc& GetOutputDesc(uint32_t index) const;
+    virtual const TensorDesc& GetOutputDesc(uint32_t index) const;
 
-    const TensorDesc& GetOutputDesc(const string& name) const;
+    virtual const TensorDesc& GetOutputDesc(const string& name) const;
 
-    TensorDescPtr MutableOutputDesc(uint32_t index) const;
+    virtual TensorDescPtr MutableOutputDesc(uint32_t index) const;
 
-    Vistor<TensorDesc> GetAllOutputsDesc() const;
+    virtual Vistor<TensorDesc> GetAllOutputsDesc() const;
 
-    Vistor<TensorDescPtr> GetAllOutputsDescPtr() const;
+    virtual Vistor<TensorDescPtr> GetAllOutputsDescPtr() const;
 
-    size_t GetOutputsSize() const;
+    virtual size_t GetOutputsSize() const;
 
-    const vector<TensorDescPtr>& GetOutputsDesc() const;
+    virtual const vector<TensorDescPtr>& GetOutputsDesc() const;
 
     GraphErrCodeStatus AddOutputDesc(const vector<TensorDescPtr>& descVec);
 
-    ConstTensorDescPtr GetOutputDescPtr(uint32_t index) const;
+    virtual ConstTensorDescPtr GetOutputDescPtr(uint32_t index) const;
 
     ConstTensorDescPtr GetInputDescPtr(uint32_t index) const;
 
@@ -296,16 +296,15 @@ protected:
 
     hiai::IAttrMapDef* MutableAttrMapDef() override;
 
-private:
     hiai::IOpDef* opDef_;
-
-    bool isOwner_;
 
     vector<TensorDescPtr> inputsDesc_;
 
     vector<TensorDescPtr> outputsDesc_;
 
 private:
+    bool isOwner_;
+
     map<string, uint32_t> inputNameIdx_ {};
 
     std::unordered_set<string> optionalInputNames_ {};

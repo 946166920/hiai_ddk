@@ -20,9 +20,9 @@
 #include "framework/infra/log/log.h"
 
 typedef HIAI_Status (*HIAI_BuiltModel_SaveToExternalBuffer_Ptr)(
-    const HIAI_BuiltModel* model, void* data, size_t size, size_t* realSize);
-HIAI_Status HIAI_BuiltModel_SaveToExternalBuffer(
-    const HIAI_BuiltModel* model, void* data, size_t size, size_t* realSize)
+    const HIAI_MR_BuiltModel* model, void* data, size_t size, size_t* realSize);
+HIAI_Status HIAI_MR_BuiltModel_SaveToExternalBuffer(
+    const HIAI_MR_BuiltModel* model, void* data, size_t size, size_t* realSize)
 {
     const HIAI_BuiltModel_Impl* impl = HIAI_BuiltModel_ToBuiltModelImpl(model);
     if (impl == NULL) {
@@ -39,8 +39,8 @@ HIAI_Status HIAI_BuiltModel_SaveToExternalBuffer(
     return HIAI_UNSUPPORTED;
 }
 
-typedef HIAI_Status (*HIAI_BuiltModel_Save_Ptr)(const HIAI_BuiltModel* model, void** data, size_t* size);
-HIAI_Status HIAI_BuiltModel_Save(const HIAI_BuiltModel* model, void** data, size_t* size)
+typedef HIAI_Status (*HIAI_BuiltModel_Save_Ptr)(const HIAI_MR_BuiltModel* model, void** data, size_t* size);
+HIAI_Status HIAI_MR_BuiltModel_Save(const HIAI_MR_BuiltModel* model, void** data, size_t* size)
 {
     const HIAI_BuiltModel_Impl* impl = HIAI_BuiltModel_ToBuiltModelImpl(model);
     if (impl == NULL) {
@@ -56,8 +56,8 @@ HIAI_Status HIAI_BuiltModel_Save(const HIAI_BuiltModel* model, void** data, size
     return HIAI_UNSUPPORTED;
 }
 
-typedef HIAI_Status (*HIAI_BuiltModel_SaveToFile_Ptr)(const HIAI_BuiltModel* model, const char* file);
-HIAI_Status HIAI_BuiltModel_SaveToFile(const HIAI_BuiltModel* model, const char* file)
+typedef HIAI_Status (*HIAI_BuiltModel_SaveToFile_Ptr)(const HIAI_MR_BuiltModel* model, const char* file);
+HIAI_Status HIAI_MR_BuiltModel_SaveToFile(const HIAI_MR_BuiltModel* model, const char* file)
 {
     const HIAI_BuiltModel_Impl* impl = HIAI_BuiltModel_ToBuiltModelImpl(model);
     if (impl == NULL) {
@@ -74,29 +74,29 @@ HIAI_Status HIAI_BuiltModel_SaveToFile(const HIAI_BuiltModel* model, const char*
     return HIAI_UNSUPPORTED;
 }
 
-HIAI_BuiltModel* HIAI_BuiltModel_Restore(const void* data, size_t size)
+HIAI_MR_BuiltModel* HIAI_MR_BuiltModel_Restore(const void* data, size_t size)
 {
-    return (HIAI_BuiltModel*)ModelRuntimeRepo_TryRestore(data, size);
+    return (HIAI_MR_BuiltModel*)ModelRuntimeRepo_TryRestore(data, size);
 }
 
-HIAI_BuiltModel* HIAI_BuiltModel_RestoreFromFile(const char* file)
+HIAI_MR_BuiltModel* HIAI_MR_BuiltModel_RestoreFromFile(const char* file)
 {
-    return (HIAI_BuiltModel*)ModelRuntimeRepo_TryRestoreFromFile(file);
+    return (HIAI_MR_BuiltModel*)ModelRuntimeRepo_TryRestoreFromFile(file);
 }
 
-HIAI_BuiltModel* HIAI_BuiltModel_RestoreFromFileWithShapeIndex(const char* file, uint8_t shapeIndex)
+HIAI_MR_BuiltModel* HIAI_MR_BuiltModel_RestoreFromFileWithShapeIndex(const char* file, uint8_t shapeIndex)
 {
     if (file == NULL || (shapeIndex < 1 || shapeIndex > 16)) {
         FMK_LOGE("param is invalid.");
         return NULL;
     }
-    return (HIAI_BuiltModel*)ModelRuntimeRepo_TryRestoreFromFileWithShapeIndex(file, shapeIndex);
+    return (HIAI_MR_BuiltModel*)ModelRuntimeRepo_TryRestoreFromFileWithShapeIndex(file, shapeIndex);
 }
 
 typedef HIAI_Status (*HIAI_BuiltModel_CheckCompatibility_Ptr)(
-    const HIAI_BuiltModel* model, HIAI_BuiltModel_Compatibility* compatibility);
-HIAI_Status HIAI_BuiltModel_CheckCompatibility(
-    const HIAI_BuiltModel* model, HIAI_BuiltModel_Compatibility* compatibility)
+    const HIAI_MR_BuiltModel* model, HIAI_BuiltModel_Compatibility* compatibility);
+HIAI_Status HIAI_MR_BuiltModel_CheckCompatibility(
+    const HIAI_MR_BuiltModel* model, HIAI_BuiltModel_Compatibility* compatibility)
 {
     const HIAI_BuiltModel_Impl* impl = HIAI_BuiltModel_ToBuiltModelImpl(model);
     if (impl == NULL) {
@@ -113,8 +113,8 @@ HIAI_Status HIAI_BuiltModel_CheckCompatibility(
     return HIAI_UNSUPPORTED;
 }
 
-typedef int32_t (*HIAI_BuiltModel_GetInputTensorNum_Ptr)(const HIAI_BuiltModel* model);
-int32_t HIAI_BuiltModel_GetInputTensorNum(const HIAI_BuiltModel* model)
+typedef int32_t (*HIAI_BuiltModel_GetInputTensorNum_Ptr)(const HIAI_MR_BuiltModel* model);
+int32_t HIAI_MR_BuiltModel_GetInputTensorNum(const HIAI_MR_BuiltModel* model)
 {
     const HIAI_BuiltModel_Impl* impl = HIAI_BuiltModel_ToBuiltModelImpl(model);
     if (impl == NULL) {
@@ -131,8 +131,8 @@ int32_t HIAI_BuiltModel_GetInputTensorNum(const HIAI_BuiltModel* model)
     return 0;
 }
 
-typedef HIAI_NDTensorDesc* (*HIAI_BuiltModel_GetInputTensorDesc_Ptr)(const HIAI_BuiltModel* model, size_t index);
-HIAI_NDTensorDesc* HIAI_BuiltModel_GetInputTensorDesc(const HIAI_BuiltModel* model, size_t index)
+typedef HIAI_NDTensorDesc* (*HIAI_BuiltModel_GetInputTensorDesc_Ptr)(const HIAI_MR_BuiltModel* model, size_t index);
+HIAI_NDTensorDesc* HIAI_MR_BuiltModel_GetInputTensorDesc(const HIAI_MR_BuiltModel* model, size_t index)
 {
     const HIAI_BuiltModel_Impl* impl = HIAI_BuiltModel_ToBuiltModelImpl(model);
     if (impl == NULL) {
@@ -149,8 +149,8 @@ HIAI_NDTensorDesc* HIAI_BuiltModel_GetInputTensorDesc(const HIAI_BuiltModel* mod
     return NULL;
 }
 
-typedef int32_t (*HIAI_BuiltModel_GetOutputTensorNum_Ptr)(const HIAI_BuiltModel* model);
-int32_t HIAI_BuiltModel_GetOutputTensorNum(const HIAI_BuiltModel* model)
+typedef int32_t (*HIAI_BuiltModel_GetOutputTensorNum_Ptr)(const HIAI_MR_BuiltModel* model);
+int32_t HIAI_MR_BuiltModel_GetOutputTensorNum(const HIAI_MR_BuiltModel* model)
 {
     const HIAI_BuiltModel_Impl* impl = HIAI_BuiltModel_ToBuiltModelImpl(model);
     if (impl == NULL) {
@@ -167,8 +167,8 @@ int32_t HIAI_BuiltModel_GetOutputTensorNum(const HIAI_BuiltModel* model)
     return 0;
 }
 
-typedef HIAI_NDTensorDesc* (*HIAI_BuiltModel_GetOutputTensorDesc_Ptr)(const HIAI_BuiltModel* model, size_t index);
-HIAI_NDTensorDesc* HIAI_BuiltModel_GetOutputTensorDesc(const HIAI_BuiltModel* model, size_t index)
+typedef HIAI_NDTensorDesc* (*HIAI_BuiltModel_GetOutputTensorDesc_Ptr)(const HIAI_MR_BuiltModel* model, size_t index);
+HIAI_NDTensorDesc* HIAI_MR_BuiltModel_GetOutputTensorDesc(const HIAI_MR_BuiltModel* model, size_t index)
 {
     const HIAI_BuiltModel_Impl* impl = HIAI_BuiltModel_ToBuiltModelImpl(model);
     if (impl == NULL) {
@@ -185,8 +185,8 @@ HIAI_NDTensorDesc* HIAI_BuiltModel_GetOutputTensorDesc(const HIAI_BuiltModel* mo
     return NULL;
 }
 
-typedef const char* (*HIAI_BuiltModel_GetName_Ptr)(const HIAI_BuiltModel* model);
-const char* HIAI_BuiltModel_GetName(const HIAI_BuiltModel* model)
+typedef const char* (*HIAI_BuiltModel_GetName_Ptr)(const HIAI_MR_BuiltModel* model);
+const char* HIAI_MR_BuiltModel_GetName(const HIAI_MR_BuiltModel* model)
 {
     const HIAI_BuiltModel_Impl* impl = HIAI_BuiltModel_ToBuiltModelImpl(model);
     if (impl == NULL) {
@@ -202,8 +202,8 @@ const char* HIAI_BuiltModel_GetName(const HIAI_BuiltModel* model)
     return NULL;
 }
 
-typedef HIAI_Status (*HIAI_BuiltModel_SetName_Ptr)(const HIAI_BuiltModel* model, const char* name);
-HIAI_Status HIAI_BuiltModel_SetName(const HIAI_BuiltModel* model, const char* name)
+typedef HIAI_Status (*HIAI_BuiltModel_SetName_Ptr)(const HIAI_MR_BuiltModel* model, const char* name);
+HIAI_Status HIAI_MR_BuiltModel_SetName(const HIAI_MR_BuiltModel* model, const char* name)
 {
     const HIAI_BuiltModel_Impl* impl = HIAI_BuiltModel_ToBuiltModelImpl(model);
     if (impl == NULL) {
@@ -219,8 +219,8 @@ HIAI_Status HIAI_BuiltModel_SetName(const HIAI_BuiltModel* model, const char* na
     return HIAI_UNSUPPORTED;
 }
 
-typedef void (*HIAI_BuiltModel_Destroy_Ptr)(HIAI_BuiltModel** model);
-void HIAI_BuiltModel_Destroy(HIAI_BuiltModel** model)
+typedef void (*HIAI_BuiltModel_Destroy_Ptr)(HIAI_MR_BuiltModel** model);
+void HIAI_MR_BuiltModel_Destroy(HIAI_MR_BuiltModel** model)
 {
     if (model == NULL || *model == NULL) {
         return;

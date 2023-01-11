@@ -19,6 +19,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#include "framework/c/hiai_c_api_export.h"
 #include "framework/c/hiai_model_builder_types.h"
 #include "hiai_model_runtime.h"
 #include "hiai_built_model_impl.h"
@@ -28,13 +29,13 @@ extern "C" {
 #endif
 
 // dlclose hcl and binary
-void HIAI_ModelRuntimeRepo_DeInit(void);
+AICP_C_API_EXPORT void HIAI_ModelRuntimeRepo_DeInit(void);
 
 // static register for direct, hcl
 void HIAI_ModelRuntimeRepo_Add(HIAI_ModelRuntimeType type, HIAI_ModelRuntime* runtime);
 
 HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryBuild(
-    const HIAI_ModelBuildOptions* options, const char* modelName, const void* modelData, size_t modelSize);
+    const HIAI_MR_ModelBuildOptions* options, const char* modelName, const void* modelData, size_t modelSize);
 
 HIAI_BuiltModel_Impl* ModelRuntimeRepo_TryRestore(const void* modelData, size_t modelSize);
 

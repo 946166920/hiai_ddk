@@ -1,4 +1,3 @@
 add_subdirectory(ddk)
 add_subdirectory(direct_model_runtime)
 add_subdirectory(model_manager_v2)
-

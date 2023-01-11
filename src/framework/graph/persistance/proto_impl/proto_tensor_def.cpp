@@ -18,29 +18,19 @@
 #include "graph/persistance/proto_impl/proto_tensor_desc_def.h"
 
 namespace hiai {
-ProtoTensorDef::ProtoTensorDef() : ProtoTensorDef(new (std::nothrow) hiai::proto::TensorDef(), true)
-{
-}
-
-ProtoTensorDef::ProtoTensorDef(hiai::proto::TensorDef* tensorDef, bool isOwner)
-    : tensorDef_(tensorDef), isOwner_(isOwner)
+ProtoTensorDef::ProtoTensorDef(hiai::proto::TensorDef& tensorDef) : tensorDef_(tensorDef)
 {
 }
 
 ProtoTensorDef::~ProtoTensorDef()
 {
     IMPL_PROTO_CUSTOM_MEMBER_FREE(desc);
-
-    if (isOwner_) {
-        delete tensorDef_;
-    }
-    tensorDef_ = nullptr;
 }
 
 void ProtoTensorDef::CopyFrom(const ITensorDef* other)
 {
-    if (tensorDef_ != nullptr && other != nullptr && other->GetSerializeType() == PROTOBUF) {
-        *tensorDef_ = *(static_cast<const ProtoTensorDef*>(other)->tensorDef_);
+    if (other != nullptr && other->GetSerializeType() == PROTOBUF) {
+        tensorDef_ = static_cast<const ProtoTensorDef*>(other)->tensorDef_;
         IMPL_PROTO_CUSTOM_MEMBER_FREE(desc);
     }
 }
@@ -53,11 +43,13 @@ SerializeType ProtoTensorDef::GetSerializeType() const
 IMPL_PROTO_PERSISTENCE_CUSTOM_MEMBER_PURE_FUNC(ProtoTensorDef, tensorDef_, ITensorDescDef, ProtoTensorDescDef, desc);
 IMPL_PROTO_PERSISTENCE_STANDARD_MEMBER_PURE_FUNC(ProtoTensorDef, tensorDef_, std::string, data);
 
-extern "C" GRAPH_API_EXPORT ITensorDef* CreateTensorDef() {
-    return new (std::nothrow) ProtoTensorDef();
+extern "C" GRAPH_API_EXPORT ITensorDef* CreateTensorDef()
+{
+    return new (std::nothrow) DefaultProtoTensorDef();
 }
 
-extern "C" GRAPH_API_EXPORT void DestroyTensorDef(ITensorDef* tensorDef) {
+extern "C" GRAPH_API_EXPORT void DestroyTensorDef(ITensorDef* tensorDef)
+{
     delete tensorDef;
 }
 

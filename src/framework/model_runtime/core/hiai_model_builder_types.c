@@ -30,14 +30,14 @@ static const uint32_t HIAI_MAX_DYNAMIC_SHAPE_CACHE_NUM = 10;
 static pthread_mutex_t g_optionFuncsInitMutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct DynamicShapeConfigFuncs {
-    HIAI_DynamicShapeConfig* (*create)(void);
-    void (*setEnableMode)(HIAI_DynamicShapeConfig*, HIAI_DYNAMIC_SHAPE_ENABLE_MODE);
-    HIAI_DYNAMIC_SHAPE_ENABLE_MODE (*getEnableMode)(const HIAI_DynamicShapeConfig*);
-    void (*setMaxCacheNum)(HIAI_DynamicShapeConfig*, size_t);
-    size_t (*getMaxCacheNum)(const HIAI_DynamicShapeConfig*);
-    void (*setCacheMode)(HIAI_DynamicShapeConfig*, HIAI_DYNAMIC_SHAPE_CACHE_MODE);
-    HIAI_DYNAMIC_SHAPE_CACHE_MODE (*getCacheMode)(const HIAI_DynamicShapeConfig*);
-    void (*destroy)(HIAI_DynamicShapeConfig**);
+    HIAI_MR_DynamicShapeConfig* (*create)(void);
+    void (*setEnableMode)(HIAI_MR_DynamicShapeConfig*, HIAI_DYNAMIC_SHAPE_ENABLE_MODE);
+    HIAI_DYNAMIC_SHAPE_ENABLE_MODE (*getEnableMode)(const HIAI_MR_DynamicShapeConfig*);
+    void (*setMaxCacheNum)(HIAI_MR_DynamicShapeConfig*, size_t);
+    size_t (*getMaxCacheNum)(const HIAI_MR_DynamicShapeConfig*);
+    void (*setCacheMode)(HIAI_MR_DynamicShapeConfig*, HIAI_DYNAMIC_SHAPE_CACHE_MODE);
+    HIAI_DYNAMIC_SHAPE_CACHE_MODE (*getCacheMode)(const HIAI_MR_DynamicShapeConfig*);
+    void (*destroy)(HIAI_MR_DynamicShapeConfig**);
 } DynamicShapeConfigFuncs;
 
 static void InitDynamicShapeConfigFuncs(DynamicShapeConfigFuncs* dynamicShapeFuncs)
@@ -82,7 +82,7 @@ static DynamicShapeConfigFuncs* GetDynamicShapeConfigFuncs(void)
     return &dynamicShapeFuncs;
 }
 
-HIAI_DynamicShapeConfig* HIAI_DynamicShapeConfig_Create(void)
+HIAI_MR_DynamicShapeConfig* HIAI_MR_DynamicShapeConfig_Create(void)
 {
     DynamicShapeConfigFuncs* dynamicShapeFuncs = GetDynamicShapeConfigFuncs();
     if (dynamicShapeFuncs->create != NULL) {
@@ -91,7 +91,7 @@ HIAI_DynamicShapeConfig* HIAI_DynamicShapeConfig_Create(void)
     return NULL;
 }
 
-void HIAI_DynamicShapeConfig_SetEnableMode(HIAI_DynamicShapeConfig* config, HIAI_DYNAMIC_SHAPE_ENABLE_MODE mode)
+void HIAI_MR_DynamicShapeConfig_SetEnableMode(HIAI_MR_DynamicShapeConfig* config, HIAI_DYNAMIC_SHAPE_ENABLE_MODE mode)
 {
     DynamicShapeConfigFuncs* dynamicShapeFuncs = GetDynamicShapeConfigFuncs();
     if (dynamicShapeFuncs->setEnableMode != NULL) {
@@ -99,7 +99,7 @@ void HIAI_DynamicShapeConfig_SetEnableMode(HIAI_DynamicShapeConfig* config, HIAI
     }
 }
 
-HIAI_DYNAMIC_SHAPE_ENABLE_MODE HIAI_DynamicShapeConfig_GetEnableMode(const HIAI_DynamicShapeConfig* config)
+HIAI_DYNAMIC_SHAPE_ENABLE_MODE HIAI_MR_DynamicShapeConfig_GetEnableMode(const HIAI_MR_DynamicShapeConfig* config)
 {
     DynamicShapeConfigFuncs* dynamicShapeFuncs = GetDynamicShapeConfigFuncs();
     if (dynamicShapeFuncs->getEnableMode != NULL) {
@@ -108,7 +108,7 @@ HIAI_DYNAMIC_SHAPE_ENABLE_MODE HIAI_DynamicShapeConfig_GetEnableMode(const HIAI_
     return HIAI_DYNAMIC_SHAPE_DISABLE;
 }
 
-void HIAI_DynamicShapeConfig_SetMaxCacheNum(HIAI_DynamicShapeConfig* config, size_t maxCacheNum)
+void HIAI_MR_DynamicShapeConfig_SetMaxCacheNum(HIAI_MR_DynamicShapeConfig* config, size_t maxCacheNum)
 {
     if (maxCacheNum < HIAI_MIN_DYNAMIC_SHAPE_CACHE_NUM || maxCacheNum > HIAI_MAX_DYNAMIC_SHAPE_CACHE_NUM) {
         FMK_LOGE("maxCacheNum is invalid");
@@ -121,7 +121,7 @@ void HIAI_DynamicShapeConfig_SetMaxCacheNum(HIAI_DynamicShapeConfig* config, siz
     }
 }
 
-size_t HIAI_DynamicShapeConfig_GetMaxCacheNum(const HIAI_DynamicShapeConfig* config)
+size_t HIAI_MR_DynamicShapeConfig_GetMaxCacheNum(const HIAI_MR_DynamicShapeConfig* config)
 {
     DynamicShapeConfigFuncs* dynamicShapeFuncs = GetDynamicShapeConfigFuncs();
     if (dynamicShapeFuncs->getMaxCacheNum != NULL) {
@@ -130,7 +130,7 @@ size_t HIAI_DynamicShapeConfig_GetMaxCacheNum(const HIAI_DynamicShapeConfig* con
     return 0;
 }
 
-void HIAI_DynamicShapeConfig_SetCacheMode(HIAI_DynamicShapeConfig* config, HIAI_DYNAMIC_SHAPE_CACHE_MODE mode)
+void HIAI_MR_DynamicShapeConfig_SetCacheMode(HIAI_MR_DynamicShapeConfig* config, HIAI_DYNAMIC_SHAPE_CACHE_MODE mode)
 {
     DynamicShapeConfigFuncs* dynamicShapeFuncs = GetDynamicShapeConfigFuncs();
     if (dynamicShapeFuncs->setCacheMode != NULL) {
@@ -138,7 +138,7 @@ void HIAI_DynamicShapeConfig_SetCacheMode(HIAI_DynamicShapeConfig* config, HIAI_
     }
 }
 
-HIAI_DYNAMIC_SHAPE_CACHE_MODE HIAI_DynamicShapeConfig_GetCacheMode(const HIAI_DynamicShapeConfig* config)
+HIAI_DYNAMIC_SHAPE_CACHE_MODE HIAI_MR_DynamicShapeConfig_GetCacheMode(const HIAI_MR_DynamicShapeConfig* config)
 {
     DynamicShapeConfigFuncs* dynamicShapeFuncs = GetDynamicShapeConfigFuncs();
     if (dynamicShapeFuncs->getCacheMode != NULL) {
@@ -147,7 +147,7 @@ HIAI_DYNAMIC_SHAPE_CACHE_MODE HIAI_DynamicShapeConfig_GetCacheMode(const HIAI_Dy
     return HIAI_DYNAMIC_SHAPE_CACHE_BUILDED_MODEL;
 }
 
-void HIAI_DynamicShapeConfig_Destroy(HIAI_DynamicShapeConfig** config)
+void HIAI_MR_DynamicShapeConfig_Destroy(HIAI_MR_DynamicShapeConfig** config)
 {
     DynamicShapeConfigFuncs* dynamicShapeFuncs = GetDynamicShapeConfigFuncs();
     if (dynamicShapeFuncs->destroy != NULL) {
@@ -156,13 +156,13 @@ void HIAI_DynamicShapeConfig_Destroy(HIAI_DynamicShapeConfig** config)
 }
 
 typedef struct OpDeviceOrderFuncs {
-    HIAI_OpDeviceOrder* (*create)(void);
-    void (*setOpName)(HIAI_OpDeviceOrder*, const char*);
-    const char* (*getOpName)(const HIAI_OpDeviceOrder*);
-    void (*setDeviceOrder)(HIAI_OpDeviceOrder*, size_t, HIAI_EXECUTE_DEVICE*);
-    size_t (*getSupportedDeviceNum)(const HIAI_OpDeviceOrder*);
-    HIAI_EXECUTE_DEVICE* (*getSupportedDevices)(const HIAI_OpDeviceOrder*);
-    void (*destroy)(HIAI_OpDeviceOrder**);
+    HIAI_MR_OpDeviceOrder* (*create)(void);
+    void (*setOpName)(HIAI_MR_OpDeviceOrder*, const char*);
+    const char* (*getOpName)(const HIAI_MR_OpDeviceOrder*);
+    void (*setDeviceOrder)(HIAI_MR_OpDeviceOrder*, size_t, HIAI_EXECUTE_DEVICE*);
+    size_t (*getSupportedDeviceNum)(const HIAI_MR_OpDeviceOrder*);
+    HIAI_EXECUTE_DEVICE* (*getSupportedDevices)(const HIAI_MR_OpDeviceOrder*);
+    void (*destroy)(HIAI_MR_OpDeviceOrder**);
 } OpDeviceOrderFuncs;
 
 static void InitOpDeviceOrderFuncs(OpDeviceOrderFuncs* opDeviceOrderFuncs)
@@ -206,7 +206,7 @@ static OpDeviceOrderFuncs* GetOpDeviceOrderFuncs(void)
     return &opDeviceOrderFuncs;
 }
 
-HIAI_OpDeviceOrder* HIAI_OpDeviceOrder_Create(void)
+HIAI_MR_OpDeviceOrder* HIAI_MR_OpDeviceOrder_Create(void)
 {
     OpDeviceOrderFuncs* opDeviceOrderFuncs = GetOpDeviceOrderFuncs();
     if (opDeviceOrderFuncs->create != NULL) {
@@ -215,7 +215,7 @@ HIAI_OpDeviceOrder* HIAI_OpDeviceOrder_Create(void)
     return NULL;
 }
 
-void HIAI_OpDeviceOrder_SetOpName(HIAI_OpDeviceOrder* config, const char* opName)
+void HIAI_MR_OpDeviceOrder_SetOpName(HIAI_MR_OpDeviceOrder* config, const char* opName)
 {
     OpDeviceOrderFuncs* opDeviceOrderFuncs = GetOpDeviceOrderFuncs();
     if (opDeviceOrderFuncs->setOpName != NULL) {
@@ -223,7 +223,7 @@ void HIAI_OpDeviceOrder_SetOpName(HIAI_OpDeviceOrder* config, const char* opName
     }
 }
 
-const char* HIAI_OpDeviceOrder_GetOpName(const HIAI_OpDeviceOrder* config)
+const char* HIAI_MR_OpDeviceOrder_GetOpName(const HIAI_MR_OpDeviceOrder* config)
 {
     OpDeviceOrderFuncs* opDeviceOrderFuncs = GetOpDeviceOrderFuncs();
     if (opDeviceOrderFuncs->getOpName != NULL) {
@@ -232,8 +232,8 @@ const char* HIAI_OpDeviceOrder_GetOpName(const HIAI_OpDeviceOrder* config)
     return NULL;
 }
 
-void HIAI_OpDeviceOrder_SetDeviceOrder(
-    HIAI_OpDeviceOrder* config, size_t supportedDeviceNum, HIAI_EXECUTE_DEVICE* supportedDevices)
+void HIAI_MR_OpDeviceOrder_SetDeviceOrder(
+    HIAI_MR_OpDeviceOrder* config, size_t supportedDeviceNum, HIAI_EXECUTE_DEVICE* supportedDevices)
 {
     OpDeviceOrderFuncs* opDeviceOrderFuncs = GetOpDeviceOrderFuncs();
     if (opDeviceOrderFuncs->setDeviceOrder != NULL) {
@@ -241,7 +241,7 @@ void HIAI_OpDeviceOrder_SetDeviceOrder(
     }
 }
 
-size_t HIAI_OpDeviceOrder_GetSupportedDeviceNum(const HIAI_OpDeviceOrder* config)
+size_t HIAI_MR_OpDeviceOrder_GetSupportedDeviceNum(const HIAI_MR_OpDeviceOrder* config)
 {
     OpDeviceOrderFuncs* opDeviceOrderFuncs = GetOpDeviceOrderFuncs();
     if (opDeviceOrderFuncs->getSupportedDeviceNum != NULL) {
@@ -250,7 +250,7 @@ size_t HIAI_OpDeviceOrder_GetSupportedDeviceNum(const HIAI_OpDeviceOrder* config
     return 0;
 }
 
-HIAI_EXECUTE_DEVICE* HIAI_OpDeviceOrder_GetSupportedDevices(const HIAI_OpDeviceOrder* config)
+HIAI_EXECUTE_DEVICE* HIAI_MR_OpDeviceOrder_GetSupportedDevices(const HIAI_MR_OpDeviceOrder* config)
 {
     OpDeviceOrderFuncs* opDeviceOrderFuncs = GetOpDeviceOrderFuncs();
     if (opDeviceOrderFuncs->getSupportedDevices != NULL) {
@@ -259,7 +259,7 @@ HIAI_EXECUTE_DEVICE* HIAI_OpDeviceOrder_GetSupportedDevices(const HIAI_OpDeviceO
     return NULL;
 }
 
-void HIAI_OpDeviceOrder_Destroy(HIAI_OpDeviceOrder** config)
+void HIAI_MR_OpDeviceOrder_Destroy(HIAI_MR_OpDeviceOrder** config)
 {
     OpDeviceOrderFuncs* opDeviceOrderFuncs = GetOpDeviceOrderFuncs();
     if (opDeviceOrderFuncs->destroy != NULL) {
@@ -268,12 +268,12 @@ void HIAI_OpDeviceOrder_Destroy(HIAI_OpDeviceOrder** config)
 }
 
 typedef struct CLCustomizationFuncs {
-    HIAI_CLCustomization* (*create)(void);
-    void (*setOpName)(HIAI_CLCustomization*, const char*);
-    const char* (*getOpName)(const HIAI_CLCustomization*);
-    void (*setCustomization)(HIAI_CLCustomization*, const char*);
-    const char* (*getCustomization)(const HIAI_CLCustomization*);
-    void (*destroy)(HIAI_CLCustomization**);
+    HIAI_MR_CLCustomization* (*create)(void);
+    void (*setOpName)(HIAI_MR_CLCustomization*, const char*);
+    const char* (*getOpName)(const HIAI_MR_CLCustomization*);
+    void (*setCustomization)(HIAI_MR_CLCustomization*, const char*);
+    const char* (*getCustomization)(const HIAI_MR_CLCustomization*);
+    void (*destroy)(HIAI_MR_CLCustomization**);
 } CLCustomizationFuncs;
 
 static void InitCLCustomizationFuncs(CLCustomizationFuncs* cLCustomizationFuncs)
@@ -314,7 +314,7 @@ static CLCustomizationFuncs* GetCLCustomizationFuncs(void)
     return &cLCustomizationFuncs;
 }
 
-HIAI_CLCustomization* HIAI_CLCustomization_Create(void)
+HIAI_MR_CLCustomization* HIAI_MR_CLCustomization_Create(void)
 {
     CLCustomizationFuncs* cLCustomizationFuncs = GetCLCustomizationFuncs();
     if (cLCustomizationFuncs->create != NULL) {
@@ -323,7 +323,7 @@ HIAI_CLCustomization* HIAI_CLCustomization_Create(void)
     return NULL;
 }
 
-void HIAI_CLCustomization_SetOpName(HIAI_CLCustomization* config, const char* opName)
+void HIAI_MR_CLCustomization_SetOpName(HIAI_MR_CLCustomization* config, const char* opName)
 {
     CLCustomizationFuncs* cLCustomizationFuncs = GetCLCustomizationFuncs();
     if (cLCustomizationFuncs->setOpName != NULL) {
@@ -331,7 +331,7 @@ void HIAI_CLCustomization_SetOpName(HIAI_CLCustomization* config, const char* op
     }
 }
 
-const char* HIAI_CLCustomization_GetOpName(const HIAI_CLCustomization* config)
+const char* HIAI_MR_CLCustomization_GetOpName(const HIAI_MR_CLCustomization* config)
 {
     CLCustomizationFuncs* cLCustomizationFuncs = GetCLCustomizationFuncs();
     if (cLCustomizationFuncs->getOpName != NULL) {
@@ -340,7 +340,7 @@ const char* HIAI_CLCustomization_GetOpName(const HIAI_CLCustomization* config)
     return NULL;
 }
 
-void HIAI_CLCustomization_SetCustomization(HIAI_CLCustomization* config, const char* customization)
+void HIAI_MR_CLCustomization_SetCustomization(HIAI_MR_CLCustomization* config, const char* customization)
 {
     CLCustomizationFuncs* cLCustomizationFuncs = GetCLCustomizationFuncs();
     if (cLCustomizationFuncs->setCustomization != NULL) {
@@ -348,7 +348,7 @@ void HIAI_CLCustomization_SetCustomization(HIAI_CLCustomization* config, const c
     }
 }
 
-const char* HIAI_CLCustomization_GetCustomization(const HIAI_CLCustomization* config)
+const char* HIAI_MR_CLCustomization_GetCustomization(const HIAI_MR_CLCustomization* config)
 {
     CLCustomizationFuncs* cLCustomizationFuncs = GetCLCustomizationFuncs();
     if (cLCustomizationFuncs->getCustomization != NULL) {
@@ -357,7 +357,7 @@ const char* HIAI_CLCustomization_GetCustomization(const HIAI_CLCustomization* co
     return NULL;
 }
 
-void HIAI_CLCustomization_Destroy(HIAI_CLCustomization** config)
+void HIAI_MR_CLCustomization_Destroy(HIAI_MR_CLCustomization** config)
 {
     CLCustomizationFuncs* cLCustomizationFuncs = GetCLCustomizationFuncs();
     if (cLCustomizationFuncs->destroy != NULL) {
@@ -366,29 +366,29 @@ void HIAI_CLCustomization_Destroy(HIAI_CLCustomization** config)
 }
 // cl
 typedef struct ModelDeviceConfigFuncs {
-    HIAI_ModelDeviceConfig* (*create)(void);
+    HIAI_MR_ModelDeviceConfig* (*create)(void);
 
-    void (*setDeviceConfigMode)(HIAI_ModelDeviceConfig*, HIAI_DEVICE_CONFIG_MODE);
-    HIAI_DEVICE_CONFIG_MODE (*getDeviceConfigMode)(const HIAI_ModelDeviceConfig*);
+    void (*setDeviceConfigMode)(HIAI_MR_ModelDeviceConfig*, HIAI_DEVICE_CONFIG_MODE);
+    HIAI_DEVICE_CONFIG_MODE (*getDeviceConfigMode)(const HIAI_MR_ModelDeviceConfig*);
 
-    void (*setFallBackMode)(HIAI_ModelDeviceConfig*, HIAI_FALLBACK_MODE);
-    HIAI_FALLBACK_MODE (*getFallBackMode)(const HIAI_ModelDeviceConfig*);
+    void (*setFallBackMode)(HIAI_MR_ModelDeviceConfig*, HIAI_FALLBACK_MODE);
+    HIAI_FALLBACK_MODE (*getFallBackMode)(const HIAI_MR_ModelDeviceConfig*);
 
-    void (*setModelDeviceOrder)(HIAI_ModelDeviceConfig*, size_t, HIAI_EXECUTE_DEVICE*);
-    size_t (*getConfigModelNum)(const HIAI_ModelDeviceConfig*);
-    HIAI_EXECUTE_DEVICE* (*getModelDeviceOrder)(const HIAI_ModelDeviceConfig*);
+    void (*setModelDeviceOrder)(HIAI_MR_ModelDeviceConfig*, size_t, HIAI_EXECUTE_DEVICE*);
+    size_t (*getConfigModelNum)(const HIAI_MR_ModelDeviceConfig*);
+    HIAI_EXECUTE_DEVICE* (*getModelDeviceOrder)(const HIAI_MR_ModelDeviceConfig*);
 
-    void (*setOpDeviceOrder)(HIAI_ModelDeviceConfig*, size_t, HIAI_OpDeviceOrder**);
-    size_t (*getConfigOpNum)(const HIAI_ModelDeviceConfig*);
-    HIAI_OpDeviceOrder** (*getOpDeviceOrder)(const HIAI_ModelDeviceConfig*);
+    void (*setOpDeviceOrder)(HIAI_MR_ModelDeviceConfig*, size_t, HIAI_MR_OpDeviceOrder**);
+    size_t (*getConfigOpNum)(const HIAI_MR_ModelDeviceConfig*);
+    HIAI_MR_OpDeviceOrder** (*getOpDeviceOrder)(const HIAI_MR_ModelDeviceConfig*);
 
-    void (*setDeviceMemoryReusePlan)(HIAI_ModelDeviceConfig*, HIAI_DEVICE_MEMORY_REUSE_PLAN);
-    HIAI_DEVICE_MEMORY_REUSE_PLAN (*getDeviceMemoryReusePlan)(const HIAI_ModelDeviceConfig*);
+    void (*setDeviceMemoryReusePlan)(HIAI_MR_ModelDeviceConfig*, HIAI_DEVICE_MEMORY_REUSE_PLAN);
+    HIAI_DEVICE_MEMORY_REUSE_PLAN (*getDeviceMemoryReusePlan)(const HIAI_MR_ModelDeviceConfig*);
 
-    void (*setCLCustomization)(HIAI_ModelDeviceConfig*, HIAI_CLCustomization**);
-    HIAI_CLCustomization** (*getCLCustomization)(HIAI_ModelDeviceConfig*);
+    void (*setCLCustomization)(HIAI_MR_ModelDeviceConfig*, HIAI_MR_CLCustomization**);
+    HIAI_MR_CLCustomization** (*getCLCustomization)(HIAI_MR_ModelDeviceConfig*);
 
-    void (*destroy)(HIAI_ModelDeviceConfig**);
+    void (*destroy)(HIAI_MR_ModelDeviceConfig**);
 } ModelDeviceConfigFuncs;
 
 static void InitModelDeviceConfigFuncs(ModelDeviceConfigFuncs* modelDeviceConfigFuncs)
@@ -458,7 +458,7 @@ static ModelDeviceConfigFuncs* GetModelDeviceConfigFuncs(void)
     return &modelDeviceConfigFuncs;
 }
 
-HIAI_ModelDeviceConfig* HIAI_ModelDeviceConfig_Create(void)
+HIAI_MR_ModelDeviceConfig* HIAI_MR_ModelDeviceConfig_Create(void)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->create != NULL) {
@@ -467,8 +467,8 @@ HIAI_ModelDeviceConfig* HIAI_ModelDeviceConfig_Create(void)
     return NULL;
 }
 
-void HIAI_ModelDeviceConfig_SetDeviceConfigMode(
-    HIAI_ModelDeviceConfig* config, HIAI_DEVICE_CONFIG_MODE deviceConfigMode)
+void HIAI_MR_ModelDeviceConfig_SetDeviceConfigMode(
+    HIAI_MR_ModelDeviceConfig* config, HIAI_DEVICE_CONFIG_MODE deviceConfigMode)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->setDeviceConfigMode != NULL) {
@@ -476,7 +476,7 @@ void HIAI_ModelDeviceConfig_SetDeviceConfigMode(
     }
 }
 
-HIAI_DEVICE_CONFIG_MODE HIAI_ModelDeviceConfig_GetDeviceConfigMode(const HIAI_ModelDeviceConfig* config)
+HIAI_DEVICE_CONFIG_MODE HIAI_MR_ModelDeviceConfig_GetDeviceConfigMode(const HIAI_MR_ModelDeviceConfig* config)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->getDeviceConfigMode != NULL) {
@@ -485,7 +485,7 @@ HIAI_DEVICE_CONFIG_MODE HIAI_ModelDeviceConfig_GetDeviceConfigMode(const HIAI_Mo
     return HIAI_DEVICE_CONFIG_MODE_AUTO;
 }
 
-void HIAI_ModelDeviceConfig_SetFallBackMode(HIAI_ModelDeviceConfig* config, HIAI_FALLBACK_MODE fallBackMode)
+void HIAI_MR_ModelDeviceConfig_SetFallBackMode(HIAI_MR_ModelDeviceConfig* config, HIAI_FALLBACK_MODE fallBackMode)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->setFallBackMode != NULL) {
@@ -493,7 +493,7 @@ void HIAI_ModelDeviceConfig_SetFallBackMode(HIAI_ModelDeviceConfig* config, HIAI
     }
 }
 
-HIAI_FALLBACK_MODE HIAI_ModelDeviceConfig_GetFallBackMode(const HIAI_ModelDeviceConfig* config)
+HIAI_FALLBACK_MODE HIAI_MR_ModelDeviceConfig_GetFallBackMode(const HIAI_MR_ModelDeviceConfig* config)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->getFallBackMode != NULL) {
@@ -502,8 +502,8 @@ HIAI_FALLBACK_MODE HIAI_ModelDeviceConfig_GetFallBackMode(const HIAI_ModelDevice
     return HIAI_FALLBACK_MODE_ENABLE;
 }
 
-void HIAI_ModelDeviceConfig_SetModelDeviceOrder(
-    HIAI_ModelDeviceConfig* config, size_t configModelNum, HIAI_EXECUTE_DEVICE* modelDeviceOrder)
+void HIAI_MR_ModelDeviceConfig_SetModelDeviceOrder(
+    HIAI_MR_ModelDeviceConfig* config, size_t configModelNum, HIAI_EXECUTE_DEVICE* modelDeviceOrder)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->setModelDeviceOrder != NULL) {
@@ -511,7 +511,7 @@ void HIAI_ModelDeviceConfig_SetModelDeviceOrder(
     }
 }
 
-size_t HIAI_ModelDeviceConfig_GetConfigModelNum(const HIAI_ModelDeviceConfig* config)
+size_t HIAI_MR_ModelDeviceConfig_GetConfigModelNum(const HIAI_MR_ModelDeviceConfig* config)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->getConfigModelNum != NULL) {
@@ -520,7 +520,7 @@ size_t HIAI_ModelDeviceConfig_GetConfigModelNum(const HIAI_ModelDeviceConfig* co
     return 0;
 }
 
-HIAI_EXECUTE_DEVICE* HIAI_ModelDeviceConfig_GetModelDeviceOrder(const HIAI_ModelDeviceConfig* config)
+HIAI_EXECUTE_DEVICE* HIAI_MR_ModelDeviceConfig_GetModelDeviceOrder(const HIAI_MR_ModelDeviceConfig* config)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->getModelDeviceOrder != NULL) {
@@ -529,8 +529,8 @@ HIAI_EXECUTE_DEVICE* HIAI_ModelDeviceConfig_GetModelDeviceOrder(const HIAI_Model
     return NULL;
 }
 
-void HIAI_ModelDeviceConfig_SetOpDeviceOrder(
-    HIAI_ModelDeviceConfig* config, size_t configOpNum, HIAI_OpDeviceOrder** opDeviceOrder)
+void HIAI_MR_ModelDeviceConfig_SetOpDeviceOrder(
+    HIAI_MR_ModelDeviceConfig* config, size_t configOpNum, HIAI_MR_OpDeviceOrder** opDeviceOrder)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->setOpDeviceOrder != NULL) {
@@ -538,7 +538,7 @@ void HIAI_ModelDeviceConfig_SetOpDeviceOrder(
     }
 }
 
-size_t HIAI_ModelDeviceConfig_GetConfigOpNum(const HIAI_ModelDeviceConfig* config)
+size_t HIAI_MR_ModelDeviceConfig_GetConfigOpNum(const HIAI_MR_ModelDeviceConfig* config)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->getConfigOpNum != NULL) {
@@ -547,7 +547,7 @@ size_t HIAI_ModelDeviceConfig_GetConfigOpNum(const HIAI_ModelDeviceConfig* confi
     return 0;
 }
 
-HIAI_OpDeviceOrder** HIAI_ModelDeviceConfig_GetOpDeviceOrder(const HIAI_ModelDeviceConfig* config)
+HIAI_MR_OpDeviceOrder** HIAI_MR_ModelDeviceConfig_GetOpDeviceOrder(const HIAI_MR_ModelDeviceConfig* config)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->getOpDeviceOrder != NULL) {
@@ -556,8 +556,8 @@ HIAI_OpDeviceOrder** HIAI_ModelDeviceConfig_GetOpDeviceOrder(const HIAI_ModelDev
     return NULL;
 }
 
-void HIAI_ModelDeviceConfig_SetDeviceMemoryReusePlan(
-    HIAI_ModelDeviceConfig* config, HIAI_DEVICE_MEMORY_REUSE_PLAN deviceMemoryReusePlan)
+void HIAI_MR_ModelDeviceConfig_SetDeviceMemoryReusePlan(
+    HIAI_MR_ModelDeviceConfig* config, HIAI_DEVICE_MEMORY_REUSE_PLAN deviceMemoryReusePlan)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->setDeviceMemoryReusePlan != NULL) {
@@ -565,7 +565,8 @@ void HIAI_ModelDeviceConfig_SetDeviceMemoryReusePlan(
     }
 }
 
-HIAI_DEVICE_MEMORY_REUSE_PLAN HIAI_ModelDeviceConfig_GetDeviceMemoryReusePlan(const HIAI_ModelDeviceConfig* config)
+HIAI_DEVICE_MEMORY_REUSE_PLAN HIAI_MR_ModelDeviceConfig_GetDeviceMemoryReusePlan(
+    const HIAI_MR_ModelDeviceConfig* config)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->getDeviceMemoryReusePlan != NULL) {
@@ -574,7 +575,8 @@ HIAI_DEVICE_MEMORY_REUSE_PLAN HIAI_ModelDeviceConfig_GetDeviceMemoryReusePlan(co
     return HIAI_DEVICE_MEMORY_REUSE_PLAN_UNSET;
 }
 
-void HIAI_ModelDeviceConfig_SetCLCustomization(HIAI_ModelDeviceConfig* config, HIAI_CLCustomization** clCustomization)
+void HIAI_MR_ModelDeviceConfig_SetCLCustomization(
+    HIAI_MR_ModelDeviceConfig* config, HIAI_MR_CLCustomization** clCustomization)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->setCLCustomization != NULL) {
@@ -582,7 +584,7 @@ void HIAI_ModelDeviceConfig_SetCLCustomization(HIAI_ModelDeviceConfig* config, H
     }
 }
 
-HIAI_CLCustomization** HIAI_ModelDeviceConfig_GetCLCustomization(HIAI_ModelDeviceConfig* config)
+HIAI_MR_CLCustomization** HIAI_MR_ModelDeviceConfig_GetCLCustomization(HIAI_MR_ModelDeviceConfig* config)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->getCLCustomization != NULL) {
@@ -591,7 +593,7 @@ HIAI_CLCustomization** HIAI_ModelDeviceConfig_GetCLCustomization(HIAI_ModelDevic
     return NULL;
 }
 
-void HIAI_ModelDeviceConfig_Destroy(HIAI_ModelDeviceConfig** config)
+void HIAI_MR_ModelDeviceConfig_Destroy(HIAI_MR_ModelDeviceConfig** config)
 {
     ModelDeviceConfigFuncs* modelDeviceConfigFuncs = GetModelDeviceConfigFuncs();
     if (modelDeviceConfigFuncs->destroy != NULL) {
@@ -600,35 +602,35 @@ void HIAI_ModelDeviceConfig_Destroy(HIAI_ModelDeviceConfig** config)
 }
 
 typedef struct ModelBuildOptionsFuncs {
-    HIAI_ModelBuildOptions* (*create)(void);
+    HIAI_MR_ModelBuildOptions* (*create)(void);
 
-    void (*setInputTensorDescs)(HIAI_ModelBuildOptions*, size_t, HIAI_NDTensorDesc**);
-    size_t (*getInputSize)(const HIAI_ModelBuildOptions*);
-    HIAI_NDTensorDesc** (*getInputTensorDescs)(const HIAI_ModelBuildOptions*);
+    void (*setInputTensorDescs)(HIAI_MR_ModelBuildOptions*, size_t, HIAI_NDTensorDesc**);
+    size_t (*getInputSize)(const HIAI_MR_ModelBuildOptions*);
+    HIAI_NDTensorDesc** (*getInputTensorDescs)(const HIAI_MR_ModelBuildOptions*);
 
-    void (*setFormatModeOption)(HIAI_ModelBuildOptions*, HIAI_FORMAT_MODE_OPTION);
-    HIAI_FORMAT_MODE_OPTION (*getFormatModeOption)(const HIAI_ModelBuildOptions*);
+    void (*setFormatModeOption)(HIAI_MR_ModelBuildOptions*, HIAI_FORMAT_MODE_OPTION);
+    HIAI_FORMAT_MODE_OPTION (*getFormatModeOption)(const HIAI_MR_ModelBuildOptions*);
 
-    HIAI_Status (*setPrecisionModeOption)(HIAI_ModelBuildOptions*, HIAI_PRECISION_MODE_OPTION);
-    HIAI_PRECISION_MODE_OPTION (*getPrecisionModeOption)(const HIAI_ModelBuildOptions*);
+    HIAI_Status (*setPrecisionModeOption)(HIAI_MR_ModelBuildOptions*, HIAI_PRECISION_MODE_OPTION);
+    HIAI_PRECISION_MODE_OPTION (*getPrecisionModeOption)(const HIAI_MR_ModelBuildOptions*);
 
-    void (*setDynamicShapeConfig)(HIAI_ModelBuildOptions*, HIAI_DynamicShapeConfig*);
-    HIAI_DynamicShapeConfig* (*getDynamicShapeConfig)(const HIAI_ModelBuildOptions*);
+    void (*setDynamicShapeConfig)(HIAI_MR_ModelBuildOptions*, HIAI_MR_DynamicShapeConfig*);
+    HIAI_MR_DynamicShapeConfig* (*getDynamicShapeConfig)(const HIAI_MR_ModelBuildOptions*);
 
-    void (*setModelDeviceConfig)(HIAI_ModelBuildOptions*, HIAI_ModelDeviceConfig*);
-    HIAI_ModelDeviceConfig* (*getModelDeviceConfig)(const HIAI_ModelBuildOptions*);
+    void (*setModelDeviceConfig)(HIAI_MR_ModelBuildOptions*, HIAI_MR_ModelDeviceConfig*);
+    HIAI_MR_ModelDeviceConfig* (*getModelDeviceConfig)(const HIAI_MR_ModelBuildOptions*);
 
-    HIAI_Status (*setTuningStrategy)(HIAI_ModelBuildOptions*, HIAI_TUNING_STRATEGY);
-    HIAI_TUNING_STRATEGY (*getTuningStrategy)(const HIAI_ModelBuildOptions*);
+    HIAI_Status (*setTuningStrategy)(HIAI_MR_ModelBuildOptions*, HIAI_TUNING_STRATEGY);
+    HIAI_TUNING_STRATEGY (*getTuningStrategy)(const HIAI_MR_ModelBuildOptions*);
 
-    void (*setEstimatedOutputSize)(HIAI_ModelBuildOptions*, size_t);
-    size_t (*getEstimatedOutputSize)(const HIAI_ModelBuildOptions*);
+    void (*setEstimatedOutputSize)(HIAI_MR_ModelBuildOptions*, size_t);
+    size_t (*getEstimatedOutputSize)(const HIAI_MR_ModelBuildOptions*);
 
-    HIAI_Status (*setQuantizeConfig)(HIAI_ModelBuildOptions*, uint8_t*, size_t);
-    uint8_t* (*getQuantizeConfigData)(const HIAI_ModelBuildOptions*);
-    size_t (*getQuantizeConfigSize)(const HIAI_ModelBuildOptions*);
+    HIAI_Status (*setQuantizeConfig)(HIAI_MR_ModelBuildOptions*, uint8_t*, size_t);
+    uint8_t* (*getQuantizeConfigData)(const HIAI_MR_ModelBuildOptions*);
+    size_t (*getQuantizeConfigSize)(const HIAI_MR_ModelBuildOptions*);
 
-    void (*destroy)(HIAI_ModelBuildOptions**);
+    void (*destroy)(HIAI_MR_ModelBuildOptions**);
 } ModelBuildOptionsFuncs;
 
 static void InitModelBuildOptionsFuncs(ModelBuildOptionsFuncs* modelBuildOptionsFuncs)
@@ -721,7 +723,7 @@ static ModelBuildOptionsFuncs* GetModelBuildOptionsFuncs(void)
     return &modelBuildOptionsFuncs;
 }
 
-HIAI_ModelBuildOptions* HIAI_ModelBuildOptions_Create(void)
+HIAI_MR_ModelBuildOptions* HIAI_MR_ModelBuildOptions_Create(void)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->create != NULL) {
@@ -730,8 +732,8 @@ HIAI_ModelBuildOptions* HIAI_ModelBuildOptions_Create(void)
     return NULL;
 }
 
-void HIAI_ModelBuildOptions_SetInputTensorDescs(
-    HIAI_ModelBuildOptions* options, size_t inputNum, HIAI_NDTensorDesc** inputTensorDescs)
+void HIAI_MR_ModelBuildOptions_SetInputTensorDescs(
+    HIAI_MR_ModelBuildOptions* options, size_t inputNum, HIAI_NDTensorDesc** inputTensorDescs)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->setInputTensorDescs != NULL) {
@@ -739,7 +741,7 @@ void HIAI_ModelBuildOptions_SetInputTensorDescs(
     }
 }
 
-size_t HIAI_ModelBuildOptions_GetInputSize(const HIAI_ModelBuildOptions* options)
+size_t HIAI_MR_ModelBuildOptions_GetInputSize(const HIAI_MR_ModelBuildOptions* options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->getInputSize != NULL) {
@@ -748,7 +750,7 @@ size_t HIAI_ModelBuildOptions_GetInputSize(const HIAI_ModelBuildOptions* options
     return 0;
 }
 
-HIAI_NDTensorDesc** HIAI_ModelBuildOptions_GetInputTensorDescs(const HIAI_ModelBuildOptions* options)
+HIAI_NDTensorDesc** HIAI_MR_ModelBuildOptions_GetInputTensorDescs(const HIAI_MR_ModelBuildOptions* options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->getInputTensorDescs != NULL) {
@@ -757,7 +759,8 @@ HIAI_NDTensorDesc** HIAI_ModelBuildOptions_GetInputTensorDescs(const HIAI_ModelB
     return NULL;
 }
 
-void HIAI_ModelBuildOptions_SetFormatModeOption(HIAI_ModelBuildOptions* options, HIAI_FORMAT_MODE_OPTION formatMode)
+void HIAI_MR_ModelBuildOptions_SetFormatModeOption(
+    HIAI_MR_ModelBuildOptions* options, HIAI_FORMAT_MODE_OPTION formatMode)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->setFormatModeOption != NULL) {
@@ -765,7 +768,7 @@ void HIAI_ModelBuildOptions_SetFormatModeOption(HIAI_ModelBuildOptions* options,
     }
 }
 
-HIAI_FORMAT_MODE_OPTION HIAI_ModelBuildOptions_GetFormatModeOption(const HIAI_ModelBuildOptions* options)
+HIAI_FORMAT_MODE_OPTION HIAI_MR_ModelBuildOptions_GetFormatModeOption(const HIAI_MR_ModelBuildOptions* options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->getFormatModeOption != NULL) {
@@ -774,8 +777,8 @@ HIAI_FORMAT_MODE_OPTION HIAI_ModelBuildOptions_GetFormatModeOption(const HIAI_Mo
     return HIAI_FORMAT_MODE_USE_NCHW;
 }
 
-HIAI_Status HIAI_ModelBuildOptions_SetPrecisionModeOption(
-    HIAI_ModelBuildOptions* options, HIAI_PRECISION_MODE_OPTION precisionMode)
+HIAI_Status HIAI_MR_ModelBuildOptions_SetPrecisionModeOption(
+    HIAI_MR_ModelBuildOptions* options, HIAI_PRECISION_MODE_OPTION precisionMode)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->setPrecisionModeOption != NULL) {
@@ -784,7 +787,7 @@ HIAI_Status HIAI_ModelBuildOptions_SetPrecisionModeOption(
     return HIAI_SUCCESS;
 }
 
-HIAI_PRECISION_MODE_OPTION HIAI_ModelBuildOptions_GetPrecisionModeOption(const HIAI_ModelBuildOptions* options)
+HIAI_PRECISION_MODE_OPTION HIAI_MR_ModelBuildOptions_GetPrecisionModeOption(const HIAI_MR_ModelBuildOptions* options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->getPrecisionModeOption != NULL) {
@@ -793,8 +796,8 @@ HIAI_PRECISION_MODE_OPTION HIAI_ModelBuildOptions_GetPrecisionModeOption(const H
     return HIAI_PRECISION_MODE_FP32;
 }
 
-void HIAI_ModelBuildOptions_SetDynamicShapeConfig(
-    HIAI_ModelBuildOptions* options, HIAI_DynamicShapeConfig* dynamicShapeConfig)
+void HIAI_MR_ModelBuildOptions_SetDynamicShapeConfig(
+    HIAI_MR_ModelBuildOptions* options, HIAI_MR_DynamicShapeConfig* dynamicShapeConfig)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->setDynamicShapeConfig != NULL) {
@@ -802,7 +805,7 @@ void HIAI_ModelBuildOptions_SetDynamicShapeConfig(
     }
 }
 
-HIAI_DynamicShapeConfig* HIAI_ModelBuildOptions_GetDynamicShapeConfig(const HIAI_ModelBuildOptions* options)
+HIAI_MR_DynamicShapeConfig* HIAI_MR_ModelBuildOptions_GetDynamicShapeConfig(const HIAI_MR_ModelBuildOptions* options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->getDynamicShapeConfig != NULL) {
@@ -811,8 +814,8 @@ HIAI_DynamicShapeConfig* HIAI_ModelBuildOptions_GetDynamicShapeConfig(const HIAI
     return NULL;
 }
 
-void HIAI_ModelBuildOptions_SetModelDeviceConfig(
-    HIAI_ModelBuildOptions* options, HIAI_ModelDeviceConfig* modelDeviceConfig)
+void HIAI_MR_ModelBuildOptions_SetModelDeviceConfig(
+    HIAI_MR_ModelBuildOptions* options, HIAI_MR_ModelDeviceConfig* modelDeviceConfig)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->setModelDeviceConfig != NULL) {
@@ -820,7 +823,7 @@ void HIAI_ModelBuildOptions_SetModelDeviceConfig(
     }
 }
 
-HIAI_ModelDeviceConfig* HIAI_ModelBuildOptions_GetModelDeviceConfig(const HIAI_ModelBuildOptions* options)
+HIAI_MR_ModelDeviceConfig* HIAI_MR_ModelBuildOptions_GetModelDeviceConfig(const HIAI_MR_ModelBuildOptions* options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->getModelDeviceConfig != NULL) {
@@ -829,8 +832,8 @@ HIAI_ModelDeviceConfig* HIAI_ModelBuildOptions_GetModelDeviceConfig(const HIAI_M
     return NULL;
 }
 
-HIAI_Status HIAI_ModelBuildOptions_SetTuningStrategy(
-    HIAI_ModelBuildOptions* options, HIAI_TUNING_STRATEGY tuningStrategy)
+HIAI_Status HIAI_MR_ModelBuildOptions_SetTuningStrategy(
+    HIAI_MR_ModelBuildOptions* options, HIAI_TUNING_STRATEGY tuningStrategy)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->setTuningStrategy != NULL) {
@@ -839,7 +842,7 @@ HIAI_Status HIAI_ModelBuildOptions_SetTuningStrategy(
     return HIAI_SUCCESS;
 }
 
-HIAI_TUNING_STRATEGY HIAI_ModelBuildOptions_GetTuningStrategy(const HIAI_ModelBuildOptions* options)
+HIAI_TUNING_STRATEGY HIAI_MR_ModelBuildOptions_GetTuningStrategy(const HIAI_MR_ModelBuildOptions* options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->getTuningStrategy != NULL) {
@@ -848,7 +851,7 @@ HIAI_TUNING_STRATEGY HIAI_ModelBuildOptions_GetTuningStrategy(const HIAI_ModelBu
     return HIAI_TUNING_STRATEGY_OFF;
 }
 
-void HIAI_ModelBuildOptions_SetEstimatedOutputSize(HIAI_ModelBuildOptions* options, size_t size)
+void HIAI_MR_ModelBuildOptions_SetEstimatedOutputSize(HIAI_MR_ModelBuildOptions* options, size_t size)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->setEstimatedOutputSize != NULL) {
@@ -856,7 +859,7 @@ void HIAI_ModelBuildOptions_SetEstimatedOutputSize(HIAI_ModelBuildOptions* optio
     }
 }
 
-size_t HIAI_ModelBuildOptions_GetEstimatedOutputSize(const HIAI_ModelBuildOptions* options)
+size_t HIAI_MR_ModelBuildOptions_GetEstimatedOutputSize(const HIAI_MR_ModelBuildOptions* options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->getEstimatedOutputSize != NULL) {
@@ -865,7 +868,7 @@ size_t HIAI_ModelBuildOptions_GetEstimatedOutputSize(const HIAI_ModelBuildOption
     return 0;
 }
 
-HIAI_Status HIAI_ModelBuildOptions_SetQuantizeConfig(HIAI_ModelBuildOptions* options, uint8_t* data, size_t size)
+HIAI_Status HIAI_MR_ModelBuildOptions_SetQuantizeConfig(HIAI_MR_ModelBuildOptions* options, uint8_t* data, size_t size)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->setQuantizeConfig != NULL) {
@@ -874,7 +877,7 @@ HIAI_Status HIAI_ModelBuildOptions_SetQuantizeConfig(HIAI_ModelBuildOptions* opt
     return HIAI_SUCCESS;
 }
 
-uint8_t* HIAI_ModelBuildOptions_GetQuantizeConfigData(const HIAI_ModelBuildOptions* options)
+uint8_t* HIAI_MR_ModelBuildOptions_GetQuantizeConfigData(const HIAI_MR_ModelBuildOptions* options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->getQuantizeConfigData != NULL) {
@@ -883,7 +886,7 @@ uint8_t* HIAI_ModelBuildOptions_GetQuantizeConfigData(const HIAI_ModelBuildOptio
     return NULL;
 }
 
-size_t HIAI_ModelBuildOptions_GetQuantizeConfigSize(const HIAI_ModelBuildOptions* options)
+size_t HIAI_MR_ModelBuildOptions_GetQuantizeConfigSize(const HIAI_MR_ModelBuildOptions* options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->getQuantizeConfigSize != NULL) {
@@ -892,7 +895,7 @@ size_t HIAI_ModelBuildOptions_GetQuantizeConfigSize(const HIAI_ModelBuildOptions
     return 0;
 }
 
-void HIAI_ModelBuildOptions_Destroy(HIAI_ModelBuildOptions** options)
+void HIAI_MR_ModelBuildOptions_Destroy(HIAI_MR_ModelBuildOptions** options)
 {
     ModelBuildOptionsFuncs* modelBuildOptionsFuncs = GetModelBuildOptionsFuncs();
     if (modelBuildOptionsFuncs->destroy != NULL) {

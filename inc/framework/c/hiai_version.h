@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-AICP_C_API_EXPORT const char* HIAI_GetVersion(void);
+AICP_C_API_EXPORT const char* HIAI_MR_GetVersion(void);
 
 #ifdef __cplusplus
 }

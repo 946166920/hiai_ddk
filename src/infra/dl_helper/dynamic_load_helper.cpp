@@ -25,7 +25,7 @@ namespace {
 const char* const INFRA_MODULE_NAME = "INFRA";
 }
 
-DynamicLoadHelper::DynamicLoadHelper() : handle_(nullptr)
+DynamicLoadHelper::DynamicLoadHelper()
 {
 }
 
@@ -35,7 +35,7 @@ DynamicLoadHelper::~DynamicLoadHelper()
     handle_ = nullptr;
 }
 
-bool DynamicLoadHelper::Init(const std::string& file)
+bool DynamicLoadHelper::Init(const std::string& file, bool isNeedClose)
 {
     std::lock_guard<std::mutex> lock(funcMapMutex_);
     if (handle_ != nullptr) {
@@ -66,6 +66,7 @@ bool DynamicLoadHelper::Init(const std::string& file)
         AI_LOGE(INFRA_MODULE_NAME, "load lib failed,errmsg [%s]", dlerror());
         return false;
     }
+    isNeedClose_ = isNeedClose;
     return true;
 }
 
@@ -76,8 +77,7 @@ void DynamicLoadHelper::Deinit()
         AI_LOGE(INFRA_MODULE_NAME, "file not loaded.");
         return;
     }
-
-    if (dlclose(handle_) != 0) {
+    if (isNeedClose_ && dlclose(handle_) != 0) {
         AI_LOGE(INFRA_MODULE_NAME, "dlclose failed.");
     }
     handle_ = nullptr;

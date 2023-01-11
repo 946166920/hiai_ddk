@@ -20,8 +20,10 @@
 
 // inc/framework
 #include "framework/graph/core/node/node.h"
+#include "framework/graph/core/node/node_spec.h"
 
 // api/framework
+#include "graph/op/const_defs.h"
 #include "graph/op/control_flow_defs.h"
 
 // inc/framework
@@ -50,5 +52,11 @@ const std::vector<std::string> WITH_SUB_GRAPH_TYPES {
 bool NodeUtils::IsWithSubGraphType(const std::string& type)
 {
     return std::find(WITH_SUB_GRAPH_TYPES.cbegin(), WITH_SUB_GRAPH_TYPES.cend(), type) != WITH_SUB_GRAPH_TYPES.cend();
+}
+
+bool NodeUtils::IsConstNode(const Node& node)
+{
+    return (node.ROLE(NodeSpec).Type() == hiai::op::Const::TYPE) ||
+        (node.ROLE(NodeSpec).Type() == hiai::op::QuantizedConst::TYPE);
 }
 } // namespace ge

@@ -17,15 +17,16 @@
 #ifndef FRAMEWORK_GRAH_PERSISTENCE_PROTO_PROTO_NAMED_ATTR_DEF_H
 #define FRAMEWORK_GRAH_PERSISTENCE_PROTO_PROTO_NAMED_ATTR_DEF_H
 #include "proto_func_macro_def.h"
+#include "proto_wrapper.h"
 #include "graph/persistance/interface/named_attr_def.h"
 
 namespace hiai {
 class ProtoNamedAttrDef : public INamedAttrDef {
 public:
-    ProtoNamedAttrDef();
-    ProtoNamedAttrDef(hiai::proto::NamedAttrs* namedAttrs, bool isOwner = false);
+    ProtoNamedAttrDef(hiai::proto::NamedAttrs& namedAttrs);
     ~ProtoNamedAttrDef() override;
 
+private:
     void CopyFrom(const INamedAttrDef* other) override;
     SerializeType GetSerializeType() const override;
 
@@ -33,8 +34,16 @@ public:
     DEF_PROTO_PERSISTENCE_CUSTOM_MEMBER_PURE_FUNC(IAttrMapDef, attr);
 
 private:
-    hiai::proto::NamedAttrs* namedAttrs_;
-    bool isOwner_;
+    hiai::proto::NamedAttrs& namedAttrs_;
 };
+
+class DefaultProtoNamedAttrDef : private ProtoWrapper<hiai::proto::NamedAttrs>, public ProtoNamedAttrDef {
+public:
+    DefaultProtoNamedAttrDef() : ProtoNamedAttrDef(GetProto())
+    {
+    }
+    ~DefaultProtoNamedAttrDef() override = default;
+};
+
 } // namespace hiai
 #endif

@@ -15,16 +15,18 @@
  */
 #ifndef FRAMEWORK_MODEL_MANAGER_DIRECT_MODEL_RUNTIME_MODEL_MANAGER_AIPP_H
 #define FRAMEWORK_MODEL_MANAGER_DIRECT_MODEL_RUNTIME_MODEL_MANAGER_AIPP_H
+
 #include "framework/c/hiai_error_types.h"
-#include "direct_model_manager.h"
 #include "framework/c/hiai_tensor_aipp_para.h"
+
+#include "direct_model_manager.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 namespace hiai {
-HIAI_Status HIAI_DIRECT_ModelManager_runAippModelV2(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[],
-    int32_t inputNum, HIAI_TensorAippPara* aippPara[], int32_t aippParaNum, HIAI_NDTensorBuffer* output[],
+HIAI_Status HIAI_DIRECT_ModelManager_runAippModelV2(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_TensorAippPara* aippPara[], int32_t aippParaNum, HIAI_MR_NDTensorBuffer* output[],
     int32_t outputNum, int32_t timeoutInMS, void* userData);
 }
 #ifdef __cplusplus

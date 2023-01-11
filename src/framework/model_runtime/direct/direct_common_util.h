@@ -16,11 +16,16 @@
 #ifndef FRAMEWORK_MODEL_MANAGER_DIRECT_MODEL_RUNTIME_COMMON_UTIL_H
 #define FRAMEWORK_MODEL_MANAGER_DIRECT_MODEL_RUNTIME_COMMON_UTIL_H
 #include <string>
+#include <memory>
 
+// api/infra
+#include "base/error_types.h"
+
+// inc
+#include "framework/c/compatible/hiai_mem_buffer.h"
 #include "framework/c/compatible/HIAIModelManager.h"
 #include "framework/c/hiai_model_builder_types.h"
-#include "base/error_types.h"
-#include "framework/util/base_buffer.h"
+#include "infra/base/base_buffer.h"
 
 namespace hiai {
 constexpr uint32_t MAX_COMPILED_TARGET_SIZE = 200 * 1024 * 1024;
@@ -31,9 +36,9 @@ public:
 
     ~DirectCommonUtil() = default;
 
-    static bool CheckBuildOptions(const HIAI_ModelBuildOptions* options);
+    static bool IsSupportBuildOptions(const HIAI_MR_ModelBuildOptions* options);
 
-    static Status MakeCompatibleModel(HIAI_MemBuffer* input, HIAI_MemBuffer** output, bool& isNeedRelease);
+    static std::shared_ptr<BaseBuffer> MakeCompatibleBuffer(const std::shared_ptr<BaseBuffer>& input);
 
     static void DestroyBuffer(HIAI_MemBuffer* membuf);
 

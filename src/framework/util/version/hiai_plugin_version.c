@@ -90,7 +90,7 @@ static const char* HIAI_GetFoundationVersion(void)
     return getVersionFunc();
 }
 
-const char* HIAI_GetVersion(void)
+const char* HIAI_MR_GetVersion(void)
 {
     if (g_RomVersion != NULL) {
         return g_RomVersion;

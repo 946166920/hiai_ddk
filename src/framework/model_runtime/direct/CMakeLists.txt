@@ -10,7 +10,8 @@ hi_cc_library_static(
     direct_built_model.cpp
     direct_built_model_impl.cpp
     direct_common_util.cpp
-    direct_model_util.cpp
+    direct_model_manager_util.cpp
+    direct_model_manager_container.cpp
     direct_model_manager.cpp
     direct_model_manager_impl.cpp
 )

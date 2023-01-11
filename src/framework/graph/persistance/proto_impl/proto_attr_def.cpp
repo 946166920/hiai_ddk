@@ -22,11 +22,7 @@
 #include "graph/persistance/proto_impl/proto_attr_list_def.h"
 
 namespace hiai {
-ProtoAttrDef::ProtoAttrDef() : ProtoAttrDef(new (std::nothrow) hiai::proto::AttrDef(), true)
-{
-}
-
-ProtoAttrDef::ProtoAttrDef(hiai::proto::AttrDef* attrDef, bool isOwner) : attrDef_(attrDef), isOwner_(isOwner)
+ProtoAttrDef::ProtoAttrDef(hiai::proto::AttrDef& attrDef) : attrDef_(attrDef)
 {
 }
 
@@ -37,11 +33,6 @@ ProtoAttrDef::~ProtoAttrDef()
     IMPL_PROTO_CUSTOM_MEMBER_FREE(t);
     IMPL_PROTO_CUSTOM_MEMBER_FREE(g);
     IMPL_PROTO_CUSTOM_MEMBER_FREE(list);
-
-    if (isOwner_) {
-        delete attrDef_;
-    }
-    attrDef_ = nullptr;
 }
 
 void ProtoAttrDef::SetValueType(ge::AttrValue::ValueType type)
@@ -73,14 +64,12 @@ ge::AttrValue::ValueType ProtoAttrDef::GetValueType() const
         ge::AttrValue::VT_TENSOR,
         ge::AttrValue::VT_GRAPH
     };
-    if (attrDef_ != nullptr) {
-        auto valueCase = attrDef_->value_case();
-        if (valueCase != hiai::proto::AttrDef::kList) {
-            return typeDef[valueCase];
-        } else {
-            if (list() != nullptr) {
-                return list()->GetValueType();
-            }
+    auto valueCase = attrDef_.value_case();
+    if (valueCase != hiai::proto::AttrDef::kList) {
+        return typeDef[valueCase];
+    } else {
+        if (list() != nullptr) {
+            return list()->GetValueType();
         }
     }
     return ge::AttrValue::VT_NONE;
@@ -88,8 +77,8 @@ ge::AttrValue::ValueType ProtoAttrDef::GetValueType() const
 
 void ProtoAttrDef::CopyFrom(const IAttrDef* other)
 {
-    if (other != nullptr && attrDef_ != nullptr && other->GetSerializeType() == PROTOBUF) {
-        *attrDef_ = *(static_cast<const ProtoAttrDef*>(other)->attrDef_);
+    if (other != nullptr && other->GetSerializeType() == PROTOBUF) {
+        attrDef_ = static_cast<const ProtoAttrDef*>(other)->attrDef_;
         IMPL_PROTO_CUSTOM_MEMBER_FREE(func);
         IMPL_PROTO_CUSTOM_MEMBER_FREE(td);
         IMPL_PROTO_CUSTOM_MEMBER_FREE(t);
@@ -116,7 +105,7 @@ IMPL_PROTO_PERSISTENCE_CUSTOM_MEMBER_PURE_FUNC(ProtoAttrDef, attrDef_, IAttrList
 
 extern "C" GRAPH_API_EXPORT IAttrDef* CreateAttrDef()
 {
-    return new (std::nothrow) ProtoAttrDef();
+    return new (std::nothrow) DefaultProtoAttrDef();
 }
 
 extern "C" GRAPH_API_EXPORT void DestroyAttrDef(IAttrDef* attrDef)

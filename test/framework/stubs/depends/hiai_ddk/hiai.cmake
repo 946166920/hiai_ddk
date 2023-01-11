@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.8.0)
 
+set(OUT_STUB_DIR ${TOP_DIR}/test/framework/build/hiai_ddk)
+set(SRC_DIR ${TOP_DIR}/src/framework/util)
+
 set(HIAI_SRC_FILES
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model/built_model/built_model_impl.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_builder/om/model_build_options_util.cpp
@@ -19,9 +22,10 @@ set(HIAI_SRC_FILES
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/tensor/base/hiai_nd_tensor_buffer_legacy_compatible.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/tensor/base/hiai_nd_tensor_buffer_ext.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/util/version/version_util.cpp
+    ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/util/version/hiai_version.c
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/util/hiai_base_types.c
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/util/native_handle_creator.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/../hiai_ddk/src/stub_hiai_foundation_dl_helper.c
+    ${OUT_STUB_DIR}/stub_hiai_foundation_dl_helper.c
 
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_runtime/core/hiai_built_model_impl.c
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_runtime/core/hiai_built_model_aipp.c
@@ -46,7 +50,8 @@ set(HIAI_SRC_FILES
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_runtime/direct/direct_built_model.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_runtime/direct/direct_built_model_impl.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_runtime/direct/direct_common_util.cpp
-    ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_runtime/direct/direct_model_util.cpp
+    ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_runtime/direct/direct_model_manager_container.cpp
+    ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_runtime/direct/direct_model_manager_util.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_runtime/direct/direct_model_manager.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/model_runtime/direct/direct_model_manager_impl.cpp
     ${FRAMEWORK_BASE_DIR_FOR_INC_DIRS}/om/event_manager/om_wrapper.cpp
@@ -129,4 +134,13 @@ target_include_directories(${LIBHIAI_DDK}
     ${THIRD_PARTY_CSEC_PATH}/include
 )
 
-
+set(stub_file ${OUT_STUB_DIR}/stub_hiai_foundation_dl_helper.c)
+add_custom_command(OUTPUT ${stub_file}
+    PRE_BUILD
+    COMMAND
+    mkdir -p ${OUT_STUB_DIR} &&
+    sed 's@\/vendor\/lib.*\/libai_client.so@libai_client_stub_ddk.so@g' ${SRC_DIR}/hiai_foundation_dl_helper.c >
+    ${OUT_STUB_DIR}/stub_hiai_foundation_dl_helper.c
+)
+add_custom_target(gen_stub_file ALL DEPENDS ${stub_file})
+add_dependencies(${LIBHIAI_DDK} gen_stub_file)

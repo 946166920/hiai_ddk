@@ -25,6 +25,7 @@ public:
     ProtoModelDef();
     ~ProtoModelDef() override;
 
+private:
     SerializeType GetSerializeType() const override;
 
     bool LoadFrom(const uint8_t* data, size_t len) override;
@@ -34,7 +35,6 @@ public:
 
     bool Dump(const std::string& file) const override;
 
-public:
     DEF_PROTO_PERSISTENCE_STANDARD_MEMBER_PURE_FUNC(std::string, name);
     DEF_PROTO_PERSISTENCE_BASIC_MEMBER_PURE_FUNC(int64_t, version);
     DEF_PROTO_PERSISTENCE_STANDARD_MEMBER_PURE_FUNC(std::string, custom_version);
@@ -42,7 +42,7 @@ public:
     DEF_PROTO_PERSISTENCE_CUSTOM_MEMBER_PURE_FUNC(IAttrMapDef, attr);
 
 private:
-    hiai::proto::ModelDef* modelDef_;
+    mutable hiai::proto::ModelDef modelDef_;
 };
 
 } // namespace hiai

@@ -262,6 +262,35 @@ void Operator::DynamicInputRegister(const string& name, const unsigned int num)
     impl_->DynamicInputRegister(name, num);
 }
 
+void Operator::SubgraphCountRegister(const string& name, const unsigned int num)
+{
+    if (impl_ == nullptr) {
+        FMK_LOGE("impl_ is nullptr.");
+        return;
+    }
+    impl_->SubgraphCountRegister(name, num);
+}
+
+void Operator::SetSubgraphBuilder(const string& name, const unsigned int index, const GraphBuilderFn& builder)
+{
+    if (impl_ == nullptr) {
+        FMK_LOGE("impl_ is nullptr.");
+        return;
+    }
+    const string subGraphName = name + std::to_string(index);
+    impl_->SetGraphBuilder(subGraphName, builder);
+}
+
+GraphBuilderFn Operator::GetDynamicSubgraphBuilder(const string& name, const unsigned int index) const
+{
+    if (impl_ == nullptr) {
+        FMK_LOGE("impl_ is nullptr.");
+        return nullptr;
+    }
+    const string subGraphName = name + std::to_string(index);
+    return impl_->GetGraphBuilder(subGraphName);
+}
+
 void Operator::OutputRegister(const string& name)
 {
     if (impl_ == nullptr) {

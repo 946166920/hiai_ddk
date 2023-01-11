@@ -72,7 +72,8 @@ std::shared_ptr<IBuffer> CreateV2DynamicAipp()
     memcpy_s((uint8_t*)buffer->GetData() + 4, buffer->GetSize() - 4, &customDataLen, sizeof(int32_t));
     int customDataTypeLen = customModelData.type.size();
     memcpy_s((uint8_t*)buffer->GetData() + 8, buffer->GetSize() - 8, &customDataTypeLen, sizeof(int32_t));
-    memcpy_s((uint8_t*)buffer->GetData() + 12, buffer->GetSize() - 12, customModelData.type.data(), customModelData.type.size());
+    memcpy_s((uint8_t*)buffer->GetData() + 12, buffer->GetSize() - 12, // 12 偏移量
+             customModelData.type.data(), customModelData.type.size());
     int customDataValueLen = customModelData.value.size();
     memcpy_s((uint8_t*)buffer->GetData() + 32, buffer->GetSize() - 32, &customDataValueLen, sizeof(int));
     memcpy_s((uint8_t*)buffer->GetData() + 36, buffer->GetSize() - 36, customModelData.value.data(),
@@ -131,7 +132,7 @@ TEST_F(BuiltModelUt, Built_Model_restore_003)
     EXPECT_EQ(FAILURE, builtModel_->RestoreFromBuffer(buffer));
 
     memcpy_s((uint8_t*)buffer->GetData() + 12, buffer->GetSize() - 12,
-       customModelData.type.data(), customModelData.type.size());
+        customModelData.type.data(), customModelData.type.size());
     EXPECT_EQ(FAILURE, builtModel_->RestoreFromBuffer(buffer));
 
     int customDataValueLen = customModelData.value.size();
@@ -404,4 +405,70 @@ TEST_F(BuiltModelUt, Built_Model_inputDesc_002)
     ASSERT_EQ(2, desc[0].dims[1]);
     ASSERT_EQ(255, desc[0].dims[2]);
     ASSERT_EQ(255, desc[0].dims[3]);
+}
+
+/*
+ * 测试用例名称: TestCase_Built_Model_getaippinfo_001
+ * 测试用例描述: 获取AIPP参数
+ * 预期结果 :成功
+ */
+TEST_F(BuiltModelUt, Built_Model_getaippinfo_001)
+{
+    const char* file = "bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
+    EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
+
+    int32_t index = 0;
+    uint32_t aippParaNum = 0;
+    uint32_t batchCount = 0;
+
+    std::shared_ptr<IBuiltModelAipp> managerAipp = std::dynamic_pointer_cast<IBuiltModelAipp>(builtModel_);
+    auto ret = managerAipp->GetTensorAippInfo(index, &aippParaNum, &batchCount);
+    EXPECT_EQ(SUCCESS, ret);
+    EXPECT_NE(0, aippParaNum);
+    EXPECT_NE(0, batchCount);
+}
+
+/*
+ * 测试用例名称: TestCase_Built_Model_getaippinfo_002
+ * 测试用例描述: 获取AIPP参数
+ * 预期结果 :失败
+ */
+TEST_F(BuiltModelUt, Built_Model_getaippinfo_002)
+{
+    const char* file = "bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
+    EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
+
+    int32_t index = 0;
+    std::shared_ptr<IBuiltModelAipp> managerAipp = std::dynamic_pointer_cast<IBuiltModelAipp>(builtModel_);
+    auto ret = managerAipp->GetTensorAippInfo(index, nullptr, nullptr);
+    EXPECT_EQ(FAILURE, ret);
+}
+
+/*
+ * 测试用例名称: TestCase_Built_Model_getaipppara_001
+ * 测试用例描述: 获取AIPP参数
+ * 预期结果 :成功
+ */
+TEST_F(BuiltModelUt, Built_Model_getaipppara_001)
+{
+    const char* file = "bin/llt/framework/domi/modelmanager/tf_softmax_hcs_cpucl.om";
+    EXPECT_EQ(SUCCESS, builtModel_->RestoreFromFile(file));
+
+    int32_t index = 0;
+    std::vector<std::shared_ptr<IAIPPPara>> aippParas;
+
+    std::shared_ptr<IBuiltModelAipp> managerAipp = std::dynamic_pointer_cast<IBuiltModelAipp>(builtModel_);
+    auto ret = managerAipp->GetTensorAippPara(index, aippParas);
+    EXPECT_EQ(SUCCESS, ret);
+    EXPECT_NE(0, aippParas.size());
+    for (auto aippPara : aippParas) {
+        EXPECT_NE(aippPara.get(), nullptr);
+        EXPECT_NE(aippPara->GetBatchCount(), 0);
+        EXPECT_EQ(aippPara->GetInputIndex(), index);
+        DtcPara dtcPara = aippPara->GetDtcPara(0);
+        EXPECT_EQ(dtcPara.pixelVarReciChn0, 0.0);
+        EXPECT_EQ(dtcPara.pixelVarReciChn1, 0.0);
+        EXPECT_EQ(dtcPara.pixelVarReciChn2, 0.0);
+        EXPECT_EQ(dtcPara.pixelVarReciChn3, 0.0);
+    }
 }

@@ -25,22 +25,23 @@ namespace hiai {
 
 typedef struct HIAI_TensorBuffer HIAI_TensorBuffer;
 
-NDTensorBufferImpl::NDTensorBufferImpl(HIAI_NDTensorBuffer* impl) : impl_(impl)
+NDTensorBufferImpl::NDTensorBufferImpl(HIAI_MR_NDTensorBuffer* impl) : impl_(impl)
 {
 }
 
-NDTensorBufferImpl::NDTensorBufferImpl(HIAI_NDTensorBuffer* impl, const NDTensorDesc& desc) : desc_(desc), impl_(impl)
+NDTensorBufferImpl::NDTensorBufferImpl(HIAI_MR_NDTensorBuffer* impl, const NDTensorDesc& desc)
+    : desc_(desc), impl_(impl)
 {
 }
 
 NDTensorBufferImpl::~NDTensorBufferImpl()
 {
     if (impl_ != nullptr) {
-        HIAI_NDTensorBuffer_Destroy(&impl_);
+        HIAI_MR_NDTensorBuffer_Destroy(&impl_);
     }
 }
 
-HIAI_NDTensorBuffer* NDTensorBufferImpl::GetImpl()
+HIAI_MR_NDTensorBuffer* NDTensorBufferImpl::GetImpl()
 {
     return impl_;
 }
@@ -51,7 +52,7 @@ void* NDTensorBufferImpl::GetData()
         return nullptr;
     }
 
-    return HIAI_NDTensorBuffer_GetData(impl_);
+    return HIAI_MR_NDTensorBuffer_GetData(impl_);
 }
 
 size_t NDTensorBufferImpl::GetSize() const
@@ -60,7 +61,7 @@ size_t NDTensorBufferImpl::GetSize() const
         return 0;
     }
 
-    return HIAI_NDTensorBuffer_GetSize(impl_);
+    return HIAI_MR_NDTensorBuffer_GetSize(impl_);
 }
 
 static std::shared_ptr<HIAI_NDTensorDesc> Convert2CTensorDesc(const NDTensorDesc& tensorDesc)
@@ -81,7 +82,7 @@ std::shared_ptr<INDTensorBuffer> CreateNDTensorBuffer(const NDTensorDesc& tensor
     if (cTensorDesc == nullptr) {
         return nullptr;
     }
-    auto tmpBuffer = HIAI_NDTensorBuffer_CreateFromNDTensorDesc(cTensorDesc.get());
+    auto tmpBuffer = HIAI_MR_NDTensorBuffer_CreateFromNDTensorDesc(cTensorDesc.get());
     if (tmpBuffer == nullptr) {
         return nullptr;
     }
@@ -95,7 +96,7 @@ std::shared_ptr<INDTensorBuffer> CreateNDTensorBuffer(const NDTensorDesc& tensor
     if (cTensorDesc == nullptr) {
         return nullptr;
     }
-    auto tmpBuffer = HIAI_NDTensorBuffer_CreateFromBuffer(cTensorDesc.get(), data, dataSize);
+    auto tmpBuffer = HIAI_MR_NDTensorBuffer_CreateFromBuffer(cTensorDesc.get(), data, dataSize);
     if (tmpBuffer == nullptr) {
         return nullptr;
     }
@@ -110,7 +111,7 @@ std::shared_ptr<INDTensorBuffer> CreateNDTensorBufferNoCopy(
     if (cTensorDesc == nullptr) {
         return nullptr;
     }
-    auto tmpBuffer = HIAI_NDTensorBuffer_CreateNoCopy(cTensorDesc.get(), data, dataSize);
+    auto tmpBuffer = HIAI_MR_NDTensorBuffer_CreateNoCopy(cTensorDesc.get(), data, dataSize);
     if (tmpBuffer == nullptr) {
         return nullptr;
     }
@@ -123,7 +124,7 @@ static std::shared_ptr<HIAI_NativeHandle> Convert2CNativeHandle(const NativeHand
         [](HIAI_NativeHandle* p) { HIAI_NativeHandle_Destroy(&p); });
 }
 
-HIAI_NDTensorBuffer* CreateHIAINDTensorBuffer(const NDTensorDesc& tensorDesc, const NativeHandle& handle)
+HIAI_MR_NDTensorBuffer* CreateHIAINDTensorBuffer(const NDTensorDesc& tensorDesc, const NativeHandle& handle)
 {
     std::shared_ptr<HIAI_NDTensorDesc> cTensorDesc = Convert2CTensorDesc(tensorDesc);
     if (cTensorDesc == nullptr) {
@@ -135,7 +136,7 @@ HIAI_NDTensorBuffer* CreateHIAINDTensorBuffer(const NDTensorDesc& tensorDesc, co
         return nullptr;
     }
 
-    auto ndTensor = HIAI_NDTensorBuffer_CreateFromNativeHandle(cTensorDesc.get(), cHandle.get());
+    auto ndTensor = HIAI_MR_NDTensorBuffer_CreateFromNativeHandle(cTensorDesc.get(), cHandle.get());
     if (ndTensor == nullptr) {
         return nullptr;
     }
@@ -152,7 +153,7 @@ std::shared_ptr<INDTensorBuffer> CreateNDTensorBuffer(const NDTensorDesc& tensor
     return make_shared_nothrow<NDTensorBufferImpl>(tmpBuffer, tensorDesc);
 }
 
-HIAI_NDTensorBuffer* GetRawBufferFromNDTensorBuffer(const std::shared_ptr<INDTensorBuffer>& buffer)
+HIAI_MR_NDTensorBuffer* GetRawBufferFromNDTensorBuffer(const std::shared_ptr<INDTensorBuffer>& buffer)
 {
     std::shared_ptr<NDTensorBufferImpl> bufferImpl = std::dynamic_pointer_cast<NDTensorBufferImpl>(buffer);
     if (bufferImpl == nullptr) {
@@ -162,7 +163,8 @@ HIAI_NDTensorBuffer* GetRawBufferFromNDTensorBuffer(const std::shared_ptr<INDTen
     return bufferImpl->GetImpl();
 }
 
-HIAI_NDTensorBuffer* CreateHIAINDTensorBuffer(const NDTensorDesc& tensorDesc, size_t dataSize, HIAI_ImageFormat format)
+HIAI_MR_NDTensorBuffer* CreateHIAINDTensorBuffer(
+    const NDTensorDesc& tensorDesc, size_t dataSize, HIAI_ImageFormat format)
 {
     std::shared_ptr<HIAI_NDTensorDesc> cTensorDesc = Convert2CTensorDesc(tensorDesc);
     if (cTensorDesc == nullptr) {
@@ -170,14 +172,14 @@ HIAI_NDTensorBuffer* CreateHIAINDTensorBuffer(const NDTensorDesc& tensorDesc, si
         return nullptr;
     }
 
-    auto ndTensor = HIAI_NDTensorBuffer_CreateFromFormat(cTensorDesc.get(), dataSize, format);
+    auto ndTensor = HIAI_MR_NDTensorBuffer_CreateFromFormat(cTensorDesc.get(), dataSize, format);
     if (ndTensor == nullptr) {
         return nullptr;
     }
 
-    if (HIAI_NDTensorBuffer_GetSize(ndTensor) != dataSize) {
+    if (HIAI_MR_NDTensorBuffer_GetSize(ndTensor) != dataSize) {
         FMK_LOGE("mismatch buffer size.");
-        HIAI_NDTensorBuffer_Destroy(&ndTensor);
+        HIAI_MR_NDTensorBuffer_Destroy(&ndTensor);
         return nullptr;
     }
     return ndTensor;

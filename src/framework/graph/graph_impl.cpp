@@ -67,10 +67,12 @@ GraphErrCodeStatus GraphImpl::SetOutputs(std::vector<Operator>& outputs)
     std::vector<Node*> nodes;
     GraphFinder& finder = computeGraph_->ROLE(GraphFinder);
     for (const auto& output : outputs) {
-        const auto& name = output.GetImpl()->GetName();
-        Node* node = finder.FindNode(name);
-        if (node != nullptr) {
-            nodes.push_back(node);
+        if (output.GetImpl() != nullptr) {
+            const auto& name = output.GetImpl()->GetName();
+            Node* node = finder.FindNode(name);
+            if (node != nullptr) {
+                nodes.push_back(node);
+            }
         }
     }
 

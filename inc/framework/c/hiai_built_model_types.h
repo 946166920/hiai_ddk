@@ -20,7 +20,7 @@
 extern "C" {
 #endif
 
-typedef struct HIAI_BuiltModel HIAI_BuiltModel;
+typedef struct HIAI_MR_BuiltModel HIAI_MR_BuiltModel;
 
 typedef enum { HIAI_BUILTMODEL_COMPATIBLE, HIAI_BUILTMODEL_INCOMPATIBLE } HIAI_BuiltModel_Compatibility;
 

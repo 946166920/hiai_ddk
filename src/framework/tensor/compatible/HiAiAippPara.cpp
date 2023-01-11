@@ -570,4 +570,10 @@ std::shared_ptr<IAIPPPara> AippPara::GetAIPPPara()
     return aippParaBase_;
 }
 
+void AippPara::SetAIPPPara(std::shared_ptr<IAIPPPara>& para)
+{
+    H_LOG_INTERFACE_FILTER(ITF_COUNT);
+    aippParaBase_ = para;
+}
+
 } // namespace hiai

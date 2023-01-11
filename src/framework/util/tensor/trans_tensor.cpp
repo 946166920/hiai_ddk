@@ -1027,11 +1027,12 @@ static Status SetTensorNdDescriptor(ccTensor_t& tensorDesc, DataType_t dataType,
     tensorDesc.stride[dimCnt - 1] = 1;
     for (int32_t i = tensorDesc.dimCnt - 2; i >= 0; --i) {
         FMK_INT32_MULCHECK(
-            tensorDesc.dim[static_cast<uint64_t>(i) + 1],
+            tensorDesc.dim[static_cast<uint64_t>(static_cast<uint32_t>(i)) + 1],
             tensorDesc.stride[static_cast<uint64_t>(static_cast<uint32_t>(i)) + 1]);
         tensorDesc.stride[i] = static_cast<int32_t>(
             static_cast<uint64_t>(static_cast<uint32_t>(tensorDesc.dim[i + 1])) *
-            static_cast<uint64_t>((tensorDesc.stride[static_cast<uint64_t>(static_cast<uint32_t>(i)) + 1])));
+            static_cast<uint64_t>(
+                static_cast<uint32_t>(tensorDesc.stride[static_cast<uint64_t>(static_cast<uint32_t>(i)) + 1])));
     }
     return SUCCESS;
 };
@@ -1086,7 +1087,7 @@ static Status GetDataTypeTransModeFunc0(const DataType_t xType, DataTypeTransMod
     } else if ((xType == CC_DATA_UINT8) || (xType == CC_DATA_BOOL) || (xType == CC_DATA_QUINT8)) {
         dataTypeTransmode = CC_DATATYPE_TRANS_UINT8_NO_TRANS;
     } else {
-        FMK_LOGD("TransDataType from %d to %d is not supported!", xType);
+        FMK_LOGD("TransDataType %d is not supported!", xType);
         return FAILED;
     }
     return SUCCESS;

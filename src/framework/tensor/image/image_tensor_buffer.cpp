@@ -25,7 +25,7 @@ std::shared_ptr<IImageTensorBuffer> CreateImageTensorBuffer(int32_t b, int32_t h
 {
     ImageTensorBufferInfo bufferInfo;
     NDTensorDesc desc;
-    HIAI_NDTensorBuffer* ndTensor = nullptr;
+    HIAI_MR_NDTensorBuffer* ndTensor = nullptr;
 
     Status ret = ImageBufferInit(b, h, w, format, bufferInfo, desc, &ndTensor);
     if (ret != SUCCESS) {
@@ -48,7 +48,7 @@ std::shared_ptr<IImageTensorBuffer> CreateImageTensorBufferFromHandle(const Nati
 {
     ImageTensorBufferInfo bufferInfo;
     NDTensorDesc desc;
-    HIAI_NDTensorBuffer* ndTensor = nullptr;
+    HIAI_MR_NDTensorBuffer* ndTensor = nullptr;
 
     Status ret = ImageBufferInit(b, h, w, format, handle, bufferInfo, desc, &ndTensor);
     if (ret != SUCCESS) {

@@ -262,6 +262,33 @@ private: \
     { \
         OpReg()
 
+#define DYNAMIC_GRAPH(x) \
+    N(); \
+    __graph_##x(); \
+    } \
+\
+public: \
+    static constexpr const char* GRAPH_NAME_BRANCHES = #x; \
+    _THIS_TYPE& create_dynamic_subgraph_##x(unsigned int number) \
+    { \
+        Operator::SubgraphCountRegister(#x, number); \
+        return *this; \
+    } \
+    _THIS_TYPE& set_dynamic_subgraph_builder_##x(unsigned int index, const GraphBuilderFn &v) \
+    { \
+        Operator::SetSubgraphBuilder(#x, index, v); \
+        return *this; \
+    } \
+    GraphBuilderFn get_dynamic_subgraph_builder_##x(unsigned int index) const \
+    { \
+        return Operator::GetDynamicSubgraphBuilder(#x, index); \
+    } \
+\
+private: \
+    void __graph_##x() \
+    { \
+        OpReg()
+
 #define DYNAMIC_OUTPUT(x, t) \
     N(); \
     __dy_output_##x(); \

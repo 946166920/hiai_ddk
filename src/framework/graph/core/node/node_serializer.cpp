@@ -24,6 +24,7 @@
 #include "framework/graph/debug/ge_log.h"
 
 #include "framework/graph/op/control_flow_attr_defs.h"
+#include "framework/graph/op/internal_defs.h"
 #include "framework/graph/utils/attr_utils.h"
 #include "graph/op/control_flow_defs.h"
 
@@ -55,6 +56,8 @@ hiai::Status NodeSerializer::UnSerializeSubGraphs()
         HIAI_EXPECT_TRUE(GetSubGraphInIfNode());
     } else if (type == hiai::op::While::TYPE) {
         HIAI_EXPECT_TRUE(GetSubGraphInWhileNode());
+    } else if (type == hiai::op::Case::TYPE) {
+        HIAI_EXPECT_TRUE(GetSubGraphInCaseNode());
     }
     return hiai::SUCCESS;
 }
@@ -66,6 +69,8 @@ bool NodeSerializer::SaveSubGraphs()
         return SaveSubGraphInIfNode();
     } else if (type == hiai::op::While::TYPE) {
         return SaveSubGraphInWhileNode();
+    } else if (type == hiai::op::Case::TYPE) {
+        return SaveSubGraphInCaseNode();
     }
     return true;
 }
@@ -186,6 +191,43 @@ bool NodeSerializer::GetSubGraphInNode(const std::string& graphNameAttr, const s
 
     HIAI_EXPECT_EXEC_R(ROLE(NodeSubGraph).AddSubGraph(subGraph), false);
 
+    return true;
+}
+
+bool NodeSerializer::SaveSubGraphInCaseNode()
+{
+    OpDesc& op = ROLE(NodeSpec).OpDesc();
+    std::vector<std::string> subGraphNames;
+    if (!ge::AttrUtils::GetListStr(op, hiai::op::Case::GRAPH_NAME_BRANCHES, subGraphNames)) {
+        FMK_LOGE("get %s node subGraph name failed!", op.GetName().c_str());
+        return false;
+    }
+    for (auto it = subGraphNames.cbegin(); it != subGraphNames.cend(); it++) {
+        ge::ComputeGraphPtr subGraph = ROLE(NodeSubGraph).FindSubGraphPtr(*it);
+        HIAI_EXPECT_NOT_NULL_R(subGraph, false);
+
+        if (!ge::AttrUtils::SetGraph(op, *it, subGraph)) {
+            FMK_LOGE("failed to set node:%s subgraph:%s.", op.GetName().c_str(), (*it).c_str());
+            return false;
+        }
+    }
+    return true;
+}
+
+bool NodeSerializer::GetSubGraphInCaseNode()
+{
+    OpDesc& op = ROLE(NodeSpec).OpDesc();
+    std::vector<std::string> subGraphNames;
+    if (!ge::AttrUtils::GetListStr(op, hiai::op::Case::GRAPH_NAME_BRANCHES, subGraphNames)) {
+        FMK_LOGE("get %s node subGraph name failed!", op.GetName().c_str());
+        return false;
+    }
+    for (auto it = subGraphNames.cbegin(); it != subGraphNames.cend(); it++) {
+        ge::ComputeGraphPtr subGraph;
+        HIAI_EXPECT_TRUE_R(ge::AttrUtils::GetGraph(op, *it, subGraph), false);
+        HIAI_EXPECT_NOT_NULL_R(subGraph, false);
+        HIAI_EXPECT_EXEC_R(ROLE(NodeSubGraph).AddSubGraph(subGraph), false);
+    }
     return true;
 }
 } // namespace ge

@@ -187,15 +187,15 @@ static uint16_t SaveFp16ToUint16(_Float16 num)
     return *uintAddr;
 }
 
-inline HIAI_TensorAippBatchPara* GetBatchPara(HIAI_TensorAippCommPara* commPara, uint32_t batchIndex)
+inline HIAI_MR_TensorAippBatchPara* GetBatchPara(HIAI_MR_TensorAippCommPara* commPara, uint32_t batchIndex)
 {
-    return reinterpret_cast<HIAI_TensorAippBatchPara*>(reinterpret_cast<char*>(commPara) +
-        sizeof(HIAI_TensorAippCommPara) + sizeof(HIAI_TensorAippBatchPara) * batchIndex);
+    return reinterpret_cast<HIAI_MR_TensorAippBatchPara*>(reinterpret_cast<char*>(commPara) +
+        sizeof(HIAI_MR_TensorAippCommPara) + sizeof(HIAI_MR_TensorAippBatchPara) * batchIndex);
 }
 
-static void UpdateCropPara(HIAI_TensorAippCommPara* commPara, uint32_t batchIndex, const CropPara& cropPara)
+static void UpdateCropPara(HIAI_MR_TensorAippCommPara* commPara, uint32_t batchIndex, const CropPara& cropPara)
 {
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(commPara, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(commPara, batchIndex);
 
     batchPara->cropSwitch = true;
     batchPara->cropStartPosW = cropPara.cropStartPosW;
@@ -209,9 +209,9 @@ static void UpdateCropPara(HIAI_TensorAippCommPara* commPara, uint32_t batchInde
     }
 }
 
-static void UpdateResizePara(HIAI_TensorAippCommPara* commPara, uint32_t batchIndex, const ResizePara& resizePara)
+static void UpdateResizePara(HIAI_MR_TensorAippCommPara* commPara, uint32_t batchIndex, const ResizePara& resizePara)
 {
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(commPara, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(commPara, batchIndex);
 
     batchPara->scfSwitch = true;
     batchPara->scfInputSizeW =
@@ -222,9 +222,9 @@ static void UpdateResizePara(HIAI_TensorAippCommPara* commPara, uint32_t batchIn
     batchPara->scfOutputSizeH = resizePara.resizeOutputSizeH;
 }
 
-static void UpdatePaddingPara(HIAI_TensorAippCommPara* commPara, uint32_t batchIndex, const PadPara& paddingPara)
+static void UpdatePaddingPara(HIAI_MR_TensorAippCommPara* commPara, uint32_t batchIndex, const PadPara& paddingPara)
 {
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(commPara, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(commPara, batchIndex);
 
     batchPara->paddingSwitch = true;
     batchPara->paddingSizeTop = paddingPara.paddingSizeTop;
@@ -242,9 +242,9 @@ static void UpdatePaddingPara(HIAI_TensorAippCommPara* commPara, uint32_t batchI
     batchPara->paddingValueChn3 = SaveFp16ToUint16(value);
 }
 
-static void UpdateDtcPara(HIAI_TensorAippCommPara* commPara, uint32_t batchIndex, const DtcPara& dtcPara)
+static void UpdateDtcPara(HIAI_MR_TensorAippCommPara* commPara, uint32_t batchIndex, const DtcPara& dtcPara)
 {
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(commPara, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(commPara, batchIndex);
 
     batchPara->dtcPixelMeanChn0 = dtcPara.pixelMeanChn0;
     batchPara->dtcPixelMeanChn1 = dtcPara.pixelMeanChn1;
@@ -271,45 +271,45 @@ static void UpdateDtcPara(HIAI_TensorAippCommPara* commPara, uint32_t batchIndex
 
 namespace hiai {
 
-HIAI_TensorAippPara* AIPPParaBufferImpl::Init(uint32_t batchCount)
+HIAI_MR_TensorAippPara* AIPPParaBufferImpl::Init(uint32_t batchCount)
 {
-    return HIAI_TensorAippPara_Create(batchCount);
+    return HIAI_MR_TensorAippPara_Create(batchCount);
 }
 
-Status AIPPParaBufferImpl::Release(HIAI_TensorAippPara* paraBuff)
+Status AIPPParaBufferImpl::Release(HIAI_MR_TensorAippPara* paraBuff)
 {
-    HIAI_TensorAippPara_Destroy(reinterpret_cast<HIAI_TensorAippPara**>(&paraBuff));
+    HIAI_MR_TensorAippPara_Destroy(reinterpret_cast<HIAI_MR_TensorAippPara**>(&paraBuff));
     return SUCCESS;
 }
 
-void* AIPPParaBufferImpl::GetRawBuffer(HIAI_TensorAippPara* paraBuff)
+void* AIPPParaBufferImpl::GetRawBuffer(HIAI_MR_TensorAippPara* paraBuff)
 {
-    return HIAI_TensorAippPara_GetRawBuffer(paraBuff);
+    return HIAI_MR_TensorAippPara_GetRawBuffer(paraBuff);
 }
 
-uint32_t AIPPParaBufferImpl::GetRawBufferSize(HIAI_TensorAippPara* paraBuff)
+uint32_t AIPPParaBufferImpl::GetRawBufferSize(HIAI_MR_TensorAippPara* paraBuff)
 {
-    return HIAI_TensorAippPara_GetRawBufferSize(paraBuff);
+    return HIAI_MR_TensorAippPara_GetRawBufferSize(paraBuff);
 }
 
-int AIPPParaBufferImpl::GetInputIndex(HIAI_TensorAippPara* paraBuff)
+int AIPPParaBufferImpl::GetInputIndex(HIAI_MR_TensorAippPara* paraBuff)
 {
-    return HIAI_TensorAippPara_GetInputIndex(paraBuff);
+    return HIAI_MR_TensorAippPara_GetInputIndex(paraBuff);
 }
 
-void AIPPParaBufferImpl::SetInputIndex(HIAI_TensorAippPara* paraBuff, uint32_t inputIndex)
+void AIPPParaBufferImpl::SetInputIndex(HIAI_MR_TensorAippPara* paraBuff, uint32_t inputIndex)
 {
-    HIAI_TensorAippPara_SetInputIndex(paraBuff, inputIndex);
+    HIAI_MR_TensorAippPara_SetInputIndex(paraBuff, inputIndex);
 }
 
-int AIPPParaBufferImpl::GetInputAippIndex(HIAI_TensorAippPara* paraBuff)
+int AIPPParaBufferImpl::GetInputAippIndex(HIAI_MR_TensorAippPara* paraBuff)
 {
-    return HIAI_TensorAippPara_GetInputAippIndex(paraBuff);
+    return HIAI_MR_TensorAippPara_GetInputAippIndex(paraBuff);
 }
 
-void AIPPParaBufferImpl::SetInputAippIndex(HIAI_TensorAippPara* paraBuff, uint32_t inputAippIndex)
+void AIPPParaBufferImpl::SetInputAippIndex(HIAI_MR_TensorAippPara* paraBuff, uint32_t inputAippIndex)
 {
-    HIAI_TensorAippPara_SetInputAippIndex(paraBuff, inputAippIndex);
+    HIAI_MR_TensorAippPara_SetInputAippIndex(paraBuff, inputAippIndex);
 }
 
 Status AIPPParaImpl::Init(uint32_t batchCount)
@@ -318,18 +318,15 @@ Status AIPPParaImpl::Init(uint32_t batchCount)
         FMK_LOGI("AIPPParaImpl is already inited!");
         return FAILURE;
     }
-    if (GetAippParaBufferImpl(aippParaImpl_) != SUCCESS) {
-        FMK_LOGE("Init error, AIPPParaImplLegacy is nullptr!");
-        return FAILURE;
-    }
-    HIAI_TensorAippPara* paraBuff = aippParaImpl_->Init(batchCount);
+
+    HIAI_MR_TensorAippPara* paraBuff = AIPPParaBufferImpl::Init(batchCount);
     if (paraBuff == nullptr) {
         FMK_LOGE("Init error, AippPara is not inited!");
         return FAILURE;
     }
     // initial
     paraBuff_ = paraBuff;
-    rawBuffer_ = aippParaImpl_->GetRawBuffer(paraBuff);
+    rawBuffer_ = AIPPParaBufferImpl::GetRawBuffer(paraBuff);
     if (InitAippPara(batchCount) != SUCCESS) {
         FMK_LOGE("Init error, InitAippPara is failed!");
         return FAILURE;
@@ -337,35 +334,26 @@ Status AIPPParaImpl::Init(uint32_t batchCount)
     return SUCCESS;
 }
 
-Status AIPPParaImpl::Init(void* paraBuff)
+Status AIPPParaImpl::Init(HIAI_MR_TensorAippPara* paraBuff)
 {
-    if (paraBuff == nullptr) {
-        FMK_LOGE("GetRawBuffer failed, paraBuff is nullptr!");
-        return FAILURE;
-    }
+    HIAI_EXPECT_TRUE(paraBuff_ == nullptr);
+    HIAI_EXPECT_TRUE(rawBuffer_ == nullptr);
+    HIAI_EXPECT_NOT_NULL(paraBuff);
 
-    if (aippParaImpl_ == nullptr) {
-        FMK_LOGE("GetRawBuffer failed, aippParaImpl_ is nullptr!");
-        return FAILURE;
-    }
-
-    void* buffer = aippParaImpl_->GetRawBuffer(static_cast<HIAI_TensorAippPara*>(paraBuff));
+    void* buffer = AIPPParaBufferImpl::GetRawBuffer(paraBuff);
     if (buffer == nullptr) {
         FMK_LOGE("Init error, paraBuff is not invailed!");
         return FAILURE;
     }
 
-    aippParaImpl_->Release(paraBuff_);
-    paraBuff_ = static_cast<HIAI_TensorAippPara*>(paraBuff);
+    paraBuff_ = paraBuff;
     rawBuffer_ = buffer;
     return SUCCESS;
 }
 
 AIPPParaImpl::~AIPPParaImpl()
 {
-    if (aippParaImpl_ != nullptr) {
-        aippParaImpl_->Release(paraBuff_);
-    }
+    AIPPParaBufferImpl::Release(paraBuff_);
 
     paraBuff_ = nullptr;
     rawBuffer_ = nullptr;
@@ -376,7 +364,7 @@ TensorAippCommPara AIPPParaImpl::GetTensorAippCommPara()
     void* data = GetData();
     HIAI_EXPECT_NOT_NULL_R(data, std::make_pair(nullptr, 0));
 
-    HIAI_TensorAippCommPara* commPara = reinterpret_cast<HIAI_TensorAippCommPara*>(data);
+    HIAI_MR_TensorAippCommPara* commPara = reinterpret_cast<HIAI_MR_TensorAippCommPara*>(data);
     HIAI_EXPECT_EXEC_R(CheckBatchNum(commPara->batchNum), std::make_pair(nullptr, 0));
 
     return std::make_pair(commPara, commPara->batchNum);
@@ -390,13 +378,13 @@ Status AIPPParaImpl::InitAippPara(uint32_t batchCount)
 
     void* data = GetData();
     HIAI_EXPECT_NOT_NULL(data);
-    HIAI_TensorAippCommPara* commPara = reinterpret_cast<HIAI_TensorAippCommPara*>(data);
+    HIAI_MR_TensorAippCommPara* commPara = reinterpret_cast<HIAI_MR_TensorAippCommPara*>(data);
     HIAI_EXPECT_NOT_NULL(commPara);
 
     commPara->batchNum = batchCount;
 
     for (uint32_t batchIndex = 0; batchIndex < batchCount; ++batchIndex) {
-        HIAI_TensorAippBatchPara* batchPara = GetBatchPara(commPara, batchIndex);
+        HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(commPara, batchIndex);
         batchPara->dtcPixelVarReciChn0 = SaveFp16ToUint16(1.0);
         batchPara->dtcPixelVarReciChn1 = SaveFp16ToUint16(1.0);
         batchPara->dtcPixelVarReciChn2 = SaveFp16ToUint16(1.0);
@@ -412,7 +400,7 @@ void* AIPPParaImpl::GetData()
 
 size_t AIPPParaImpl::GetSize() const
 {
-    return paraBuff_ == nullptr || aippParaImpl_ == nullptr ? 0 : aippParaImpl_->GetRawBufferSize(paraBuff_);
+    return AIPPParaBufferImpl::GetRawBufferSize(paraBuff_);
 }
 
 uint32_t AIPPParaImpl::GetBatchCount()
@@ -426,11 +414,8 @@ Status AIPPParaImpl::SetInputIndex(uint32_t inputIndex)
         FMK_LOGE("SetInputIndex error, AippPara is not inited!");
         return FAILURE;
     }
-    if (aippParaImpl_ == nullptr) {
-        FMK_LOGE("SetInputIndex error, aippParaImpl_ is null!");
-        return FAILURE;
-    }
-    aippParaImpl_->SetInputIndex(paraBuff_, inputIndex);
+
+    AIPPParaBufferImpl::SetInputIndex(paraBuff_, inputIndex);
     return SUCCESS;
 }
 
@@ -440,11 +425,8 @@ int32_t AIPPParaImpl::GetInputIndex()
         FMK_LOGE("GetInputIndex error, AippPara is not inited!");
         return -1;
     }
-    if (aippParaImpl_ == nullptr) {
-        FMK_LOGE("GetInputIndex error, aippParaImpl_ is null!");
-        return -1;
-    }
-    int32_t ret = aippParaImpl_->GetInputIndex(paraBuff_);
+
+    int32_t ret = AIPPParaBufferImpl::GetInputIndex(paraBuff_);
     if (ret == -1) {
         FMK_LOGE("GetInputIndex error, inner error occurred");
     }
@@ -457,11 +439,8 @@ Status AIPPParaImpl::SetInputAippIndex(uint32_t inputAippIndex)
         FMK_LOGE("SetInputAippIndex error, AippPara is not inited!");
         return FAILURE;
     }
-    if (aippParaImpl_ == nullptr) {
-        FMK_LOGE("SetInputAippIndex error, aippParaImpl_ is null!");
-        return FAILURE;
-    }
-    aippParaImpl_->SetInputAippIndex(paraBuff_, inputAippIndex);
+
+    AIPPParaBufferImpl::SetInputAippIndex(paraBuff_, inputAippIndex);
     return SUCCESS;
 }
 
@@ -471,11 +450,8 @@ int32_t AIPPParaImpl::GetInputAippIndex()
         FMK_LOGE("GetInputAippIndex error, AippPara is not inited!");
         return -1;
     }
-    if (aippParaImpl_ == nullptr) {
-        FMK_LOGE("GetInputAippIndex error, aippParaImpl_ is null!");
-        return -1;
-    }
-    int32_t ret = aippParaImpl_->GetInputAippIndex(paraBuff_);
+
+    int32_t ret = AIPPParaBufferImpl::GetInputAippIndex(paraBuff_);
     if (ret == -1) {
         FMK_LOGE("GetInputAippIndex error, inner error occurred");
     }
@@ -537,7 +513,7 @@ Status AIPPParaImpl::SetCscPara(ImageFormat targetFormat, ImageColorSpace colorS
 
 Status AIPPParaImpl::SetCscPara(CscMatrixPara cscPara)
 {
-    HIAI_TensorAippCommPara* commPara = GetTensorAippCommPara().first;
+    HIAI_MR_TensorAippCommPara* commPara = GetTensorAippCommPara().first;
     HIAI_EXPECT_NOT_NULL(commPara);
 
     commPara->cscSwitch = true;
@@ -562,7 +538,7 @@ Status AIPPParaImpl::SetCscPara(CscMatrixPara cscPara)
 CscMatrixPara AIPPParaImpl::GetCscPara()
 {
     CscMatrixPara cscPara;
-    HIAI_TensorAippCommPara* commPara = GetTensorAippCommPara().first;
+    HIAI_MR_TensorAippCommPara* commPara = GetTensorAippCommPara().first;
     HIAI_EXPECT_NOT_NULL_R(commPara, cscPara);
 
     cscPara.matrixR0C0 = commPara->cscMatrixR0C0;
@@ -585,7 +561,7 @@ CscMatrixPara AIPPParaImpl::GetCscPara()
 
 Status AIPPParaImpl::SetChannelSwapPara(ChannelSwapPara&& channelSwapPara)
 {
-    HIAI_TensorAippCommPara* commPara = GetTensorAippCommPara().first;
+    HIAI_MR_TensorAippCommPara* commPara = GetTensorAippCommPara().first;
     HIAI_EXPECT_NOT_NULL(commPara);
     commPara->rbuvSwapSwitch = channelSwapPara.rbuvSwapSwitch;
     commPara->axSwapSwitch = channelSwapPara.axSwapSwitch;
@@ -595,7 +571,7 @@ Status AIPPParaImpl::SetChannelSwapPara(ChannelSwapPara&& channelSwapPara)
 ChannelSwapPara AIPPParaImpl::GetChannelSwapPara()
 {
     ChannelSwapPara channelSwapPara;
-    HIAI_TensorAippCommPara* commPara = GetTensorAippCommPara().first;
+    HIAI_MR_TensorAippCommPara* commPara = GetTensorAippCommPara().first;
     HIAI_EXPECT_NOT_NULL_R(commPara, channelSwapPara);
     channelSwapPara.rbuvSwapSwitch = commPara->rbuvSwapSwitch;
     channelSwapPara.axSwapSwitch = commPara->axSwapSwitch;
@@ -644,7 +620,7 @@ CropPara AIPPParaImpl::GetCropPara(uint32_t batchIndex)
     HIAI_EXPECT_NOT_NULL_R(para.first, cropPara);
     HIAI_EXPECT_EXEC_R(CheckBatchIndex(batchIndex, para.second), cropPara);
 
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
     cropPara.cropStartPosW = batchPara->cropStartPosW;
     cropPara.cropStartPosH = batchPara->cropStartPosH;
     cropPara.cropSizeW = batchPara->cropSizeW;
@@ -670,7 +646,7 @@ ResizePara AIPPParaImpl::GetResizePara(uint32_t batchIndex)
     HIAI_EXPECT_NOT_NULL_R(para.first, resizePara);
     HIAI_EXPECT_EXEC_R(CheckBatchIndex(batchIndex, para.second), resizePara);
 
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
     resizePara.resizeOutputSizeW = batchPara->scfOutputSizeW;
     resizePara.resizeOutputSizeH = batchPara->scfOutputSizeH;
     return resizePara;
@@ -694,7 +670,7 @@ PadPara AIPPParaImpl::GetPaddingPara(uint32_t batchIndex)
     HIAI_EXPECT_NOT_NULL_R(para.first, padPara);
     HIAI_EXPECT_EXEC_R(CheckBatchIndex(batchIndex, para.second), padPara);
 
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
     padPara.paddingSizeTop = batchPara->paddingSizeTop;
     padPara.paddingSizeBottom = batchPara->paddingSizeBottom;
     padPara.paddingSizeLeft = batchPara->paddingSizeLeft;
@@ -725,7 +701,7 @@ DtcPara AIPPParaImpl::GetDtcPara(uint32_t batchIndex)
     HIAI_EXPECT_NOT_NULL_R(para.first, dtcPara);
     HIAI_EXPECT_EXEC_R(CheckBatchIndex(batchIndex, para.second), dtcPara);
 
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
     dtcPara.pixelMeanChn0 = batchPara->dtcPixelMeanChn0;
     dtcPara.pixelMeanChn1 = batchPara->dtcPixelMeanChn1;
     dtcPara.pixelMeanChn2 = batchPara->dtcPixelMeanChn2;
@@ -741,7 +717,7 @@ DtcPara AIPPParaImpl::GetDtcPara(uint32_t batchIndex)
     return dtcPara;
 }
 
-ImageFormat AIPPParaImpl::GetInputFormat(HIAI_TensorAippCommPara* commPara)
+ImageFormat AIPPParaImpl::GetInputFormat(HIAI_MR_TensorAippCommPara* commPara)
 {
     HIAI_EXPECT_NOT_NULL_R(commPara, ImageFormat::INVALID);
 
@@ -827,7 +803,7 @@ Status AIPPParaImpl::GetAippParaBufferImpl(std::shared_ptr<AIPPParaBufferImpl>& 
     return SUCCESS;
 }
 
-HIAI_TensorAippPara* AIPPParaImpl::GetParaBuffer()
+HIAI_MR_TensorAippPara* AIPPParaImpl::GetParaBuffer()
 {
     return paraBuff_;
 }
@@ -838,7 +814,7 @@ bool AIPPParaImpl::GetEnableCrop(uint32_t batchIndex)
     HIAI_EXPECT_NOT_NULL_R(para.first, false);
     HIAI_EXPECT_EXEC_R(CheckBatchIndex(batchIndex, para.second), false);
 
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
     return batchPara->cropSwitch > 0;
 }
 
@@ -848,7 +824,7 @@ bool AIPPParaImpl::GetEnableResize(uint32_t batchIndex)
     HIAI_EXPECT_NOT_NULL_R(para.first, false);
     HIAI_EXPECT_EXEC_R(CheckBatchIndex(batchIndex, para.second), false);
 
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
     return batchPara->scfSwitch > 0;
 }
 
@@ -865,7 +841,7 @@ bool AIPPParaImpl::GetEnablePadding(uint32_t batchIndex)
     HIAI_EXPECT_NOT_NULL_R(para.first, false);
     HIAI_EXPECT_EXEC_R(CheckBatchIndex(batchIndex, para.second), false);
 
-    HIAI_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
+    HIAI_MR_TensorAippBatchPara* batchPara = GetBatchPara(para.first, batchIndex);
     return batchPara->paddingSwitch > 0;
 }
 
@@ -883,7 +859,7 @@ std::shared_ptr<IAIPPPara> CreateAIPPPara(uint32_t batchCount)
     }
     return aippPara;
 }
-HIAI_TensorAippPara* GetTensorAippParaFromAippPara(const std::shared_ptr<IAIPPPara>& aippPara)
+HIAI_MR_TensorAippPara* GetTensorAippParaFromAippPara(const std::shared_ptr<IAIPPPara>& aippPara)
 {
     std::shared_ptr<AIPPParaImpl> aippParaImpl = std::dynamic_pointer_cast<AIPPParaImpl>(aippPara);
     if (aippParaImpl == nullptr) {

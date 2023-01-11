@@ -26,10 +26,12 @@
 
 // inc/framework
 #include "base/error_types.h"
+#include "framework/infra/base/dci.h"
 #include "framework/graph/core/cgraph/graph_fwd.h"
+#include "framework/graph/core/node/node_fwd.h"
 
 namespace ge {
-class NodeSubGraph {
+DEFINE_ROLE(NodeSubGraph) {
 using GraphVisitor = std::function<hiai::Status(ComputeGraphPtr&)>;
 
 public:
@@ -47,6 +49,9 @@ public:
 
     GRAPH_API_EXPORT ComputeGraph* FindSubGraph(const std::string& name) const;
     GRAPH_API_EXPORT ComputeGraphPtr FindSubGraphPtr(const std::string& name) const;
+
+private:
+    USE_ROLE(Node);
 
 private:
     std::vector<ComputeGraphPtr> subGraphs_;

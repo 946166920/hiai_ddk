@@ -22,7 +22,7 @@
 namespace hiai {
 class ModelBuildOptionsUtil {
 public:
-    static HIAI_ModelBuildOptions* ConvertToCBuildOptions(const ModelBuildOptions& options);
+    static HIAI_MR_ModelBuildOptions* ConvertToCBuildOptions(const ModelBuildOptions& options);
     static bool IsHasBuildOptions(const ModelBuildOptions& options);
 };
 }

@@ -17,7 +17,7 @@
 #include "securec.h"
 #include "framework/infra/log/log.h"
 
-HIAI_BuiltModel_Impl* HIAI_BuiltModel_ToBuiltModelImpl(const HIAI_BuiltModel* model)
+HIAI_BuiltModel_Impl* HIAI_BuiltModel_ToBuiltModelImpl(const HIAI_MR_BuiltModel* model)
 {
     if (model == NULL) {
         FMK_LOGE("input model is null.");
@@ -32,7 +32,7 @@ HIAI_BuiltModel_Impl* HIAI_BuiltModel_ToBuiltModelImpl(const HIAI_BuiltModel* mo
     return impl;
 }
 
-HIAI_BuiltModel_Impl* HIAI_BuiltModel_CreateModelImpl(HIAI_BuiltModel* model, const HIAI_ModelRuntime* runtime)
+HIAI_BuiltModel_Impl* HIAI_BuiltModel_CreateModelImpl(HIAI_MR_BuiltModel* model, const HIAI_ModelRuntime* runtime)
 {
     if (model == NULL || runtime == NULL) {
         FMK_LOGE("create built model failed.");
@@ -47,7 +47,7 @@ HIAI_BuiltModel_Impl* HIAI_BuiltModel_CreateModelImpl(HIAI_BuiltModel* model, co
     return modelImpl;
 }
 
-typedef HIAI_BuiltModel* (*HIAI_BuiltModel_Restore_Ptr)(const void* data, size_t size);
+typedef HIAI_MR_BuiltModel* (*HIAI_BuiltModel_Restore_Ptr)(const void* data, size_t size);
 HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreOnRuntime(const void* data, size_t size, const HIAI_ModelRuntime* runtime)
 {
     if (runtime == NULL) {
@@ -59,12 +59,12 @@ HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreOnRuntime(const void* data, size_t 
         FMK_LOGW("sym %d not found.", HRANI_BUILTMODEL_RESTORE);
         return NULL;
     }
-    HIAI_BuiltModel* runtimeBuiltModel = restore(data, size);
+    HIAI_MR_BuiltModel* runtimeBuiltModel = restore(data, size);
 
     return HIAI_BuiltModel_CreateModelImpl(runtimeBuiltModel, runtime);
 }
 
-typedef HIAI_BuiltModel* (*HIAI_BuiltModel_RestoreFromFile_Ptr)(const char* file);
+typedef HIAI_MR_BuiltModel* (*HIAI_BuiltModel_RestoreFromFile_Ptr)(const char* file);
 HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreFromFileOnRuntime(const char* file, const HIAI_ModelRuntime* runtime)
 {
     if (runtime == NULL) {
@@ -77,12 +77,12 @@ HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreFromFileOnRuntime(const char* file,
         FMK_LOGW("sym %d not found.", HRANI_BUILTMODEL_RESTORE_FROM_FILE);
         return NULL;
     }
-    HIAI_BuiltModel* runtimeBuiltModel = restore(file);
+    HIAI_MR_BuiltModel* runtimeBuiltModel = restore(file);
 
     return HIAI_BuiltModel_CreateModelImpl(runtimeBuiltModel, runtime);
 }
 
-typedef HIAI_BuiltModel* (*HIAI_BuiltModel_RestoreFromFileWithShapeIndex_Ptr)(const char* file, uint8_t shapeIndex);
+typedef HIAI_MR_BuiltModel* (*HIAI_BuiltModel_RestoreFromFileWithShapeIndex_Ptr)(const char* file, uint8_t shapeIndex);
 HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreFromFileWithShapeIndexOnRuntime(
     const char* file, uint8_t shapeIndex, const HIAI_ModelRuntime* runtime)
 {
@@ -97,7 +97,7 @@ HIAI_BuiltModel_Impl* HIAI_BuiltModel_RestoreFromFileWithShapeIndexOnRuntime(
         FMK_LOGW("sym %d not found.", HRANI_BUILTMODEL_RESTORE_FROM_FILE_WITH_SHAPE_INDEX);
         return NULL;
     }
-    HIAI_BuiltModel* runtimeBuiltModel = restore(file, shapeIndex);
+    HIAI_MR_BuiltModel* runtimeBuiltModel = restore(file, shapeIndex);
 
     return HIAI_BuiltModel_CreateModelImpl(runtimeBuiltModel, runtime);
 }

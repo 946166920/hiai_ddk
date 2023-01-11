@@ -320,7 +320,7 @@ FMK_FUNC_HOST_VISIBILITY FMK_FUNC_DEV_VISIBILITY int ReadFileOnly(const char* fi
     close(fd);
 
     addr = (uint8_t*)data;
-    size = static_cast<size_t>(len);
+    size = static_cast<size_t>(static_cast<uint32_t>(len));
 
     return 0;
 }

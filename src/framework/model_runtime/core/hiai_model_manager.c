@@ -19,17 +19,17 @@
 #include "framework/infra/log/log.h"
 #include "securec.h"
 
-HIAI_ModelManager* HIAI_ModelManager_Create()
+HIAI_MR_ModelManager* HIAI_MR_ModelManager_Create()
 {
     HIAI_ModelManager_Impl* impl = malloc(sizeof(HIAI_ModelManager_Impl));
     MALLOC_NULL_CHECK_RET_VALUE(impl, NULL);
     (void)memset_s(impl, sizeof(HIAI_ModelManager_Impl), 0, sizeof(HIAI_ModelManager_Impl));
 
-    return (HIAI_ModelManager*)impl;
+    return (HIAI_MR_ModelManager*)impl;
 }
 
-typedef void (*HIAI_ModelManager_Destroy_Ptr)(HIAI_ModelManager** manager);
-void HIAI_ModelManager_Destroy(HIAI_ModelManager** manager)
+typedef void (*HIAI_ModelManager_Destroy_Ptr)(HIAI_MR_ModelManager** manager);
+void HIAI_MR_ModelManager_Destroy(HIAI_MR_ModelManager** manager)
 {
     if (manager == NULL) {
         return;
@@ -58,13 +58,32 @@ FREE:
     *manager = NULL;
 }
 
-typedef HIAI_ModelManager* (*HIAI_ModelManager_Create_Ptr)(void);
+typedef HIAI_MR_ModelManager* (*HIAI_ModelManager_Create_Ptr)(void);
+static HIAI_Status HIAI_ModelManager_RunTimeCreate(HIAI_MR_ModelManager* manager,
+    const HIAI_BuiltModel_Impl* builtModelImpl)
+{
+    const HIAI_ModelRuntime* runtime = builtModelImpl->runtime;
+    HIAI_ModelManager_Create_Ptr create = (HIAI_ModelManager_Create_Ptr)runtime->symbolList[HRANI_MODELMANAGER_CREATE];
+    if (create == NULL) {
+        return HIAI_FAILURE;
+    }
+    HIAI_MR_ModelManager* runtimeModelManager = create();
+    if (runtimeModelManager == NULL) {
+        FMK_LOGE("create failed.");
+        return HIAI_FAILURE;
+    }
+    HIAI_ModelManager_Impl* managerImpl = (HIAI_ModelManager_Impl*)manager;
+    managerImpl->runtimeModelManager = runtimeModelManager;
+    managerImpl->runtime = runtime;
+    return HIAI_SUCCESS;
+}
 
-typedef HIAI_Status (*HIAI_ModelManager_Init_Ptr)(HIAI_ModelManager* manager, const HIAI_ModelInitOptions* options,
-    const HIAI_BuiltModel* builtModel, const HIAI_ModelManagerListener* listener);
+typedef HIAI_Status (*HIAI_ModelManager_Init_Ptr)(HIAI_MR_ModelManager* manager,
+    const HIAI_MR_ModelInitOptions* options, const HIAI_MR_BuiltModel* builtModel,
+    const HIAI_MR_ModelManagerListener* listener);
 
-HIAI_Status HIAI_ModelManager_Init(HIAI_ModelManager* manager, const HIAI_ModelInitOptions* options,
-    const HIAI_BuiltModel* builtModel, const HIAI_ModelManagerListener* listener)
+HIAI_Status HIAI_MR_ModelManager_Init(HIAI_MR_ModelManager* manager, const HIAI_MR_ModelInitOptions* options,
+    const HIAI_MR_BuiltModel* builtModel, const HIAI_MR_ModelManagerListener* listener)
 {
     if (manager == NULL || options == NULL) {
         return HIAI_FAILURE;
@@ -75,20 +94,14 @@ HIAI_Status HIAI_ModelManager_Init(HIAI_ModelManager* manager, const HIAI_ModelI
         return HIAI_FAILURE;
     }
 
-    const HIAI_ModelRuntime* runtime = builtModelImpl->runtime;
-    HIAI_ModelManager_Create_Ptr create = (HIAI_ModelManager_Create_Ptr)runtime->symbolList[HRANI_MODELMANAGER_CREATE];
-    if (create == NULL) {
+    HIAI_Status ret = HIAI_ModelManager_RunTimeCreate(manager, builtModelImpl);
+    if (ret != HIAI_SUCCESS) {
+        FMK_LOGE("Model manager create runtime failed.");
         return HIAI_FAILURE;
     }
-    HIAI_ModelManager* runtimeModelManager = create();
-    if (runtimeModelManager == NULL) {
-        FMK_LOGE("create failed.");
-        return HIAI_FAILURE;
-    }
-    HIAI_ModelManager_Impl* managerImpl = (HIAI_ModelManager_Impl*)manager;
-    managerImpl->runtimeModelManager = runtimeModelManager;
-    managerImpl->runtime = runtime;
 
+    HIAI_MR_ModelManager* runtimeModelManager = ((HIAI_ModelManager_Impl*)manager)->runtimeModelManager;
+    const HIAI_ModelRuntime* runtime = builtModelImpl->runtime;
     HIAI_ModelManager_Init_Ptr initV2 = (HIAI_ModelManager_Init_Ptr)runtime->symbolList[HRANI_MODELMANAGER_INITV2];
     if (initV2 != NULL) {
         return initV2(runtimeModelManager, options, builtModelImpl->runtimeBuiltModel, listener);
@@ -102,8 +115,41 @@ HIAI_Status HIAI_ModelManager_Init(HIAI_ModelManager* manager, const HIAI_ModelI
     return HIAI_FAILURE;
 }
 
-typedef HIAI_Status (*HIAI_ModelManager_SetPriority_Ptr)(HIAI_ModelManager* manager, HIAI_ModelPriority priority);
-HIAI_Status HIAI_ModelManager_SetPriority(HIAI_ModelManager* manager, HIAI_ModelPriority priority)
+typedef HIAI_Status (*HIAI_ModelManager_InitWithSharedMem_Ptr)(HIAI_MR_ModelManager* manager,
+    const HIAI_MR_ModelInitOptions* options, const HIAI_MR_BuiltModel* builtModel,
+    const HIAI_MR_ModelManagerListener* listener, const HIAI_ModelManagerSharedMemAllocator* allocator);
+
+HIAI_Status HIAI_ModelManager_InitWithSharedMem(HIAI_MR_ModelManager* manager,
+    const HIAI_MR_ModelInitOptions* options, const HIAI_MR_BuiltModel* builtModel,
+    const HIAI_MR_ModelManagerListener* listener, const HIAI_ModelManagerSharedMemAllocator* allocator)
+{
+    if (manager == NULL || options == NULL) {
+        return HIAI_FAILURE;
+    }
+
+    const HIAI_BuiltModel_Impl* builtModelImpl = HIAI_BuiltModel_ToBuiltModelImpl(builtModel);
+    if (builtModelImpl == NULL) {
+        return HIAI_FAILURE;
+    }
+
+    HIAI_Status ret = HIAI_ModelManager_RunTimeCreate(manager, builtModelImpl);
+    if (ret != HIAI_SUCCESS) {
+        FMK_LOGE("Model manager create runtime failed.");
+        return HIAI_FAILURE;
+    }
+
+    HIAI_MR_ModelManager* runtimeModelManager = ((HIAI_ModelManager_Impl*)manager)->runtimeModelManager;
+    const HIAI_ModelRuntime* runtime = builtModelImpl->runtime;
+    HIAI_ModelManager_InitWithSharedMem_Ptr init =
+        (HIAI_ModelManager_InitWithSharedMem_Ptr)runtime->symbolList[HRANI_MODELMANAGER_INIT_WITH_SHARED_MEM_ALLOCATOR];
+    if (init != NULL) {
+        return init(runtimeModelManager, options, builtModelImpl->runtimeBuiltModel, listener, allocator);
+    }
+    return HIAI_FAILURE;
+}
+
+typedef HIAI_Status (*HIAI_ModelManager_SetPriority_Ptr)(HIAI_MR_ModelManager* manager, HIAI_ModelPriority priority);
+HIAI_Status HIAI_MR_ModelManager_SetPriority(HIAI_MR_ModelManager* manager, HIAI_ModelPriority priority)
 {
     if (manager == NULL) {
         FMK_LOGE("manager is NULL");
@@ -131,10 +177,10 @@ HIAI_Status HIAI_ModelManager_SetPriority(HIAI_ModelManager* manager, HIAI_Model
     return HIAI_FAILURE;
 }
 
-typedef HIAI_Status (*HIAI_ModelManager_Run_Ptr)(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[],
-    int32_t inputNum, HIAI_NDTensorBuffer* output[], int32_t outputNum);
-HIAI_Status HIAI_ModelManager_Run(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[], int32_t inputNum,
-    HIAI_NDTensorBuffer* output[], int32_t outputNum)
+typedef HIAI_Status (*HIAI_ModelManager_Run_Ptr)(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum);
+HIAI_Status HIAI_MR_ModelManager_Run(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[], int32_t inputNum,
+    HIAI_MR_NDTensorBuffer* output[], int32_t outputNum)
 {
     HIAI_ModelManager_Impl* managerImpl = HIAI_ModelManager_ToModelManagerImpl(manager);
     if (managerImpl == NULL) {
@@ -160,10 +206,10 @@ HIAI_Status HIAI_ModelManager_Run(HIAI_ModelManager* manager, HIAI_NDTensorBuffe
     return HIAI_FAILURE;
 }
 
-typedef HIAI_Status (*HIAI_ModelManager_RunAsync_Ptr)(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[],
-    int32_t inputNum, HIAI_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData);
-HIAI_Status HIAI_ModelManager_RunAsync(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[], int32_t inputNum,
-    HIAI_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData)
+typedef HIAI_Status (*HIAI_ModelManager_RunAsync_Ptr)(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData);
+HIAI_Status HIAI_MR_ModelManager_RunAsync(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData)
 {
     HIAI_ModelManager_Impl* managerImpl = HIAI_ModelManager_ToModelManagerImpl(manager);
     if (managerImpl == NULL) {
@@ -189,8 +235,8 @@ HIAI_Status HIAI_ModelManager_RunAsync(HIAI_ModelManager* manager, HIAI_NDTensor
     return HIAI_FAILURE;
 }
 
-typedef HIAI_Status (*HIAI_ModelManager_Cancel_Ptr)(HIAI_ModelManager* manager);
-HIAI_Status HIAI_ModelManager_Cancel(HIAI_ModelManager* manager)
+typedef HIAI_Status (*HIAI_ModelManager_Cancel_Ptr)(HIAI_MR_ModelManager* manager);
+HIAI_Status HIAI_MR_ModelManager_Cancel(HIAI_MR_ModelManager* manager)
 {
     HIAI_ModelManager_Impl* managerImpl = HIAI_ModelManager_ToModelManagerImpl(manager);
     if (managerImpl == NULL) {
@@ -205,8 +251,8 @@ HIAI_Status HIAI_ModelManager_Cancel(HIAI_ModelManager* manager)
     return HIAI_FAILURE;
 }
 
-typedef HIAI_Status (*HIAI_ModelManager_Deinit_Ptr)(HIAI_ModelManager* manager);
-HIAI_Status HIAI_ModelManager_Deinit(HIAI_ModelManager* manager)
+typedef HIAI_Status (*HIAI_ModelManager_Deinit_Ptr)(HIAI_MR_ModelManager* manager);
+HIAI_Status HIAI_MR_ModelManager_Deinit(HIAI_MR_ModelManager* manager)
 {
     HIAI_ModelManager_Impl* managerImpl = HIAI_ModelManager_ToModelManagerImpl(manager);
     if (managerImpl == NULL) {

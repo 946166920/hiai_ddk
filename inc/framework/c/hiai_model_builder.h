@@ -24,8 +24,8 @@ extern "C" {
 #endif
 
 // build interface
-AICP_C_API_EXPORT HIAI_Status HIAI_ModelBuilder_Build(const HIAI_ModelBuildOptions* options, const char* modelName,
-    const void* inputModelData, size_t inputModelSize, HIAI_BuiltModel** builtModel);
+AICP_C_API_EXPORT HIAI_Status HIAI_MR_ModelBuilder_Build(const HIAI_MR_ModelBuildOptions* options,
+    const char* modelName, const void* inputModelData, size_t inputModelSize, HIAI_MR_BuiltModel** builtModel);
 
 #ifdef __cplusplus
 }

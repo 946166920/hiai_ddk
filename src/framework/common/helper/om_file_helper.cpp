@@ -49,8 +49,15 @@ const char* ToString(ModelPartitionType type)
 // for Load
 
 FMK_FUNC_HOST_VISIBILITY FMK_FUNC_DEV_VISIBILITY hiai::Status OmFileLoadHelper::Init(
-    uint8_t* modelData, uint32_t modelDataSize)
+    const uint8_t* model, uint32_t modelSize)
 {
+    HIAI_EXPECT_TRUE((model != nullptr) && (modelSize > sizeof(ModelFileHeader)));
+    modelHeader_ = reinterpret_cast<const ModelFileHeader*>(model);
+    size_t modelDataSize = modelSize - sizeof(ModelFileHeader);
+    HIAI_EXPECT_TRUE(modelHeader_->length == modelDataSize);
+    HIAI_EXPECT_TRUE(modelHeader_->magic == MODEL_FILE_MAGIC_NUM);
+
+    const uint8_t* modelData = model + sizeof(ModelFileHeader);
     HIAI_EXPECT_EXEC_R(LoadModelPartitionTable(modelData, modelDataSize), hiai::FAILED);
     isInited_ = true;
     return hiai::SUCCESS;
@@ -76,13 +83,13 @@ FMK_FUNC_HOST_VISIBILITY FMK_FUNC_DEV_VISIBILITY hiai::Status OmFileLoadHelper::
     return hiai::FAILED;
 }
 
-Status OmFileLoadHelper::CheckModelPartitionTable(uint8_t* modelData, uint32_t size)
+Status OmFileLoadHelper::CheckModelPartitionTable(const uint8_t* modelData, uint32_t size)
 {
     if (size <= sizeof(ModelPartitionTable)) {
         FMK_LOGE("model size less than sizeof(ModelPartitionTable)");
         return hiai::PARAM_INVALID;
     }
-    auto* partitionTable = reinterpret_cast<ModelPartitionTable*>(modelData);
+    auto* partitionTable = reinterpret_cast<const ModelPartitionTable*>(modelData);
     if (partitionTable == nullptr) {
         FMK_LOGE("partitionTable is nullptr");
         return hiai::PARAM_INVALID;
@@ -112,7 +119,7 @@ Status OmFileLoadHelper::CheckModelPartitionTable(uint8_t* modelData, uint32_t s
     return hiai::SUCCESS;
 }
 
-Status OmFileLoadHelper::LoadModelPartitionTable(uint8_t* modelData, uint32_t size)
+Status OmFileLoadHelper::LoadModelPartitionTable(const uint8_t* modelData, uint32_t size)
 {
     HIAI_EXPECT_NOT_NULL_R(modelData, hiai::PARAM_INVALID);
 
@@ -121,7 +128,7 @@ Status OmFileLoadHelper::LoadModelPartitionTable(uint8_t* modelData, uint32_t si
         return hiai::FAILED;
     }
 
-    ModelPartitionTable* partitionTable = reinterpret_cast<ModelPartitionTable*>(modelData);
+    const ModelPartitionTable* partitionTable = reinterpret_cast<const ModelPartitionTable*>(modelData);
     if (partitionTable == nullptr) {
         FMK_LOGE("partitionTable is nullptr");
         return hiai::PARAM_INVALID;
@@ -144,7 +151,7 @@ Status OmFileLoadHelper::LoadModelPartitionTable(uint8_t* modelData, uint32_t si
     for (uint32_t i = 0; i < partitionTable->num; i++) {
         ModelPartition partition;
         partition.size = partitionTable->partition[i].memSize;
-        partition.data = modelData + memOffset;
+        partition.data = const_cast<uint8_t*>(modelData + memOffset);
         partition.type = partitionTable->partition[i].type;
 #if defined(AI_SUPPORT_32_BIT_OS)
         if (partition.type == MODEL_DEF) {

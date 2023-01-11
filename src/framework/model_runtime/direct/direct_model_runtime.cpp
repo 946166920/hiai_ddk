@@ -80,6 +80,7 @@ void HIAI_ModelRuntime_Init(HIAI_ModelRuntime* runtime)
         reinterpret_cast<void*>(HIAI_DIRECT_ModelManager_runAippModelV2);
 #endif
 }
-
+#if !defined(__OHOS__)
 ModelRuntimeRegister g_directModelRuntime(HIAI_ModelRuntime_Init, HIAI_MODEL_RUNTIME_DIRECT);
+#endif
 } // namespace hiai

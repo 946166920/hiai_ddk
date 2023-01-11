@@ -23,11 +23,11 @@ namespace hiai {
 
 class NDTensorBufferImpl : public INDTensorBuffer {
 public:
-    NDTensorBufferImpl(HIAI_NDTensorBuffer* impl);
-    NDTensorBufferImpl(HIAI_NDTensorBuffer* impl, const NDTensorDesc& desc);
+    NDTensorBufferImpl(HIAI_MR_NDTensorBuffer* impl);
+    NDTensorBufferImpl(HIAI_MR_NDTensorBuffer* impl, const NDTensorDesc& desc);
     ~NDTensorBufferImpl() override;
 
-    HIAI_NDTensorBuffer* GetImpl();
+    HIAI_MR_NDTensorBuffer* GetImpl();
 
     void* GetData() override;
 
@@ -44,14 +44,15 @@ private:
 
 private:
     NDTensorDesc desc_;
-    HIAI_NDTensorBuffer* impl_ {nullptr};
+    HIAI_MR_NDTensorBuffer* impl_ {nullptr};
 };
 
-HIAI_NDTensorBuffer* CreateHIAINDTensorBuffer(const NDTensorDesc& tensorDesc, size_t dataSize, HIAI_ImageFormat format);
+HIAI_MR_NDTensorBuffer* CreateHIAINDTensorBuffer(
+    const NDTensorDesc& tensorDesc, size_t dataSize, HIAI_ImageFormat format);
 std::shared_ptr<INDTensorBuffer> CreateNDTensorBuffer(
     const NDTensorDesc& tensorDesc, size_t dataSize, HIAI_ImageFormat format);
-HIAI_NDTensorBuffer* CreateHIAINDTensorBuffer(const NDTensorDesc& tensorDesc, const NativeHandle& handle);
-HIAI_TENSOR_API_EXPORT HIAI_NDTensorBuffer* GetRawBufferFromNDTensorBuffer(
+HIAI_MR_NDTensorBuffer* CreateHIAINDTensorBuffer(const NDTensorDesc& tensorDesc, const NativeHandle& handle);
+HIAI_TENSOR_API_EXPORT HIAI_MR_NDTensorBuffer* GetRawBufferFromNDTensorBuffer(
     const std::shared_ptr<INDTensorBuffer>& buffer);
 } // namespace hiai
 

@@ -41,9 +41,11 @@ GraphStore::GraphStore(std::string&& name) : GraphStore(hiai::ProtoFactory::Inst
     if (graphDef_ != nullptr) {
         graphDef_->set_name(name);
     }
+    ownerNode_ = nullptr;
 }
 
-GraphStore::GraphStore(hiai::IGraphDef* graphDef, bool isOwner) : graphDef_(graphDef), isOwner_(isOwner)
+GraphStore::GraphStore(hiai::IGraphDef* graphDef, bool isOwner)
+    : graphDef_(graphDef), isOwner_(isOwner), ownerNode_(nullptr)
 {
 }
 
@@ -258,5 +260,15 @@ NodePtr GraphStore::MoveNode(const Node& node)
 hiai::IGraphDef* GraphStore::GraphDef()
 {
     return graphDef_;
+}
+
+const Node* GraphStore::OwnerNode() const
+{
+    return ownerNode_;
+}
+
+void GraphStore::SetOwnerNode(Node* node)
+{
+    ownerNode_ = node;
 }
 } // namespace ge

@@ -47,8 +47,9 @@ private:
 
     bool GetSubGraphInIfNode();
     bool GetSubGraphInWhileNode();
+    bool GetSubGraphInCaseNode();
     bool GetSubGraphInNode(const std::string& graphNameAttr, const std::string& graphAttr);
-
+    bool SaveSubGraphInCaseNode();
 private:
     USE_ROLE(NodeSpec);
     USE_ROLE(NodeStore);

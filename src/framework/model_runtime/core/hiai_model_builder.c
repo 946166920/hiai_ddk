@@ -18,12 +18,12 @@
 #include "hiai_model_runtime_repo.h"
 #include "framework/infra/log/log.h"
 
-HIAI_Status HIAI_ModelBuilder_Build(const HIAI_ModelBuildOptions* options, const char* modelName,
-    const void* inputModelData, size_t inputModelSize, HIAI_BuiltModel** builtModel)
+HIAI_Status HIAI_MR_ModelBuilder_Build(const HIAI_MR_ModelBuildOptions* options, const char* modelName,
+    const void* inputModelData, size_t inputModelSize, HIAI_MR_BuiltModel** builtModel)
 {
     HIAI_BuiltModel_Impl* builtImpl = ModelRuntimeRepo_TryBuild(options, modelName, inputModelData, inputModelSize);
     if (builtImpl != NULL) {
-        *builtModel = (HIAI_BuiltModel*)builtImpl;
+        *builtModel = (HIAI_MR_BuiltModel*)builtImpl;
         return HIAI_SUCCESS;
     }
 

@@ -85,5 +85,3 @@ target_link_libraries(ddk_model_manager_ut
 )
 
 add_test(NAME ddk_model_manager_ut COMMAND ddk_model_manager_ut)
-
-

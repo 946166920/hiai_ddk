@@ -19,6 +19,6 @@
 namespace hiai {
 const char* VersionUtil::GetVersion()
 {
-    return HIAI_GetVersion();
+    return HIAI_MR_GetVersion();
 }
 } // namespace hiai

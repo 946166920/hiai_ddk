@@ -16,6 +16,7 @@
 #include "framework/graph/utils/attr_utils.h"
 
 #include "infra/base/securestl.h"
+#include "infra/base/assertion.h"
 
 #include "graph/tensor.h"
 #include "graph/attr_value.h"
@@ -80,9 +81,7 @@ ATTR_UTILS_SET_GET_IMP(ListTensor, SetTensorList, GetTensorList, AttrValue::VT_L
 
 bool AttrUtils::GetInt(ConstAttrHolderAdapter&& obj, const string& name, int32_t& value)
 {
-    if (obj.get() == nullptr) {
-        return false;
-    }
+    HIAI_EXPECT_NOT_NULL_R(obj.get(), false);
     int64_t int64Val = 0;
     if (!AttrUtils::GetInt(std::move(obj), name, int64Val)) {
         return false;
@@ -97,9 +96,7 @@ bool AttrUtils::GetInt(ConstAttrHolderAdapter&& obj, const string& name, int32_t
 
 bool AttrUtils::GetInt(ConstAttrHolderAdapter&& obj, const string& name, uint32_t& value)
 {
-    if (obj.get() == nullptr) {
-        return false;
-    }
+    HIAI_EXPECT_NOT_NULL_R(obj.get(), false);
     int64_t int64Val = 0;
     if (!AttrUtils::GetInt(std::move(obj), name, int64Val)) {
         return false;
@@ -114,9 +111,7 @@ bool AttrUtils::GetInt(ConstAttrHolderAdapter&& obj, const string& name, uint32_
 
 bool AttrUtils::GetListInt(ConstAttrHolderAdapter&& obj, const string& name, vector<int32_t>& value)
 {
-    if (obj.get() == nullptr) {
-        return false;
-    }
+    HIAI_EXPECT_NOT_NULL_R(obj.get(), false);
     vector<int64_t> int64List;
     if (!AttrUtils::GetListInt(std::move(obj), name, int64List)) {
         return false;
@@ -134,9 +129,7 @@ bool AttrUtils::GetListInt(ConstAttrHolderAdapter&& obj, const string& name, vec
 
 bool AttrUtils::GetListInt(ConstAttrHolderAdapter&& obj, const string& name, vector<uint32_t>& value)
 {
-    if (obj.get() == nullptr) {
-        return false;
-    }
+    HIAI_EXPECT_NOT_NULL_R(obj.get(), false);
     vector<int64_t> int64List;
     if (!GetListInt(std::move(obj), name, int64List)) {
         return false;
@@ -172,42 +165,33 @@ bool AttrUtils::SetListInt(AttrHolderAdapter&& obj, const string& name, const ve
 
 bool AttrUtils::MutableTensor(AttrHolderAdapter&& obj, const string& name, TensorPtr& value)
 {
-    if (obj.get() == nullptr) {
-        return false;
-    }
+    HIAI_EXPECT_NOT_NULL_R(obj.get(), false);
     const hiai::IAttrDef* v = obj->GetAttr(name);
-    if (v == nullptr) {
-        return false;
-    }
+    HIAI_EXPECT_NOT_NULL_R(v, false);
     if (v->GetValueType() != AttrValue::VT_TENSOR) {
         return false;
     }
     value = hiai::make_shared_nothrow<Tensor>(const_cast<hiai::IAttrDef*>(v)->mutable_t(), false);
+    HIAI_EXPECT_NOT_NULL_R(value, false);
+
     return true;
 }
 
 bool AttrUtils::MutableListTensor(AttrHolderAdapter&& obj, const string& name, vector<TensorPtr>& value)
 {
-    if (obj.get() == nullptr) {
-        return false;
-    }
+    HIAI_EXPECT_NOT_NULL_R(obj.get(), false);
     const hiai::IAttrDef* v = obj->GetAttr(name);
-    if (v == nullptr) {
-        return false;
-    }
+    HIAI_EXPECT_NOT_NULL_R(v, false);
     if (v->GetValueType() != AttrValue::VT_LIST_TENSOR) {
         return false;
     }
     auto listDef = const_cast<hiai::IAttrDef*>(v)->mutable_list();
-    if (listDef == nullptr) {
-        return false;
-    }
+    HIAI_EXPECT_NOT_NULL_R(listDef, false);
+
     value.clear();
     for (size_t i = 0; i < listDef->t_size(); i++) {
         auto tensorPtr = hiai::make_shared_nothrow<Tensor>(listDef->mutable_t(i), false);
-        if (tensorPtr == nullptr) {
-            return false;
-        }
+        HIAI_EXPECT_NOT_NULL_R(tensorPtr, false);
         value.push_back(tensorPtr);
     }
     return true;
@@ -215,9 +199,7 @@ bool AttrUtils::MutableListTensor(AttrHolderAdapter&& obj, const string& name, v
 
 OpDescPtr AttrUtils::CloneOpDesc(const OpDescPtr& orgOpDesc)
 {
-    if (!orgOpDesc) {
-        return nullptr;
-    }
+    HIAI_EXPECT_TRUE_R(orgOpDesc, nullptr);
     return orgOpDesc->Clone();
 }
 } // namespace ge

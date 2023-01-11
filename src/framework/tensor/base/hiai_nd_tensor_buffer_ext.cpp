@@ -22,14 +22,14 @@
 
 #include "util/hiai_foundation_dl_helper.h"
 
-static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleV3(
+static HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleV3(
     const HIAI_NDTensorDesc* desc, const HIAI_NativeHandle* handle, void* createFun)
 {
-    using createNDTensorBufferFun = HIAI_NDTensorBuffer* (*)(const HIAI_NDTensorDesc*, const HIAI_NativeHandle*);
+    using createNDTensorBufferFun = HIAI_MR_NDTensorBuffer* (*)(const HIAI_NDTensorDesc*, const HIAI_NativeHandle*);
     auto create = reinterpret_cast<createNDTensorBufferFun>(createFun);
-    HIAI_NDTensorBuffer* buffer = create(desc, handle);
+    HIAI_MR_NDTensorBuffer* buffer = create(desc, handle);
 
-    HIAI_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(desc, buffer);
+    HIAI_MR_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(desc, buffer);
     if (ndBuffer == nullptr) {
         HIAI_NDTensorBuffer_ReleaseNDTensorBuffer(&buffer);
     }
@@ -37,7 +37,7 @@ static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleV3(
     return ndBuffer;
 }
 
-static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleV1(
+static HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleV1(
     const HIAI_NDTensorDesc* desc, const HIAI_NativeHandle* handle, void* createFun)
 {
     hiai::NativeHandle h = {.fd = HIAI_NativeHandle_GetFd(handle),
@@ -46,8 +46,9 @@ static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleV1(
 
     HIAI_TensorDescription d;
     if (HIAI_NDTensorDesc_GetDimNum(desc) == NCHW_DIM_NUM) {
-        d = {HIAI_NDTensorDesc_GetDim(desc, 0), HIAI_NDTensorDesc_GetDim(desc, 1), HIAI_NDTensorDesc_GetDim(desc, 2),
-            HIAI_NDTensorDesc_GetDim(desc, 3), HIAI_NDTensorDesc_GetDataType(desc)};
+        d = {HIAI_NDTensorDesc_GetDim(desc, 0), HIAI_NDTensorDesc_GetDim(desc, 1),
+            HIAI_NDTensorDesc_GetDim(desc, 2), HIAI_NDTensorDesc_GetDim(desc, 3),
+            HIAI_NDTensorDesc_GetDataType(desc)};
     } else {
         d = {1, static_cast<int32_t>(HIAI_NDTensorDesc_GetTotalDimNum(desc)), 1, 1, HIAI_DATATYPE_FLOAT32};
     }
@@ -56,7 +57,7 @@ static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleV1(
     auto create = reinterpret_cast<createTensorBufferFun>(createFun);
     HIAI_TensorBuffer* buffer = create(&d, &h);
 
-    HIAI_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromTensorBuffer(desc, buffer);
+    HIAI_MR_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_CreateFromTensorBuffer(desc, buffer);
     if (ndBuffer == nullptr) {
         HIAI_NDTensorBuffer_ReleaseTensorBuffer(&buffer);
     }
@@ -64,7 +65,7 @@ static HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleV1(
     return ndBuffer;
 }
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleLegacy(
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleLegacy(
     const HIAI_NDTensorDesc* desc, const HIAI_NativeHandle* handle)
 {
     void* createFuncV3 = HIAI_Foundation_GetSymbol("HIAI_NDTensorBuffer_CreateFromNativeHandle");
@@ -79,7 +80,7 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleLegacy(
     return nullptr;
 }
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandle(
+HIAI_MR_NDTensorBuffer* HIAI_MR_NDTensorBuffer_CreateFromNativeHandle(
     const HIAI_NDTensorDesc* desc, const HIAI_NativeHandle* handle)
 {
     if (desc == nullptr || handle == nullptr) {

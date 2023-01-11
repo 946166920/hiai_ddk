@@ -28,7 +28,7 @@ public:
     DynamicLoadHelper();
     ~DynamicLoadHelper();
 
-    bool Init(const std::string& file);
+    bool Init(const std::string& file, bool isNeedClose = true);
     void Deinit();
 
     bool IsValid();
@@ -43,7 +43,8 @@ public:
     void* GetSymbol(const std::string& symbol);
 
 private:
-    void* handle_;
+    bool isNeedClose_{true};
+    void* handle_{nullptr};
     std::mutex funcMapMutex_;
     std::map<std::string, void*> funcMap_;
 };

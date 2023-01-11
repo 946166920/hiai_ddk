@@ -16,6 +16,9 @@
 
 #include "graph/attr_value.h"
 #include "graph/buffer.h"
+
+#define protected public
+#define private public
 #include "framework/graph/core/cgraph/compute_graph.h"
 #include "framework/graph/core/cgraph/graph_spec.h"
 #include "framework/graph/core/cgraph/graph_finder.h"
@@ -26,7 +29,11 @@
 #include "framework/graph/utils/graph_utils.h"
 #include "framework/graph/core/node/node_spec.h"
 #include "graph/op/all_ops.h"
+#include "graph/operator.h"
+#undef private
+#undef protected
 #include "graph/op/control_flow_defs.h"
+#include "graph/op/internal_defs.h"
 #include "operator_impl.h"
 #include <algorithm>
 #include <gtest/gtest.h>
@@ -247,14 +254,16 @@ void buildGraph(const struct GraphTestPara& param, Graph& graph)
         for (auto attr : opDesc.attrs) {
             op.SetAttr(attr.name, std::move(attr.value));
         }
-        if (op.GetImpl()->GetOpDesc()->GetType() == hiai::op::If::TYPE) {
+
+        if ((op.GetImpl()->GetOpDesc()->GetType() == hiai::op::If::TYPE) ||
+            (op.GetImpl()->GetOpDesc()->GetType() == hiai::op::While::TYPE)) {
             for (auto func : opDesc.subFuncs) {
                 op.SetGraphBuilder(func.name, func.v);
             }
-        }
-        if (op.GetImpl()->GetOpDesc()->GetType() == hiai::op::While::TYPE) {
-            for (auto func : opDesc.subFuncs) {
-                op.SetGraphBuilder(func.name, func.v);
+        } else if (op.GetImpl()->GetOpDesc()->GetType() == hiai::op::Case::TYPE) {
+            op.SubgraphCountRegister("branches", opDesc.subFuncs.size());
+            for (auto i = 0; i < opDesc.subFuncs.size(); i++) {
+                op.SetSubgraphBuilder(opDesc.subFuncs[i].name, i, opDesc.subFuncs[i].v);
             }
         }
     }
@@ -379,6 +388,20 @@ INSTANTIATE_TEST_CASE_P(Test_Model_While_SubGraph_Valid, Test_Model,
                       {"while", "While", {{"key", AttrValue::CreateFrom(AttrValue::LIST_FLOAT({1.0, 1.0}))}}, {"x"},
                           {"y"}, {{"cond", GenerateThenGraph}, {"body", GenerateThenGraph}}}},
             {{"data1", "y", "while", "x"}, {"data2", "y", "while", "x"}}, {"data1", "data2"}, {"while"}}}));
+
+INSTANTIATE_TEST_CASE_P(Test_Model_Case_SubGraph_Valid, Test_Model,
+    ::Values(ModelTestPara { .name = "model",
+        .version = "deprecated",
+        .graph = {
+            { { "data1", "Data", { { "key", AttrValue::CreateFrom(static_cast<AttrValue::INT>(1)) } }, { "x" }, { "y" },
+                  { { "", nullptr } } },
+                { "data2", "Data", { { "key", AttrValue::CreateFrom(static_cast<AttrValue::FLOAT>(1.0)) } }, { "x" },
+                    { "y" }, { { "", nullptr } } },
+                { "case", "Case", { },
+                    { "branch_index", "dynamic_input_0" }, { "y" },
+                    { { "branches", GenerateThenGraph }, { "branches", GenerateThenGraph } } } },
+            { { "data1", "y", "case", "branch_index" }, { "data2", "y", "case", "dynamic_input_0" } },
+            { "data1", "data2" }, { "case" } } }));
 /*
  * 测试用例名称:
  * Test_Model/Test_Model_Graph_Valid

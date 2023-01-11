@@ -145,10 +145,13 @@ typedef enum {
 } HIAI_RUNTIME_OPTIONS_NAME_INDEX;
 
 // NOTE: the order should not be modifiable.
+// In ohos system, the HIAI_MODEL_RUNTIME_DIRECT process is temporarily unavailable.
 typedef enum HIAI_ModelRuntimeType {
     PLUGIN_MODEL_RUNTIME_HCL,
     HIAI_MODEL_RUNTIME_HCL,
+#if !defined(__OHOS__)
     HIAI_MODEL_RUNTIME_DIRECT,
+#endif
     FMK_MODEL_RUNTIME_HCL,
     HIAI_MODEL_RUNTIME_BINARY,
     HIAI_MAX_MODEL_RUNTIME_NUM,

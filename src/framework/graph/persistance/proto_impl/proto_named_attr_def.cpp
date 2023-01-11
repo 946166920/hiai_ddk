@@ -18,29 +18,19 @@
 #include "graph/persistance/proto_impl/proto_attr_map_def.h"
 
 namespace hiai {
-ProtoNamedAttrDef::ProtoNamedAttrDef() : ProtoNamedAttrDef(new (std::nothrow) hiai::proto::NamedAttrs(), true)
-{
-}
-
-ProtoNamedAttrDef::ProtoNamedAttrDef(hiai::proto::NamedAttrs* namedAttrs, bool isOwner)
-    : namedAttrs_(namedAttrs), isOwner_(isOwner)
+ProtoNamedAttrDef::ProtoNamedAttrDef(hiai::proto::NamedAttrs& namedAttrs) : namedAttrs_(namedAttrs)
 {
 }
 
 ProtoNamedAttrDef::~ProtoNamedAttrDef()
 {
     IMPL_PROTO_CUSTOM_MEMBER_FREE(attr);
-
-    if (isOwner_) {
-        delete namedAttrs_;
-    }
-    namedAttrs_ = nullptr;
 }
 
 void ProtoNamedAttrDef::CopyFrom(const INamedAttrDef* other)
 {
-    if (namedAttrs_ != nullptr && other != nullptr && other->GetSerializeType() == PROTOBUF) {
-        *namedAttrs_ = *(static_cast<const ProtoNamedAttrDef*>(other)->namedAttrs_);
+    if (other != nullptr && other->GetSerializeType() == PROTOBUF) {
+        namedAttrs_ = static_cast<const ProtoNamedAttrDef*>(other)->namedAttrs_;
         IMPL_PROTO_CUSTOM_MEMBER_FREE(attr);
     }
 }
@@ -53,11 +43,13 @@ SerializeType ProtoNamedAttrDef::GetSerializeType() const
 IMPL_PROTO_PERSISTENCE_STANDARD_MEMBER_PURE_FUNC(ProtoNamedAttrDef, namedAttrs_, std::string, name);
 IMPL_PROTO_PERSISTENCE_CUSTOM_MEMBER_PURE_FUNC(ProtoNamedAttrDef, namedAttrs_, IAttrMapDef, ProtoAttrMapDef, attr);
 
-extern "C" GRAPH_API_EXPORT INamedAttrDef* CreateNamedAttrDef() {
-    return new (std::nothrow) ProtoNamedAttrDef();
+extern "C" GRAPH_API_EXPORT INamedAttrDef* CreateNamedAttrDef()
+{
+    return new (std::nothrow) DefaultProtoNamedAttrDef();
 }
 
-extern "C" GRAPH_API_EXPORT void DestroyNamedAttrDef(INamedAttrDef* attrDef) {
+extern "C" GRAPH_API_EXPORT void DestroyNamedAttrDef(INamedAttrDef* attrDef)
+{
     delete attrDef;
 }
 

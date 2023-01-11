@@ -16,7 +16,7 @@
 #ifndef FRAMEWORK_MODEL_MANAGER_MODEL_BUILDER_H
 #define FRAMEWORK_MODEL_MANAGER_MODEL_BUILDER_H
 #include "model_builder/model_builder.h"
-#include "framework/util/base_buffer.h"
+#include "infra/base/base_buffer.h"
 
 namespace hiai {
 

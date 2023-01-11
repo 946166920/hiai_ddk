@@ -16,13 +16,24 @@
 #include "direct_built_model_impl.h"
 
 #include <climits>
-#include "model_runtime/data_type_convert.h"
-#include "framework/c/hiai_nd_tensor_desc.h"
-#include "infra/base/securestl.h"
+#include <functional>
+
+// inc
+#include "framework/c/compatible/hiai_model_tensor_info.h"
 #include "framework/infra/log/log.h"
+#include "infra/base/securestl.h"
+#include "infra/base/assertion.h"
+
+// src/framework
+#include "inc/util/file_util.h"
+#include "model_runtime/data_type_convert.h"
+
+#include "direct_model_manager_container.h"
+#include "direct_model_manager_util.h"
 #include "securec.h"
 
 #ifdef AI_SUPPORT_AIPP_API
+#include "framework/c/compatible/hiai_tensor_aipp_para.h"
 #include "framework/c/hiai_tensor_aipp_para.h"
 #endif
 
@@ -45,396 +56,107 @@ struct HIAI_TensorDescriptionV2 {
 #endif
 
 namespace hiai {
-static void HIAI_ModelTensorInfoToNDTensorDesc(const int* shape, int count, std::vector<HIAI_NDTensorDesc*>& descs)
-{
-    for (int i = 0, pos = 0; i < count; ++i, pos += 4) {
-        std::vector<int> dims = {shape[pos], shape[pos + 1], shape[pos + 2], shape[pos + 3]};
-        auto ndTensorDesc = HIAI_NDTensorDesc_Create(const_cast<int32_t*>(dims.data()), dims.size(),
-            HIAI_DataType::HIAI_DATATYPE_FLOAT32, HIAI_Format::HIAI_FORMAT_NCHW);
-        descs.push_back(ndTensorDesc);
-    }
-}
-
-static Status GetDescByTensorInfoV2(
-    const HIAI_ModelTensorInfoV2* tensorInfo, HIAI_IO_TYPE type, std::vector<HIAI_NDTensorDesc*>& descs)
-{
-    void* getTensorIOCount = HIAI_Foundation_GetSymbol("HIAI_ModelTensorInfoV2_getIOCount");
-    void* getTensorDesc = HIAI_Foundation_GetSymbol("HIAI_ModelTensorInfoV2_getTensorDescription");
-    if (getTensorIOCount == nullptr || getTensorDesc == nullptr) {
-        FMK_LOGE("GetSymbol failed");
-        return FAILURE;
-    }
-
-    int count = ((int (*)(const HIAI_ModelTensorInfoV2*, HIAI_IO_TYPE))getTensorIOCount)(tensorInfo, type);
-    if (count <= 0) {
-        FMK_LOGE("HIAI_ModelTensorInfoV2_getIOCount failed.");
-        return FAILURE;
-    }
-
-    for (int i = 0; i < count; i++) {
-        HIAI_TensorDescriptionV2* tensorDescV2 = ((HIAI_TensorDescriptionV2 *
-            (*)(const HIAI_ModelTensorInfoV2*, HIAI_IO_TYPE, int)) getTensorDesc)(tensorInfo, type, i);
-        if (tensorDescV2 == nullptr) {
-            FMK_LOGE("input shape is null");
-            return FAILURE;
-        }
-
-        DataType dataType = DataType::FLOAT32;
-        auto dataTypeTmp = DATA_TYPE_MAP.find((ge::DataType)tensorDescV2->dataType);
-        if (dataTypeTmp != DATA_TYPE_MAP.end()) {
-            dataType = dataTypeTmp->second;
-        }
-
-        std::vector<int> dims = {
-            tensorDescV2->number, tensorDescV2->channel, tensorDescV2->height, tensorDescV2->width};
-        auto ndTensorDesc = HIAI_NDTensorDesc_Create(const_cast<int32_t*>(dims.data()), dims.size(),
-            static_cast<HIAI_DataType>(dataType), HIAI_Format::HIAI_FORMAT_NCHW);
-        descs.push_back(ndTensorDesc);
-    }
-
-    return SUCCESS;
-}
-
-static HIAI_ModelTensorInfo* GetModelTensorInfo(HIAI_ModelManager* manager, const std::string& modelName)
-{
-    void* getModelTensorInfoFunc = HIAI_Foundation_GetSymbol("HIAI_ModelManager_getModelTensorInfo");
-    if (getModelTensorInfoFunc == nullptr) {
-        FMK_LOGE("GetSymbol failed");
-        return nullptr;
-    }
-
-    return ((HIAI_ModelTensorInfo* (*)(HIAI_ModelManager*, const char*)) getModelTensorInfoFunc)(
-        manager, modelName.c_str());
-}
-
-static void FreeModelTensorInfo(HIAI_ModelTensorInfo* modelTensorInfo)
-{
-    void* freeModelTensorInfoFunc = HIAI_Foundation_GetSymbol("HIAI_ModelManager_releaseModelTensorInfo");
-    if (freeModelTensorInfoFunc == nullptr) {
-        FMK_LOGE("GetSymbol failed");
-        return;
-    }
-
-    ((void (*)(HIAI_ModelTensorInfo*))freeModelTensorInfoFunc)(modelTensorInfo);
-}
-
-DirectBuiltModelImpl::DirectBuiltModelImpl(
-    std::shared_ptr<BaseBuffer>& buffer, std::string modelName, bool isNeedRelease)
-    : modelBuffer_(buffer), modelName_(std::move(modelName)), isNeedRelease_(isNeedRelease)
+DirectBuiltModelImpl::DirectBuiltModelImpl(std::shared_ptr<BaseBuffer>& buffer, std::string modelName)
+    : modelBuffer_(buffer), modelName_(std::move(modelName))
 {
 }
 
-DirectBuiltModelImpl::DirectBuiltModelImpl(std::string modelFile)
-    : modelFile_(std::move(modelFile))
+DirectBuiltModelImpl::DirectBuiltModelImpl(std::string modelFile) : modelFile_(std::move(modelFile))
 {
+    if (modelName_.empty() && !modelFile_.empty()) {
+        modelName_ = "default_" + modelFile_.substr(modelFile_.find_last_of("/\\") + 1);
+    }
 }
 
 DirectBuiltModelImpl::~DirectBuiltModelImpl()
 {
-    if (currentModelUtil_ != nullptr && currentModelUtil_->isLoaded_ &&
-        currentModelUtil_->listener_ == nullptr) {
-        (void)currentModelUtil_->UnLoadModel();
-    }
-
     for (auto& inputDesc : inputs_) {
         HIAI_NDTensorDesc_Destroy(&inputDesc);
     }
     for (auto& outputDesc : outputs_) {
         HIAI_NDTensorDesc_Destroy(&outputDesc);
     }
-
-    if (isNeedRelease_) {
-        free(static_cast<void*>(const_cast<uint8_t*>(modelBuffer_->GetData())));
-    }
 }
 
-Status DirectBuiltModelImpl::Init()
+const std::shared_ptr<BaseBuffer>& DirectBuiltModelImpl::GetModelBuffer() const
 {
-    SharedManagerInfos_ = make_shared_nothrow<SharedManagerInfos>();
-    if (SharedManagerInfos_ == nullptr) {
-        return FAILURE;
-    }
+    return modelBuffer_;
+}
 
-    if (!modelFile_.empty() && modelName_.empty()) { // restore from file
-        modelName_ = "default_" + modelFile_.substr(modelFile_.find_last_of("/\\") + 1);
-    }
+const std::string& DirectBuiltModelImpl::GetModelName() const
+{
+    return modelName_;
+}
 
-    SharedManagerInfos_->modelFile = modelFile_;
-    SharedManagerInfos_->modelBuffer = modelBuffer_;
-    SharedManagerInfos_->modelName = modelName_;
-    return SUCCESS;
+const std::string& DirectBuiltModelImpl::GetModelFile() const
+{
+    return modelFile_;
+}
+
+void DirectBuiltModelImpl::SetModelName(std::string modelName)
+{
+    modelName_ = std::move(modelName);
 }
 
 Status DirectBuiltModelImpl::CheckCompatibility(bool& isCompatible)
 {
-    void* CheckModelCompatibilityFunc = HIAI_Foundation_GetSymbol("HIAI_CheckModelCompatibility_from_buffer");
-    void* CheckModelCompatibilityFromFileFun = HIAI_Foundation_GetSymbol("HIAI_CheckModelCompatibility_from_file");
-    if (CheckModelCompatibilityFunc == nullptr || CheckModelCompatibilityFromFileFun == nullptr) {
-        FMK_LOGE("GetSymbol failed");
-        return FAILURE;
-    }
-
-    if (SharedManagerInfos_ == nullptr && Init() != SUCCESS) {
-        FMK_LOGE("Init failed.");
-        return FAILURE;
-    }
-
-    auto modelUtil = make_shared_nothrow<DirectModelUtil>();
-    if (modelUtil == nullptr) {
-        FMK_LOGE("create modelUtil failed");
-        return FAILURE;
-    }
-    (void)modelUtil->CreateModelManager(nullptr);
-    auto manager = modelUtil->GetModelManager();
-    if (manager == nullptr) {
-        FMK_LOGE("create model manager failed");
-        return FAILURE;
-    }
+    auto manager = std::unique_ptr<HIAI_ModelManager, void (*)(HIAI_ModelManager*)>(
+        DirectModelManagerUtil::CreateModelManager(nullptr), [](HIAI_ModelManager* p) {
+            DirectModelManagerUtil::DestroyModelManager(&p);
+        });
+    HIAI_EXPECT_NOT_NULL(manager);
 
     if (modelBuffer_ != nullptr) {
-        isCompatible = ((bool (*)(HIAI_ModelManager*, void*, const uint32_t))CheckModelCompatibilityFunc)(
-        manager, modelBuffer_->MutableData(), modelBuffer_->GetSize());
+        void* func = HIAI_Foundation_GetSymbol("HIAI_CheckModelCompatibility_from_buffer");
+        HIAI_EXPECT_NOT_NULL(func);
+
+        isCompatible = ((bool (*)(HIAI_ModelManager*, void*, const uint32_t))func)(
+            manager.get(), static_cast<void*>(const_cast<uint8_t*>(modelBuffer_->GetData())), modelBuffer_->GetSize());
     } else {
-        isCompatible = ((bool (*)(HIAI_ModelManager*, const char*))CheckModelCompatibilityFromFileFun)(
-        manager, SharedManagerInfos_->modelFile.c_str());
-    }
+        void* func = HIAI_Foundation_GetSymbol("HIAI_CheckModelCompatibility_from_file");
+        HIAI_EXPECT_NOT_NULL(func);
 
-    (void)modelUtil->DestroyModelManager();
-    return SUCCESS;
-}
-
-Status DirectBuiltModelImpl::InnerLoad()
-{
-    if (currentModelUtil_ != nullptr && currentModelUtil_->isLoaded_) {
-        return SUCCESS;
-    }
-    if (SharedManagerInfos_ == nullptr && Init() != SUCCESS) {
-        FMK_LOGE("Init failed.");
-        return FAILURE;
-    }
-
-    for (auto& info : SharedManagerInfos_->managers) {
-        if (info != nullptr &&
-            info->CheckCanReuse(HIAI_PerfMode::HIAI_PERFMODE_NORMAL, nullptr, false)) { // modelmanager已加载
-            currentModelUtil_ = info;
-            return SUCCESS;
-        }
-    }
-
-    // 需要加载模型
-    currentModelUtil_ = make_shared_nothrow<DirectModelUtil>();
-    if (currentModelUtil_ == nullptr) {
-        FMK_LOGE("create modelUtil failed");
-        return FAILURE;
-    }
-    (void)currentModelUtil_->CreateModelManager(nullptr);
-    int ret = 0;
-    if (SharedManagerInfos_->modelFile.empty()) {
-        ret = currentModelUtil_->LoadModel(SharedManagerInfos_->modelBuffer, SharedManagerInfos_->modelName,
-            HIAI_PerfMode::HIAI_PERFMODE_NORMAL);
-    } else {
-        ret = currentModelUtil_->LoadModel(SharedManagerInfos_->modelFile, SharedManagerInfos_->modelName,
-            HIAI_PerfMode::HIAI_PERFMODE_NORMAL);
-    }
-    if (ret < 0) {
-        FMK_LOGE("load model[%s] failed.", SharedManagerInfos_->modelName.c_str());
-        return FAILURE;
-    }
-    SharedManagerInfos_->managers.emplace_back(currentModelUtil_);
-
-    return SUCCESS;
-}
-
-Status DirectBuiltModelImpl::GetModelIOTensorNum(uint32_t& inputCount, uint32_t& outputCount)
-{
-    if (InnerLoad() != SUCCESS) {
-        FMK_LOGE("InnerLoad failed.");
-        return FAILURE;
-    }
-
-    // 获取输入输出
-    if (GetIONDTensorDesc() != SUCCESS) {
-        FMK_LOGE("GetIONDTensorDesc failed");
-        return FAILURE;
-    }
-
-    inputCount = inputs_.size();
-    outputCount = outputs_.size();
-    return SUCCESS;
-}
-
-Status DirectBuiltModelImpl::GetModelIOTensorDescs(
-    std::vector<HIAI_NDTensorDesc*>& inputDescs, std::vector<HIAI_NDTensorDesc*>& outputDescs)
-{
-    if (InnerLoad() != SUCCESS) {
-        FMK_LOGE("InnerLoad failed.");
-        return FAILURE;
-    }
-
-    // 获取输入输出
-    if (GetIONDTensorDesc() != SUCCESS) {
-        FMK_LOGE("GetIONDTensorDesc failed");
-        return FAILURE;
-    }
-
-    inputDescs = inputs_;
-    outputDescs = outputs_;
-    return SUCCESS;
-}
-
-#ifdef AI_SUPPORT_AIPP_API
-static int GetTensorAippInputCnt(HIAI_ModelManager* manager, const std::string& modelName)
-{
-    int inputCount = 0;
-    HIAI_ModelTensorInfo* modelTensorInfo = GetModelTensorInfo(manager, modelName);
-    if (modelTensorInfo == nullptr) {
-        FMK_LOGE("Unable to get model tensor info by model name: %s", modelName.c_str());
-        return inputCount;
-    }
-
-    inputCount = modelTensorInfo->inputCnt;
-    (void)FreeModelTensorInfo(modelTensorInfo);
-    return inputCount;
-}
-
-static int GetTensorAippInfoByIndex(HIAI_ModelManager* manager, const std::string& modelName, int index,
-    unsigned int* aippNum, unsigned int* batchCount)
-{
-    void* getTensorAippInfoFunc = HIAI_Foundation_GetSymbol("HIAI_ModelManger_getTensorAippInfo");
-    if (getTensorAippInfoFunc == nullptr) {
-        FMK_LOGE("GetSymbol failed");
-        return FAILURE;
-    }
-
-    return ((int (*)(HIAI_ModelManager*, const char*, unsigned int, unsigned int*,
-        unsigned int*))getTensorAippInfoFunc)(manager, modelName.c_str(), index, aippNum, batchCount);
-}
-
-Status DirectBuiltModelImpl::GetTensorAippInfo(int32_t index, uint32_t* aippParaNum, uint32_t* batchCount)
-{
-    if (InnerLoad() != SUCCESS) {
-        FMK_LOGE("InnerLoad failed.");
-        return FAILURE;
-    }
-
-    int realIndex = index;
-    if (index == -1) {
-        int inputCount = GetTensorAippInputCnt(currentModelUtil_->GetModelManager(), SharedManagerInfos_->modelName);
-        if (inputCount <= 0) {
-            return FAILURE;
-        }
-        realIndex = inputCount - 1;
-    }
-
-    int ret = GetTensorAippInfoByIndex(
-        currentModelUtil_->GetModelManager(), SharedManagerInfos_->modelName, realIndex, aippParaNum, batchCount);
-    if (ret != 0) {
-        FMK_LOGE("getTensorAippInfo failed, name: %s, index: %u", SharedManagerInfos_->modelName.c_str(), realIndex);
-        return FAILURE;
-    }
-
-    if (*aippParaNum == 0) {
-        FMK_LOGI("index: %u of model: %s does NOT contain aipp configuration info", realIndex,
-            SharedManagerInfos_->modelName.c_str());
+        isCompatible = ((bool (*)(HIAI_ModelManager*, const char*))func)(manager.get(), modelFile_.c_str());
     }
     return SUCCESS;
 }
 
-Status DirectBuiltModelImpl::GetAippPara(
-    int32_t index, unsigned int aippCount, unsigned int batchCount, std::vector<void*>& aippParaVec)
+namespace {
+/* model tensor type T must be consistent with getFunc/releaseFunc, guaranteed by the caller */
+template <typename T>
+std::unique_ptr<T, std::function<void(T*)>> GetModelIOTensorInfo(
+    const std::string& modelName, HIAI_ModelManager* manager, const char* getFuncName, const char* releaseFuncName)
 {
-    void* getTensorAippParaFunc = HIAI_Foundation_GetSymbol("HIAI_ModelManger_getTensorAippPara");
-    void* getRawBufferFunc = HIAI_Foundation_GetSymbol("HIAI_TensorAipp_getRawBuffer");
-    void* getRawBufferSizeFunc = HIAI_Foundation_GetSymbol("HIAI_TensorAipp_getRawBufferSize");
-    if (getTensorAippParaFunc == nullptr || getRawBufferFunc == nullptr) {
-        FMK_LOGE("GetSymbol failed");
-        return FAILURE;
-    }
+    void* getfunc = HIAI_Foundation_GetSymbol(getFuncName);
+    HIAI_EXPECT_NOT_NULL_R(getfunc, nullptr);
+    void* freeFunc = HIAI_Foundation_GetSymbol(releaseFuncName);
+    HIAI_EXPECT_NOT_NULL_R(freeFunc, nullptr);
 
-    std::vector<HIAI_TensorAippPara*> tmpAippParaVec(aippCount);
-    auto ret = ((int (*)(HIAI_ModelManager*, const char*, unsigned int, HIAI_TensorAippPara*[], unsigned int,
-        unsigned int))getTensorAippParaFunc)(currentModelUtil_->GetModelManager(),
-        SharedManagerInfos_->modelName.c_str(), index, tmpAippParaVec.data(), aippCount, batchCount);
-    if (ret != 0) {
-        FMK_LOGE("Unable to get tensor aipp info by model name: %s, tensor index: %u",
-            SharedManagerInfos_->modelName.c_str(), index);
-        return FAILURE;
-    }
+    T* tensorInfo = ((T* (*)(HIAI_ModelManager*, const char*)) getfunc)(manager, modelName.c_str());
+    HIAI_EXPECT_NOT_NULL_R(tensorInfo, nullptr);
 
-    for (auto& tmpPara : tmpAippParaVec) {
-        void* bufferPara = ((void* (*)(HIAI_TensorAippPara*))getRawBufferFunc)(tmpPara);
-        if (bufferPara == nullptr) {
-            continue;
-        }
-        auto commPara = reinterpret_cast<HIAI_TensorAippCommPara*>(bufferPara);
-        commPara->batchNum = batchCount;
-        int size = 0;
-        if (getRawBufferSizeFunc != nullptr) {
-            size = ((int (*)(HIAI_TensorAippPara*))getRawBufferSizeFunc)(tmpPara);
-        }
-        auto aippPara = HIAI_TensorAippPara_CreateWithHandle(bufferPara, size, tmpPara);
-        if (aippPara != nullptr) {
-            aippParaVec.push_back(aippPara);
-        }
-    }
-    tmpAippParaVec.clear();
-
-    return SUCCESS;
+    return std::unique_ptr<T, std::function<void(T*)>>(tensorInfo, [freeFunc](T* info) {
+        (reinterpret_cast<void (*)(T*)>(freeFunc))(info);
+    });
 }
 
-Status DirectBuiltModelImpl::GetTensorAippPara(int32_t index, std::vector<void*>& aippParaVec)
+std::unique_ptr<HIAI_ModelTensorInfo, std::function<void(HIAI_ModelTensorInfo*)>> GetModelTensorInfo(
+    HIAI_ModelManager* manager, const std::string& modelName)
 {
-    if (InnerLoad() != SUCCESS) {
-        FMK_LOGE("InnerLoad failed.");
-        return FAILURE;
-    }
+    static const char* getFunc = "HIAI_ModelManager_getModelTensorInfo";
+    static const char* releaseFunc = "HIAI_ModelManager_releaseModelTensorInfo";
 
-    int32_t inputCount = 1;
-    if (index == -1) {
-        inputCount = GetTensorAippInputCnt(currentModelUtil_->GetModelManager(), SharedManagerInfos_->modelName);
-        if (inputCount <= 0) {
-            return FAILURE;
-        }
-    }
-
-    aippParaVec.clear();
-    for (int32_t i = 0; i < inputCount; ++i) {
-        unsigned int aippCount = 0;
-        unsigned int batchCount = 0;
-        if (index != -1) {
-            i = index; // inputCount defaults to 1, get aippPara specified by index and end loop.
-        }
-
-        int ret = GetTensorAippInfoByIndex(
-            currentModelUtil_->GetModelManager(), SharedManagerInfos_->modelName, i, &aippCount, &batchCount);
-        if (ret != 0) {
-            FMK_LOGE("getTensorAippInfo failed, name: %s, index: %u", SharedManagerInfos_->modelName.c_str(), index);
-            return FAILURE;
-        }
-        if (aippCount == 0) {
-            FMK_LOGI("index: %u of model: %s does NOT contain aipp configuration info", index,
-                SharedManagerInfos_->modelName.c_str());
-            return SUCCESS;
-        }
-
-        auto status = GetAippPara(i, aippCount, batchCount, aippParaVec);
-        if (status != SUCCESS) {
-            FMK_LOGE("GetAippPara failed.");
-            return FAILURE;
-        }
-    }
-    return SUCCESS;
+    return GetModelIOTensorInfo<HIAI_ModelTensorInfo>(modelName, manager, getFunc, releaseFunc);
 }
-#endif
 
 // Transform ge::DataType to HIAI_DataType
-static HIAI_NDTensorDesc* TransDataTypeToHiaiDataType(const HIAI_NDTensorDesc* desc)
+HIAI_NDTensorDesc* TransToHiAIDataTypeTensor(const HIAI_NDTensorDesc* desc)
 {
     HIAI_DataType dataType = HIAI_DATATYPE_FLOAT32;
-    HIAI_DataType dType = HIAI_NDTensorDesc_GetDataType(desc);
-    auto dataTypeTmp = hiai::DATA_TYPE_MAP.find((ge::DataType)dType);
+    ge::DataType dType = static_cast<ge::DataType>(HIAI_NDTensorDesc_GetDataType(desc));
+    auto dataTypeTmp = hiai::DATA_TYPE_MAP.find(dType);
     if (dataTypeTmp != hiai::DATA_TYPE_MAP.end()) {
-        dataType = (HIAI_DataType)dataTypeTmp->second;
+        dataType = static_cast<HIAI_DataType>(dataTypeTmp->second);
     }
     std::vector<int32_t> dims;
     size_t dimNum = HIAI_NDTensorDesc_GetDimNum(desc);
@@ -445,84 +167,135 @@ static HIAI_NDTensorDesc* TransDataTypeToHiaiDataType(const HIAI_NDTensorDesc* d
     return HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
 }
 
-static Status GetIONDTensorDescByNDTensorInfo(std::string& modelName, HIAI_ModelManager* manager,
-    std::vector<HIAI_NDTensorDesc*>& inputs, std::vector<HIAI_NDTensorDesc*>& outputs)
+Status TransToHiAIDataTypeTensors(
+    HIAI_NDTensorDesc* descs[], int num, std::vector<HIAI_NDTensorDesc*>& tensors)
 {
-    void* getNDTensorFunc = HIAI_Foundation_GetSymbol("HIAI_ModelManager_GetModelNDTensorInfo");
-    void* freeNDTensorInfoFunc = HIAI_Foundation_GetSymbol("HIAI_ModelManager_ReleaseModelNDTensorInfo");
-    if (getNDTensorFunc == nullptr || freeNDTensorInfoFunc == nullptr) {
-        FMK_LOGW("GetSymbol failed");
-        return FAILURE;
+    std::vector<HIAI_NDTensorDesc*> convertTensors;
+    for (int i = 0; i < num; i++) {
+        HIAI_NDTensorDesc* desc = TransToHiAIDataTypeTensor(descs[i]);
+        HIAI_EXPECT_NOT_NULL(desc);
+        convertTensors.emplace_back(desc);
     }
 
-    HIAI_ModelNDTensorInfo* modelTensorInfo =
-        ((HIAI_ModelNDTensorInfo* (*)(HIAI_ModelManager*, const char*)) getNDTensorFunc)(manager, modelName.c_str());
-    if (modelTensorInfo == nullptr) {
-        FMK_LOGE("modelTensorInfo is null");
-        return FAILURE;
-    }
-
-    for (int i = 0; i < modelTensorInfo->inputCnt; i++) {
-        HIAI_NDTensorDesc* desc = TransDataTypeToHiaiDataType(modelTensorInfo->inputShape[i]);
-        if (desc != nullptr) {
-            inputs.emplace_back(desc);
-        }
-    }
-
-    for (int i = 0; i < modelTensorInfo->outputCnt; i++) {
-        HIAI_NDTensorDesc* desc = TransDataTypeToHiaiDataType(modelTensorInfo->outputShape[i]);
-        if (desc != nullptr) {
-            outputs.emplace_back(desc);
-        }
-    }
-
-    ((void (*)(HIAI_ModelNDTensorInfo*))freeNDTensorInfoFunc)(modelTensorInfo);
+    tensors.swap(convertTensors);
     return SUCCESS;
 }
 
-static Status GetIONDTensorDescByTensorInfoV2(std::string& modelName, HIAI_ModelManager* manager,
+Status GetIONDTensorDescByNDTensorInfo(std::string& modelName, HIAI_ModelManager* manager,
     std::vector<HIAI_NDTensorDesc*>& inputs, std::vector<HIAI_NDTensorDesc*>& outputs)
 {
-    void* getTensorInfoFunc = HIAI_Foundation_GetSymbol("HIAI_ModelManager_getModelTensorInfoV2");
-    void* freeTensorInfoFunc = HIAI_Foundation_GetSymbol("HIAI_ModelManager_releaseModelTensorInfoV2");
-    if (getTensorInfoFunc == nullptr || freeTensorInfoFunc == nullptr) {
-        FMK_LOGW("GetSymbol failed");
-        return FAILURE;
-    }
+    static const char* getFunc = "HIAI_ModelManager_GetModelNDTensorInfo";
+    static const char* releaseFunc = "HIAI_ModelManager_ReleaseModelNDTensorInfo";
+    auto modelTensorInfo = GetModelIOTensorInfo<HIAI_ModelNDTensorInfo>(modelName, manager, getFunc, releaseFunc);
+    HIAI_EXPECT_NOT_NULL(modelTensorInfo);
 
-    HIAI_ModelTensorInfoV2* tensorV2 =
-        ((HIAI_ModelTensorInfoV2* (*)(HIAI_ModelManager*, const char*)) getTensorInfoFunc)(manager, modelName.c_str());
+    HIAI_EXPECT_EXEC(TransToHiAIDataTypeTensors(modelTensorInfo->inputShape, modelTensorInfo->inputCnt, inputs));
+    HIAI_EXPECT_EXEC(TransToHiAIDataTypeTensors(modelTensorInfo->outputShape, modelTensorInfo->outputCnt, outputs));
 
-    if (GetDescByTensorInfoV2(tensorV2, HIAI_IO_TYPE::HIAI_IO_INPUT, inputs) != SUCCESS) {
-        FMK_LOGE("get input shape failed.");
-        ((void (*)(HIAI_ModelTensorInfoV2*))freeTensorInfoFunc)(tensorV2);
-        return FAILURE;
-    }
-
-    if (GetDescByTensorInfoV2(tensorV2, HIAI_IO_TYPE::HIAI_IO_OUTPUT, outputs) != SUCCESS) {
-        FMK_LOGE("get output shape failed.");
-        ((void (*)(HIAI_ModelTensorInfoV2*))freeTensorInfoFunc)(tensorV2);
-        return FAILURE;
-    }
-
-    ((void (*)(HIAI_ModelTensorInfoV2*))freeTensorInfoFunc)(tensorV2);
     return SUCCESS;
 }
 
-static Status GetIONDTensorDescByTensorInfo(std::string& modelName, HIAI_ModelManager* manager,
-    std::vector<HIAI_NDTensorDesc*>& inputs, std::vector<HIAI_NDTensorDesc*>& outputs)
+Status GetDescByTensorInfoV2(
+    const HIAI_ModelTensorInfoV2* tensorInfo, HIAI_IO_TYPE type, std::vector<HIAI_NDTensorDesc*>& descs)
 {
-    HIAI_ModelTensorInfo* modelTensorInfo = GetModelTensorInfo(manager, modelName);
-    if (modelTensorInfo == nullptr) {
-        FMK_LOGE("Unable to get model tensor info by model name: %s", modelName.c_str());
-        return FAILURE;
+    void* func = HIAI_Foundation_GetSymbol("HIAI_ModelTensorInfoV2_getIOCount");
+    HIAI_EXPECT_NOT_NULL(func);
+
+    int count = ((int (*)(const HIAI_ModelTensorInfoV2*, HIAI_IO_TYPE))func)(tensorInfo, type);
+    HIAI_EXPECT_TRUE(count > 0);
+
+    void* descFunc = HIAI_Foundation_GetSymbol("HIAI_ModelTensorInfoV2_getTensorDescription");
+    HIAI_EXPECT_NOT_NULL(descFunc);
+
+    std::vector<HIAI_NDTensorDesc*> ndTensorDescs;
+    for (int i = 0; i < count; i++) {
+        HIAI_TensorDescriptionV2* tensorDescV2 = ((HIAI_TensorDescriptionV2 *
+            (*)(const HIAI_ModelTensorInfoV2*, HIAI_IO_TYPE, int)) descFunc)(tensorInfo, type, i);
+        HIAI_EXPECT_NOT_NULL(tensorDescV2);
+
+        DataType dataType = DataType::FLOAT32;
+        auto dataTypeTmp = DATA_TYPE_MAP.find((ge::DataType)tensorDescV2->dataType);
+        if (dataTypeTmp != DATA_TYPE_MAP.end()) {
+            dataType = dataTypeTmp->second;
+        }
+
+        std::vector<int> dims {tensorDescV2->number, tensorDescV2->channel, tensorDescV2->height, tensorDescV2->width};
+        auto ndTensorDesc = HIAI_NDTensorDesc_Create(const_cast<int32_t*>(dims.data()), dims.size(),
+            static_cast<HIAI_DataType>(dataType), HIAI_Format::HIAI_FORMAT_NCHW);
+        HIAI_EXPECT_NOT_NULL(ndTensorDesc);
+        ndTensorDescs.push_back(ndTensorDesc);
     }
 
-    (void)HIAI_ModelTensorInfoToNDTensorDesc(modelTensorInfo->inputShape, modelTensorInfo->inputCnt, inputs);
-    (void)HIAI_ModelTensorInfoToNDTensorDesc(modelTensorInfo->outputShape, modelTensorInfo->outputCnt, outputs);
-
-    (void)FreeModelTensorInfo(modelTensorInfo);
+    descs.swap(ndTensorDescs);
     return SUCCESS;
+}
+
+Status GetIONDTensorDescByTensorInfoV2(std::string& modelName, HIAI_ModelManager* manager,
+    std::vector<HIAI_NDTensorDesc*>& inputs, std::vector<HIAI_NDTensorDesc*>& outputs)
+{
+    static const char* getFunc = "HIAI_ModelManager_getModelTensorInfoV2";
+    static const char* releaseFunc = "HIAI_ModelManager_releaseModelTensorInfoV2";
+    auto tensorV2 = GetModelIOTensorInfo<HIAI_ModelTensorInfoV2>(modelName, manager, getFunc, releaseFunc);
+    HIAI_EXPECT_NOT_NULL(tensorV2);
+
+    HIAI_EXPECT_EXEC(GetDescByTensorInfoV2(tensorV2.get(), HIAI_IO_TYPE::HIAI_IO_INPUT, inputs));
+    HIAI_EXPECT_EXEC(GetDescByTensorInfoV2(tensorV2.get(), HIAI_IO_TYPE::HIAI_IO_OUTPUT, outputs));
+
+    return SUCCESS;
+}
+
+Status HIAI_ModelTensorInfoToNDTensorDesc(const int* shape, int count, std::vector<HIAI_NDTensorDesc*>& descs)
+{
+    std::vector<HIAI_NDTensorDesc*> ndTensorDescs;
+    for (int i = 0, pos = 0; i < count; ++i, pos += 4) {
+        std::vector<int> dims = {shape[pos], shape[pos + 1], shape[pos + 2], shape[pos + 3]};
+        auto ndTensorDesc = HIAI_NDTensorDesc_Create(const_cast<int32_t*>(dims.data()), dims.size(),
+            HIAI_DataType::HIAI_DATATYPE_FLOAT32, HIAI_Format::HIAI_FORMAT_NCHW);
+        HIAI_EXPECT_NOT_NULL(ndTensorDesc);
+        ndTensorDescs.push_back(ndTensorDesc);
+    }
+    descs.swap(ndTensorDescs);
+    return SUCCESS;
+}
+
+Status GetIONDTensorDescByTensorInfo(std::string& modelName, HIAI_ModelManager* manager,
+    std::vector<HIAI_NDTensorDesc*>& inputs, std::vector<HIAI_NDTensorDesc*>& outputs)
+{
+    auto modelTensorInfo = GetModelTensorInfo(manager, modelName);
+    HIAI_EXPECT_NOT_NULL(modelTensorInfo);
+    HIAI_EXPECT_EXEC(
+        HIAI_ModelTensorInfoToNDTensorDesc(modelTensorInfo->inputShape, modelTensorInfo->inputCnt, inputs));
+    HIAI_EXPECT_EXEC(
+        HIAI_ModelTensorInfoToNDTensorDesc(modelTensorInfo->outputShape, modelTensorInfo->outputCnt, outputs));
+
+    return SUCCESS;
+}
+} // namespace
+
+std::shared_ptr<HIAI_ModelManager> DirectBuiltModelImpl::GetLoadedModelManager()
+{
+    // find one reusable modelmanger, no need to load again.
+    std::shared_ptr<HIAI_ModelManager> manager =
+        DirectModelManagerContainer::GetInstance().GetModelManager(reinterpret_cast<void*>(this));
+    if (manager != nullptr) {
+        return manager;
+    }
+
+    // load from self when not found
+    HIAI_ModelManager* cManager = DirectModelManagerUtil::CreateModelManager(nullptr);
+    HIAI_EXPECT_NOT_NULL_R(cManager, nullptr);
+
+    ModelLoadInfo loadInfo(modelName_, modelFile_, modelBuffer_, HIAI_PerfMode::HIAI_PERFMODE_NORMAL);
+    int timeStamp = DirectModelManagerUtil::LoadModel(cManager, loadInfo);
+    if (timeStamp < 0) {
+        DirectModelManagerUtil::DestroyModelManager(&cManager);
+        return nullptr;
+    }
+
+    return std::shared_ptr<HIAI_ModelManager>(cManager, [](HIAI_ModelManager* mm) {
+        (void)DirectModelManagerUtil::UnLoadModel(mm);
+        DirectModelManagerUtil::DestroyModelManager(&mm);
+    });
 }
 
 Status DirectBuiltModelImpl::GetIONDTensorDesc()
@@ -531,18 +304,239 @@ Status DirectBuiltModelImpl::GetIONDTensorDesc()
         return SUCCESS;
     }
 
-    auto status = GetIONDTensorDescByNDTensorInfo(SharedManagerInfos_->modelName,
-        currentModelUtil_->GetModelManager(), inputs_, outputs_);
-    if (status == SUCCESS) {
-        return status;
+    auto manager = GetLoadedModelManager();
+    HIAI_EXPECT_NOT_NULL(manager);
+
+    if (GetIONDTensorDescByNDTensorInfo(modelName_, manager.get(), inputs_, outputs_) == SUCCESS) {
+        return SUCCESS;
     }
-    status = GetIONDTensorDescByTensorInfoV2(SharedManagerInfos_->modelName,
-        currentModelUtil_->GetModelManager(), inputs_, outputs_);
-    if (status == SUCCESS) {
-        return status;
+
+    if (GetIONDTensorDescByTensorInfoV2(modelName_, manager.get(), inputs_, outputs_) == SUCCESS) {
+        return SUCCESS;
     }
-    status = GetIONDTensorDescByTensorInfo(SharedManagerInfos_->modelName,
-        currentModelUtil_->GetModelManager(), inputs_, outputs_);
-    return status;
+
+    return GetIONDTensorDescByTensorInfo(modelName_, manager.get(), inputs_, outputs_);
 }
+
+
+int32_t DirectBuiltModelImpl::GetModelIOTensorNum(bool isInput)
+{
+    HIAI_EXPECT_EXEC_R(GetIONDTensorDesc(), 0);
+
+    return isInput ? inputs_.size() : outputs_.size();
+}
+
+namespace {
+inline HIAI_NDTensorDesc* GetTensorDesc(std::vector<HIAI_NDTensorDesc*> descs, size_t index)
+{
+    if (index < descs.size()) {
+        return HIAI_NDTensorDesc_Clone(descs[index]);
+    } else {
+        FMK_LOGE("index[%u] is invalid.", index);
+        return nullptr;
+    }
+}
+} // namespace
+
+HIAI_NDTensorDesc* DirectBuiltModelImpl::GetModelIOTensorDesc(size_t index, bool isInput)
+{
+    HIAI_EXPECT_EXEC_R(GetIONDTensorDesc(), nullptr);
+
+    return isInput ? GetTensorDesc(inputs_, index) : GetTensorDesc(outputs_, index);
+}
+
+#ifdef AI_SUPPORT_AIPP_API
+namespace {
+int GetTensorAippInputCnt(HIAI_ModelManager* manager, const std::string& modelName)
+{
+    int inputCount = 0;
+    auto modelTensorInfo = GetModelTensorInfo(manager, modelName);
+    HIAI_EXPECT_NOT_NULL_R(modelTensorInfo, inputCount);
+
+    return modelTensorInfo->inputCnt;
+}
+
+int GetTensorAippInfoByIndex(HIAI_ModelManager* manager, const std::string& modelName, int index, unsigned int* aippNum,
+    unsigned int* batchCount)
+{
+    int ret = -1;
+    void* func = HIAI_Foundation_GetSymbol("HIAI_ModelManger_getTensorAippInfo");
+    HIAI_EXPECT_NOT_NULL_R(func, ret);
+
+    ret = ((int (*)(HIAI_ModelManager*, const char*, unsigned int, unsigned int*, unsigned int*))func)(
+        manager, modelName.c_str(), index, aippNum, batchCount);
+    if (ret != 0) {
+        FMK_LOGE("getTensorAippInfo failed, name: %s, index: %u", modelName.c_str(), index);
+    }
+    return ret;
+}
+} // namespace
+
+Status DirectBuiltModelImpl::GetTensorAippInfo(int32_t index, uint32_t* aippParaNum, uint32_t* batchCount)
+{
+    auto manager = GetLoadedModelManager();
+    HIAI_EXPECT_NOT_NULL(manager);
+
+    int realIndex = index;
+    if (realIndex == -1) {
+        int inputCount = GetTensorAippInputCnt(manager.get(), modelName_);
+        HIAI_EXPECT_TRUE(inputCount > 0);
+
+        realIndex = inputCount - 1;
+    }
+
+    int ret = GetTensorAippInfoByIndex(manager.get(), modelName_, realIndex, aippParaNum, batchCount);
+    HIAI_EXPECT_TRUE(ret == 0);
+
+    if (*aippParaNum == 0) {
+        FMK_LOGI("index: %u of model: %s does not contain aipp info", realIndex, modelName_.c_str());
+    }
+    return SUCCESS;
+}
+
+Status DirectBuiltModelImpl::GetAippPara(HIAI_ModelManager* manager, int32_t index, unsigned int aippCount,
+    unsigned int batchCount, std::vector<void*>& aippParaVec)
+{
+    void* func = HIAI_Foundation_GetSymbol("HIAI_ModelManger_getTensorAippPara");
+    HIAI_EXPECT_NOT_NULL(func);
+
+    std::vector<HIAI_TensorAippPara*> hiaiAippParaVec(aippCount);
+    auto ret = ((int (*)(HIAI_ModelManager*, const char*, unsigned int, HIAI_TensorAippPara*[], unsigned int,
+        unsigned int))func)(manager, modelName_.c_str(), index, hiaiAippParaVec.data(), aippCount, batchCount);
+    if (ret != 0) {
+        FMK_LOGE("getTensorAippPara fail, name: %s, tensor index: %u", modelName_.c_str(), index);
+        return FAILURE;
+    }
+
+    void* getfunc = HIAI_Foundation_GetSymbol("HIAI_TensorAipp_getRawBuffer");
+    HIAI_EXPECT_NOT_NULL(getfunc);
+    void* sizeFunc = HIAI_Foundation_GetSymbol("HIAI_TensorAipp_getRawBufferSize");
+    HIAI_EXPECT_NOT_NULL(sizeFunc);
+
+    std::vector<void*> tmpAippParaVec;
+    for (auto& tmpPara : hiaiAippParaVec) {
+        void* bufferPara = ((void* (*)(HIAI_TensorAippPara*))getfunc)(tmpPara);
+        if (bufferPara == nullptr) {
+            continue;
+        }
+        auto commPara = reinterpret_cast<HIAI_MR_TensorAippCommPara*>(bufferPara);
+        commPara->batchNum = batchCount;
+
+        int size = ((int (*)(HIAI_TensorAippPara*))sizeFunc)(tmpPara);
+        auto aippPara = HIAI_MR_TensorAippPara_CreateWithHandle(bufferPara, size, tmpPara);
+        HIAI_EXPECT_NOT_NULL(aippPara);
+
+        tmpAippParaVec.push_back(aippPara);
+    }
+
+    aippParaVec.swap(tmpAippParaVec);
+    return SUCCESS;
+}
+
+
+Status DirectBuiltModelImpl::GetAippParaByIndex(
+    HIAI_ModelManager* manager, const std::string& modelName, int32_t index, std::vector<void*>& aippParaVec)
+{
+    unsigned int aippCount = 0;
+    unsigned int batchCount = 0;
+    int ret = GetTensorAippInfoByIndex(manager, modelName, index, &aippCount, &batchCount);
+    HIAI_EXPECT_TRUE(ret == 0);
+
+    if (aippCount == 0) {
+        FMK_LOGI("index: %u of model: %s does NOT contain aipp info", index, modelName_.c_str());
+        return SUCCESS;
+    }
+
+    HIAI_EXPECT_EXEC(GetAippPara(manager, index, aippCount, batchCount, aippParaVec));
+    return SUCCESS;
+}
+
+Status DirectBuiltModelImpl::GetTensorAippPara(int32_t index, std::vector<void*>& aippParaVec)
+{
+    auto manager = GetLoadedModelManager();
+    HIAI_EXPECT_NOT_NULL(manager);
+
+    std::vector<void*> tmpAippParaVec;
+    if (index != -1) {
+        HIAI_EXPECT_EXEC(GetAippParaByIndex(manager.get(), modelName_, index, tmpAippParaVec));
+    } else {
+        int32_t inputCount = GetTensorAippInputCnt(manager.get(), modelName_);
+        HIAI_EXPECT_TRUE(inputCount > 0);
+
+        for (int32_t i = 0; i < inputCount; ++i) {
+            HIAI_EXPECT_EXEC(GetAippParaByIndex(manager.get(), modelName_, i, tmpAippParaVec));
+        }
+    }
+    aippParaVec.swap(tmpAippParaVec);
+    return SUCCESS;
+}
+#endif
+
+namespace {
+inline bool IsModelBufferValid(const std::shared_ptr<BaseBuffer>& modelBuffer)
+{
+    return (modelBuffer != nullptr) && (modelBuffer->GetData() != nullptr) && (modelBuffer->GetSize() > 0);
+}
+} // namespace
+
+Status DirectBuiltModelImpl::LoadToBuffer()
+{
+    if (IsModelBufferValid(modelBuffer_)) {
+        return SUCCESS;
+    }
+
+    modelBuffer_ = FileUtil::LoadToBuffer(modelFile_);
+    return (modelBuffer_ != nullptr) ? SUCCESS : FAILURE;
+}
+
+Status DirectBuiltModelImpl::Save(void** data, size_t* size)
+{
+    HIAI_EXPECT_TRUE(data != nullptr && size != nullptr);
+
+    HIAI_EXPECT_EXEC(LoadToBuffer());
+
+    size_t modelBufferSize = modelBuffer_->GetSize();
+    auto dstData = new (std::nothrow) uint8_t[modelBufferSize];
+    HIAI_EXPECT_NOT_NULL(dstData);
+
+    void* srcData = static_cast<void*>(const_cast<uint8_t*>(modelBuffer_->GetData()));
+    (void)memcpy_s(dstData, modelBufferSize, srcData, modelBufferSize);
+
+    *size = modelBufferSize;
+    *data = dstData;
+    return SUCCESS;
+}
+
+Status DirectBuiltModelImpl::SaveToFile(const char* file)
+{
+    HIAI_EXPECT_NOT_NULL(file);
+
+    /* if modelfile exsits, no need save model buffer to file again. */
+    if (!modelFile_.empty()) {
+        FMK_LOGE("model file[%s] exsits, not need to save again.", modelFile_.c_str());
+        return FAILURE;
+    }
+
+    HIAI_EXPECT_TRUE(IsModelBufferValid(modelBuffer_));
+
+    HIAI_EXPECT_EXEC(FileUtil::WriteBufferToFile(modelBuffer_->GetData(), modelBuffer_->GetSize(), file));
+    return SUCCESS;
+}
+
+Status DirectBuiltModelImpl::SaveToExternalBuffer(void* data, size_t size, size_t* realSize)
+{
+    HIAI_EXPECT_TRUE(data != nullptr && size > 0 && realSize != nullptr);
+
+    HIAI_EXPECT_EXEC(LoadToBuffer());
+
+    size_t bufferSize = modelBuffer_->GetSize();
+    if (memcpy_s(data, size, modelBuffer_->GetData(), bufferSize) != EOK) {
+        FMK_LOGE("data size is not enough for model.");
+        return FAILURE;
+    }
+
+    *realSize = bufferSize;
+    return SUCCESS;
+}
+
 } // namespace hiai

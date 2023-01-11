@@ -87,7 +87,7 @@ HIAI_NPU_SUPPORT_STATE HIAI_Foundation_IsNpuSupport(void)
         return HIAI_SUPPORT_NPU;
     }
 
-    const char* version = HIAI_GetVersion();
+    const char* version = HIAI_MR_GetVersion();
     if (version == NULL) {
         FMK_LOGI("Not support NPU");
         g_supportNpuState = (int32_t)HIAI_NOT_SUPPORT_NPU;

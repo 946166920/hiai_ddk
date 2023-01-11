@@ -20,7 +20,7 @@
 
 #include "hiai_nd_tensor_buffer_def.h"
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_Create(
+HIAI_MR_NDTensorBuffer* HIAI_MR_NDTensorBuffer_Create(
     const HIAI_NDTensorDesc* desc, void* data, size_t size, void* handle, bool isOwner, bool isLegacy)
 {
     HIAI_NDTensorBufferV2* ndBuffer = (HIAI_NDTensorBufferV2*)malloc(sizeof(HIAI_NDTensorBufferV2));
@@ -38,5 +38,5 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_Create(
     ndBuffer->owner = isOwner;
     ndBuffer->isLegacy = isLegacy;
 
-    return (HIAI_NDTensorBuffer*)ndBuffer;
+    return (HIAI_MR_NDTensorBuffer*)ndBuffer;
 }

@@ -41,7 +41,7 @@ void* HIAI_TensorAippPara_GetRawBufferLegacy(const void* handle)
         return NULL;
     }
 
-    return getRawBufferFunc((HIAI_TensorAippPara*)handle);
+    return getRawBufferFunc((HIAI_MR_TensorAippPara*)handle);
 }
 
 int32_t HIAI_TensorAippPara_GetRawBufferSizeLegacy(const void* handle)
@@ -50,7 +50,7 @@ int32_t HIAI_TensorAippPara_GetRawBufferSizeLegacy(const void* handle)
     static const char* getRawBufferSizeFuncName = "HIAI_TensorAipp_getRawBufferSize";
     int32_t (*getRawBufferSizeFunc)(void*) = (int32_t(*)(void*))HIAI_Foundation_GetSymbol(getRawBufferSizeFuncName);
     if (getRawBufferSizeFunc != NULL) {
-        size = getRawBufferSizeFunc((HIAI_TensorAippPara*)handle);
+        size = getRawBufferSizeFunc((HIAI_MR_TensorAippPara*)handle);
     }
 
     if (size <= 0) {
@@ -59,12 +59,12 @@ int32_t HIAI_TensorAippPara_GetRawBufferSizeLegacy(const void* handle)
             FMK_LOGE("HIAI_TensorAippPara_GetRawBufferLegacy failed.");
             return 0;
         }
-        HIAI_TensorAippCommPara* commPara = (HIAI_TensorAippCommPara*)(bufferPara);
+        HIAI_MR_TensorAippCommPara* commPara = (HIAI_MR_TensorAippCommPara*)(bufferPara);
         if (commPara == NULL) {
             FMK_LOGE("revert to HIAI_TensorAippCommPara failed.");
             return 0;
         }
-        return sizeof(HIAI_TensorAippCommPara) + sizeof(HIAI_TensorAippBatchPara) * commPara->batchNum;
+        return sizeof(HIAI_MR_TensorAippCommPara) + sizeof(HIAI_MR_TensorAippBatchPara) * commPara->batchNum;
     }
     return size;
 }
@@ -87,7 +87,7 @@ int32_t HIAI_TensorAippPara_GetInputIndexLegacy(const void* handle)
         return -1;
     }
 
-    return getInutIndexFunc((HIAI_TensorAippPara*)handle);
+    return getInutIndexFunc((HIAI_MR_TensorAippPara*)handle);
 }
 
 void HIAI_TensorAippPara_SetInputIndexLegacy(void* handle, uint32_t inputIndex)
@@ -120,7 +120,7 @@ int32_t HIAI_TensorAippPara_GetInputAippIndexLegacy(const void* handle)
         return -1;
     }
 
-    return getInutIndexFunc((HIAI_TensorAippPara*)handle);
+    return getInutIndexFunc((HIAI_MR_TensorAippPara*)handle);
 }
 
 void HIAI_TensorAippPara_SetInputAippIndexLegacy(void* handle, uint32_t inputAippIndex)

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "framework/util/base_buffer.h"
+#include "infra/base/base_buffer.h"
 #include <new>
 #include "securec.h"
 #include "framework/infra/log/log.h"
 
 namespace hiai {
-BaseBuffer::BaseBuffer() : isOwner_(false), data_(nullptr), size_(0)
+BaseBuffer::BaseBuffer()
 {
 }
 
@@ -39,6 +39,12 @@ BaseBuffer::BaseBuffer(const BaseBuffer& other)
 
 BaseBuffer::BaseBuffer(uint8_t* data, size_t size, bool shouldOwn) : isOwner_(shouldOwn), data_(data), size_(size)
 {
+}
+
+BaseBuffer::BaseBuffer(uint8_t* data, size_t size, std::function<void (uint8_t*)> freeFunc)
+    : data_(data), size_(size), freeFunc_(freeFunc)
+{
+    isOwner_ = true;
 }
 
 BaseBuffer::~BaseBuffer()
@@ -122,14 +128,17 @@ size_t BaseBuffer::GetSize() const
 
 void BaseBuffer::Clear()
 {
-    if (data_ == nullptr) {
+    if (!isOwner_ || data_ == nullptr) {
         return;
     }
 
-    if (isOwner_) {
+    if (freeFunc_ != nullptr) {
+        freeFunc_(data_);
+    } else {
         delete[] data_;
-        data_ = nullptr;
-        size_ = 0;
     }
+
+    data_ = nullptr;
+    size_ = 0;
 }
 } // namespace hiai

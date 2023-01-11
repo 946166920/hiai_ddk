@@ -44,9 +44,6 @@ struct ModelDeviceConfig {
     std::vector<ExecuteDevice> modelDeviceOrder;
     std::map<std::string, std::vector<ExecuteDevice>> opDeviceOrder;
     DeviceMemoryReusePlan deviceMemoryReusePlan = DeviceMemoryReusePlan::UNSET;
-#ifdef AI_SUPPORT_CL_CUSTOMIZATION
-    std::map<std::string, std::string> clCustomizations;
-#endif
 };
 struct ModelBuildOptions {
     std::vector<NDTensorDesc> inputTensorDescs;

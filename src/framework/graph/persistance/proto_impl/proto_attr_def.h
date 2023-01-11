@@ -17,15 +17,16 @@
 #ifndef GE_GRAH_PERSISTENCE_PROTO_ATTR_DEF_H
 #define GE_GRAH_PERSISTENCE_PROTO_ATTR_DEF_H
 #include "graph/persistance/interface/attr_def.h"
+#include "proto_wrapper.h"
 #include "proto_func_macro_def.h"
 
 namespace hiai {
 class ProtoAttrDef : public IAttrDef {
 public:
-    ProtoAttrDef();
-    ProtoAttrDef(hiai::proto::AttrDef* attrDef, bool isOwner = false);
+    ProtoAttrDef(hiai::proto::AttrDef& attrDef);
     ~ProtoAttrDef() override;
 
+private:
     ge::AttrValue::ValueType GetValueType() const override;
     void SetValueType(ge::AttrValue::ValueType type) override;
 
@@ -44,8 +45,16 @@ public:
     DEF_PROTO_PERSISTENCE_CUSTOM_MEMBER_PURE_FUNC(IAttrListDef, list);
 
 private:
-    hiai::proto::AttrDef* attrDef_;
-    bool isOwner_;
+    hiai::proto::AttrDef& attrDef_;
 };
-}
+
+class DefaultProtoAttrDef : private ProtoWrapper<hiai::proto::AttrDef>, public ProtoAttrDef {
+public:
+    DefaultProtoAttrDef() : ProtoAttrDef(GetProto())
+    {
+    }
+    ~DefaultProtoAttrDef() override = default;
+};
+
+} // namespace hiai
 #endif

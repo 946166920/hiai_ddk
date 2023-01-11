@@ -174,7 +174,7 @@ GraphErrCodeStatus OperatorImpl::SetGraphBuilder(const std::string& name, const 
         FMK_LOGE("sub graph %s is setted", name.c_str());
         return GRAPH_FAILED;
     }
-    FMK_LOGE("subGraphBuilderFn_ add name =%s", name.c_str());
+    FMK_LOGI("subGraphBuilderFn_ add subGraph = %s", name.c_str());
     subGraphBuilderFn_.emplace(name, v);
     return GRAPH_SUCCESS;
 }
@@ -232,6 +232,21 @@ void OperatorImpl::DynamicInputRegister(const std::string& name, uint32_t num)
         return;
     }
     opDesc_->AddDynamicInputDesc(name, num);
+}
+
+void OperatorImpl::SubgraphCountRegister(const std::string& name, uint32_t num)
+{
+    if (opDesc_ == nullptr) {
+        FMK_LOGE("opDesc_ is nullptr");
+        return;
+    }
+    vector<string> subGraphNames;
+    for (uint32_t i = 0; i < num; i++) {
+        const std::string subGraphName = name + std::to_string(i);
+        subGraphNames.push_back(subGraphName);
+    }
+    auto attr = AttrValue::CreateFrom(subGraphNames);
+    opDesc_->SetAttr("branches", std::move(attr));
 }
 
 void OperatorImpl::OutputRegister(const std::string& name)

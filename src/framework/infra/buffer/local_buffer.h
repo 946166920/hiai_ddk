@@ -18,7 +18,7 @@
 #include <memory>
 
 #include "tensor/buffer.h"
-#include "framework/util/base_buffer.h"
+#include "infra/base/base_buffer.h"
 
 namespace hiai {
 

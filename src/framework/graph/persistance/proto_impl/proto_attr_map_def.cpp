@@ -16,28 +16,19 @@
 #include "proto_attr_map_def.h"
 
 namespace hiai {
-ProtoAttrMapDef::ProtoAttrMapDef() : ProtoAttrMapDef(new (std::nothrow) ProtoMap(), true)
-{
-}
-
-ProtoAttrMapDef::ProtoAttrMapDef(ProtoMap* attrMapDef, bool isOwner) : attrMapDef_(attrMapDef), isOwner_(isOwner)
+ProtoAttrMapDef::ProtoAttrMapDef(ProtoMap& attrMapDef) : attrMapDef_(attrMapDef)
 {
 }
 
 ProtoAttrMapDef::~ProtoAttrMapDef()
 {
     IMPL_PROTO_CUSTOM_MAP_MEMBER_FREE(attr);
-
-    if (isOwner_) {
-        delete attrMapDef_;
-    }
-    attrMapDef_ = nullptr;
 }
 
 void ProtoAttrMapDef::CopyFrom(const IAttrMapDef* other)
 {
-    if (attrMapDef_ != nullptr && other != nullptr && other->GetSerializeType() == PROTOBUF) {
-        *attrMapDef_ = *(static_cast<const ProtoAttrMapDef*>(other)->attrMapDef_);
+    if (other != nullptr && other->GetSerializeType() == PROTOBUF) {
+        attrMapDef_ = static_cast<const ProtoAttrMapDef*>(other)->attrMapDef_;
         IMPL_PROTO_CUSTOM_MAP_MEMBER_FREE(attr);
     }
 }
@@ -50,12 +41,13 @@ SerializeType ProtoAttrMapDef::GetSerializeType() const
 IMPL_PROTO_PERSISTENCE_CUSTOM_MAP_MEMBER_PURE_FUNC(
     ProtoAttrMapDef, attrMapDef_, std::string, IAttrDef, ProtoAttrDef, attr);
 
-
-extern "C" GRAPH_API_EXPORT IAttrMapDef* CreateAttrMapDef() {
-    return new (std::nothrow) ProtoAttrMapDef();
+extern "C" GRAPH_API_EXPORT IAttrMapDef* CreateAttrMapDef()
+{
+    return new (std::nothrow) DefaultProtoAttrMapDef();
 }
 
-extern "C" GRAPH_API_EXPORT void DestroyAttrMapDef(IAttrMapDef* attrDef) {
+extern "C" GRAPH_API_EXPORT void DestroyAttrMapDef(IAttrMapDef* attrDef)
+{
     delete attrDef;
 }
 

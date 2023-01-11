@@ -19,10 +19,10 @@
 
 typedef struct HIAI_ModelInitOptionsV1 {
     HIAI_PerfMode perfMode;
-    HIAI_ModelBuildOptions* buildOptions;
+    HIAI_MR_ModelBuildOptions* buildOptions;
 } HIAI_ModelInitOptionsV1;
 
-HIAI_ModelInitOptions* HIAI_ModelInitOptionsV1_Create(void)
+HIAI_MR_ModelInitOptions* HIAI_ModelInitOptionsV1_Create(void)
 {
     HIAI_ModelInitOptionsV1* option = (HIAI_ModelInitOptionsV1*)malloc(sizeof(HIAI_ModelInitOptionsV1));
     MALLOC_NULL_CHECK_RET_VALUE(option, NULL);
@@ -30,10 +30,10 @@ HIAI_ModelInitOptions* HIAI_ModelInitOptionsV1_Create(void)
 
     option->perfMode = HIAI_PERFMODE_NORMAL;
     option->buildOptions = NULL;
-    return (HIAI_ModelInitOptions*)option;
+    return (HIAI_MR_ModelInitOptions*)option;
 }
 
-void HIAI_ModelInitOptionsV1_SetPerfMode(HIAI_ModelInitOptions* options, HIAI_PerfMode devPerf)
+void HIAI_ModelInitOptionsV1_SetPerfMode(HIAI_MR_ModelInitOptions* options, HIAI_PerfMode devPerf)
 {
     if (options == NULL) {
         return;
@@ -47,12 +47,12 @@ void HIAI_ModelInitOptionsV1_SetPerfMode(HIAI_ModelInitOptions* options, HIAI_Pe
     ((HIAI_ModelInitOptionsV1*)options)->perfMode = devPerf;
 }
 
-HIAI_PerfMode HIAI_ModelInitOptionsV1_GetPerfMode(const HIAI_ModelInitOptions* options)
+HIAI_PerfMode HIAI_ModelInitOptionsV1_GetPerfMode(const HIAI_MR_ModelInitOptions* options)
 {
     return options == NULL ? HIAI_PERFMODE_UNSET : ((HIAI_ModelInitOptionsV1*)options)->perfMode;
 }
 
-void HIAI_ModelInitOptionsV1_SetBuildOptions(HIAI_ModelInitOptions* options, HIAI_ModelBuildOptions* buildOptions)
+void HIAI_ModelInitOptionsV1_SetBuildOptions(HIAI_MR_ModelInitOptions* options, HIAI_MR_ModelBuildOptions* buildOptions)
 {
     if (options == NULL) {
         return;
@@ -65,12 +65,12 @@ void HIAI_ModelInitOptionsV1_SetBuildOptions(HIAI_ModelInitOptions* options, HIA
     ((HIAI_ModelInitOptionsV1*)options)->buildOptions = buildOptions;
 }
 
-HIAI_ModelBuildOptions* HIAI_ModelInitOptionsV1_GetBuildOptions(const HIAI_ModelInitOptions* options)
+HIAI_MR_ModelBuildOptions* HIAI_ModelInitOptionsV1_GetBuildOptions(const HIAI_MR_ModelInitOptions* options)
 {
     return options == NULL ? NULL : ((HIAI_ModelInitOptionsV1*)options)->buildOptions;
 }
 
-void HIAI_ModelInitOptionsV1_Destroy(HIAI_ModelInitOptions** options)
+void HIAI_ModelInitOptionsV1_Destroy(HIAI_MR_ModelInitOptions** options)
 {
     if (options == NULL || *options == NULL) {
         return;

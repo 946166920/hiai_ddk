@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "ir_build_transformer.h"
 #include <list>
 #include "framework/graph/utils/op_desc_utils.h"

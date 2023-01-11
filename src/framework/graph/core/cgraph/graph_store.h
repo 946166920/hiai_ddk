@@ -69,6 +69,8 @@ public:
     hiai::Status SetOutputs(const std::vector<Node*>& nodes);
 
     hiai::IGraphDef* GraphDef();
+    const Node* OwnerNode() const;
+    void SetOwnerNode(Node* node);
 
 protected:
     explicit GraphStore(std::string&& name);
@@ -85,6 +87,7 @@ private:
     std::vector<NodePtr> inputNodes_;
     std::vector<NodePtr> outputNodes_;
     std::map<std::string, uint32_t> inputOrder_;
+    Node* ownerNode_;
 };
 } // namespace ge
 

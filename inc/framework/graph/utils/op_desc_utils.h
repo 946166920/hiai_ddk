@@ -113,9 +113,6 @@ public:
     GRAPH_API_EXPORT static GraphErrCodeStatus SetWeights(const OpDescPtr& opDesc, const TensorPtr weight);
 
     GRAPH_API_EXPORT static TensorPtr MutableWeights(const ge::OpDescPtr& opDesc);
-
-private:
-    static TensorPtr MutableWeights(ge::OpDesc& opDesc);
 };
 } // namespace ge
 #endif // FRAMEWORK_GRAPH_UTILS_OP_DESC_UTILS_H

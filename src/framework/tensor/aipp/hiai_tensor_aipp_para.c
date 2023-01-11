@@ -96,7 +96,7 @@ static HIAI_TensorAipp_FunctionDef* GetTensorAippFunctionDef(void)
     }
 }
 
-HIAI_TensorAippPara* HIAI_TensorAippPara_Create(uint32_t batchNum)
+HIAI_MR_TensorAippPara* HIAI_MR_TensorAippPara_Create(uint32_t batchNum)
 {
     void* handle = GetTensorAippFunctionDef()->create(batchNum);
     if (handle == NULL) {
@@ -106,12 +106,12 @@ HIAI_TensorAippPara* HIAI_TensorAippPara_Create(uint32_t batchNum)
         }
     }
 
-    HIAI_TensorAippPara* aippPara = (HIAI_TensorAippPara*)malloc(sizeof(HIAI_TensorAippPara));
+    HIAI_MR_TensorAippPara* aippPara = (HIAI_MR_TensorAippPara*)malloc(sizeof(HIAI_MR_TensorAippPara));
     if (aippPara == NULL) {
         FMK_LOGE("malloc failed.");
         goto FREE_HANDLE;
     }
-    (void)memset_s(aippPara, sizeof(HIAI_TensorAippPara), 0, sizeof(HIAI_TensorAippPara));
+    (void)memset_s(aippPara, sizeof(HIAI_MR_TensorAippPara), 0, sizeof(HIAI_MR_TensorAippPara));
 
     aippPara->handle = handle;
     aippPara->data = GetTensorAippFunctionDef()->getRawBuffer(handle);
@@ -128,9 +128,9 @@ FREE_HANDLE:
     return NULL;
 }
 
-HIAI_TensorAippPara* HIAI_TensorAippPara_CreateWithHandle(void* data, size_t size, void* handle)
+HIAI_MR_TensorAippPara* HIAI_MR_TensorAippPara_CreateWithHandle(void* data, size_t size, void* handle)
 {
-    HIAI_TensorAippPara* aippPara = (HIAI_TensorAippPara*)malloc(sizeof(HIAI_TensorAippPara));
+    HIAI_MR_TensorAippPara* aippPara = (HIAI_MR_TensorAippPara*)malloc(sizeof(HIAI_MR_TensorAippPara));
     if (aippPara == NULL) {
         FMK_LOGE("malloc HIAI_TensorAippPara failed.");
         return NULL;
@@ -142,7 +142,7 @@ HIAI_TensorAippPara* HIAI_TensorAippPara_CreateWithHandle(void* data, size_t siz
     return aippPara;
 }
 
-void* HIAI_TensorAippPara_GetRawBuffer(HIAI_TensorAippPara* tensorAippPara)
+void* HIAI_MR_TensorAippPara_GetRawBuffer(HIAI_MR_TensorAippPara* tensorAippPara)
 {
     if (tensorAippPara == NULL) {
         return NULL;
@@ -150,7 +150,7 @@ void* HIAI_TensorAippPara_GetRawBuffer(HIAI_TensorAippPara* tensorAippPara)
     return tensorAippPara->data;
 }
 
-int32_t HIAI_TensorAippPara_GetRawBufferSize(HIAI_TensorAippPara* tensorAippPara)
+int32_t HIAI_MR_TensorAippPara_GetRawBufferSize(HIAI_MR_TensorAippPara* tensorAippPara)
 {
     if (tensorAippPara == NULL) {
         return 0;
@@ -158,12 +158,12 @@ int32_t HIAI_TensorAippPara_GetRawBufferSize(HIAI_TensorAippPara* tensorAippPara
     return GetTensorAippFunctionDef()->getRawBufferSize(tensorAippPara->handle);
 }
 
-void* HIAI_TensorAippPara_GetHandle(HIAI_TensorAippPara* tensorAippPara)
+void* HIAI_MR_TensorAippPara_GetHandle(HIAI_MR_TensorAippPara* tensorAippPara)
 {
     return tensorAippPara->handle;
 }
 
-int32_t HIAI_TensorAippPara_GetInputIndex(HIAI_TensorAippPara* tensorAippPara)
+int32_t HIAI_MR_TensorAippPara_GetInputIndex(HIAI_MR_TensorAippPara* tensorAippPara)
 {
     if (tensorAippPara == NULL) {
         return -1;
@@ -172,7 +172,7 @@ int32_t HIAI_TensorAippPara_GetInputIndex(HIAI_TensorAippPara* tensorAippPara)
     return GetTensorAippFunctionDef()->getInputIndex(tensorAippPara->handle);
 }
 
-void HIAI_TensorAippPara_SetInputIndex(HIAI_TensorAippPara* tensorAippPara, uint32_t inputIndex)
+void HIAI_MR_TensorAippPara_SetInputIndex(HIAI_MR_TensorAippPara* tensorAippPara, uint32_t inputIndex)
 {
     if (tensorAippPara == NULL) {
         return;
@@ -181,7 +181,7 @@ void HIAI_TensorAippPara_SetInputIndex(HIAI_TensorAippPara* tensorAippPara, uint
     GetTensorAippFunctionDef()->setInputIndex(tensorAippPara->handle, inputIndex);
 }
 
-int32_t HIAI_TensorAippPara_GetInputAippIndex(HIAI_TensorAippPara* tensorAippPara)
+int32_t HIAI_MR_TensorAippPara_GetInputAippIndex(HIAI_MR_TensorAippPara* tensorAippPara)
 {
     if (tensorAippPara == NULL) {
         return -1;
@@ -190,7 +190,7 @@ int32_t HIAI_TensorAippPara_GetInputAippIndex(HIAI_TensorAippPara* tensorAippPar
     return GetTensorAippFunctionDef()->getInputAippIndex(tensorAippPara->handle);
 }
 
-void HIAI_TensorAippPara_SetInputAippIndex(HIAI_TensorAippPara* tensorAippPara, uint32_t inputAippIndex)
+void HIAI_MR_TensorAippPara_SetInputAippIndex(HIAI_MR_TensorAippPara* tensorAippPara, uint32_t inputAippIndex)
 {
     if (tensorAippPara == NULL) {
         return;
@@ -199,7 +199,7 @@ void HIAI_TensorAippPara_SetInputAippIndex(HIAI_TensorAippPara* tensorAippPara, 
     GetTensorAippFunctionDef()->setInputAippIndex(tensorAippPara->handle, inputAippIndex);
 }
 
-void HIAI_TensorAippPara_Destroy(HIAI_TensorAippPara** aippParas)
+void HIAI_MR_TensorAippPara_Destroy(HIAI_MR_TensorAippPara** aippParas)
 {
     if (aippParas == NULL || *aippParas == NULL) {
         return;

@@ -25,23 +25,30 @@
 extern "C" {
 #endif
 
-typedef struct HIAI_ModelInitOptions HIAI_ModelInitOptions;
+typedef struct HIAI_MR_ModelInitOptions HIAI_MR_ModelInitOptions;
 
-AICP_C_API_EXPORT HIAI_ModelInitOptions* HIAI_ModelInitOptions_Create();
-AICP_C_API_EXPORT void HIAI_ModelInitOptions_SetPerfMode(HIAI_ModelInitOptions* options, HIAI_PerfMode devPerf);
-AICP_C_API_EXPORT HIAI_PerfMode HIAI_ModelInitOptions_GetPerfMode(const HIAI_ModelInitOptions* options);
-AICP_C_API_EXPORT void HIAI_ModelInitOptions_SetBuildOptions(
-    HIAI_ModelInitOptions* options, HIAI_ModelBuildOptions* buildOptions);
-AICP_C_API_EXPORT HIAI_ModelBuildOptions* HIAI_ModelInitOptions_GetBuildOptions(HIAI_ModelInitOptions* options);
-AICP_C_API_EXPORT void HIAI_ModelInitOptions_Destroy(HIAI_ModelInitOptions** options);
+AICP_C_API_EXPORT HIAI_MR_ModelInitOptions* HIAI_MR_ModelInitOptions_Create(void);
+AICP_C_API_EXPORT void HIAI_MR_ModelInitOptions_SetPerfMode(HIAI_MR_ModelInitOptions* options, HIAI_PerfMode devPerf);
+AICP_C_API_EXPORT HIAI_PerfMode HIAI_MR_ModelInitOptions_GetPerfMode(const HIAI_MR_ModelInitOptions* options);
+AICP_C_API_EXPORT void HIAI_MR_ModelInitOptions_SetBuildOptions(
+    HIAI_MR_ModelInitOptions* options, HIAI_MR_ModelBuildOptions* buildOptions);
+AICP_C_API_EXPORT HIAI_MR_ModelBuildOptions* HIAI_MR_ModelInitOptions_GetBuildOptions(
+    HIAI_MR_ModelInitOptions* options);
+AICP_C_API_EXPORT void HIAI_MR_ModelInitOptions_Destroy(HIAI_MR_ModelInitOptions** options);
 
-typedef struct HIAI_ModelManager HIAI_ModelManager;
+typedef struct HIAI_MR_ModelManager HIAI_MR_ModelManager;
 
-typedef struct HIAI_ModelManagerListener {
-    void (*onRunDone)(void*, HIAI_Status, HIAI_NDTensorBuffer* [], int32_t);
+typedef struct HIAI_MR_ModelManagerListener {
+    void (*onRunDone)(void*, HIAI_Status, HIAI_MR_NDTensorBuffer* [], int32_t);
     void (*onServiceDied)(void*);
     void* userData;
-} HIAI_ModelManagerListener;
+} HIAI_MR_ModelManagerListener;
+
+typedef struct HIAI_ModelManagerSharedMemAllocator {
+    void (*onAllocate)(void*, uint32_t requiredSize, HIAI_NativeHandle* [], size_t*);
+    void (*onFree)(void*, HIAI_NativeHandle* [], size_t);
+    void* userData;
+} HIAI_ModelManagerSharedMemAllocator;
 
 #ifdef __cplusplus
 }

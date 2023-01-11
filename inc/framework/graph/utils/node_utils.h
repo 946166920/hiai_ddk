@@ -32,6 +32,8 @@ public:
     GRAPH_API_EXPORT static bool IsAnchorStatusSet(const Node& node);
 
     GRAPH_API_EXPORT static bool IsWithSubGraphType(const std::string& type);
+
+    GRAPH_API_EXPORT static bool IsConstNode(const Node& node);
 };
 } // namespace ge
 

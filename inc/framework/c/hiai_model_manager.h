@@ -25,23 +25,30 @@
 extern "C" {
 #endif
 
-AICP_C_API_EXPORT HIAI_ModelManager* HIAI_ModelManager_Create();
-AICP_C_API_EXPORT void HIAI_ModelManager_Destroy(HIAI_ModelManager** manager);
+AICP_C_API_EXPORT HIAI_MR_ModelManager* HIAI_MR_ModelManager_Create(void);
+AICP_C_API_EXPORT void HIAI_MR_ModelManager_Destroy(HIAI_MR_ModelManager** manager);
 
-AICP_C_API_EXPORT HIAI_Status HIAI_ModelManager_Init(HIAI_ModelManager* manager, const HIAI_ModelInitOptions* options,
-    const HIAI_BuiltModel* builtModel, const HIAI_ModelManagerListener* listener);
+AICP_C_API_EXPORT HIAI_Status HIAI_MR_ModelManager_Init(HIAI_MR_ModelManager* manager,
+    const HIAI_MR_ModelInitOptions* options, const HIAI_MR_BuiltModel* builtModel,
+    const HIAI_MR_ModelManagerListener* listener);
 
-AICP_C_API_EXPORT HIAI_Status HIAI_ModelManager_SetPriority(HIAI_ModelManager* manager, HIAI_ModelPriority priority);
+AICP_C_API_EXPORT HIAI_Status HIAI_ModelManager_InitWithSharedMem(HIAI_MR_ModelManager* manager,
+    const HIAI_MR_ModelInitOptions* options, const HIAI_MR_BuiltModel* builtModel,
+    const HIAI_MR_ModelManagerListener* listener, const HIAI_ModelManagerSharedMemAllocator* allocator);
 
-AICP_C_API_EXPORT HIAI_Status HIAI_ModelManager_Run(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[],
-    int32_t inputNum, HIAI_NDTensorBuffer* output[], int32_t outputNum);
+AICP_C_API_EXPORT HIAI_Status HIAI_MR_ModelManager_SetPriority(
+    HIAI_MR_ModelManager* manager, HIAI_ModelPriority priority);
 
-AICP_C_API_EXPORT HIAI_Status HIAI_ModelManager_RunAsync(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[],
-    int32_t inputNum, HIAI_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData);
+AICP_C_API_EXPORT HIAI_Status HIAI_MR_ModelManager_Run(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum);
 
-AICP_C_API_EXPORT HIAI_Status HIAI_ModelManager_Cancel(HIAI_ModelManager* manager);
+AICP_C_API_EXPORT HIAI_Status HIAI_MR_ModelManager_RunAsync(HIAI_MR_ModelManager* manager,
+    HIAI_MR_NDTensorBuffer* input[], int32_t inputNum, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum,
+    int32_t timeoutInMS, void* userData);
 
-AICP_C_API_EXPORT HIAI_Status HIAI_ModelManager_Deinit(HIAI_ModelManager* manager);
+AICP_C_API_EXPORT HIAI_Status HIAI_MR_ModelManager_Cancel(HIAI_MR_ModelManager* manager);
+
+AICP_C_API_EXPORT HIAI_Status HIAI_MR_ModelManager_Deinit(HIAI_MR_ModelManager* manager);
 
 #ifdef __cplusplus
 }

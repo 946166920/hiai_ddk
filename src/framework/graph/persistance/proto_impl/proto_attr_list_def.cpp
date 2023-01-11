@@ -21,12 +21,8 @@
 #include "graph/persistance/proto_impl/proto_named_attr_def.h"
 
 namespace hiai {
-ProtoAttrListDef::ProtoAttrListDef() : ProtoAttrListDef(new (std::nothrow) hiai::proto::AttrDef_ListValue(), true)
-{
-}
 
-ProtoAttrListDef::ProtoAttrListDef(hiai::proto::AttrDef_ListValue* attrListDef, bool isOwner)
-    : attrListDef_(attrListDef), isOwner_(isOwner)
+ProtoAttrListDef::ProtoAttrListDef(hiai::proto::AttrDef_ListValue& attrListDef) : attrListDef_(attrListDef)
 {
 }
 
@@ -44,12 +40,10 @@ ge::AttrValue::ValueType ProtoAttrListDef::GetValueType() const
         ge::AttrValue::VT_LIST_GRAPH,
         ge::AttrValue::VT_LIST_NAMED_ATTRS
     };
-    if (attrListDef_ != nullptr) {
-        auto valueType = attrListDef_->val_type();
-        if (valueType <= hiai::proto::AttrDef_ListValue_ListValueType_VT_LIST_NAMED_ATTRS &&
-            valueType >= hiai::proto::AttrDef_ListValue_ListValueType_VT_LIST_NONE) {
-            return listTypeDef[valueType];
-        }
+    auto valueType = attrListDef_.val_type();
+    if (valueType <= hiai::proto::AttrDef_ListValue_ListValueType_VT_LIST_NAMED_ATTRS &&
+        valueType >= hiai::proto::AttrDef_ListValue_ListValueType_VT_LIST_NONE) {
+        return listTypeDef[valueType];
     }
     return ge::AttrValue::VT_NONE;
 }
@@ -69,8 +63,8 @@ void ProtoAttrListDef::SetValueType(ge::AttrValue::ValueType type)
 
     std::map<ge::AttrValue::ValueType, hiai::proto::AttrDef_ListValue_ListValueType>::const_iterator it =
         attrValListTypeMap.find(type);
-    if (attrListDef_ != nullptr && it != attrValListTypeMap.end()) {
-        attrListDef_->set_val_type(it->second);
+    if (it != attrValListTypeMap.end()) {
+        attrListDef_.set_val_type(it->second);
     }
 }
 
@@ -85,17 +79,12 @@ ProtoAttrListDef::~ProtoAttrListDef()
     IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(t);
     IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(g);
     IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(na);
-
-    if (isOwner_) {
-        delete attrListDef_;
-    }
-    attrListDef_ = nullptr;
 }
 
 void ProtoAttrListDef::CopyFrom(const IAttrListDef* other)
 {
-    if (attrListDef_ != nullptr && other != nullptr && other->GetSerializeType() == PROTOBUF) {
-        *attrListDef_ = *(static_cast<const ProtoAttrListDef*>(other)->attrListDef_);
+    if (other != nullptr && other->GetSerializeType() == PROTOBUF) {
+        attrListDef_ = static_cast<const ProtoAttrListDef*>(other)->attrListDef_;
         IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(tf);
         IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(t);
         IMPL_PROTO_CUSTOM_LIST_MEMBER_FREE(g);

@@ -681,7 +681,7 @@ int64_t OpDesc::GetInputOffset(int32_t index) const
     HIAI_EXPECT_NOT_NULL_R(opDef_, -1);
 
     size_t size = opDef_->input_i_size();
-    if (index >= 0 && static_cast<size_t>(index) < size) {
+    if (index >= 0 && static_cast<size_t>(static_cast<uint32_t>(index)) < size) {
         return opDef_->input_i(index);
     }
     return -1;
@@ -691,7 +691,7 @@ void OpDesc::SetInputOffset(int32_t index, int64_t value)
 {
     if (opDef_ != nullptr) {
         size_t size = opDef_->input_i_size();
-        if (index >= 0 && static_cast<size_t>(index) < size) {
+        if (index >= 0 && static_cast<size_t>(static_cast<uint32_t>(index)) < size) {
             opDef_->set_input_i(index, value);
         }
     }
@@ -742,7 +742,7 @@ int64_t OpDesc::GetOutputOffset(int32_t index) const
 {
     HIAI_EXPECT_NOT_NULL_R(opDef_, -1);
     size_t size = opDef_->output_i_size();
-    if (index >= 0 && static_cast<size_t>(index) < size) {
+    if (index >= 0 && static_cast<size_t>(static_cast<uint32_t>(index)) < size) {
         return opDef_->output_i(index);
     }
     return -1;
@@ -752,7 +752,7 @@ void OpDesc::SetOutputOffset(int32_t index, int64_t value)
 {
     if (opDef_ != nullptr) {
         size_t size = opDef_->output_i_size();
-        if (index >= 0 && static_cast<size_t>(index) < size) {
+        if (index >= 0 && static_cast<size_t>(static_cast<uint32_t>(index)) < size) {
             opDef_->set_output_i(index, value);
         }
     }
@@ -848,7 +848,7 @@ int64_t OpDesc::GetWorkspace(int32_t index) const
     HIAI_EXPECT_NOT_NULL_R(opDef_, -1);
 
     size_t size = opDef_->workspace_size();
-    if (index >= 0 && static_cast<size_t>(index) < size) {
+    if (index >= 0 && static_cast<size_t>(static_cast<uint32_t>(index)) < size) {
         return opDef_->workspace(index);
     }
     return -1;
@@ -858,7 +858,7 @@ void OpDesc::SetWorkspace(int32_t index, int64_t value)
 {
     if (opDef_ != nullptr) {
         size_t size = opDef_->workspace_size();
-        if (index >= 0 && static_cast<size_t>(index) < size) {
+        if (index >= 0 && static_cast<size_t>(static_cast<uint32_t>(index)) < size) {
             opDef_->set_workspace(index, value);
         }
     }
@@ -921,7 +921,7 @@ void OpDesc::SetWorkspaceBytes(int32_t index, uint32_t value)
 {
     if (opDef_ != nullptr) {
         size_t size = opDef_->workspace_bytes_size();
-        if (index >= 0 && static_cast<size_t>(index) < size) {
+        if (index >= 0 && static_cast<size_t>(static_cast<uint32_t>(index)) < size) {
             opDef_->set_workspace_bytes(index, value);
         }
     }
@@ -932,7 +932,7 @@ uint32_t OpDesc::GetWorkspaceBytes(int32_t index) const
     HIAI_EXPECT_NOT_NULL_R(opDef_, UINT_MAX);
 
     size_t size = opDef_->workspace_bytes_size();
-    if (index >= 0 && static_cast<size_t>(index) < size) {
+    if (index >= 0 && static_cast<size_t>(static_cast<uint32_t>(index)) < size) {
         return static_cast<uint32_t>(opDef_->workspace_bytes(index));
     }
     return UINT_MAX;
@@ -958,7 +958,7 @@ bool OpDesc::IsInputConst(int32_t index) const
     HIAI_EXPECT_NOT_NULL_R(opDef_, false);
 
     size_t size = opDef_->is_input_const_size();
-    if (index >= 0 && static_cast<size_t>(index) < size) {
+    if (index >= 0 && static_cast<size_t>(static_cast<uint32_t>(index)) < size) {
         return opDef_->is_input_const(index);
     }
     return false;

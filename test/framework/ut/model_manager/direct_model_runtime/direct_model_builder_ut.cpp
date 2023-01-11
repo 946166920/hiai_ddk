@@ -27,7 +27,7 @@
 #include "framework/graph/core/cgraph/graph_modifier.h"
 #include "framework/graph/core/edge/edge.h"
 #include "util/file_util.h"
-#include "util/base_buffer.h"
+#include "infra/base/base_buffer.h"
 #include "util/hiai_foundation_dl_helper.h"
 #include "c/hiai_version.h"
 #include "infra/base/dynamic_load_helper.h"
@@ -68,7 +68,7 @@ public:
     void SetUp()
     {
         setenv("ROM_HIAI_VERSION", "100.510.010.012", 1);
-        buildOptions = HIAI_ModelBuildOptions_Create();
+        buildOptions = HIAI_MR_ModelBuildOptions_Create();
     }
 
     void TearDown()
@@ -80,12 +80,12 @@ public:
         }
 
         if (buildOptions != nullptr) {
-            HIAI_ModelBuildOptions_Destroy(&buildOptions);
+            HIAI_MR_ModelBuildOptions_Destroy(&buildOptions);
         }
     }
 private:
-    HIAI_BuiltModel* builtModel = nullptr;
-    HIAI_ModelBuildOptions* buildOptions = nullptr;
+    HIAI_MR_BuiltModel* builtModel = nullptr;
+    HIAI_MR_ModelBuildOptions* buildOptions = nullptr;
 };
 
 INSTANTIATE_TEST_CASE_P(build, DirectModelBuilder_UTest, testing::ValuesIn(g_TestParams));
@@ -149,7 +149,7 @@ TEST_F(DirectModelBuilder_UTest, build_002)
         modelSize = baseBuffer->GetSize();
     }
 
-    HIAI_ModelBuildOptions_SetFormatModeOption(buildOptions, HIAI_FORMAT_MODE_USE_ORIGIN);
+    HIAI_MR_ModelBuildOptions_SetFormatModeOption(buildOptions, HIAI_FORMAT_MODE_USE_ORIGIN);
     ret = HIAI_DIRECT_ModelBuilder_Build(buildOptions, modelName.c_str(), inputModelData, modelSize, &builtModel);
     EXPECT_TRUE(ret != HIAI_SUCCESS);
 }
@@ -182,7 +182,7 @@ class DirectModelBuilder_IR_API_MODEL_UTest : public testing::TestWithParam<IR_A
 public:
     void SetUp()
     {
-        buildOptions = HIAI_ModelBuildOptions_Create();
+        buildOptions = HIAI_MR_ModelBuildOptions_Create();
     }
 
     void TearDown()
@@ -194,7 +194,7 @@ public:
         }
 
         if (buildOptions != nullptr) {
-            HIAI_ModelBuildOptions_Destroy(&buildOptions);
+            HIAI_MR_ModelBuildOptions_Destroy(&buildOptions);
         }
     }
 
@@ -241,8 +241,8 @@ public:
     }
 
 private:
-    HIAI_BuiltModel* builtModel = nullptr;
-    HIAI_ModelBuildOptions* buildOptions = nullptr;
+    HIAI_MR_BuiltModel* builtModel = nullptr;
+    HIAI_MR_ModelBuildOptions* buildOptions = nullptr;
 };
 
 INSTANTIATE_TEST_CASE_P(build, DirectModelBuilder_IR_API_MODEL_UTest, testing::ValuesIn(gIrApiModelParams));
@@ -261,7 +261,7 @@ TEST_P(DirectModelBuilder_IR_API_MODEL_UTest, DirectModelBuilder_IR_API_MODEL_00
     IR_API_MODEL_BuilderTestParams param = GetParam();
     std::string romVersion = param.version;
     setenv("ROM_HIAI_VERSION", romVersion.c_str(), 1);
-    MOCKER(HIAI_GetVersion).stubs().will(returnValue(romVersion.c_str()));
+    MOCKER(HIAI_MR_GetVersion).stubs().will(returnValue(romVersion.c_str()));
 
     ge::ComputeGraphPtr graph = CreateMatmulNode();
     EXPECT_NE(graph, nullptr);

@@ -24,15 +24,15 @@
 #include "framework/infra/log/log.h"
 
 typedef struct ModelInitOptionsFuncs {
-    HIAI_ModelInitOptions* (*create)(void);
+    HIAI_MR_ModelInitOptions* (*create)(void);
 
-    void (*setPerfMode)(HIAI_ModelInitOptions*, HIAI_PerfMode);
-    HIAI_PerfMode (*getPerfMode)(const HIAI_ModelInitOptions*);
+    void (*setPerfMode)(HIAI_MR_ModelInitOptions*, HIAI_PerfMode);
+    HIAI_PerfMode (*getPerfMode)(const HIAI_MR_ModelInitOptions*);
 
-    void (*setBuildOptions)(HIAI_ModelInitOptions*, HIAI_ModelBuildOptions*);
-    HIAI_ModelBuildOptions* (*getBuildOptions)(const HIAI_ModelInitOptions*);
+    void (*setBuildOptions)(HIAI_MR_ModelInitOptions*, HIAI_MR_ModelBuildOptions*);
+    HIAI_MR_ModelBuildOptions* (*getBuildOptions)(const HIAI_MR_ModelInitOptions*);
 
-    void (*destroy)(HIAI_ModelInitOptions**);
+    void (*destroy)(HIAI_MR_ModelInitOptions**);
 } ModelInitOptionsFuncs;
 
 static void InitModelInitOptionsFuncs(ModelInitOptionsFuncs* modelInitOptionsFuncs)
@@ -74,7 +74,7 @@ static ModelInitOptionsFuncs* GetModelInitOptionsFuncs(void)
     return &modelInitOptionsFuncs;
 }
 
-HIAI_ModelInitOptions* HIAI_ModelInitOptions_Create(void)
+HIAI_MR_ModelInitOptions* HIAI_MR_ModelInitOptions_Create(void)
 {
     ModelInitOptionsFuncs* modelInitOptionsFuncs = GetModelInitOptionsFuncs();
     if (modelInitOptionsFuncs->create != NULL) {
@@ -83,7 +83,7 @@ HIAI_ModelInitOptions* HIAI_ModelInitOptions_Create(void)
     return NULL;
 }
 
-void HIAI_ModelInitOptions_SetPerfMode(HIAI_ModelInitOptions* options, HIAI_PerfMode devPerf)
+void HIAI_MR_ModelInitOptions_SetPerfMode(HIAI_MR_ModelInitOptions* options, HIAI_PerfMode devPerf)
 {
     ModelInitOptionsFuncs* modelInitOptionsFuncs = GetModelInitOptionsFuncs();
     if (modelInitOptionsFuncs->setPerfMode != NULL) {
@@ -91,7 +91,7 @@ void HIAI_ModelInitOptions_SetPerfMode(HIAI_ModelInitOptions* options, HIAI_Perf
     }
 }
 
-HIAI_PerfMode HIAI_ModelInitOptions_GetPerfMode(const HIAI_ModelInitOptions* options)
+HIAI_PerfMode HIAI_MR_ModelInitOptions_GetPerfMode(const HIAI_MR_ModelInitOptions* options)
 {
     ModelInitOptionsFuncs* modelInitOptionsFuncs = GetModelInitOptionsFuncs();
     if (modelInitOptionsFuncs->getPerfMode != NULL) {
@@ -100,7 +100,8 @@ HIAI_PerfMode HIAI_ModelInitOptions_GetPerfMode(const HIAI_ModelInitOptions* opt
     return HIAI_PERFMODE_UNSET;
 }
 
-void HIAI_ModelInitOptions_SetBuildOptions(HIAI_ModelInitOptions* options, HIAI_ModelBuildOptions* buildOptions)
+void HIAI_MR_ModelInitOptions_SetBuildOptions(
+    HIAI_MR_ModelInitOptions* options, HIAI_MR_ModelBuildOptions* buildOptions)
 {
     ModelInitOptionsFuncs* modelInitOptionsFuncs = GetModelInitOptionsFuncs();
     if (modelInitOptionsFuncs->setBuildOptions != NULL) {
@@ -108,7 +109,7 @@ void HIAI_ModelInitOptions_SetBuildOptions(HIAI_ModelInitOptions* options, HIAI_
     }
 }
 
-HIAI_ModelBuildOptions* HIAI_ModelInitOptions_GetBuildOptions(HIAI_ModelInitOptions* options)
+HIAI_MR_ModelBuildOptions* HIAI_MR_ModelInitOptions_GetBuildOptions(HIAI_MR_ModelInitOptions* options)
 {
     ModelInitOptionsFuncs* modelInitOptionsFuncs = GetModelInitOptionsFuncs();
     if (modelInitOptionsFuncs->getBuildOptions != NULL) {
@@ -117,7 +118,7 @@ HIAI_ModelBuildOptions* HIAI_ModelInitOptions_GetBuildOptions(HIAI_ModelInitOpti
     return NULL;
 }
 
-void HIAI_ModelInitOptions_Destroy(HIAI_ModelInitOptions** options)
+void HIAI_MR_ModelInitOptions_Destroy(HIAI_MR_ModelInitOptions** options)
 {
     ModelInitOptionsFuncs* modelInitOptionsFuncs = GetModelInitOptionsFuncs();
     if (modelInitOptionsFuncs->destroy != NULL) {

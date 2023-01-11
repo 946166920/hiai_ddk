@@ -536,15 +536,15 @@ TEST_F(Test_NDTensorBuffer, model_manager_CreateNDTensorBuffer_with_format_fail_
 }
 
 /*
-* 测试用例名称: model_manager_HIAI_NDTensorBuffer_CreateFromSize_success_01
-* 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_NDTensorBuffer_CreateFromSize,
-*              ROM侧调用HIAI_NDTensorBuffer_CreateFromSize，创建HIAI_NDTensorBuffer成功
-* 预置条件 :
-* 操作步骤:
-* 预期结果 :创建HIAI_NDTensorBuffer 成功，正确destroy buffer和desc
-* 修改历史 :
-*/
-TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromSize_success_01)
+ * 测试用例名称: model_manager_HIAI_MR_NDTensorBuffer_CreateFromSize_success_01
+ * 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_MR_NDTensorBuffer_CreateFromSize,
+ *              ROM侧调用HIAI_MR_NDTensorBuffer_CreateFromSize，创建HIAI_MR_NDTensorBuffer成功
+ * 预置条件 :
+ * 操作步骤:
+ * 预期结果 :创建HIAI_MR_NDTensorBuffer 成功，正确destroy buffer和desc
+ * 修改历史 :
+ */
+TEST_F(Test_NDTensorBuffer, model_manager_HIAI_MR_NDTensorBuffer_CreateFromSize_success_01)
 {
     vector<int32_t> dims = {1, INPUT_CHANNEL, RESIZE_WIDTH, RESIZE_HEIGHT};
     size_t dimNum = 4;
@@ -554,25 +554,25 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromSize_suc
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
     size_t dataSize = HIAI_NDTensorDesc_GetByteSize(desc);
 
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromSize(desc, dataSize);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromSize(desc, dataSize);
 
     EXPECT_NE(desc, nullptr);
     EXPECT_NE(buffer, nullptr);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
 }
 
 /*
-* 测试用例名称: model_manager_HIAI_NDTensorBuffer_CreateFromSize_success_02
-* 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_NDTensorBuffer_CreateFromSize，
-*              ROM通过HIAI_TensorBuffer_create_v2 创建HIAI_NDTensorBuffer成功
-* 预置条件 :
-* 操作步骤:
-* 预期结果 :创建HIAI_NDTensorBuffer 成功，正确destroy buffer和desc
-* 修改历史 :
-*/
-TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromSize_success_02)
+ * 测试用例名称: model_manager_HIAI_MR_NDTensorBuffer_CreateFromSize_success_02
+ * 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_MR_NDTensorBuffer_CreateFromSize，
+ *              ROM通过HIAI_TensorBuffer_create_v2 创建HIAI_MR_NDTensorBuffer成功
+ * 预置条件 :
+ * 操作步骤:
+ * 预期结果 :创建HIAI_MR_NDTensorBuffer 成功，正确destroy buffer和desc
+ * 修改历史 :
+ */
+TEST_F(Test_NDTensorBuffer, model_manager_HIAI_MR_NDTensorBuffer_CreateFromSize_success_02)
 {
     MOCKER(HIAI_Foundation_IsNpuSupport)
         .stubs()
@@ -592,47 +592,47 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromSize_suc
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
     size_t dataSize = HIAI_NDTensorDesc_GetByteSize(desc);
 
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromSize(desc, dataSize);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromSize(desc, dataSize);
 
     EXPECT_NE(desc, nullptr);
     EXPECT_NE(buffer, nullptr);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
 }
 
 /*
-* 测试用例名称: model_manager_HIAI_NDTensorBuffer_CreateFromSize_fail_01
-* 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_NDTensorBuffer_CreateFromSize,
-*              ROM侧调用HIAI_NDTensorBuffer_CreateFromSize，创建HIAI_NDTensorBuffer
+* 测试用例名称: model_manager_HIAI_MR_NDTensorBuffer_CreateFromSize_fail_01
+* 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_MR_NDTensorBuffer_CreateFromSize,
+*              ROM侧调用HIAI_MR_NDTensorBuffer_CreateFromSize，创建HIAI_MR_NDTensorBuffer
 * 预置条件 :
 * 操作步骤:
-* 预期结果 :创建HIAI_NDTensorBuffer 失败，正确destroy buffer和desc
+* 预期结果 :创建HIAI_MR_NDTensorBuffer 失败，正确destroy buffer和desc
 * 修改历史 :
 */
-TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromSize_fail_01)
+TEST_F(Test_NDTensorBuffer, model_manager_HIAI_MR_NDTensorBuffer_CreateFromSize_fail_01)
 {
     HIAI_NDTensorDesc* desc = NULL;
 
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromSize(desc, 0);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromSize(desc, 0);
 
     EXPECT_EQ(desc, nullptr);
     EXPECT_EQ(buffer, nullptr);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
 }
 
 /*
-* 测试用例名称: model_manager_HIAI_NDTensorBuffer_CreateFromSize_fail_02
-* 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_NDTensorBuffer_CreateFromSize,
-*              ROM侧调用HIAI_NDTensorBuffer_CreateFromSize，创建HIAI_NDTensorBuffer
+* 测试用例名称: model_manager_HIAI_MR_NDTensorBuffer_CreateFromSize_fail_02
+* 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_MR_NDTensorBuffer_CreateFromSize,
+*              ROM侧调用HIAI_MR_NDTensorBuffer_CreateFromSize，创建HIAI_MR_NDTensorBuffer
 * 预置条件 :
 * 操作步骤:
-* 预期结果 :创建HIAI_NDTensorBuffer 失败，正确destroy buffer和desc
+* 预期结果 :创建HIAI_MR_NDTensorBuffer 失败，正确destroy buffer和desc
 * 修改历史 :
 */
-TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromSize_fail_02)
+TEST_F(Test_NDTensorBuffer, model_manager_HIAI_MR_NDTensorBuffer_CreateFromSize_fail_02)
 {
     vector<int32_t> dims = {1, INPUT_CHANNEL, RESIZE_WIDTH, RESIZE_HEIGHT};
     size_t dimNum = 4;
@@ -642,11 +642,11 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromSize_fai
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
     size_t dataSize = HIAI_NDTensorDesc_GetByteSize(desc);
 
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromSize(desc, 0);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromSize(desc, 0);
 
     EXPECT_EQ(buffer, nullptr);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
 }
 
@@ -655,7 +655,7 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromSize_fai
 * 测试用例描述: 构建buffer后，调用DDK侧HIAI_NDTensorBuffer_GetFd接口，rom侧调用 HIAI_NDTensorBuffer_GetFd得到fd值成功
 * 预置条件 :
 * 操作步骤:
-* 预期结果 : HIAI_NDTensorBuffer_GetFd 成功
+* 预期结果 : HIAI_MR_NDTensorBuffer_GetFd 成功
 * 修改历史 :
 */
 TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetFd_success_01)
@@ -668,15 +668,15 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetFd_success_01)
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
     size_t dataSize = HIAI_NDTensorDesc_GetByteSize(desc);
 
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromSize(desc, dataSize);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromSize(desc, dataSize);
 
-    int32_t fd = HIAI_NDTensorBuffer_GetFd(buffer);
+    int32_t fd = HIAI_MR_NDTensorBuffer_GetFd(buffer);
 
     EXPECT_NE(desc, nullptr);
     EXPECT_NE(buffer, nullptr);
     EXPECT_EQ(fd, 1);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
 }
 
@@ -685,7 +685,7 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetFd_success_01)
 * 测试用例描述: 构建buffer后，调用DDK侧HIAI_NDTensorBuffer_GetFd接口，rom侧调用HIAI_TensorBuffer_getFdAndSize得到fd值成功
 * 预置条件 :
 * 操作步骤:
-* 预期结果 :HIAI_NDTensorBuffer_GetFd 成功
+* 预期结果 :HIAI_MR_NDTensorBuffer_GetFd 成功
 * 修改历史 :
 */
 TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetFd_success_02)
@@ -704,15 +704,15 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetFd_success_02)
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
     size_t dataSize = HIAI_NDTensorDesc_GetByteSize(desc);
 
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromSize(desc, dataSize);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromSize(desc, dataSize);
 
-    int32_t fd = HIAI_NDTensorBuffer_GetFd(buffer);
+    int32_t fd = HIAI_MR_NDTensorBuffer_GetFd(buffer);
 
     EXPECT_NE(desc, nullptr);
     EXPECT_NE(buffer, nullptr);
     EXPECT_EQ(fd, 1);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
 }
 
@@ -721,7 +721,7 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetFd_success_02)
  * 测试用例描述: 构建buffer后，调用DDK侧HIAI_NDTensorBuffer_GetOriginFd接口，rom侧调用HIAI_NDTensorBuffer_GetOriginFd得到fd值成功
  * 预置条件 :
  * 操作步骤:
- * 预期结果 : HIAI_NDTensorBuffer_GetOriginFd 成功
+ * 预期结果 : HIAI_MR_NDTensorBuffer_GetOriginFd 成功
  * 修改历史 :
  */
 TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetOriginFd_success_01)
@@ -734,15 +734,15 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetOriginFd_succes
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
     size_t dataSize = HIAI_NDTensorDesc_GetByteSize(desc);
 
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromSize(desc, dataSize);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromSize(desc, dataSize);
 
-    int32_t fd = HIAI_NDTensorBuffer_GetOriginFd(buffer);
+    int32_t fd = HIAI_MR_NDTensorBuffer_GetOriginFd(buffer);
 
     EXPECT_NE(desc, nullptr);
     EXPECT_NE(buffer, nullptr);
     EXPECT_EQ(fd, 1);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
 }
 
@@ -770,15 +770,15 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetOriginFd_succes
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
     size_t dataSize = HIAI_NDTensorDesc_GetByteSize(desc);
 
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromSize(desc, dataSize);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromSize(desc, dataSize);
 
-    int32_t fd = HIAI_NDTensorBuffer_GetOriginFd(buffer);
+    int32_t fd = HIAI_MR_NDTensorBuffer_GetOriginFd(buffer);
 
     EXPECT_NE(desc, nullptr);
     EXPECT_NE(buffer, nullptr);
     EXPECT_EQ(fd, 1);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
 }
 
@@ -788,7 +788,7 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetOriginFd_succes
 *              rom侧没有HIAI_NDTensorBuffer_GetFd和HIAI_TensorBuffer_getFdAndSize符号表返回fd=-1
 * 预置条件 :
 * 操作步骤:
-* 预期结果 :HIAI_NDTensorBuffer_GetFd 成功
+* 预期结果 :HIAI_MR_NDTensorBuffer_GetFd 成功
 * 修改历史 :
 */
 TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetFd_nosupport_NPU_success)
@@ -805,24 +805,24 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_GetFd_nosupport_NP
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
     size_t dataSize = HIAI_NDTensorDesc_GetByteSize(desc);
 
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromSize(desc, dataSize);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromSize(desc, dataSize);
 
-    int32_t fd = HIAI_NDTensorBuffer_GetFd(buffer);
+    int32_t fd = HIAI_MR_NDTensorBuffer_GetFd(buffer);
     EXPECT_NE(desc, nullptr);
     EXPECT_NE(buffer, nullptr);
     EXPECT_EQ(fd, -1);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
 }
 
 /*
 * 测试用例名称: model_manager_HIAI_NDTensorBuffer_CreateFromNativeHandle_success_01
 * 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_NDTensorBuffer_CreateFromNativeHandle,
-*              ROM侧调用HIAI_NDTensorBuffer_CreateFromNativeHandle，创建HIAI_NDTensorBuffer成功
+*              ROM侧调用HIAI_NDTensorBuffer_CreateFromNativeHandle，创建HIAI_MR_NDTensorBuffer成功
 * 预置条件 :
 * 操作步骤:
-* 预期结果 :创建HIAI_NDTensorBuffer 成功，正确destroy buffer和desc
+* 预期结果 :创建HIAI_MR_NDTensorBuffer 成功，正确destroy buffer和desc
 * 修改历史 :
 */
 TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromNativeHandle_success_01)
@@ -839,12 +839,12 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromNativeHa
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
 
     HIAI_NativeHandle* handle = HIAI_NativeHandle_Create(fd, size, offset);
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromNativeHandle(desc, handle);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromNativeHandle(desc, handle);
 
     EXPECT_NE(desc, nullptr);
     EXPECT_NE(buffer, nullptr);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
     HIAI_NativeHandle_Destroy(&handle);
 }
@@ -852,10 +852,10 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromNativeHa
 /*
 * 测试用例名称: model_manager_HIAI_NDTensorBuffer_CreateFromNativeHandle_success_02
 * 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_NDTensorBuffer_CreateFromNativeHandle,
-*              ROM侧调用HIAI_TensorBuffer_createTensorFromNativeHandle，创建HIAI_NDTensorBuffer
+*              ROM侧调用HIAI_TensorBuffer_createTensorFromNativeHandle，创建HIAI_MR_NDTensorBuffer
 * 预置条件 :
 * 操作步骤:
-* 预期结果 :创建HIAI_NDTensorBuffer 成功，正确destroy buffer和desc
+* 预期结果 :创建HIAI_MR_NDTensorBuffer 成功，正确destroy buffer和desc
 * 修改历史 :
 */
 TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromNativeHandle_success_02)
@@ -878,26 +878,26 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromNativeHa
     HIAI_NDTensorDesc* desc = HIAI_NDTensorDesc_Create(dims.data(), dimNum, dataType, format);
 
     HIAI_NativeHandle* handle = HIAI_NativeHandle_Create(fd, size, offset);
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromNativeHandle(desc, handle);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromNativeHandle(desc, handle);
 
     EXPECT_NE(desc, nullptr);
     EXPECT_NE(buffer, nullptr);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
     HIAI_NativeHandle_Destroy(&handle);
 }
 
 /*
-* 测试用例名称: model_manager_HIAI_NDTensorBuffer_CreateFromNativeHandle_fail_01
-* 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_NDTensorBuffer_CreateFromNativeHandle,
-*              ROM侧调用HIAI_NDTensorBuffer_CreateFromNativeHandle，创建HIAI_NDTensorBuffer
+* 测试用例名称: model_manager_HIAI_MR_NDTensorBuffer_CreateFromNativeHandle_fail_01
+* 测试用例描述: 通过desc 和dataSize，使用ddk侧接口HIAI_MR_NDTensorBuffer_CreateFromNativeHandle,
+*              ROM侧调用HIAI_MR_NDTensorBuffer_CreateFromNativeHandle，创建HIAI_MR_NDTensorBuffer
 * 预置条件 :
 * 操作步骤:
-* 预期结果 : HIAI_NDTensorDesc_Clone桩返回NULL,创建HIAI_NDTensorBuffer 失败
+* 预期结果 : HIAI_NDTensorDesc_Clone桩返回NULL,创建HIAI_MR_NDTensorBuffer 失败
 * 修改历史 :
 */
-TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromNativeHandle_fail_01)
+TEST_F(Test_NDTensorBuffer, model_manager_HIAI_MR_NDTensorBuffer_CreateFromNativeHandle_fail_01)
 {
     int fd = 1;
     int size = 100;
@@ -915,11 +915,11 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromNativeHa
         .stubs()
         .will(returnValue((HIAI_NDTensorDesc*)0));
 
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromNativeHandle(desc, handle);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromNativeHandle(desc, handle);
 
     EXPECT_EQ(buffer, nullptr);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NDTensorDesc_Destroy(&desc);
     HIAI_NativeHandle_Destroy(&handle);
 }
@@ -941,11 +941,11 @@ TEST_F(Test_NDTensorBuffer, model_manager_HIAI_NDTensorBuffer_CreateFromNativeHa
 
     HIAI_NDTensorDesc* desc = nullptr;
     HIAI_NativeHandle* handle = HIAI_NativeHandle_Create(fd, size, offset);
-    HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromNativeHandle(desc, handle);
+    HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromNativeHandle(desc, handle);
 
     EXPECT_EQ(buffer, nullptr);
 
-    HIAI_NDTensorBuffer_Destroy(&buffer);
+    HIAI_MR_NDTensorBuffer_Destroy(&buffer);
     HIAI_NativeHandle_Destroy(&handle);
 }
 
@@ -1020,7 +1020,7 @@ TEST_F(Test_NDTensorBuffer, model_manager_ChangeNDTensorBufferHandleToTensorBuff
     shared_ptr<INDTensorBuffer> grayFloatBuffer = CreateNDTensorBuffer(grayFloatDesc);
     CheckNDTensorBuffer(grayFloatBuffer);
 
-    std::unique_ptr<HIAI_NDTensorBuffer* []> cBuffers { new (std::nothrow) HIAI_NDTensorBuffer*[1] };
+    std::unique_ptr<HIAI_MR_NDTensorBuffer* []> cBuffers { new (std::nothrow) HIAI_MR_NDTensorBuffer*[1] };
 
     cBuffers[0] = GetRawBufferFromNDTensorBuffer(grayFloatBuffer);
     bool ret = HIAI_ChangeNDTensorBuffersHandleToTensorBuffers(cBuffers.get(), 1);
@@ -1039,7 +1039,7 @@ TEST_F(Test_NDTensorBuffer, model_manager_ChangeNDTensorBufferHandleToTensorBuff
 
     shared_ptr<INDTensorBuffer> grayFloatBuffer = CreateNDTensorBuffer(grayFloatDesc);
     CheckNDTensorBuffer(grayFloatBuffer);
-    std::unique_ptr<HIAI_NDTensorBuffer* []> cBuffers { new (std::nothrow) HIAI_NDTensorBuffer*[1] };
+    std::unique_ptr<HIAI_MR_NDTensorBuffer* []> cBuffers { new (std::nothrow) HIAI_MR_NDTensorBuffer*[1] };
 
     cBuffers[0] = GetRawBufferFromNDTensorBuffer(grayFloatBuffer);
     bool ret = HIAI_ChangeNDTensorBuffersHandleToTensorBuffers(cBuffers.get(), 1);
@@ -1057,7 +1057,7 @@ TEST_F(Test_NDTensorBuffer, model_manager_ChangeNDTensorBufferHandleToTensorBuff
     grayFloatDesc2.format = Format::ND;
     shared_ptr<INDTensorBuffer> grayFloatBuffer2 = CreateNDTensorBuffer(grayFloatDesc2);
 
-    std::unique_ptr<HIAI_NDTensorBuffer* []> cBuffers { new (std::nothrow) HIAI_NDTensorBuffer*[2] };
+    std::unique_ptr<HIAI_MR_NDTensorBuffer* []> cBuffers { new (std::nothrow) HIAI_MR_NDTensorBuffer*[2] };
 
     cBuffers[0] = GetRawBufferFromNDTensorBuffer(grayFloatBuffer1);
     cBuffers[1] = GetRawBufferFromNDTensorBuffer(grayFloatBuffer2);
@@ -1068,8 +1068,8 @@ TEST_F(Test_NDTensorBuffer, model_manager_ChangeNDTensorBufferHandleToTensorBuff
 TEST_F(Test_NDTensorBuffer, model_manager_HIAI_ModelManager_PreRun)
 {
     HIAI_ModelRuntime runtime;
-    std::unique_ptr<HIAI_NDTensorBuffer* []> cInputs { new (std::nothrow) HIAI_NDTensorBuffer*[1] };
-    std::unique_ptr<HIAI_NDTensorBuffer* []> cOutputs { new (std::nothrow) HIAI_NDTensorBuffer*[1] };
+    std::unique_ptr<HIAI_MR_NDTensorBuffer* []> cInputs { new (std::nothrow) HIAI_MR_NDTensorBuffer*[1] };
+    std::unique_ptr<HIAI_MR_NDTensorBuffer*[]> cOutputs {new (std::nothrow) HIAI_MR_NDTensorBuffer*[1]};
     runtime.runtimeType = PLUGIN_MODEL_RUNTIME_HCL;
     runtime.handle = dlopen("libhiai_hcl_model_runtime.so", RTLD_NOW);
     HIAI_Status ret = HIAI_ModelManager_PreRun(&runtime, cInputs.get(), 0, cOutputs.get(), 0);

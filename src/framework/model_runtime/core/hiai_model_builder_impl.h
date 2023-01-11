@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-HIAI_BuiltModel_Impl* HIAI_ModelBuilder_BuildOnRuntime(const HIAI_ModelBuildOptions* options, const char* modelName,
+HIAI_BuiltModel_Impl* HIAI_ModelBuilder_BuildOnRuntime(const HIAI_MR_ModelBuildOptions* options, const char* modelName,
     const void* inputModelData, size_t inputModelSize, HIAI_ModelRuntime* runtime);
 
 #ifdef __cplusplus

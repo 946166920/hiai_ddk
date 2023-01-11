@@ -62,7 +62,7 @@ public:
 
     virtual Status GetTensorAippInfo(int32_t index, uint32_t* aippParaNum, uint32_t* batchCount) = 0;
 
-    virtual Status GetTensorAippPara(int32_t index, std::vector<void*>& aippParas) const = 0;
+    virtual Status GetTensorAippPara(int32_t index, std::vector<std::shared_ptr<IAIPPPara>>& aippParas) const = 0;
 };
 } // namespace hiai
 #endif // HIAI_API_BUILT_MODEL_AIPP_H

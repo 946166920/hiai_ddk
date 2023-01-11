@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 #include "direct_built_model_aipp.h"
-#include "direct_built_model_impl.h"
+
+// inc
 #include "framework/infra/log/log.h"
+
+#include "direct_built_model_impl.h"
 
 namespace hiai {
 HIAI_Status HIAI_DIRECT_BuiltModel_GetTensorAippInfo(
-    const HIAI_BuiltModel* model, int32_t index, uint32_t* aippParaNum, uint32_t* batchCount)
+    const HIAI_MR_BuiltModel* model, int32_t index, uint32_t* aippParaNum, uint32_t* batchCount)
 {
-    auto builtModelImpl = reinterpret_cast<DirectBuiltModelImpl*>(const_cast<HIAI_BuiltModel*>(model));
+    auto builtModelImpl = reinterpret_cast<DirectBuiltModelImpl*>(const_cast<HIAI_MR_BuiltModel*>(model));
     if (builtModelImpl == nullptr) {
         FMK_LOGE("builtModelImpl is nullptr");
         return HIAI_FAILURE;
@@ -30,11 +33,11 @@ HIAI_Status HIAI_DIRECT_BuiltModel_GetTensorAippInfo(
     return builtModelImpl->GetTensorAippInfo(index, aippParaNum, batchCount);
 }
 
-HIAI_Status HIAI_DIRECT_BuiltModel_GetTensorAippPara(const HIAI_BuiltModel* model, int32_t index,
-    HIAI_TensorAippPara* aippParas[], uint32_t aippParaNum, uint32_t batchCount)
+HIAI_Status HIAI_DIRECT_BuiltModel_GetTensorAippPara(const HIAI_MR_BuiltModel* model, int32_t index,
+    HIAI_MR_TensorAippPara* aippParas[], uint32_t aippParaNum, uint32_t batchCount)
 {
     (void)batchCount;
-    auto builtModelImpl = reinterpret_cast<DirectBuiltModelImpl*>(const_cast<HIAI_BuiltModel*>(model));
+    auto builtModelImpl = reinterpret_cast<DirectBuiltModelImpl*>(const_cast<HIAI_MR_BuiltModel*>(model));
     if (builtModelImpl == nullptr) {
         FMK_LOGE("builtModelImpl is nullptr");
         return HIAI_FAILURE;
@@ -50,14 +53,14 @@ HIAI_Status HIAI_DIRECT_BuiltModel_GetTensorAippPara(const HIAI_BuiltModel* mode
     if (ret != SUCCESS || aippParaVec.size() != aippParaNum) {
         FMK_LOGE("GetTensorAippPara fail, aippParaVec.size=%zu", aippParaVec.size());
         for (auto& aippPara : aippParaVec) {
-            auto tesorAippPara = static_cast<HIAI_TensorAippPara*>(aippPara);
-            HIAI_TensorAippPara_Destroy(&tesorAippPara);
+            auto tesorAippPara = static_cast<HIAI_MR_TensorAippPara*>(aippPara);
+            HIAI_MR_TensorAippPara_Destroy(&tesorAippPara);
         }
         return HIAI_FAILURE;
     }
 
     for (uint32_t i = 0; i < aippParaNum; i++) {
-        aippParas[i] = static_cast<HIAI_TensorAippPara*>(aippParaVec[i]);
+        aippParas[i] = static_cast<HIAI_MR_TensorAippPara*>(aippParaVec[i]);
     }
 
     return HIAI_SUCCESS;

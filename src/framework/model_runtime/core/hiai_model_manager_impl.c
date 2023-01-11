@@ -21,7 +21,7 @@
 #include "tensor/base/hiai_nd_tensor_buffer_legacy_compatible.h"
 #include "hiai_model_runtime_repo.h"
 
-HIAI_ModelManager_Impl* HIAI_ModelManager_ToModelManagerImpl(HIAI_ModelManager* manager)
+HIAI_ModelManager_Impl* HIAI_ModelManager_ToModelManagerImpl(HIAI_MR_ModelManager* manager)
 {
     if (manager == NULL) {
         FMK_LOGE("input manager is null.");
@@ -36,8 +36,8 @@ HIAI_ModelManager_Impl* HIAI_ModelManager_ToModelManagerImpl(HIAI_ModelManager* 
     return impl;
 }
 
-HIAI_Status HIAI_ModelManager_PreRun(const HIAI_ModelRuntime* runtime, HIAI_NDTensorBuffer* input[], int32_t inputNum,
-    HIAI_NDTensorBuffer* output[], int32_t outputNum)
+HIAI_Status HIAI_ModelManager_PreRun(const HIAI_ModelRuntime* runtime, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum)
 {
     if ((runtime == NULL) || (input == NULL) || (output == NULL)) {
         return HIAI_INVALID_PARAM;

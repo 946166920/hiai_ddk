@@ -18,7 +18,7 @@
 // api/framework
 #include "model/built_model_ext.h"
 // inc
-#include "framework/util/base_buffer.h"
+#include "infra/base/base_buffer.h"
 // src/framework
 #include "model_runtime/core/hiai_built_model_impl.h"
 
@@ -26,10 +26,10 @@ namespace hiai {
 class BuiltModelImpl : public IBuiltModelExt {
 public:
     BuiltModelImpl() = default;
-    BuiltModelImpl(std::shared_ptr<HIAI_BuiltModel> builtModel, std::shared_ptr<IBuffer> modelBuffer);
+    BuiltModelImpl(std::shared_ptr<HIAI_MR_BuiltModel> builtModel, std::shared_ptr<IBuffer> modelBuffer);
     ~BuiltModelImpl() override = default;
 
-    std::shared_ptr<HIAI_BuiltModel> GetBuiltModelImpl();
+    std::shared_ptr<HIAI_MR_BuiltModel> GetBuiltModelImpl();
 
 private:
     Status SaveToExternalBuffer(std::shared_ptr<IBuffer>& buffer, size_t& realSize) const override;
@@ -51,10 +51,10 @@ private:
     const CustomModelData& GetCustomData() override;
 
     Status GetTensorAippInfo(int32_t index, uint32_t* aippParaNum, uint32_t* batchCount) override;
-    Status GetTensorAippPara(int32_t index, std::vector<void*>& aippParas) const override;
+    Status GetTensorAippPara(int32_t index, std::vector<std::shared_ptr<IAIPPPara>>& aippParas) const override;
 
 private:
-    std::shared_ptr<HIAI_BuiltModel> builtModelImpl_ {nullptr};
+    std::shared_ptr<HIAI_MR_BuiltModel> builtModelImpl_ {nullptr};
     std::shared_ptr<BaseBuffer> buffer_ {nullptr};
     CustomModelData customModelData_;
     std::shared_ptr<IBuffer> modelBuffer_ {nullptr};

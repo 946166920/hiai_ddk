@@ -35,6 +35,7 @@
 #include "framework/graph/core/edge/endpoint.h"
 #include "framework/graph/op/control_flow_attr_defs.h"
 #include "framework/graph/utils/checker/node_checker.h"
+#include "framework/graph/op/internal_defs.h"
 
 // src/framework/inc
 #include "infra/base/assertion.h"
@@ -45,13 +46,13 @@ class SubGraphBuilder {
 public:
     static hiai::Status Build(Node& node, const OperatorImpl& opImpl)
     {
-        for (const std::string& attr : GetNodeSubGraphAttrs(node)) {
-            std::string name = GetNodeSubGraphName(node, attr);
-            HIAI_EXPECT_TRUE(!name.empty());
+        std::vector<std::string> subGraphNames;
+        HIAI_EXPECT_EXEC(GetNodeSubGraphAttrs(node, subGraphNames));
 
-            GraphBuilderFn func = opImpl.GetGraphBuilder(name);
+        for (auto it = subGraphNames.cbegin(); it != subGraphNames.cend(); it++) {
+            GraphBuilderFn func = opImpl.GetGraphBuilder(*it);
             if (func != nullptr) {
-                HIAI_EXPECT_EXEC(BuildNodeSubGraph(node, func, name));
+                HIAI_EXPECT_EXEC(BuildNodeSubGraph(node, func, *it));
             }
         }
 
@@ -62,22 +63,32 @@ private:
     using FuncAttrs = std::vector<std::string>;
     using OpFuncAttrs = std::pair<std::string, FuncAttrs>;
 
-    static const FuncAttrs funcAttrNil;
-    static const FuncAttrs& GetNodeSubGraphAttrs(const Node& node)
+    static hiai::Status GetNodeSubGraphAttrs(const Node& node, std::vector<std::string>& subGraphNames)
     {
         static const std::vector<OpFuncAttrs> attrMap = {
             {{hiai::op::If::TYPE}, {hiai::ATTR_NAME_THEN_BRANCH, hiai::ATTR_NAME_ELSE_BRANCH}},
-            {{hiai::op::While::TYPE}, {hiai::ATTR_NAME_BODY, hiai::ATTR_NAME_COND}}
-        };
+            {{hiai::op::While::TYPE}, {hiai::ATTR_NAME_BODY, hiai::ATTR_NAME_COND}}};
 
         const auto& type = node.ROLE(NodeSpec).Type();
         for (const auto& it : attrMap) {
             if (it.first == type) {
-                return it.second;
+                for (const std::string& attr : it.second) {
+                    std::string name = GetNodeSubGraphName(node, attr);
+                    HIAI_EXPECT_TRUE(!name.empty());
+                    subGraphNames.push_back(name);
+                }
             }
         }
 
-        return funcAttrNil;
+        if (type == hiai::op::Case::TYPE) {
+            AttrValue attrValue;
+            HIAI_EXPECT_EXEC(node.ROLE(NodeSpec).OpDesc().GetAttr(hiai::op::Case::GRAPH_NAME_BRANCHES, attrValue));
+            for (const std::string& subGraphName : attrValue.GetStringList()) {
+                subGraphNames.push_back(subGraphName);
+            }
+        }
+
+        return hiai::SUCCESS;
     }
 
     static std::string GetNodeSubGraphName(const Node& node, const std::string& attr)
@@ -97,8 +108,6 @@ private:
         return node.ROLE(NodeSubGraph).AddSubGraph(subComputeGraph);
     }
 };
-
-const std::vector<std::string> SubGraphBuilder::funcAttrNil {};
 } // namespace
 
 namespace {

@@ -42,7 +42,7 @@ struct ManagerAippTestParams {
 static vector<ManagerAippTestParams> g_TestParams = {
     {"bin/llt/framework/domi/modelmanager/aipp.om", false}, {"bin/llt/framework/domi/modelmanager/aipp.om", true}};
 
-static void OnRunDone(void* userData, HIAI_Status errCode, HIAI_NDTensorBuffer* outputs[], int32_t outputNum)
+static void OnRunDone(void* userData, HIAI_Status errCode, HIAI_MR_NDTensorBuffer* outputs[], int32_t outputNum)
 {
     cout << "++++++" << __func__ << " userData: " << userData << " errCode: " << errCode
          << " outputs: " << (void*)outputs << " outputNum: " << outputNum << endl;
@@ -72,11 +72,13 @@ public:
         }
 
         modelManager = HIAI_DIRECT_ModelManager_Create();
-        managerListener = new HIAI_ModelManagerListener;
+        managerListener = new HIAI_MR_ModelManagerListener;
         if (managerListener != nullptr) {
             managerListener->onRunDone = OnRunDone;
             managerListener->onServiceDied = OnServiceDied;
         }
+
+        initOptions = HIAI_MR_ModelInitOptions_Create();
     }
 
     void TearDown()
@@ -96,21 +98,21 @@ public:
         }
 
         for (auto& tensorBuffer : inputs) {
-            HIAI_NDTensorBuffer_Destroy(&tensorBuffer);
+            HIAI_MR_NDTensorBuffer_Destroy(&tensorBuffer);
         }
 
         for (auto& tensorBuffer : outputs) {
-            HIAI_NDTensorBuffer_Destroy(&tensorBuffer);
+            HIAI_MR_NDTensorBuffer_Destroy(&tensorBuffer);
         }
 
         if (initOptions != nullptr) {
-            HIAI_ModelInitOptions_Destroy(&initOptions);
+            HIAI_MR_ModelInitOptions_Destroy(&initOptions);
         }
 
         if (aippParas != nullptr) {
             for (uint32_t i = 0; i < aippParaNum; i++) {
                 if (aippParas[i] != nullptr) {
-                    HIAI_TensorAippPara_Destroy(&aippParas[i]);
+                    HIAI_MR_TensorAippPara_Destroy(&aippParas[i]);
                 }
             }
             delete[] aippParas;
@@ -131,7 +133,7 @@ public:
         for (int32_t i = 0; i < inputNum; i++) {
             HIAI_NDTensorDesc* desc = HIAI_DIRECT_BuiltModel_GetInputTensorDesc(builtModel, i);
             if (desc != nullptr) {
-                HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromNDTensorDesc(desc);
+                HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromNDTensorDesc(desc);
                 inputs.emplace_back(buffer);
                 HIAI_NDTensorDesc_Destroy(&desc);
             }
@@ -148,7 +150,7 @@ public:
         for (int32_t i = 0; i < outputNum; i++) {
             HIAI_NDTensorDesc* desc = HIAI_DIRECT_BuiltModel_GetOutputTensorDesc(builtModel, i);
             if (desc != nullptr) {
-                HIAI_NDTensorBuffer* buffer = HIAI_NDTensorBuffer_CreateFromNDTensorDesc(desc);
+                HIAI_MR_NDTensorBuffer* buffer = HIAI_MR_NDTensorBuffer_CreateFromNDTensorDesc(desc);
                 outputs.emplace_back(buffer);
                 HIAI_NDTensorDesc_Destroy(&desc);
             }
@@ -157,13 +159,13 @@ public:
     }
 
 private:
-    HIAI_ModelManager* modelManager = nullptr;
-    HIAI_BuiltModel* builtModel = nullptr;
-    HIAI_ModelManagerListener* managerListener = nullptr;
-    vector<HIAI_NDTensorBuffer*> inputs;
-    vector<HIAI_NDTensorBuffer*> outputs;
-    HIAI_ModelInitOptions* initOptions = nullptr;
-    HIAI_TensorAippPara** aippParas = nullptr;
+    HIAI_MR_ModelManager* modelManager = nullptr;
+    HIAI_MR_BuiltModel* builtModel = nullptr;
+    HIAI_MR_ModelManagerListener* managerListener = nullptr;
+    vector<HIAI_MR_NDTensorBuffer*> inputs;
+    vector<HIAI_MR_NDTensorBuffer*> outputs;
+    HIAI_MR_ModelInitOptions* initOptions = nullptr;
+    HIAI_MR_TensorAippPara** aippParas = nullptr;
     uint32_t aippParaNum = 0;
     uint32_t batchCount = 0;
     void* handle = nullptr;
@@ -203,7 +205,7 @@ TEST_F(DirectModelManagerAipp_UTest, runAippModelV2_001)
     ret = HIAI_DIRECT_BuiltModel_GetTensorAippInfo(builtModel, -1, &aippParaNum, &batchCount);
     EXPECT_TRUE(ret == HIAI_SUCCESS);
 
-    aippParas = new HIAI_TensorAippPara*[aippParaNum];
+    aippParas = new HIAI_MR_TensorAippPara*[aippParaNum];
     ret = HIAI_DIRECT_BuiltModel_GetTensorAippPara(builtModel, -1, aippParas, aippParaNum, batchCount);
     EXPECT_TRUE(ret == HIAI_SUCCESS);
 
@@ -280,11 +282,11 @@ TEST_P(DirectModelManagerAipp_UTest, runAippModelV2_002)
     ret = HIAI_DIRECT_BuiltModel_GetTensorAippInfo(builtModel, -1, &aippParaNum, &batchCount);
     EXPECT_TRUE(ret == HIAI_SUCCESS);
     std::cout << "++++++aippParaNum=" << aippParaNum << endl;
-    aippParas = new HIAI_TensorAippPara*[aippParaNum];
+    aippParas = new HIAI_MR_TensorAippPara*[aippParaNum];
     ret = HIAI_DIRECT_BuiltModel_GetTensorAippPara(builtModel, -1, aippParas, aippParaNum, batchCount);
     EXPECT_TRUE(ret == HIAI_SUCCESS);
 
-    HIAI_ModelManagerListener* listener = nullptr;
+    HIAI_MR_ModelManagerListener* listener = nullptr;
     void* userData = nullptr;
     int32_t timeoutInMS = 100;
     if (param.isASync) {
@@ -329,7 +331,7 @@ TEST_F(DirectModelManagerAipp_UTest, runAippModelV2_003)
     EXPECT_TRUE(ret == HIAI_SUCCESS);
     std::cout << "++++++aippParaNum=" << aippParaNum << endl;
 
-    aippParas = new HIAI_TensorAippPara*[aippParaNum];
+    aippParas = new HIAI_MR_TensorAippPara*[aippParaNum];
     ret = HIAI_DIRECT_BuiltModel_GetTensorAippPara(builtModel, -1, aippParas, aippParaNum, batchCount);
     EXPECT_TRUE(ret == HIAI_SUCCESS);
 
@@ -377,7 +379,7 @@ TEST_F(DirectModelManagerAipp_UTest, runAippModelV2_004)
     EXPECT_TRUE(ret == HIAI_SUCCESS);
     std::cout << "++++++aippParaNum=" << aippParaNum << endl;
 
-    aippParas = new HIAI_TensorAippPara*[aippParaNum];
+    aippParas = new HIAI_MR_TensorAippPara*[aippParaNum];
     ret = HIAI_DIRECT_BuiltModel_GetTensorAippPara(builtModel, -1, aippParas, aippParaNum, batchCount);
     EXPECT_TRUE(ret == HIAI_SUCCESS);
 

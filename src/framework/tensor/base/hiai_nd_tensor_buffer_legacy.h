@@ -17,7 +17,7 @@
 #define FRAMEWORK_C_HIAI_ND_TENSOR_BUFFER_LEGACY_UTIL_H
 
 #include "framework/c/hiai_nd_tensor_buffer.h"
-#include "framework/c/compatible/hiai_model_manager_type.h"
+#include "framework/c/compatible/hiai_tensor_buffer.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,11 +25,11 @@ extern "C" {
 
 static size_t NCHW_DIM_NUM = 4;
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNDTensorDescLegacy(const HIAI_NDTensorDesc* desc);
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromSizeLegacy(const HIAI_NDTensorDesc* desc, size_t size);
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromFormatLegacy(
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNDTensorDescLegacy(const HIAI_NDTensorDesc* desc);
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromSizeLegacy(const HIAI_NDTensorDesc* desc, size_t size);
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromFormatLegacy(
     const HIAI_NDTensorDesc* desc, size_t size, HIAI_ImageFormat format);
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleLegacy(
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNativeHandleLegacy(
     const HIAI_NDTensorDesc* desc, const HIAI_NativeHandle* handle);
 
 int32_t HIAI_NDTensorBuffer_GetFdLegacy(void* buffer, bool isLegacy);
@@ -37,17 +37,17 @@ int32_t HIAI_NDTensorBuffer_GetOriginFdLegacy(void* buffer, bool isLegacy);
 
 void HIAI_NDTensorBuffer_DestroyLegacy(void* buffer, bool isLegacy);
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(
-    const HIAI_NDTensorDesc* desc, HIAI_NDTensorBuffer* buffer);
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromNDTensorBuffer(
+    const HIAI_NDTensorDesc* desc, HIAI_MR_NDTensorBuffer* buffer);
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromTensorBuffer(
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateFromTensorBuffer(
     const HIAI_NDTensorDesc* desc, HIAI_TensorBuffer* buffer);
 
-void HIAI_NDTensorBuffer_ReleaseNDTensorBuffer(HIAI_NDTensorBuffer** buffer);
+void HIAI_NDTensorBuffer_ReleaseNDTensorBuffer(HIAI_MR_NDTensorBuffer** buffer);
 void HIAI_NDTensorBuffer_ReleaseTensorBuffer(HIAI_TensorBuffer** buffer);
 
-void* HIAI_NDTensorBuffer_GetDataFromNDTensorBuffer(HIAI_NDTensorBuffer* buffer);
-size_t HIAI_NDTensorBuffer_GetSizeFromNDTensorBuffer(HIAI_NDTensorBuffer* buffer);
+void* HIAI_NDTensorBuffer_GetDataFromNDTensorBuffer(HIAI_MR_NDTensorBuffer* buffer);
+size_t HIAI_NDTensorBuffer_GetSizeFromNDTensorBuffer(HIAI_MR_NDTensorBuffer* buffer);
 
 #ifdef __cplusplus
 }

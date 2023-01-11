@@ -17,7 +17,7 @@
 #include <mockcpp/mockcpp.hpp>
 #include <mockcpp/mockable.h>
 
-#include "framework/util/base_buffer.h"
+#include "infra/base/base_buffer.h"
 
 using namespace std;
 using namespace hiai;
@@ -44,11 +44,11 @@ public:
 */
 TEST_F(BaseBufferUt, model_manager_base_buffer_001)
 {
-     uint8_t *data = new (std::nothrow) uint8_t[100];
-     BaseBuffer test1(data, 100, false); // 100 申请的长度
-     BaseBuffer test2 = test1;
-     EXPECT_TRUE(test1.GetSize() == test2.GetSize());
-     delete[] data;
+    uint8_t *data = new (std::nothrow) uint8_t[100];
+    BaseBuffer test1(data, 100, false); // 100 申请的长度
+    BaseBuffer test2 = test1;
+    EXPECT_TRUE(test1.GetSize() == test2.GetSize());
+    delete[] data;
 }
 
 /*

@@ -18,6 +18,7 @@
 
 #include <cstdint>
 #include <cstdlib>
+#include <functional>
 
 #include "util/util_api_export.h"
 
@@ -30,6 +31,7 @@ public:
     BaseBuffer(const BaseBuffer& other);
 
     BaseBuffer(uint8_t* data, size_t size, bool shouldOwn = false);
+    BaseBuffer(uint8_t* data, size_t size, std::function<void (uint8_t*)> freeFunc);
 
     ~BaseBuffer();
 
@@ -53,9 +55,10 @@ private:
     BaseBuffer& operator==(BaseBuffer&& other) = delete;
 
 private:
-    bool isOwner_;
-    uint8_t* data_;
-    size_t size_;
+    bool isOwner_ {false};
+    uint8_t* data_ {nullptr};
+    size_t size_ {0};
+    std::function<void (uint8_t*)> freeFunc_ {nullptr};
 };
 } // namespace hiai
 #endif // GE_BUFFER_H

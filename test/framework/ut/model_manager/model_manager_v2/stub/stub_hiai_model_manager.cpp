@@ -22,15 +22,21 @@
 
 using namespace hiai;
 
-HIAI_ModelManager* HIAI_ModelManager_Create()
+using HIAI_NativeHandle = struct HIAI_NativeHandle {
+    int fd;
+    int size;
+    int offset;
+};
+
+HIAI_MR_ModelManager* HIAI_MR_ModelManager_Create()
 {
-    HIAI_ModelManager* manager = (HIAI_ModelManager*)malloc(1);
+    HIAI_MR_ModelManager* manager = (HIAI_MR_ModelManager*)malloc(1);
     return manager;
 }
 
-std::map<HIAI_ModelManager*, const HIAI_ModelManagerListener*> g_StubListener;
+std::map<HIAI_MR_ModelManager*, const HIAI_MR_ModelManagerListener*> g_StubListener;
 
-void HIAI_ModelManager_Destroy(HIAI_ModelManager** manager)
+void HIAI_MR_ModelManager_Destroy(HIAI_MR_ModelManager** manager)
 {
     if (manager == NULL || *manager == nullptr) {
         return;
@@ -40,8 +46,8 @@ void HIAI_ModelManager_Destroy(HIAI_ModelManager** manager)
     *manager = NULL;
 }
 
-HIAI_Status HIAI_ModelManager_Init(HIAI_ModelManager* manager, const HIAI_ModelInitOptions* options,
-    const HIAI_BuiltModel* builtModel, const HIAI_ModelManagerListener* listener)
+HIAI_Status HIAI_MR_ModelManager_Init(HIAI_MR_ModelManager* manager, const HIAI_MR_ModelInitOptions* options,
+    const HIAI_MR_BuiltModel* builtModel, const HIAI_MR_ModelManagerListener* listener)
 {
     if (!hiai::ControlC::GetInstance().CheckInitOptions(options)) {
         FMK_LOGE("build options is error.");
@@ -56,29 +62,55 @@ HIAI_Status HIAI_ModelManager_Init(HIAI_ModelManager* manager, const HIAI_ModelI
     return HIAI_SUCCESS;
 }
 
-HIAI_Status HIAI_ModelManager_SetPriority(HIAI_ModelManager* manager, HIAI_ModelPriority priority)
+HIAI_Status HIAI_ModelManager_InitWithSharedMem(HIAI_MR_ModelManager* manager, const HIAI_MR_ModelInitOptions* options,
+    const HIAI_MR_BuiltModel* builtModel, const HIAI_MR_ModelManagerListener* listener,
+    const HIAI_ModelManagerSharedMemAllocator* allocator)
+{
+    if (allocator == nullptr || allocator->onAllocate == nullptr || allocator->onFree == nullptr ||
+        allocator->userData == nullptr) {
+        FMK_LOGE("Invalid shared mem allocator.");
+        return HIAI_INVALID_PARAM;
+    }
+
+    const uint32_t maxNum = 10;
+    const uint32_t allocSize = 1;
+    HIAI_NativeHandle cHandle[maxNum] = {0};
+    HIAI_NativeHandle* cHandlesPtr[maxNum] = {&cHandle[0], &cHandle[1]};
+    size_t cHandleSize = 0;
+
+    allocator->onAllocate(allocator->userData, allocSize, cHandlesPtr, &cHandleSize);
+    if (cHandleSize == 0 || cHandlesPtr[0]->fd == 0 || cHandlesPtr[0]->size == 0) {
+        return HIAI_FAILURE;
+    }
+
+    allocator->onFree(allocator->userData, cHandlesPtr, cHandleSize);
+
+    return HIAI_MR_ModelManager_Init(manager, options, builtModel, listener);
+}
+
+HIAI_Status HIAI_MR_ModelManager_SetPriority(HIAI_MR_ModelManager* manager, HIAI_ModelPriority priority)
 {
     return HIAI_SUCCESS;
 }
 
-HIAI_Status HIAI_ModelManager_Run(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[], int32_t inputNum,
-    HIAI_NDTensorBuffer* output[], int32_t outputNum)
+HIAI_Status HIAI_MR_ModelManager_Run(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[], int32_t inputNum,
+    HIAI_MR_NDTensorBuffer* output[], int32_t outputNum)
 {
     return HIAI_SUCCESS;
 }
 
-HIAI_Status HIAI_ModelManager_RunAsync(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[], int32_t inputNum,
-    HIAI_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData)
+HIAI_Status HIAI_MR_ModelManager_RunAsync(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_NDTensorBuffer* output[], int32_t outputNum, int32_t timeoutInMS, void* userData)
 {
     return HIAI_SUCCESS;
 }
 
-HIAI_Status HIAI_ModelManager_Cancel(HIAI_ModelManager* manager)
+HIAI_Status HIAI_MR_ModelManager_Cancel(HIAI_MR_ModelManager* manager)
 {
     return HIAI_SUCCESS;
 }
 
-HIAI_Status HIAI_ModelManager_Deinit(HIAI_ModelManager* manager)
+HIAI_Status HIAI_MR_ModelManager_Deinit(HIAI_MR_ModelManager* manager)
 {
     auto iter = g_StubListener.find(manager);
     if (iter != g_StubListener.end()) {
@@ -88,9 +120,9 @@ HIAI_Status HIAI_ModelManager_Deinit(HIAI_ModelManager* manager)
     return HIAI_SUCCESS;
 }
 
-HIAI_Status HIAI_ModelManager_runAippModelV2(HIAI_ModelManager* manager, HIAI_NDTensorBuffer* input[], int32_t inputNum,
-    HIAI_TensorAippPara* aippPara[], int32_t aippParaNum, HIAI_NDTensorBuffer* output[], int32_t outputNum,
-    int32_t timeoutInMS, void* userData)
+HIAI_Status HIAI_MR_ModelManager_runAippModelV2(HIAI_MR_ModelManager* manager, HIAI_MR_NDTensorBuffer* input[],
+    int32_t inputNum, HIAI_MR_TensorAippPara* aippPara[], int32_t aippParaNum, HIAI_MR_NDTensorBuffer* output[],
+    int32_t outputNum, int32_t timeoutInMS, void* userData)
 {
     auto iter = g_StubListener.find(manager);
     if (iter != g_StubListener.end()) {

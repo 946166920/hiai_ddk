@@ -197,4 +197,16 @@ hiai::Status GraphSpec::IsValid() const
 
     return hiai::SUCCESS;
 }
+
+const ge::Node* GraphSpec::OwnerNode() const
+{
+    return ROLE(GraphStore).OwnerNode();
+}
+
+hiai::Status GraphSpec::SetOwnerNode(Node* ownerNode)
+{
+    HIAI_EXPECT_NOT_NULL(ownerNode);
+    ROLE(GraphStore).SetOwnerNode(ownerNode);
+    return hiai::SUCCESS;
+}
 } // namespace ge

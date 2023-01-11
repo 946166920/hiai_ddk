@@ -22,6 +22,7 @@
 
 #include "framework/graph/core/cgraph/compute_graph.h"
 #include "framework/graph/core/cgraph/graph_spec.h"
+#include "framework/graph/core/node/node.h"
 
 namespace ge {
 const std::vector<ComputeGraphPtr>& NodeSubGraph::SubGraphs() const
@@ -48,7 +49,7 @@ hiai::Status NodeSubGraph::AddSubGraph(ComputeGraphPtr& graph)
     HIAI_EXPECT_NOT_NULL(graph);
 
     subGraphs_.push_back(graph);
-    return hiai::SUCCESS;
+    return graph->ROLE(GraphSpec).SetOwnerNode(&ROLE(Node));
 }
 
 hiai::Status NodeSubGraph::DelSubGraph(const ComputeGraph& graph)

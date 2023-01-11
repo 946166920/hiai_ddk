@@ -192,81 +192,79 @@ static Format SerialStringToFormat(const std::string& str)
     }
 }
 
-using ATTR_MAP_FUNC = std::function<void(hiai::proto::TensorDescriptor*, const hiai::proto::AttrDef&)>;
+using ATTR_MAP_FUNC = std::function<void(hiai::proto::TensorDescriptor&, const hiai::proto::AttrDef&)>;
 
 const static std::map<std::string, ATTR_MAP_FUNC> TENSORDESCDEF_COMPATIBLE_MAP = {
     {"size",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_size(attrDef.i());
-        }},
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) { tdDef.set_size(attrDef.i()); }},
     {"weight_size",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_weight_size(attrDef.i());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_weight_size(attrDef.i());
         }},
     {"reuse_input",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_reuse_input(attrDef.b());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_reuse_input(attrDef.b());
         }},
     {"output_tensor",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_output_tensor(attrDef.b());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_output_tensor(attrDef.b());
         }},
     {"device_type",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_device_type(attrDef.s());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_device_type(attrDef.s());
         }},
     {"input_tensor",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_input_tensor(attrDef.b());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_input_tensor(attrDef.b());
         }},
     {"real_dim_cnt",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_real_dim_cnt(attrDef.i());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_real_dim_cnt(attrDef.i());
         }},
     {"reuse_input_index",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_reuse_input_index(attrDef.i());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_reuse_input_index(attrDef.i());
         }},
     {"data_offset",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_data_offset(attrDef.i());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_data_offset(attrDef.i());
         }},
     {"cmps_size",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_cmps_size(attrDef.i());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_cmps_size(attrDef.i());
         }},
     {"cmps_tab",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_cmps_tab(attrDef.s());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_cmps_tab(attrDef.s());
         }},
     {"cmps_tab_offset",
-        [](hiai::proto::TensorDescriptor* tdDef, const hiai::proto::AttrDef& attrDef) {
-            tdDef->set_cmps_tab_offset(attrDef.i());
+        [](hiai::proto::TensorDescriptor& tdDef, const hiai::proto::AttrDef& attrDef) {
+            tdDef.set_cmps_tab_offset(attrDef.i());
         }},
 };
 
-void CompatibleMemberHandle(hiai::proto::TensorDescriptor* tdDef)
+void CompatibleMemberHandle(hiai::proto::TensorDescriptor& tdDef)
 {
-    if (tdDef->has_out_attr()) {
+    if (tdDef.has_out_attr()) {
         return;
     }
 
-    tdDef->set_has_out_attr(true);
+    tdDef.set_has_out_attr(true);
 
-    if (tdDef->layout() == "") {
-        tdDef->set_layout("NCHW");
+    if (tdDef.layout() == "") {
+        tdDef.set_layout("NCHW");
     }
 
-    if (tdDef->dtype() == ::hiai::proto::DT_UNDEFINED) {
-        tdDef->set_dtype(::hiai::proto::DT_FLOAT);
+    if (tdDef.dtype() == ::hiai::proto::DT_UNDEFINED) {
+        tdDef.set_dtype(::hiai::proto::DT_FLOAT);
     }
 
-    if (tdDef->device_type() == "") {
-        tdDef->set_device_type("NPU");
+    if (tdDef.device_type() == "") {
+        tdDef.set_device_type("NPU");
     }
 
     // 老模型需要做兼容性处理，从attrMap提取参数设置到成员变量中
-    const auto& attrMap = tdDef->attr();
+    const auto& attrMap = tdDef.attr();
     for (auto it = attrMap.begin(); it != attrMap.end(); it++) {
         std::map<std::string, ATTR_MAP_FUNC>::const_iterator iter = TENSORDESCDEF_COMPATIBLE_MAP.find(it->first);
         if (iter != TENSORDESCDEF_COMPATIBLE_MAP.end()) {
@@ -276,33 +274,21 @@ void CompatibleMemberHandle(hiai::proto::TensorDescriptor* tdDef)
 }
 } // namespace
 
-ProtoTensorDescDef::ProtoTensorDescDef() : ProtoTensorDescDef(new (std::nothrow) hiai::proto::TensorDescriptor(), true)
+ProtoTensorDescDef::ProtoTensorDescDef(hiai::proto::TensorDescriptor& tdDef) : tdDef_(tdDef)
 {
-}
-
-ProtoTensorDescDef::ProtoTensorDescDef(hiai::proto::TensorDescriptor* tdDef, bool isOwner)
-    : tdDef_(tdDef), isOwner_(isOwner)
-{
-    if (tdDef_ != nullptr) {
-        CompatibleMemberHandle(tdDef_);
-    }
+    CompatibleMemberHandle(tdDef_);
 }
 
 ProtoTensorDescDef::~ProtoTensorDescDef()
 {
     IMPL_PROTO_CUSTOM_MEMBER_FREE(shape);
     IMPL_PROTO_CUSTOM_MEMBER_FREE(attr);
-
-    if (isOwner_) {
-        delete tdDef_;
-    }
-    tdDef_ = nullptr;
 }
 
 void ProtoTensorDescDef::CopyFrom(const ITensorDescDef* other)
 {
-    if (tdDef_ != nullptr && other != nullptr && other->GetSerializeType() == PROTOBUF) {
-        *tdDef_ = *(static_cast<const ProtoTensorDescDef*>(other)->tdDef_);
+    if (other != nullptr && other->GetSerializeType() == PROTOBUF) {
+        tdDef_ = static_cast<const ProtoTensorDescDef*>(other)->tdDef_;
         IMPL_PROTO_CUSTOM_MEMBER_FREE(shape);
         IMPL_PROTO_CUSTOM_MEMBER_FREE(attr);
     }
@@ -315,13 +301,13 @@ SerializeType ProtoTensorDescDef::GetSerializeType() const
 
 bool ProtoTensorDescDef::LoadFrom(const uint8_t* data, size_t len)
 {
-    if (data == nullptr || len == 0 || tdDef_ == nullptr) {
+    if (data == nullptr || len == 0) {
         return false;
     }
 
     google::protobuf::io::CodedInputStream coded_stream(data, len);
     coded_stream.SetTotalBytesLimit(INT32_MAX);
-    if (!tdDef_->ParseFromCodedStream(&coded_stream)) {
+    if (!tdDef_.ParseFromCodedStream(&coded_stream)) {
         return false;
     }
 
@@ -331,35 +317,25 @@ bool ProtoTensorDescDef::LoadFrom(const uint8_t* data, size_t len)
 
 bool ProtoTensorDescDef::SaveTo(uint8_t* data, size_t len)
 {
-    if (tdDef_ != nullptr) {
-        return tdDef_->SerializeToArray(data, len);
-    }
-    return false;
+    return tdDef_.SerializeToArray(data, len);
 }
 
 size_t ProtoTensorDescDef::GetTensorDescDefSize() const
 {
-    if (tdDef_ == nullptr) {
-        return 0;
-    }
 #if GOOGLE_PROTOBUF_VERSION < 3013000
-    return tdDef_->ByteSize();
+    return tdDef_.ByteSize();
 #else
-    return tdDef_->ByteSizeLong();
+    return tdDef_.ByteSizeLong();
 #endif
 }
 
 ge::DataType ProtoTensorDescDef::dtype() const
 {
-    if (tdDef_ == nullptr) {
-        return ge::DT_UNDEFINED;
-    }
-
-    auto& attrMap = tdDef_->attr();
+    auto& attrMap = tdDef_.attr();
 
     auto iter = attrMap.find(KEY_DATA_TYPE_SELF_DEFINED);
     if (iter == attrMap.end()) {
-        auto dataTypeProto = tdDef_->dtype();
+        auto dataTypeProto = tdDef_.dtype();
         for (auto it : DATA_TYPE_MAP) {
             if (it.second == dataTypeProto) {
                 return it.first;
@@ -379,11 +355,7 @@ ge::DataType ProtoTensorDescDef::dtype() const
 
 void ProtoTensorDescDef::set_dtype(const ge::DataType value)
 {
-    if (tdDef_ == nullptr) {
-        return;
-    }
-
-    auto attrMap = tdDef_->mutable_attr();
+    auto attrMap = tdDef_.mutable_attr();
     if (attrMap == nullptr) {
         return;
     }
@@ -392,7 +364,7 @@ void ProtoTensorDescDef::set_dtype(const ge::DataType value)
 
     auto it1 = DATA_TYPE_MAP.find(value);
     if (it1 != DATA_TYPE_MAP.end()) {
-        tdDef_->set_dtype(it1->second);
+        tdDef_.set_dtype(it1->second);
         return;
     }
 
@@ -405,14 +377,12 @@ void ProtoTensorDescDef::set_dtype(const ge::DataType value)
 
 ge::Format ProtoTensorDescDef::layout() const
 {
-    return tdDef_ != nullptr ? SerialStringToFormat(tdDef_->layout()) : FORMAT_RESERVED;
+    return SerialStringToFormat(tdDef_.layout());
 }
 
 void ProtoTensorDescDef::set_layout(const ge::Format value)
 {
-    if (tdDef_ != nullptr) {
-        tdDef_->set_layout(FormatToSerialString(value));
-    }
+    tdDef_.set_layout(FormatToSerialString(value));
 }
 
 IMPL_PROTO_PERSISTENCE_CUSTOM_MEMBER_PURE_FUNC(ProtoTensorDescDef, tdDef_, IShapeDef, ProtoShapeDef, shape);
@@ -434,7 +404,7 @@ IMPL_PROTO_PERSISTENCE_CUSTOM_MEMBER_PURE_FUNC(ProtoTensorDescDef, tdDef_, IAttr
 
 extern "C" GRAPH_API_EXPORT ITensorDescDef* CreateTensorDescDef()
 {
-    return new (std::nothrow) ProtoTensorDescDef();
+    return new (std::nothrow) DefaultProtoTensorDescDef();
 }
 
 extern "C" GRAPH_API_EXPORT void DestroyTensorDescDef(ITensorDescDef* tensorDescDef)

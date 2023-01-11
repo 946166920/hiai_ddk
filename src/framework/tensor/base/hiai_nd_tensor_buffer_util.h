@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-AICP_C_API_EXPORT HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_Create(
+AICP_C_API_EXPORT HIAI_MR_NDTensorBuffer* HIAI_MR_NDTensorBuffer_Create(
     const HIAI_NDTensorDesc* desc, void* data, size_t size, void* handle, bool isOwner, bool isLegacy);
 
 #ifdef __cplusplus

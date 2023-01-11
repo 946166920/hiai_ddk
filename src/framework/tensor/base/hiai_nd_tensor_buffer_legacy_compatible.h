@@ -25,7 +25,7 @@
 extern "C" {
 #endif
 
-bool HIAI_ChangeNDTensorBuffersHandleToTensorBuffers(HIAI_NDTensorBuffer* buffers[], int32_t num);
+bool HIAI_ChangeNDTensorBuffersHandleToTensorBuffers(HIAI_MR_NDTensorBuffer* buffers[], int32_t num);
 
 #ifdef __cplusplus
 }

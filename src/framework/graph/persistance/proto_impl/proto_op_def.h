@@ -17,15 +17,17 @@
 #ifndef FRAMEWORK_GRAH_PERSISTENCE_PROTO_PROTO_OP_DEF_PROTO_H
 #define FRAMEWORK_GRAH_PERSISTENCE_PROTO_PROTO_OP_DEF_PROTO_H
 #include "graph/persistance/interface/op_def.h"
+#include "proto_wrapper.h"
 #include "proto_func_macro_def.h"
 
 namespace hiai {
+
 class ProtoOpDef : public IOpDef {
 public:
-    ProtoOpDef();
-    ProtoOpDef(hiai::proto::OpDef* opDef, bool isOwner = false);
+    ProtoOpDef(hiai::proto::OpDef& opDef);
     ~ProtoOpDef() override;
 
+private:
     void CopyFrom(const IOpDef* other) override;
     SerializeType GetSerializeType() const override;
 
@@ -54,8 +56,15 @@ public:
     DEF_PROTO_PERSISTENCE_CUSTOM_LIST_MEMBER_PURE_FUNC(ITensorDescDef, output_desc);
 
 private:
-    hiai::proto::OpDef* opDef_;
-    bool isOwner_;
+    hiai::proto::OpDef& opDef_;
+};
+
+class DefaultProtoOpDef : private ProtoWrapper<hiai::proto::OpDef>, public ProtoOpDef {
+public:
+    DefaultProtoOpDef() : ProtoOpDef(GetProto())
+    {
+    }
+    ~DefaultProtoOpDef() override = default;
 };
 } // namespace hiai
 

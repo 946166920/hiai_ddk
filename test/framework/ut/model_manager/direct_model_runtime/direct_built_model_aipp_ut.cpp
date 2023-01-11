@@ -56,7 +56,7 @@ public:
     }
 
 private:
-    HIAI_BuiltModel* builtModel {nullptr};
+    HIAI_MR_BuiltModel* builtModel {nullptr};
     shared_ptr<BaseBuffer> modelBuffer {nullptr};
 };
 
@@ -118,7 +118,7 @@ public:
     }
 
 private:
-    HIAI_BuiltModel* builtModel = nullptr;
+    HIAI_MR_BuiltModel* builtModel = nullptr;
     shared_ptr<BaseBuffer> modelBuffer {nullptr};
 };
 
@@ -150,13 +150,13 @@ TEST_P(DirectBuiltModelAipp_GetTensorAippPara_UTest, GetTensorAippPara)
         builtModel = HIAI_DIRECT_BuiltModel_Restore(modelBuffer->MutableData(), modelBuffer->GetSize());
     }
 
-    HIAI_TensorAippPara** aippParas = new HIAI_TensorAippPara*[aippParaNum];
+    HIAI_MR_TensorAippPara** aippParas = new HIAI_MR_TensorAippPara*[aippParaNum];
     HIAI_Status ret = HIAI_DIRECT_BuiltModel_GetTensorAippPara(builtModel, index, aippParas, aippParaNum, batchCount);
     EXPECT_TRUE(ret == param.expectValue);
     if (ret == HIAI_SUCCESS) {
         for (uint32_t i = 0; i < aippParaNum; i++) {
             if (aippParas[i] != nullptr) {
-                HIAI_TensorAippPara_Destroy(&aippParas[i]);
+                HIAI_MR_TensorAippPara_Destroy(&aippParas[i]);
             }
         }
         // 入参aippParas为空场景

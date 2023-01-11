@@ -20,7 +20,7 @@
 #include "framework/infra/log/log.h"
 #include "hiai_nd_tensor_buffer_util.h"
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateLocalBufferFromSize(const HIAI_NDTensorDesc* desc, size_t size)
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateLocalBufferFromSize(const HIAI_NDTensorDesc* desc, size_t size)
 {
     if (size == 0) {
         FMK_LOGE("size is invalid, malloc failed.");
@@ -31,7 +31,7 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateLocalBufferFromSize(const HIAI_ND
 
     (void)memset_s(buffer, size, 0, size);
 
-    HIAI_NDTensorBuffer* ndBuffer = HIAI_NDTensorBuffer_Create(desc, buffer, size, NULL, true, false);
+    HIAI_MR_NDTensorBuffer* ndBuffer = HIAI_MR_NDTensorBuffer_Create(desc, buffer, size, NULL, true, false);
     if (ndBuffer == NULL) {
         FMK_LOGE("HIAI_NDTensorBuffer_Create failed.");
         free(buffer);
@@ -40,16 +40,16 @@ HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateLocalBufferFromSize(const HIAI_ND
     return ndBuffer;
 }
 
-HIAI_NDTensorBuffer* HIAI_NDTensorBuffer_CreateLocalBufferFromNDTensorDesc(const HIAI_NDTensorDesc* desc)
+HIAI_MR_NDTensorBuffer* HIAI_NDTensorBuffer_CreateLocalBufferFromNDTensorDesc(const HIAI_NDTensorDesc* desc)
 {
     size_t totalByteSize = HIAI_NDTensorDesc_GetByteSize(desc);
     return HIAI_NDTensorBuffer_CreateLocalBufferFromSize(desc, totalByteSize);
 }
 
-void HIAI_NDTensorBuffer_ReleaseLocal(HIAI_NDTensorBuffer** buffer)
+void HIAI_NDTensorBuffer_ReleaseLocal(HIAI_MR_NDTensorBuffer** buffer)
 {
     // 释放ndbuffer data
-    void* data = HIAI_NDTensorBuffer_GetData(*buffer);
+    void* data = HIAI_MR_NDTensorBuffer_GetData(*buffer);
     if (((HIAI_NDTensorBufferV2*)(*buffer))->owner && data != NULL) {
         free(data);
     }
