@@ -187,7 +187,7 @@ public:
     AIStatus SetModelPriority(const std::string& modelName, ModelPriority modelPriority);
 
     /*
-     * @brief 取消模型推理任务
+     * @brief 取消模型异步推理任务
      * @param [in] modelName, 模型名
      * @return void
      */
