@@ -138,7 +138,10 @@ class SchemaHeaderDump(object):
 
     def dump_graphs(self, f, graphs):
         for graph in graphs:
-            f.write(".REQUIRED_GRAPH(")
+            if graph.dynamic_ == True:
+                f.write(".DYNAMIC_GRAPH(")
+            else:
+                f.write(".REQUIRED_GRAPH(")
             f.write(graph.name_)
             f.write(")\n")
 
@@ -204,7 +207,6 @@ class SchemaHeaderDump(object):
         f.write(".OP_END()\n")
 
     def dump_op(self, f, op):
-        # print("dump Op:" + op.typeName_)
         self.dump_op_comment(f, op)
         self.dump_opReg(f, op)
 
