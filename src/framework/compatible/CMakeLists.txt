@@ -1,0 +1,18 @@
+hi_cc_library_static(
+  NAME
+    ai::fmk::compatible_static
+  SRCS
+    array_op_transformer.cpp
+    control_flow_op_transformer.cpp
+    detection_op_transformer.cpp
+    image_op_transformer.cpp
+    internal_op_transformer.cpp
+    ir_transformer.cpp
+    ir_verify.cpp
+    math_op_transformer.cpp
+    nn_op_transformer.cpp
+    transformer_utils.cpp
+  DEPS
+    hiai::api::ops
+    hiai::inc::ops
+)

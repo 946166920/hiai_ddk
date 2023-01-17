@@ -1,0 +1,1869 @@
+nn_ops:
+  Activation:
+    comment:  |-
+      "The Activation op provides different types of nonlinearities for use in neural networks.
+      These include smooth nonlinearities (sigmoid, tanh, and softplus), continuous but not everywhere
+      differentiable functions (ReLU), and random regularization.
+      "
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor with the same type as the input tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      mode:
+        comment:  |-
+          "Activation mode, with options as follows:
+          0 : Sigmoid
+          1 : ReLU
+          2 : Tanh
+          3 : Clipped ReLU
+          4 : ELU
+          5 : PReLU
+          6 : Abs
+          7 : Relu1
+          8 : Softsign
+          9 : Softplus
+          10 : Hardsigmoid
+          11 : Threshold ReLU
+          12 : Selu
+          14 : Relu6
+          15 : GeLU.
+          Defaults to 1 (ReLU). 1.
+          "
+        type: INT
+        default: "1"
+      coef:
+        comment:  |-
+          "Upper limit value in the clipped ReLU, alpha value in the ELU and theta value in the
+          Threshold ReLU. It is not used in the original ReLU. Use its default value 0.0.
+          If mode is set to ELU(4), the value of coef must be specified.
+          "
+        type: FLOAT
+        default: "0.0"
+      negative_slope:
+        comment:  |-
+          "Angle of the negative slope for PReLU, if negative_slope is a very small
+          fixed value(for example, negative_slope = 0.01),
+          then PReLU degenerates to Leaky_Relu.
+          "
+        type: FLOAT
+        default: "0.0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          Clipped ReLU:
+          auto activation = hiai::op::Activation("activation")
+                            .set_input_x(x)
+                            .set_attr_mode(3)
+                            .set_attr_coef(6.0);
+
+          ELU:
+          auto activation = hiai::op::Activation("activation")
+                            .set_input_x(x)
+                            .set_attr_mode(4)
+                            .set_attr_coef(1.0);
+
+          PReLU:
+          auto activation = hiai::op::Activation("activation")
+                            .set_input_x(x)
+                            .set_attr_mode(5)
+                            .set_attr_negative_slope(0.5);
+
+          Threshold ReLU:
+          auto activation = hiai::op::Activation("activation")
+                            .set_input_x(x)
+                            .set_attr_mode(11)
+                            .set_attr_coef(0.1);
+
+          Other mode:
+          auto activation = hiai::op::Activation("activation")
+                            .set_input_x(x)
+                            .set_attr_mode(0);
+      "
+
+  HardSwish:
+    comment: "Computes hard-swish activation function."
+    add_version: 100.320.010.022
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+
+  BNInference:
+    comment: "Normalizes the input to have 0-mean and/or unit (1) variance across the batch (batch normalization)."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+      mean:
+        comment: "Tensor for population mean. Used for inference only."
+        tensor_types: DT_FLOAT
+      variance:
+        comment: "Tensor for population variance. Used for inference only."
+        tensor_types: DT_FLOAT
+      scale:
+        comment: "Tensor for scaling factor, to scale the normalized 'x'"
+        tensor_types: DT_FLOAT
+        optional: true
+      offset:
+        comment: "Tensor for bias, to shift to the normalized 'x'"
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      momentum:
+        comment:  |-
+          "Momentum for the running mean and running variance
+          running_mean is equal to  [ running_mean * momentum + mean * (1 - momentum)].
+          "
+        type: FLOAT
+        default: "0.9f"
+      epsilon:
+        comment: "Small float number added to the variance of 'x'"
+        type: FLOAT
+        default: "1e-5f"
+      mode:
+        comment:  |-
+          "BatchNorm mode.
+          0: The bnScale and bnBias tensors are of size 1xCxHxW.
+          1: The bnScale and bnBias tensors are of size 1xCx1x1.
+          "
+        type: INT
+        default: "1"
+      use_global_stats:
+        comment: "Must be true."
+        type: BOOL
+        default: "true"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc meanTensorDesc(Shape({1, 5, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr meanTensor = std::make_shared<hiai::Tensor>(meanTensorDesc);
+          vector<float> meanDataValue(5, 0.0);
+          meanTensor->SetData((uint8_t*)meanDataValue.data(), 5 * sizeof(float));
+          auto mean = hiai::op::Const("mean").set_attr_value(meanTensor);
+
+          TensorDesc varianceTensorDesc(Shape({1, 5, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr varianceTensor = std::make_shared<hiai::Tensor>(varianceTensorDesc);
+          vector<float> varianceDataValue(5, 0.0);
+          varianceTensor->SetData((uint8_t*)varianceDataValue.data(), 5 * sizeof(float));
+          auto variance = hiai::op::Const("variance").set_attr_value(varianceTensor);
+
+          TensorDesc scaleTensorDesc(Shape({1, 5, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr scaleTensor = std::make_shared<hiai::Tensor>(scaleTensorDesc);
+          vector<float> scaleDataValue(5, 0.0);
+          scaleTensor->SetData((uint8_t*)scaleDataValue.data(), 5 * sizeof(float));
+          auto scale = hiai::op::Const("scale").set_attr_value(scaleTensor);
+
+          TensorDesc offsetTensorDesc(Shape({1, 5, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr offsetTensor = std::make_shared<hiai::Tensor>(offsetTensorDesc);
+          vector<float> offsetDataValue(5, 0.0);
+          offsetTensor->SetData((uint8_t*)offsetDataValue.data(), 5 * sizeof(float));
+          auto offset = hiai::op::Const("offset").set_attr_value(offsetTensor);
+
+          auto bnInference = hiai::op::BNInference("bnInference")
+                             .set_input_x(x)
+                             .set_input_mean(mean)
+                             .set_input_variance(variance)
+                             .set_input_scale(scale)
+                             .set_input_offset(offset)
+                             .set_attr_mode(1);
+      "
+
+  Convolution:
+    comment: "Consumes an input tensor and a filter, and computes the output."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor with size [N, Ci, Hi, Wi]."
+        tensor_types: DT_FLOAT, DT_INT16, DT_UINT8, DT_INT4
+      filter:
+        comment: "With shape [Co, Ci/group, Hk, Wk], must be a Const-OP."
+        tensor_types: DT_FLOAT, DT_INT8, DT_INT4
+      bias:
+        comment: "With shape [Co], must be a Const-OP."
+        tensor_types: DT_FLOAT, DT_INT32
+        optional: true
+      offset_w:
+        comment: "Reserved. For quantized."
+        tensor_types: DT_INT8
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+    attrs:
+      strides:
+        comment: "Stride along each axis."
+        type: LIST_INT
+        required: true
+      dilations:
+        comment: "Dilation value along each axis of the filter."
+        type: LIST_INT
+        default: "1, 1"
+      pads:
+        comment: "Padding for the beginning and ending along each axis [hh, ht, wh, wt]."
+        type: LIST_INT
+        default: "0, 0, 0, 0"
+      pad_mode:
+        comment: "Pad mode, SPECIFIC(Default): not set, using pads; SAME, or VALID"
+        type: STR
+        default: "SPECIFIC"
+      groups:
+        comment:  |-
+          "Number of groups input channels and output channels are divided into.
+          When groups = 1, traditional convolution will be performed;
+          When groups > 1, feature maps are grouped by group_count, and then each groups
+          is convoluted separately. Specially, 'groups' equal to the number of input feature
+          maps indicates Depthwise Convolution.
+          "
+        type: INT
+        default: "1"
+      data_format:
+        comment: "Format of operator, 'NCHW' or 'NHWC'. Default is 'NCHW'"
+        type: STR
+        default: "NCHW"
+      offset_x:
+        comment: "Reserved. For quantized."
+        type: INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc filterTensorDesc(Shape({7, 5, 3, 4}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr filterTensor = std::make_shared<hiai::Tensor>(filterTensorDesc);
+          vector<float> filterDataValue(7 * 5 * 3 * 4, 0);
+          filterTensor->SetData((uint8_t*)filterDataValue.data(), 7 * 5 * 3 * 4 * sizeof(float));
+          auto filter = hiai::op::Const("filter").set_attr_value(filterTensor);
+
+          TensorDesc biasTensorDesc(Shape({7}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr biasTensor = std::make_shared<hiai::Tensor>(biasTensorDesc);
+          vector<float> biasDataValue(7, 0);
+          biasTensor->SetData((uint8_t*)biasDataValue.data(), 7 * sizeof(float));
+          auto bias = hiai::op::Const("bias").set_attr_value(biasTensor);
+
+          auto convolution = hiai::op::Convolution("convolution")
+                             .set_input_x(x)
+                             .set_input_filter(filter)
+                             .set_input_bias(bias)
+                             .set_attr_strides({1, 1})
+                             .set_attr_dilations({1, 1})
+                             .set_attr_pads({0, 0, 0, 1})
+                             .set_attr_pad_mode("SAME")
+                             .set_attr_groups(1)
+                             .set_attr_data_format("NCHW");
+      "
+
+  QuantizedConvolution:
+    comment: "Quantized for Convolution, consumes an input tensor and a filter, and computes the output."
+    add_version: 100.310.010.015
+    inputs:
+      x:
+        comment: "Input tensor with size [N, Ci, Hi, Wi]."
+        tensor_types: DT_FLOAT
+      filter:
+        comment:  |-
+          "With shape [Co, Ci/group, Hk, Wk], must be a Const-OP.
+          If filter_quant_type = 1 or 2, shall use type 'tensor(int8)'.
+          for(i in C) { quant_filter[i] = origin_filter[i] / filter_quant_scales[i];}
+          "
+        tensor_types: DT_FLOAT, DT_INT8
+      bias:
+        comment:  |-
+          "With shape [Co], must be a const OP.
+          If filter_quant_type = 1 or 2, shall use type 'tensor(int32)'.
+          for(i in C) { quant_bias[i] = origin_bias[i] / (x_quant_scale * filter_quant_scales[i]);}
+          "
+        tensor_types: DT_FLOAT, DT_INT32
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      strides:
+        comment: "Stride along each axis."
+        type: LIST_INT
+        required: true
+      dilations:
+        comment: "Dilation value along each axis of the filter."
+        type: LIST_INT
+        default: "1, 1"
+      pads:
+        comment: "Padding for the beginning and ending along each axis [hh, ht, wh, wt]."
+        type: LIST_INT
+        default: "0, 0, 0, 0"
+      pad_mode:
+        comment:  |-
+          "Pad mode, SPECIFIC(Default): not set, using pads;
+          SAME, or VALID: indicate the type of padding algorithm instead of using parameter \"pads\".
+          "
+        type: STR
+        default: "SPECIFIC"
+      groups:
+        comment:  |-
+          "Number of groups input channels and output channels are divided into.
+          When groups = 1, traditional convolution will be performed;
+          When groups > 1, feature maps are grouped by group_count, and then each groups
+          is convoluted separately. Specially, 'groups' equal to the number of input feature
+          maps indicates Depthwise Convolution.
+          "
+        type: INT
+        default: "1"
+      data_format:
+        comment: "Format of operator, 'NCHW' or 'NHWC'. Default is 'NCHW'"
+        type: STR
+        default: "NCHW"
+      x_quant_type:
+        comment: "Either 0-No quant or 1-Quant8 (linear) or 2-Quant4 (linear); Reserved: 3-Quant2 (linear)"
+        type: INT
+        default: "0"
+      filter_quant_type:
+        comment: "Either 0-No quant or 1-Quant8 (linear) or 2-Quant4 (linear); Reserved: 3-Quant2 (linear)"
+        type: INT
+        default: "0"
+      x_quant_scale:
+        comment: "If x_quant_type > 0, this Attr is required."
+        type: FLOAT
+        default: "1.0"
+      x_quant_offset:
+        comment: "Data offset, if x_quant_type = 2, this Attr value should be zero."
+        type: INT
+        default: "0"
+      filter_quant_scales:
+        comment: "List of scale factors of the filter. If filter_quant_type > 0, this Attr is required."
+        type: LIST_FLOAT
+        default: ""
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc filterTensorDesc(Shape({7, 5, 3, 4}), FORMAT_NCHW, DT_INT8);
+          TensorPtr filterTensor = std::make_shared<hiai::Tensor>(filterTensorDesc);
+          vector<int8_t> filterDataValue(7 * 5 * 3 * 4, 0);
+          filterTensor->SetData((uint8_t*)filterDataValue.data(), 7 * 5 * 3 * 4 * sizeof(int8_t));
+          auto filter = hiai::op::Const("filter").set_attr_value(filterTensor);
+
+          TensorDesc biasTensorDesc(Shape({7}), FORMAT_NCHW, DT_INT32);
+          TensorPtr biasTensor = std::make_shared<hiai::Tensor>(biasTensorDesc);
+          vector<int32_t> biasDataValue(7, 0);
+          biasTensor->SetData((uint8_t*)biasDataValue.data(), 7 * sizeof(int32_t));
+          auto bias = hiai::op::Const("bias").set_attr_value(biasTensor);
+
+          std::vector<ge::AttrValue::FLOAT> quantScales(7, 1.0);
+          auto quantizedConvolution = hiai::op::QuantizedConvolution("quantizedConvolution")
+                                      .set_input_x(x)
+                                      .set_input_filter(filter)
+                                      .set_input_bias(bias)
+                                      .set_attr_strides({1, 1})
+                                      .set_attr_dilations({1, 1})
+                                      .set_attr_pads({0, 0, 0, 1})
+                                      .set_attr_pad_mode("SAME")
+                                      .set_attr_groups(1)
+                                      .set_attr_data_format("NCHW")
+                                      .set_attr_x_quant_type(1)
+                                      .set_attr_filter_quant_type(1)
+                                      .set_attr_x_quant_scale(1.0)
+                                      .set_attr_x_quant_offset(1.0)
+                                      .set_attr_filter_quant_scales(quantScales);
+      "
+
+  ConvTranspose:
+    comment:  |-
+      "Computes the gradients of convolution with respect to the output_shape.
+      If the HiaiVersion is earlier than 320, the input output_shape is required and the bias is not supported.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      output_shape:
+        comment: "The output shape, which is a 4-D [batch, output_channels, height, width] tensor"
+        tensor_types: DT_INT32
+        optional: true
+      filter:
+        comment:  |-
+          "when data_format is 'NCHW', with shape [Ci, Co/group, Hk, Wk]
+          must be a Const-OP.
+          "
+        tensor_types: DT_FLOAT, DT_INT8
+      x:
+        comment: "Input tensor with size [N, Ci, Hi, Wi]."
+        tensor_types: DT_FLOAT, DT_INT16, DT_UINT8
+      bias:
+        comment: "With shape [Co], must be a Const-OP."
+        tensor_types: DT_FLOAT, DT_INT32
+        optional: true
+      offset_w:
+        comment: "Reserved. For quantized."
+        tensor_types: DT_INT8
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+    attrs:
+      strides:
+        comment: "Stride along each axis."
+        type: LIST_INT
+        required: true
+      pads:
+        comment: "Padding for the beginning and ending along each axis [hh, ht, wh, wt]."
+        type: LIST_INT
+        default: "0, 0, 0, 0"
+      pad_mode:
+        comment: "Pad mode, SPECIFIC(Default): not set, using pads; SAME, or VALID"
+        type: STR
+        default: "SPECIFIC"
+      dilations:
+        comment: "Dilation value along each axis of the filter."
+        type: LIST_INT
+        default: "1, 1"
+      groups:
+        comment:  |-
+          "Number of groups input channels and output channels are divided into.
+          When groups = 1, traditional convolution will be performed;
+          When groups > 1, feature maps are grouped by group_count, and then each groups
+          is convoluted separately. Specially, 'groups' equal to the number of input feature
+          maps indicates Depthwise Convolution.
+          "
+        type: INT
+        default: "1"
+      data_format:
+        comment: "Format of operator, 'NCHW' or 'NHWC'. Default is 'NCHW'"
+        type: STR
+        default: "NCHW"
+      offset_x:
+        comment: "Reserved. For quantized."
+        type: INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc outputShapeTensorDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          TensorPtr outputShapeTensor = std::make_shared<hiai::Tensor>(outputShapeTensorDesc);
+          vector<int32_t> outputShapeDataValue = {5, 6, 7, 8} ;
+          outputShapeTensor->SetData((uint8_t*)outputShapeDataValue.data(), 4 * sizeof(int32_t));
+          auto outputShape = hiai::op::Const("outputShape").set_attr_value(outputShapeTensor);
+
+          TensorDesc filterTensorDesc(Shape({5, 5, 3, 4}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr filterTensor = std::make_shared<hiai::Tensor>(filterTensorDesc);
+          vector<float> filterDataValue(5 * 5 * 3 * 4, 0);
+          filterTensor->SetData((uint8_t*)filterDataValue.data(), 5 * 5 * 3 * 4 * sizeof(float));
+          auto filter = hiai::op::Const("filter").set_attr_value(filterTensor);
+
+          auto convTranspose = hiai::op::ConvTranspose("convTranspose")
+                               .set_input_output_shape(outputShape)
+                               .set_input_filter(filter)
+                               .set_input_x(x)
+                               .set_attr_strides({1, 1})
+                               .set_attr_dilations({1, 1})
+                               .set_attr_pads({0, 0, 0, 1})
+                               .set_attr_pad_mode("SAME")
+                               .set_attr_groups(1)
+                               .set_attr_data_format("NCHW");
+      "
+
+  BiasAdd:
+    comment: "Adds bias to 'x'."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor of any number of dimensions"
+        tensor_types: DT_FLOAT
+      bias:
+        comment: "1D tensor of size equal to the C dimension of 'x'"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Broadcast sum of 'x' and 'bias'"
+        tensor_types: DT_FLOAT
+    attrs:
+      data_format:
+        comment: "Format of operator, 'NCHW' or 'NHWC'. Default is 'NCHW'"
+        type: STR
+        default: "NCHW"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc biasTensorDesc(Shape({5}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr biasTensor = std::make_shared<hiai::Tensor>(biasTensorDesc);
+          vector<float> dataValue(5, 0.0);
+          biasTensor->SetData((uint8_t*)dataValue.data(), 5 * sizeof(float));
+          auto bias = hiai::op::Const("bias").set_attr_value(biasTensor);
+
+          auto biasAdd = hiai::op::BiasAdd("biasAdd")
+                         .set_input_x(x)
+                         .set_input_bias(bias);
+      "
+
+  Eltwise:
+    comment: "Compute all input tensors element-wise with specific mode."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+        dynamic: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      N:
+        comment: "The count of the x."
+        type: INT
+        required: true
+      mode:
+        comment: "Either 0 (product), 1 (sum), 2 (max), 3 (mean). Defaults to 1 (sum)."
+        type: INT
+        default: "1"
+      coeff:
+        comment: "Blob-wise coefficient for sum operation."
+        type: LIST_FLOAT
+        default: ""
+    examples: |-
+      "    TensorDesc xDesc1(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x1 = hiai::op::Data("x1");
+          x1.update_input_desc_x(xDesc1);
+
+          TensorDesc xDesc2(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x2 = hiai::op::Data("x2");
+          x2.update_input_desc_x(xDesc2);
+
+          auto eltwise = hiai::op::Eltwise("eltwise")
+                         .create_dynamic_input_x(2)
+                         .set_dynamic_input_x(1, x1)
+                         .set_dynamic_input_x(2, x2)
+                         .set_attr_N(2)
+                         .set_attr_mode(0);
+      "
+
+  LRN:
+    comment:  |-
+      "Local Response Normalization.
+      sqr_sum[a, b, c, d] = sum(input[a, b - ((depth_radius - 1 ) / 2) : b + ((depth_radius - 1 ) / 2) + 1, c, d ] ** 2).
+      output = input / (bias + (alpha / depth_radius) * sqr_sum) ** beta.
+      "
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      depth_radius:
+        comment: "Number of channels to sum over."
+        type: INT
+        default: "5"
+      bias:
+        comment: "Offset (usually positive to avoid dividing by 0)."
+        type: FLOAT
+        default: "1.0"
+      alpha:
+        comment: "Scale factor, usually positive."
+        type: FLOAT
+        default: "1.0"
+      beta:
+        comment: "Exponent value."
+        type: FLOAT
+        default: "0.5"
+      norm_region:
+        comment: "Reserved. default:ACROSS_CHANNELS. Normalization between channels."
+        type: STR
+        default: "ACROSS_CHANNELS"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto lrn = hiai::op::LRN("lrn")
+                     .set_input_x(x)
+                     .set_attr_depth_radius(5)
+                     .set_attr_bias(1.0)
+                     .set_attr_alpha(1.0)
+                     .set_attr_beta(0.5);
+      "
+
+  ConvolutionDepthwise:
+    comment: "Computes a depthwise convolution from given input and filter tensors."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor with size [N, Ci, Hi, Wi]."
+        tensor_types: DT_FLOAT, DT_UINT8, DT_INT4
+      filter:
+        comment: "With shape [Co, 1, Hk, Wk], must be a Const-OP."
+        tensor_types: DT_FLOAT, DT_INT8, DT_INT4
+      bias:
+        comment: "With shape [Co], must be a Const-OP."
+        tensor_types: DT_FLOAT, DT_INT32
+        optional: true
+      offset_w:
+        comment: "Reserved. For quantized."
+        tensor_types: DT_INT8
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+    attrs:
+      strides:
+        comment: "Stride along each axis."
+        type: LIST_INT
+        required: true
+      dilations:
+        comment: "Dilation value along each axis of the filter."
+        type: LIST_INT
+        default: "1, 1"
+      pads:
+        comment: "Padding for the beginning and ending along each axis [hh, ht, wh, wt]."
+        type: LIST_INT
+        default: "0, 0, 0, 0"
+      pad_mode:
+        comment: "Pad mode, 'SPECIFIC'(not set, only support in CPUCL); 'SAME', or 'VALID'."
+        type: STR
+        default: "SAME"
+      data_format:
+        comment: "Format of operator, 'NCHW' or 'NHWC'. Default is 'NCHW'"
+        type: STR
+        default: "NCHW"
+      offset_x:
+        comment: "Reserved. For quantized."
+        type: INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc filterTensorDesc(Shape({5, 1, 3, 4}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr filterTensor = std::make_shared<hiai::Tensor>(filterTensorDesc);
+          vector<float> filterDataValue(5 * 1 * 3 * 4, 0);
+          filterTensor->SetData((uint8_t*)filterDataValue.data(), 5 * 1 * 3 * 4 * sizeof(float));
+          auto filter = hiai::op::Const("filter").set_attr_value(filterTensor);
+
+          TensorDesc biasTensorDesc(Shape({5}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr biasTensor = std::make_shared<hiai::Tensor>(biasTensorDesc);
+          vector<float> biasDataValue(5, 0);
+          biasTensor->SetData((uint8_t*)biasDataValue.data(), 5 * sizeof(float));
+          auto bias = hiai::op::Const("bias").set_attr_value(biasTensor);
+
+          auto convolutionDepthwise = hiai::op::ConvolutionDepthwise("ConvolutionDepthwise")
+                                      .set_input_x(x)
+                                      .set_input_filter(filter)
+                                      .set_input_bias(bias)
+                                      .set_attr_strides({1, 1})
+                                      .set_attr_dilations({1, 1})
+                                      .set_attr_pads({0, 0, 0, 1})
+                                      .set_attr_pad_mode("SAME")
+                                      .set_attr_data_format("NCHW");
+      "
+
+  QuantizedConvolutionDepthwise:
+    comment: "Quantized for ConvolutionDepthwise, computes a depthwise convolution from given input and filter tensors."
+    add_version: 100.310.010.015
+    inputs:
+      x:
+        comment: "Input tensor with size [N, Ci, Hi, Wi]"
+        tensor_types: DT_FLOAT
+      filter:
+        comment:  |-
+          "With shape [Co, 1, Hk, Wk], must be a Const-OP.
+          If filter_quant_type = 1, shall use type 'tensor(int8)'.
+          for(i in C) { quant_filter[i] = origin_filter[i] / filter_quant_scales[i];}
+          "
+        tensor_types: DT_FLOAT, DT_INT8
+      bias:
+        comment:  |-
+          "With shape [Co], must be a const OP.
+          If filter_quant_type = 1, shall use type 'tensor(int32)'.
+          for(i in C) { quant_bias[i] = origin_bias[i] / (x_quant_scale * filter_quant_scales[i]);}
+          "
+        tensor_types: DT_FLOAT,  DT_INT32
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      strides:
+        comment: "Stride along each axis."
+        type: LIST_INT
+        required: true
+      dilations:
+        comment: "Dilation value along each axis of the filter."
+        type: LIST_INT
+        default: "1, 1"
+      pads:
+        comment: "Padding for the beginning and ending along each axis [hh, ht, wh, wt]."
+        type: LIST_INT
+        default: "0, 0, 0, 0"
+      pad_mode:
+        comment: "Pad mode, using pads; SAME, or VALID"
+        type: STR
+        default: "SAME"
+      data_format:
+        comment: "Only support NCHW. format of input, 'NCHW' or 'NHWC'. Default is 'NCHW'"
+        type: STR
+        default: "NCHW"
+      x_quant_type:
+        comment: "Either 0-No quant or 1-Quant8 (linear); Reserved: 2-Quant4 (linear), 3-Quant2 (linear)"
+        type: INT
+        default: "0"
+      filter_quant_type:
+        comment: "Either 0-No quant or 1-Quant8 (linear); Reserved: 2-Quant4 (linear), 3-Quant2 (linear)"
+        type: INT
+        default: "0"
+      x_quant_scale:
+        comment: "If x_quant_type > 0, this Attr is required."
+        type: FLOAT
+        default: "1.0"
+      x_quant_offset:
+        comment: "Data offset"
+        type: INT
+        default: "0"
+      filter_quant_scales:
+        comment:  |-
+          "If filter_quant_type > 0, this attr is required.
+          must be 1 or n of [n, c, h, w] of 'filter'.
+          "
+        type: LIST_FLOAT
+        default: ""
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc filterTensorDesc(Shape({5, 1, 3, 4}), FORMAT_NCHW, DT_INT8);
+          TensorPtr filterTensor = std::make_shared<hiai::Tensor>(filterTensorDesc);
+          vector<int8_t> filterDataValue(5 * 1 * 3 * 4, 0);
+          filterTensor->SetData((uint8_t*)filterDataValue.data(), 5 * 1 * 3 * 4 * sizeof(int8_t));
+          auto filter = hiai::op::Const("filter").set_attr_value(filterTensor);
+
+          TensorDesc biasTensorDesc(Shape({5}), FORMAT_NCHW, DT_INT32);
+          TensorPtr biasTensor = std::make_shared<hiai::Tensor>(biasTensorDesc);
+          vector<int32_t> biasDataValue(5, 0);
+          biasTensor->SetData((uint8_t*)biasDataValue.data(), 5 * sizeof(int32_t));
+          auto bias = hiai::op::Const("bias").set_attr_value(biasTensor);
+
+          std::vector<ge::AttrValue::FLOAT> quantScales(5, 1.0);
+          auto quantizedConvolutionDepthwise = hiai::op::QuantizedConvolutionDepthwise("quantizedConvolutionDepthwise")
+                                               .set_input_x(x)
+                                               .set_input_filter(filter)
+                                               .set_input_bias(bias)
+                                               .set_attr_strides({1, 1})
+                                               .set_attr_dilations({1, 1})
+                                               .set_attr_pads({0, 0, 0, 1})
+                                               .set_attr_pad_mode("SAME")
+                                               .set_attr_data_format("NCHW")
+                                               .set_attr_x_quant_type(1)
+                                               .set_attr_filter_quant_type(1)
+                                               .set_attr_x_quant_scale(1.0)
+                                               .set_attr_x_quant_offset(1.0)
+                                               .set_attr_filter_quant_scales(quantScales);
+      "
+
+  FullyConnection:
+    comment: "Computes an inner product with an input tensor, a set of learned weights and adds biases."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_UINT8
+      w:
+        comment: "Weight tensor, must be a Const-OP."
+        tensor_types: DT_FLOAT, DT_INT8
+      b:
+        comment: "1D tensor for bias, must be a Const-OP."
+        tensor_types: DT_FLOAT, DT_INT32
+        optional: true
+      offset_w:
+        comment: "Reserved. For quantized."
+        tensor_types: DT_INT8
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor."
+        tensor_types: DT_FLOAT, DT_INT32
+    attrs:
+      num_output:
+        comment: "Number of neurons output after full connection."
+        type: INT
+        required: true
+      transpose:
+        comment: "Reserved. Whether the weight matrix is transposed."
+        type: BOOL
+        default: "false"
+      axis:
+        comment: "Reserved. Inner product calculation on the axis."
+        type: INT
+        default: "1"
+      offset_x:
+        comment: "Reserved. For quantized."
+        type: INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc filterTensorDesc(Shape({4, 210, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr filterTensor = std::make_shared<hiai::Tensor>(filterTensorDesc);
+          vector<float> filterDataValue(4 * 210 * 1 * 1, 0);
+          filterTensor->SetData((uint8_t*)filterDataValue.data(), 4 * 210 * 1 * 1 * sizeof(float));
+          auto filter = hiai::op::Const("filter").set_attr_value(filterTensor);
+
+          auto fullyConnection = hiai::op::FullyConnection("fullyConnection")
+                               .set_input_x(x)
+                               .set_input_w(filter)
+                               .set_attr_num_output(4);
+      "
+
+  QuantizedFullyConnection:
+    comment:  |-
+      "Quantized for FullyConnection,
+      computes an inner product with an input tensor, a set of learned weights and adds biases.
+      "
+    add_version: 100.310.010.015
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+      w:
+        comment:  |-
+          "Weight tensor, must be a Const-OP.
+          If w_quant_type = 1, shall use type 'tensor(int8)'.
+          for(i in C) { quant_filter[i] = origin_filter[i] / filter_quant_scales[i];}
+          "
+        tensor_types: DT_FLOAT, DT_INT8
+      b:
+        comment:  |-
+          "1D tensor for bias, must be a Const-OP.
+          If w_quant_type = 1, shall use type 'tensor(int32)'.
+          for(i in C) { quant_bias[i] = origin_bias[i] / (x_quant_scale * filter_quant_scales[i]);}
+          "
+        tensor_types: DT_FLOAT, DT_INT32
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      num_output:
+        comment: "Number of neurons output after full connection."
+        type: INT
+        required: true
+      transpose:
+        comment: "Reserved. Whether the weight matrix is transposed."
+        type: BOOL
+        default: "false"
+      axis:
+        comment: "Reserved. Inner product calculation on the axis."
+        type: INT
+        default: "1"
+      x_quant_type:
+        comment: "Either 0-No quant or 1-Quant8 (linear); Reserved: 2-Quant4 (linear), 3-Quant2 (linear)"
+        type: INT
+        default: "0"
+      w_quant_type:
+        comment: "Either 0-No quant or 1-Quant8 (linear); Reserved: 2-Quant4 (linear), 3-Quant2 (linear)"
+        type: INT
+        default: "0"
+      x_quant_scale:
+        comment: "If x_quant_type > 0, this Attr is required."
+        type: FLOAT
+        default: "1.0"
+      x_quant_offset:
+        comment: "Data offset"
+        type: INT
+        default: "0"
+      w_quant_scales:
+        comment:  |-
+          "If w_quant_type > 0, this Attr is required.
+          must be 1 or n of [n, c, h, w] of 'w'.
+          "
+        type: LIST_FLOAT
+        default: ""
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc filterTensorDesc(Shape({4, 210, 1, 1}), FORMAT_NCHW, DT_INT8);
+          TensorPtr filterTensor = std::make_shared<hiai::Tensor>(filterTensorDesc);
+          vector<int8_t> filterDataValue(4 * 210 * 1 * 1, 0);
+          filterTensor->SetData((uint8_t*)filterDataValue.data(), 4 * 210 * 1 * 1 * sizeof(int8_t));
+          auto filter = hiai::op::Const("filter").set_attr_value(filterTensor);
+
+          auto quantizedFullyConnection = hiai::op::QuantizedFullyConnection("quantizedFullyConnection")
+                                         .set_input_x(x)
+                                         .set_input_w(filter)
+                                         .set_attr_num_output(4)
+                                         .set_attr_x_quant_type(1)
+                                         .set_attr_w_quant_type(1)
+                                         .set_attr_x_quant_scale(1.0)
+                                         .set_attr_x_quant_offset(1.0)
+                                         .set_attr_w_quant_scales({1.0});
+      "
+
+  PoolingD:
+    comment: "Pools the input tensors by taking the max, average, etc. within regions."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_UINT8
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_UINT8
+    attrs:
+      mode:
+        comment: "Either 0 max pooling), 1 (avg pooling), or 2 (L2 pooling)"
+        type: INT
+        default: "0"
+      pad_mode:
+        comment: "Pad mode, either 0 (NOTSET), 5 (VALID) or 6 (SAME). Defaults to 0 (NOTSET)."
+        type: INT
+        default: "0"
+      global_pooling:
+        comment: "Defaults to false. When global_pooling is true, window values are ignored."
+        type: BOOL
+        default: "false"
+      window:
+        comment:  |-
+          "Window size, specifying the height and width of each filter. Here the size must be 2
+          and value >= 1.
+          "
+        type: LIST_INT
+        default: "1, 1"
+      pad:
+        comment:  |-
+          "Pad size, specifying the number of pixels to (implicitly) add to each side of the input.
+          Here the size must be 4 and value >= 0.
+          "
+        type: LIST_INT
+        default: "0, 0, 0, 0"
+      stride:
+        comment:  |-
+          "Stride size, specifying the intervals at which to apply the filters to the input.
+          Here the size must be 2 and value >= 1.
+          "
+        type: LIST_INT
+        default: "1, 1"
+      ceil_mode:
+        comment:  |-
+          "Default 0 (floor: The largest integer not greater than the argument),
+          or 1 (ceil: The smallest integer greater than argument)
+          "
+        type: INT
+        default: "0"
+      data_mode:
+        comment: "Data mode, either 0 (rounded up) or 1 (rounded down)"
+        type: INT
+        default: "1"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto poolingD = hiai::op::PoolingD("poolingD")
+                          .set_input_x(x)
+                          .set_attr_mode(0)
+                          .set_attr_pad_mode(0)
+                          .set_attr_global_pooling(false)
+                          .set_attr_window({3, 3})
+                          .set_attr_pad({0, 0, 0, 0})
+                          .set_attr_stride({9, 9})
+                          .set_attr_ceil_mode(1)
+                          .set_attr_data_mode(0);
+      "
+
+  Scale:
+    comment:  |-
+      "Computes the element-wise product of input tensors, with the shape of the scale 'broadcast' to match
+      the shape of 'x': y = x * scale + bias.
+      "
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+      scale:
+        comment: "Tensor or const op, when no bias, must be a const OP."
+        tensor_types: DT_FLOAT
+      bias:
+        comment: "Must be a const OP."
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor, with the same shape as 'x'"
+        tensor_types: DT_FLOAT
+    attrs:
+      axis:
+        comment: "Reserved. Axis of input tensor along which to apply other tensors (scale or bias)."
+        type: INT
+        default: "1"
+      num_axes:
+        comment: "Reserved. First input is the number of covered axes."
+        type: INT
+        default: "1"
+      scale_from_blob:
+        comment: "Reserved."
+        type: BOOL
+        default: "false"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc filterTensorDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr filterTensor = std::make_shared<hiai::Tensor>(filterTensorDesc);
+          vector<float> filterDataValue(4 * 5 * 6 * 7, 1.0);
+          filterTensor->SetData((uint8_t*)filterDataValue.data(), 4 * 5 * 6 * 7 * sizeof(float));
+          auto filter = hiai::op::Const("filter").set_attr_value(filterTensor);
+
+          TensorDesc biasTensorDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr biasTensor = std::make_shared<hiai::Tensor>(biasTensorDesc);
+          vector<float> biasDataValue(4 * 5 * 6 * 7, 1.0);
+          biasTensor->SetData((uint8_t*)biasDataValue.data(), 4 * 5 * 6 * 7 * sizeof(float));
+          auto bias = hiai::op::Const("bias").set_attr_value(biasTensor);
+
+          auto scale = hiai::op::Scale("scale")
+                       .set_input_x(x)
+                       .set_input_scale(filter)
+                       .set_input_bias(bias);
+      "
+
+  ShuffleChannel:
+    comment:  |-
+      "Randomly shuffles channels followed by a group convolutional layer, usually utilized for ShuffleNet CNN
+      architecture.
+      "
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT8
+    outputs:
+      y:
+        comment: "Tensor of same shape and type as 'x', shuffled according to 'group'"
+        tensor_types: DT_FLOAT, DT_INT8
+    attrs:
+      group:
+        comment: "Number of groups that input channels and output channels are divided into. Must be positive."
+        type: INT
+        default: "1"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto shuffleChannel = hiai::op::ShuffleChannel("ShuffleChannel")
+                               .set_input_x(x)
+                               .set_attr_group(1);
+      "
+
+  ShuffleChannelV2:
+    comment:  |-
+      "Shuffle the channels of the input tensor.
+      Given an input tensor and a integer value of num_groups, ShuffleChannelV2
+      divide the channel dimension into group, and reorganize the
+      channels by grouping channels with the same index in each group.
+      Along the channel dimension, the output is calculated using this formula:
+      output_channel[k * group + g] = input_channel[g * group_size + k]
+      where group_size = num_channels / group
+      The number of channels must be divisible by group.
+      Supported tensor rank: up to 4
+      "
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "An n-D tensor, specifying the tensor to be shuffled."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "A tensor of same shape as x."
+        tensor_types: DT_FLOAT
+    attrs:
+      axis:
+        comment:  |-
+          "scalar, specifying the dimension
+          channel shuffle would be performed on. Negative index is used to
+          specify axis from the end (e.g. -1 for the last axis). Must be in
+          the range [-n, n).
+          "
+        type: INT
+        default: "0"
+      group:
+        comment: "scalar, specifying the number of groups."
+        type: INT
+        default: "1"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto shuffleChannelV2 = hiai::op::ShuffleChannelV2("ShuffleChannelV2")
+                                  .set_input_x(x)
+                                  .set_attr_group(1)
+                                  .set_attr_axis(0);
+      "
+
+  Softmax:
+    comment: "Computes the softmax (normalized exponential) values for given input."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output values, with the same shape as the x"
+        tensor_types: DT_FLOAT
+    attrs:
+      axis:
+        comment: "Dimension softmax would be performed on"
+        type: INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto softmax = hiai::op::Softmax("softmax")
+                         .set_input_x(x)
+                         .set_attr_axis(1);
+      "
+
+  TopK:
+    comment: "Calculate values and indices of the k largest entries of the last dimension and output."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "1-D or higher Tensor with last dimension at least k"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+      k:
+        comment: "Const OP. Number of top elements to look for along the last dimension"
+        tensor_types: DT_INT32
+    outputs:
+      values:
+        comment: "k largest elements along each last dimensional slice"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+      indices:
+        comment: "indices of values within the last dimension of input"
+        tensor_types: DT_INT32
+    attrs:
+      sorted:
+        comment:  |-
+          "If true, the resulting k elements will be sorted by the values in descending order.
+          If it be set to false, just make sure the k elements no losing, the data set is whole.
+          "
+        type: BOOL
+        default: "true"
+
+  LogSoftmax:
+    comment: "Computes the LogSoftmax (normalized exponential) values for each layer in the batch of the given input."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output values, with the same shape as the input tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      axis:
+        comment: "Dimension LogSoftmax would be performed on"
+        type: INT
+        default: "-1"
+
+  Rank:
+    comment: "Returns the rank of a tensor"
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "Tensor of type float, int32, bool, uint8."
+        tensor_types: DT_FLOAT, DT_INT32, DT_BOOL, DT_UINT8
+    outputs:
+      y:
+        comment: "Rank of the input tensor."
+        tensor_types: DT_INT32
+
+  ScatterNd:
+    comment: "Scatter 'x' into a new tensor according to 'indices'."
+    add_version: 100.320.010.010
+    inputs:
+      indices:
+        comment: "An Index tensor."
+        tensor_types: DT_INT32
+      x:
+        comment: "A tensor."
+        tensor_types: DT_FLOAT
+      shape:
+        comment: "A 1-D const tensor."
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Result, has same element type as x."
+        tensor_types: DT_FLOAT
+
+  FakeQuantWithMinMaxVarsPerChannel:
+    comment: "Quant input to special range."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "A input tensor, dtype support DT_FLOAT"
+        tensor_types: DT_FLOAT
+      min:
+        comment: "A tensor, define the min of clamping range for the inputs data"
+        tensor_types: DT_FLOAT
+      max:
+        comment: "A tensor, define the max of clamping range for the inputs data"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Result, has same element type as x."
+        tensor_types: DT_FLOAT
+    attrs:
+      num_bits:
+        comment: "An optional int. The bitwidth of the quantization, is between 2 and 16. Defaults to 8."
+        type: INT
+        default: "8"
+      narrow_range:
+        comment:  |-
+          "An optional bool. Defaults to False. If false, quantization range is[0; 2^num_bits - 1].
+          If True, quantization range is [1; 2^num_bits - 1].
+          "
+        type: BOOL
+        default: "false"
+
+  LogicalXor:
+    comment: "Returns the XOR value of 'x1' and 'x2' element-wise."
+    add_version: 100.320.010.010
+    inputs:
+      x1:
+        comment: "First input operand"
+        tensor_types: DT_BOOL
+      x2:
+        comment: "Second input operand"
+        tensor_types: DT_BOOL
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_BOOL
+
+  Threshold:
+    comment:  |-
+      "This operator is equivalent to the activation function.
+      If the value is greater than threshold, the output is 1. Otherwise, the output is 0.
+      "
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      threshold:
+        comment: "Threshold value"
+        type: FLOAT
+        default: "0"
+
+  AxisAlignedBboxTransform:
+    comment: "Transform axis-aligned bounding box proposals using bounding box deltas."
+    add_version: 100.320.010.010
+    inputs:
+      roi:
+        comment: "Input tensor, the location of the bounding box proposals, the shape should be [num_rois, 4]"
+        tensor_types: DT_FLOAT
+      bbox_deltas:
+        comment:  |-
+          "Input tensor, the bounding box delta for each region of interest and each class,
+          the shape should be [num_rois, num_classes * 4]
+          "
+        tensor_types: DT_FLOAT
+      batch_split:
+        comment: "Input tensor, the batch index of each box, the shape should be [num_rois]"
+        tensor_types: DT_INT32
+      im_info:
+        comment: "Input tensor, the information of each image in the batch, the shape should be [batches, 2]"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor, the coordinates of each output bounding box for each class"
+        tensor_types: DT_FLOAT
+
+  Clipboxes:
+    comment: "The function of this operator is to limit the coordinates of the preselected box to an effective range."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "Input the coordinates of the preselected box."
+        tensor_types: DT_FLOAT
+      im_info:
+        comment: "The const op, im_info must be 1-D 2 dims."
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+
+  Normalize:
+    comment: "First of all normalize the elements, then scale the normalized data and get the output."
+    add_version: 100.320.010.010
+    inputs:
+      x1:
+        comment: "The input tensor to be normalized."
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+      x2:
+        comment:  |-
+          "The scaling parameters, a const op.The input x2 must be [x2N, x2C, 1, 1],
+          if channel_shared is true, x2C must be 1,
+          otherwise x2C must be the same with x1C.
+          "
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+    attrs:
+      across_spatial:
+        comment: "Indicates whether standardization should cross spatial locations."
+        type: BOOL
+        default: "false"
+      channel_shared:
+        comment: "The parameters used to control x2 are shared by multiple channels."
+        type: BOOL
+        default: "true"
+      eps:
+        comment: "A very small float number used to avoid dividing by zero."
+        type: FLOAT
+        default: "2e-07f"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x1 = hiai::op::Data("x1");
+          x1.update_input_desc_x(xDesc);
+
+          TensorDesc xTensorDesc(Shape({3, 1, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr xTensor = std::make_shared<hiai::Tensor>(xTensorDesc);
+          vector<float> dataValue(3, 0.0);
+          xTensor->SetData((uint8_t*)dataValue.data(), 3 * sizeof(float));
+          auto x2 = hiai::op::Const("x2").set_attr_value(xTensor);
+
+          auto normalize = hiai::op::Normalize("normalize")
+                           .set_input_x1(x1)
+                           .set_input_x2(x2)
+                           .set_attr_across_spatial(false)
+                           .set_attr_channel_shared(true)
+                           .set_attr_eps(2e-07f);
+      "
+
+  DecodeBBox:
+    comment: "The operator adjust the preselection box coordinates anchors according to the parameter box_predictions."
+    add_version: 100.320.010.010
+    inputs:
+      box_predictions:
+        comment: "Prediction parameter data tensor."
+        tensor_types: DT_FLOAT
+      anchors:
+        comment: "Preselected box data tensor."
+        tensor_types: DT_FLOAT
+    outputs:
+      decoded_boxes:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+    attrs:
+      decode_clip:
+        comment: "Predictive parameter clipping upper limit. decode_clip >= 0."
+        type: FLOAT
+        default: "0.0"
+
+  SVDF:
+    comment:  |-
+      "a kind of stateful layer derived from the notion that a densely connected layer that's processing
+      a sequence of input frames can be approximated by using a singular value decomposition of each of its nodes.
+      "
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "the input 2-D tensor."
+        tensor_types: DT_FLOAT
+      weights_feature:
+        comment: "the weights_feature 2-D tensor.Only support Const op."
+        tensor_types: DT_FLOAT
+      weights_time:
+        comment: "the weights_time 2-D tensor.Only support Const op."
+        tensor_types: DT_FLOAT
+      bias:
+        comment: "the bias 1-D tensor.Only support Const op."
+        tensor_types: DT_FLOAT
+      state_in:
+        comment: "the state(in) 2-D tensor.Only support Const op."
+        tensor_types: DT_FLOAT
+    outputs:
+      state_out:
+        comment: "the state(out) tensor"
+        tensor_types: DT_FLOAT
+      y:
+        comment: "the output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      rank:
+        comment: "The rank of the SVD approximation."
+        type: INT
+        required: true
+      use_bias:
+        comment: "true: use the bias tensor."
+        type: BOOL
+        default: "false"
+
+  PRelu:
+    comment:  |-
+      "Performs parametric ReLU, produces one output data (Tensor)
+      where the function f(x) = slope * x for x < 0, f(x) = x for x >= 0
+      "
+    add_version: 100.500.010.010
+    inputs:
+      x:
+        comment: "A multi-dimensional Tensor of type float32. Input tensor with size [N, C, H, W]."
+        tensor_types: DT_FLOAT
+      weight:
+        comment:  |-
+          "Slope tensor of type float32, the shape must be 1C11 or C11, C is the channel of x tensor.
+          Must be a const OP.
+          "
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output values, with the same shape as the input tensor x"
+        tensor_types: DT_FLOAT
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc slopeTensorDesc(Shape({1, 5, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr slopeTensor = std::make_shared<hiai::Tensor>(slopeTensorDesc);
+          vector<float> dataValue(5, 0.0);
+          slopeTensor->SetData((uint8_t*)dataValue.data(), 5 * sizeof(float));
+          auto slope = hiai::op::Const("slope").set_attr_value(slopeTensor);
+
+          auto prelu = hiai::op::PRelu("PRelu")
+                       .set_input_x(x)
+                       .set_input_weight(slope);
+      "
+
+  Swish:
+    comment: "Calculates the swish function value of each element in the input tensor."
+    add_version: 100.600.020.100
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      scale:
+        comment: "Scaling factor"
+        type: FLOAT
+        default: "1.0"
+    examples: |-
+      "  TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+          x.update_output_desc_y(xDesc);
+          auto Swish = hiai::op::Swish("Swish")
+                      .set_input_x(x)
+                      .set_attr_scale(1);
+      "
+
+  Mish:
+    comment: "A Self Regularized Non-Monotonic Neural Activation Function"
+    add_version: 100.600.020.100
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    examples: |-
+      "  TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+          x.update_output_desc_y(xDesc);
+          auto Mish = hiai::op::Mish("Mish").set_input_x(x);
+      "
+
+  LayerNorm:
+    comment: "Computes layer norm"
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "Input tensor, a 2D-4D tensor"
+        tensor_types: DT_FLOAT
+      gamma:
+        comment: "A tensor, multiple to result"
+        tensor_types: DT_FLOAT
+      beta:
+        comment: "A tensor, add to result"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+      mean:
+        comment: "Reserved"
+        tensor_types: DT_FLOAT
+        optional: true
+      variance:
+        comment: "Reserved"
+        tensor_types: DT_FLOAT
+        optional: true
+    attrs:
+      begin_norm_axis:
+        comment: "Reserved."
+        type: INT
+        default: "1"
+      begin_params_axis:
+        comment:  |-
+          "Reserved.
+          NOTE: By default, the preceding two parameters are set to 1 (standard LayerNorm).
+                Other values do not take effect."
+        type: INT
+        default: "1"
+      epsilon:
+        comment: "A very small float number used to avoid dividing by zero."
+        type: FLOAT
+        default: "1e-7f"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc gammaDesc(Shape({1, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data gamma = hiai::op::Data("gamma");
+          gamma.update_input_desc_x(gammaDesc);
+
+          TensorDesc betaDesc(Shape({1, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data beta = hiai::op::Data("beta");
+          beta.update_input_desc_x(betaDesc);
+
+          auto layerNorm = hiai::op::LayerNorm("layerNorm")
+                           .set_input_x(x)
+                           .set_input_gamma(gamma)
+                           .set_input_beta(beta)
+                           .set_attr_epsilon(1e-7f);
+      "
+
+  InstanceNorm:
+    comment: "Computes instance norm"
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "Input tensor which supports 4D dimension format."
+        tensor_types: DT_FLOAT
+      gamma:
+        comment: "A tesnor, multiple to result"
+        tensor_types: DT_FLOAT
+      beta:
+        comment: "A tensor, add to result"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+      mean:
+        comment: "Reserved"
+        tensor_types: DT_FLOAT
+        optional: true
+      variance:
+        comment: "Reserved"
+        tensor_types: DT_FLOAT
+        optional: true
+    attrs:
+      data_format:
+        comment: "format of input, 'NCHW' or 'NHWC'. Default is 'NCHW'"
+        type: STR
+        default: "NCHW"
+      epsilon:
+        comment: "A very small float number used to avoid dividing by zero."
+        type: FLOAT
+        default: "1e-7f"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc gammaDesc(Shape({1, 5, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data gamma = hiai::op::Data("gamma");
+          gamma.update_input_desc_x(gammaDesc);
+
+          TensorDesc betaDesc(Shape({1, 5, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data beta = hiai::op::Data("beta");
+          beta.update_input_desc_x(betaDesc);
+
+          auto instanceNorm = hiai::op::InstanceNorm("instanceNorm")
+                           .set_input_x(x)
+                           .set_input_gamma(gamma)
+                           .set_input_beta(beta)
+                           .set_attr_epsilon(1e-7);
+      "
+
+  PriorBox:
+    comment: "The priorbox operator is used to deploy the default box at each location in the feature map."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT
+      img:
+        comment: "The information of image."
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      y:
+        comment: "The output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      min_size:
+        comment: "Minimum value of box."
+        type: LIST_FLOAT
+        required: true
+      max_size:
+        comment: "Maximum value of box."
+        type: LIST_FLOAT
+        required: true
+      aspect_ratio:
+        comment: "Width-to-height ratio of boxes."
+        type: LIST_FLOAT
+        required: true
+      flip:
+        comment: "Flip each aspect ratio"
+        type: BOOL
+        default: "true"
+      clip:
+        comment: "Oversized boxes can be reduced to specified limits"
+        type: BOOL
+        default: "false"
+      variance:
+        comment: "Adjustment box variance"
+        type: LIST_FLOAT
+        default: "0.1f"
+      step_h:
+        comment: "The height of step."
+        type: FLOAT
+        default: "0"
+      step_w:
+        comment: "The width of step."
+        type: FLOAT
+        default: "0"
+      offset:
+        comment: "The offset of frame."
+        type: FLOAT
+        default: "0.5"
+      img_h:
+        comment: "The height of the image."
+        type: INT
+        default: "0"
+      img_w:
+        comment: "The width of the image."
+        type: INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({1, 16, 80, 80}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          img_h/img_w:
+          std::vector<ge::AttrValue::FLOAT> variance =
+              {0.10000000149011612, 0.10000000149011612, 0.20000000298023224, 0.20000000298023224};
+          auto priorBox = hiai::op::PriorBox("priorBox")
+                          .set_input_x(x)
+                          .set_attr_min_size({30.0})
+                          .set_attr_max_size({60.0})
+                          .set_attr_aspect_ratio({1.0, 2.0})
+                          .set_attr_flip(false)
+                          .set_attr_variance(variance)
+                          .set_attr_step_h(8.0)
+                          .set_attr_step_w(8.0)
+                          .set_attr_offset(0.5)
+                          .set_attr_img_h(600)
+                          .set_attr_img_w(600);
+
+          img:
+          TensorDesc imgDesc(Shape({1, 3, 600, 600}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data img = hiai::op::Data("img");
+          img.update_input_desc_x(imgDesc);
+          std::vector<ge::AttrValue::FLOAT> variance =
+              {0.10000000149011612, 0.10000000149011612, 0.20000000298023224, 0.20000000298023224};
+          auto priorBox = hiai::op::PriorBox("priorBox")
+                          .set_input_x(x)
+                          .set_input_img(img)
+                          .set_attr_min_size({30.0})
+                          .set_attr_max_size({60.0})
+                          .set_attr_aspect_ratio({1.0, 2.0})
+                          .set_attr_flip(false)
+                          .set_attr_variance(variance)
+                          .set_attr_step_h(8.0)
+                          .set_attr_step_w(8.0)
+                          .set_attr_offset(0.5);
+      "
+
+  Proposal:
+    comment:  |-
+      "The function of the proposal operator is to obtain the optimal image region of the object
+      according to the migration of the default box and the probability of foreground.
+      "
+    add_version: 100.320.010.010
+    inputs:
+      cls_prob:
+        comment: "Generate the foreground and background probabilities of the box."
+        tensor_types: DT_FLOAT
+      bbox_pred:
+        comment: "Preselected box position."
+        tensor_types: DT_FLOAT
+      im_info:
+        comment: "The image information."
+        tensor_types: DT_FLOAT
+      rpn_bbox:
+        comment: "Number of Bboxs output by each batch."
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      rois:
+        comment: "Output box information."
+        tensor_types: DT_FLOAT
+      actual_rois_num:
+        comment: "Output box information."
+        tensor_types: DT_FLOAT
+    attrs:
+      feat_stride:
+        comment: "Specify the step size of two adjacent frames to extend H or W when generating the default box."
+        type: FLOAT
+        default: "16"
+      base_size:
+        comment: "The parameter used to generate the default box, indicating the basic size of the box."
+        type: FLOAT
+        default: "16"
+      min_size:
+        comment:  |-
+          "The minimum value of the side length of the box,
+          all boxes smaller than this minimum will be filtered out.
+          "
+        type: FLOAT
+        default: "16"
+      ratio:
+        comment: "Generate the parameters used in the default box."
+        type: LIST_FLOAT
+        default: "0.5, 1, 2"
+      scale:
+        comment: "Generate the parameters used in the default box."
+        type: LIST_FLOAT
+        default: "32, 16, 8"
+      pre_nms_topn:
+        comment: "The number of points before the nms operation."
+        type: INT
+        default: "6000"
+      post_nms_topn:
+        comment: "The number of points after the nms operation."
+        type: INT
+        default: "304"
+      iou_thresh:
+        comment: "Threshold used by the filter box must be (0, 1]."
+        type: FLOAT
+        default: "0.7f"
+      output_actual_rois_num:
+        comment: "Now support true."
+        type: BOOL
+        default: "true"
+
+  LSTM:
+    comment: "Unidirectional Long Short-Term Memory layer, using an internal network unrolled in time."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor for LSTM cell. Shape is  [T, B, X], indicating max_time, batch_size and input."
+        tensor_types: DT_FLOAT
+      cont:
+        comment: "Sequence continuation indicators. Shape is [T, B]."
+        tensor_types: DT_FLOAT
+      w_x:
+        comment: "Weight tensor, must be const op. Used between x and hidden units. Shape is [4 * hidden-size, X]."
+        tensor_types: DT_FLOAT
+      bias:
+        comment: "Bias for w_x. Shape is [4 * hidden-size]."
+        tensor_types: DT_FLOAT
+      w_h:
+        comment: "Weight tensor, must be const op. Used between time steps. Shape is [4 * hidden-size, hidden-size]."
+        tensor_types: DT_FLOAT
+      x_static:
+        comment: "Static data with constant time. Shape is [B, X]."
+        tensor_types: DT_FLOAT
+        optional: true
+      h_0:
+        comment: "Reserved. The input makes sense when the attr 'expose_hidden' is set to true."
+        tensor_types: DT_FLOAT
+        optional: true
+      c_0:
+        comment: "Reserved. The input makes sense when the attr 'expose_hidden' is set to true."
+        tensor_types: DT_FLOAT
+        optional: true
+      w_x_static:
+        comment:  |-
+          "Weight tensor, must be const op. Used between xstatic and hidden units.
+          Shape is [4 * hidden-size, X].
+          "
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      h:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+      h_t:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+      c_t:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+    attrs:
+      expose_hidden:
+        comment: "Reserved. Only support false now."
+        type: BOOL
+        default: "false"
+

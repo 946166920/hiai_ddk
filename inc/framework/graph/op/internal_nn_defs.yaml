@@ -1,0 +1,1155 @@
+nn_ops:
+  PadV3:
+    comment: "The operation pads input according to the paddings and constant_values."
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT, DT_INT32
+      paddings:
+        comment:  |-
+          "The values of paddings, as a role of dimensions to be added on the input tensor x,
+          must be a Const-OP.
+          "
+        tensor_types: DT_INT32
+      constant_values:
+        comment:  |-
+          "A tensor of the same type as x, that indicates the value to use for padding input,
+          must be a Const-OP.
+          "
+        tensor_types: DT_FLOAT, DT_INT32
+        optional: true
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT, DT_INT32
+    attrs:
+      mode:
+        comment: "constant, fill zero, only support ''constant'"
+        type: STR
+        default: "constant"
+
+  TopKD:
+    comment: "Calculate values and indices of the k largest entries of the last dimension and output."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "1-D or higher Tensor with last dimension at least k"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+      assist_seq:
+        comment: "reserved"
+        tensor_types: DT_INT32
+    outputs:
+      values:
+        comment: "k largest elements along each last dimensional slice"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8
+      indices:
+        comment: "indices of values within the last dimension of input"
+        tensor_types: DT_INT32
+    attrs:
+      k:
+        comment: "Number of top elements to look for along the last dimension"
+        type: INT
+        required: true
+      dim:
+        comment: "Dimension on which to do the sort"
+        type: INT
+        default: "-1"
+      largest:
+        comment: "Whether to return the top-K largest or smallest elements"
+        type: BOOL
+        default: "true"
+      sorted:
+        comment:  |-
+          "If true, the resulting k elements will be sorted by the values in descending order.
+          If it be set to false, just make sure the k elements no losing, the data set is whole.
+          "
+        type: BOOL
+        default: "true"
+
+  LSTMV2:
+    comment: "Long Short-Term Memory layer, using an internal network unrolled in time."
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment:  |-
+          "The input tensor for LSTM cell.
+          when model attr is \"Basic\". A 2-D tensor of shape [batch_size, input_size],
+          when model attr is \"UniDirectional\". A 3-D tensor of shape: If time-major:
+          [max_time, batch_size, input_size] If batch-major: [batch_size, max_time, input_size].
+          "
+        tensor_types: DT_FLOAT
+      input_to_input_weight:
+        comment:  |-
+          "A 2-D tensor of shape [num_units, input_size],
+          where "num_units" corresponds to the number of cell units.
+          "
+        tensor_types: DT_FLOAT
+      input_to_forget_weight:
+        comment: "A 2-D tensor of shape [num_units, input_size]."
+        tensor_types: DT_FLOAT
+      input_to_cell_weight:
+        comment: "A 2-D tensor of shape [num_units, input_size]."
+        tensor_types: DT_FLOAT
+      input_to_output_weight:
+        comment: "A 2-D tensor of shape [num_units, input_size]."
+        tensor_types: DT_FLOAT
+      recurrent_to_input_weight:
+        comment: "A 2-D tensor of shape [num_units, output_size]."
+        tensor_types: DT_FLOAT
+      recurrent_to_forget_weight:
+        comment: "A 2-D tensor of shape [num_units, output_size]."
+        tensor_types: DT_FLOAT
+      recurrent_to_cell_weight:
+        comment: "A 2-D tensor of shape [num_units, output_size]."
+        tensor_types: DT_FLOAT
+      recurrent_to_output_weight:
+        comment: "A 2-D tensor of shape [num_units, output_size]."
+        tensor_types: DT_FLOAT
+      cell_to_input_weight:
+        comment: "A 1-D tensor of shape [num_units]."
+        tensor_types: DT_FLOAT
+      cell_to_forget_weight:
+        comment: "A 1-D tensor of shape [num_units]."
+        tensor_types: DT_FLOAT
+      cell_to_output_weight:
+        comment: "A 1-D tensor of shape [num_units]."
+        tensor_types: DT_FLOAT
+      input_gate_bias:
+        comment: "A 1-D tensor of shape [num_units]."
+        tensor_types: DT_FLOAT
+      forget_gate_bias:
+        comment: "A 1-D tensor of shape [num_units]."
+        tensor_types: DT_FLOAT
+      cell_gate_bias:
+        comment: "A 1-D tensor of shape [num_units]."
+        tensor_types: DT_FLOAT
+      output_gate_bias:
+        comment: "A 1-D tensor of shape [num_units]."
+        tensor_types: DT_FLOAT
+      projection_weights:
+        comment: "A 2-D tensor of shape [output_size, num_units]."
+        tensor_types: DT_FLOAT
+      projection_bias:
+        comment: "A 1-D tensor of shape [output_size]."
+        tensor_types: DT_FLOAT
+      output_state_in:
+        comment: "A 2-D tensor of shape [batch_size, output_size]."
+        tensor_types: DT_FLOAT
+      cell_state_in:
+        comment: "A 2-D tensor of shape [batch_size, num_units]."
+        tensor_types: DT_FLOAT
+      input_normalization_weights:
+        comment: "Reserved. A 1-D tensor of shape [num_units]. current is not support."
+        tensor_types: DT_FLOAT
+        optional: true
+      forget_normalization_weights:
+        comment: "Reserved. A 1-D tensor of shape [num_units]. current is not support."
+        tensor_types: DT_FLOAT
+        optional: true
+      cell_normalization_weights:
+        comment: "Reserved., A 1-D tensor of shape [num_units]. current is not support."
+        tensor_types: DT_FLOAT
+        optional: true
+      output_normalization_weights:
+        comment: "Reserved. A 1-D tensor of shape [num_units]. current is not support."
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      y:
+        comment: "The output tensor. The output size are directed by \"mode\"."
+        tensor_types: DT_FLOAT
+        dynamic: true
+    attrs:
+      mode:
+        comment:  |-
+          "\"Basic\" mean BasicLstm. When mode set to \"Basic\" have four outputs :
+          output 0: Reserved. The scratch buffer A 2-D tensor of shape [batch_size, num_units * 3] with CIFG,
+          or [batch_size, num_units * 4] without CIFG.
+          output 1: The output state (out). A 2-D tensor of shape [batch_size, output_size].
+          output 2: The cell state (out). A 2-D tensor of shape [batch_size, num_units].
+          output 3: The output. A 2-D tensor of shape [batch_size, output_size].
+          \"UniDirectional\" mean UniDirectional LSTM, have one output :
+          0: The output. A 3-D tensor of shape: If time-major: [max_time, batch_size, output_size]
+          If batch-major: [batch_size, max_time, output_size].
+          "
+        type: STR
+        default: "Basic"
+      activation:
+        comment:  |-
+          "LSTM activation mode, with options as follows:
+          1 : Tanh
+          3 : ReLU
+          4 : ReLU6
+          6 : Sigmoid
+          "
+        type: INT
+        default: "4"
+      lstm_cell_clip:
+        comment: "clipping threshold for the cell state."
+        type: FLOAT
+        default: "0.0"
+      lstm_proj_clip:
+        comment: "clipping threshold for the output from the projection layer."
+        type: FLOAT
+        default: "0.0"
+      use_cifg:
+        comment: "True : enable CIFG feature; False: disable CIFG feature."
+        type: BOOL
+        default: "false"
+      use_peephole:
+        comment: "True : enable peephole optimization; False: disable peephole optimization"
+        type: BOOL
+        default: "false"
+      use_projection:
+        comment: "True. enable projection weight; False: disable projection weight."
+        type: BOOL
+        default: "false"
+      use_projection_bias:
+        comment:  |-
+          "True. enable projection bias; False: disable projection bias.
+          IF use_projection is False, use_projection_bias is disabled.
+          "
+        type: BOOL
+        default: "false"
+      time_major:
+        comment: "only effect when model is \"UniDirectional\""
+        type: BOOL
+        default: "true"
+
+  BidirectionalSequenceLstm:
+    comment:  |-
+      "A recurrent neural network layer that applies an LSTM cell to a sequence of inputs
+      in forward and backward directions.
+      "
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment:  |-
+          "The input. A 3-D tensor of shape: If time-major: [max_time, batch_size, input_size]
+          If batch-major: [batch_size, max_time, input_size].
+          "
+        tensor_types: DT_FLOAT
+      fw_input_to_input_weight:
+        comment: "A 2-D tensor of shape [fw_num_units, input_size]."
+        tensor_types: DT_FLOAT
+      fw_input_to_forget_weight:
+        comment: "A 2-D tensor of shape [fw_num_units, input_size]."
+        tensor_types: DT_FLOAT
+      fw_input_to_cell_weight:
+        comment: "A 2-D tensor of shape [fw_num_units, input_size]."
+        tensor_types: DT_FLOAT
+      fw_input_to_output_weight:
+        comment: "A 2-D tensor of shape [fw_num_units, input_size]."
+        tensor_types: DT_FLOAT
+      fw_recurrent_to_input_weight:
+        comment: "A 2-D tensor of shape [fw_num_units, fw_output_size]."
+        tensor_types: DT_FLOAT
+      fw_recurrent_to_forget_weight:
+        comment: "A 2-D tensor of shape [fw_num_units, fw_output_size]."
+        tensor_types: DT_FLOAT
+      fw_recurrent_to_cell_weight:
+        comment: "A 2-D tensor of shape [fw_num_units, fw_output_size]."
+        tensor_types: DT_FLOAT
+      fw_recurrent_to_output_weight:
+        comment: "A 2-D tensor of shape [fw_num_units, fw_output_size]."
+        tensor_types: DT_FLOAT
+      fw_cell_to_input_weight:
+        comment: "A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+      fw_cell_to_forget_weight:
+        comment: "A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+      fw_cell_to_output_weight:
+        comment: "A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+      fw_input_gate_bias:
+        comment: "A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+      fw_forget_gate_bias:
+        comment: "A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+      fw_cell_gate_bias:
+        comment: "A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+      fw_output_gate_bias:
+        comment: "A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+      bw_input_to_input_weight:
+        comment: "A 2-D tensor of shape [bw_num_units, input_size]."
+        tensor_types: DT_FLOAT
+      bw_input_to_forget_weight:
+        comment: "A 2-D tensor of shape [bw_num_units, input_size]."
+        tensor_types: DT_FLOAT
+      bw_input_to_cell_weight:
+        comment: "A 2-D tensor of shape [bw_num_units, input_size]."
+        tensor_types: DT_FLOAT
+      bw_input_to_output_weight:
+        comment: "A 2-D tensor of shape [bw_num_units, input_size]."
+        tensor_types: DT_FLOAT
+      bw_recurrent_to_input_weight:
+        comment: "A 2-D tensor of shape [bw_num_units, bw_output_size]."
+        tensor_types: DT_FLOAT
+      bw_recurrent_to_forget_weight:
+        comment: "A 2-D tensor of shape [bw_num_units, bw_output_size]."
+        tensor_types: DT_FLOAT
+      bw_recurrent_to_cell_weight:
+        comment: "A 2-D tensor of shape [bw_num_units, bw_output_size]."
+        tensor_types: DT_FLOAT
+      bw_recurrent_to_output_weight:
+        comment: "A 2-D tensor of shape [bw_num_units, bw_output_size]."
+        tensor_types: DT_FLOAT
+      bw_cell_to_input_weight:
+        comment: "A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+      bw_cell_to_forget_weight:
+        comment: "A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+      bw_cell_to_output_weight:
+        comment: "A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+      bw_input_gate_bias:
+        comment: "A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+      bw_forget_gate_bias:
+        comment: "A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+      bw_cell_gate_bias:
+        comment: "A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+      bw_output_gate_bias:
+        comment: "A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+      fw_activation_state:
+        comment: "A 2-D tensor of shape [batch_size, bw_output_size]."
+        tensor_types: DT_FLOAT
+      fw_cell_state:
+        comment: "A 2-D tensor of shape [batch_size, bw_num_units]."
+        tensor_types: DT_FLOAT
+      bw_activation_state:
+        comment: "A 2-D tensor of shape [batch_size, bw_output_size]."
+        tensor_types: DT_FLOAT
+      bw_cell_state:
+        comment: "A 2-D tensor of shape [batch_size, bw_num_units]."
+        tensor_types: DT_FLOAT
+      fw_proj_weight:
+        comment: "A 2-D tensor of shape [fw_output_size, fw_num_units]."
+        tensor_types: DT_FLOAT
+        optional: true
+      fw_proj_bias:
+        comment: "A 1-D tensor of shape [fw_output_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_proj_weight:
+        comment: "A 2-D tensor of shape [bw_output_size, bw_num_units]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_proj_bias:
+        comment: "A 1-D tensor of shape [bw_output_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      aux_input:
+        comment: "Reserved.A 3-D tensor of shape [max_time, batch_size, aux_input_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      fw_aux_input_to_input_weight:
+        comment: "Reserved. A 2-D tensor of shape [fw_num_units, aux_input_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      fw_aux_input_to_forget_weight:
+        comment: "Reserved. A 2-D tensor of shape [fw_num_units, aux_input_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      fw_aux_input_to_cell_weight:
+        comment: "Reserved. A 2-D tensor of shape [fw_num_units, aux_input_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      fw_aux_input_to_output_weight:
+        comment: "Reserved. A 2-D tensor of shape [fw_num_units, aux_input_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_aux_input_to_input_weight:
+        comment: "Reserved. A 2-D tensor of shape [bw_num_units, aux_input_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_aux_input_to_forget_weight:
+        comment: "Reserved. A 2-D tensor of shape [bw_num_units, aux_input_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_aux_input_to_cell_weight:
+        comment: "Reserved. A 2-D tensor of shape [bw_num_units, aux_input_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_aux_input_to_output_weight:
+        comment: "Reserved. A 2-D tensor of shape [bw_num_units, aux_input_size]."
+        tensor_types: DT_FLOAT
+        optional: true
+      fw_input_layer_norm_weight:
+        comment: "Reserved. A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+        optional: true
+      fw_forget_layer_norm_weight:
+        comment: "Reserved. A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+        optional: true
+      fw_cell_layer_norm_weight:
+        comment: "Reserved. A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+        optional: true
+      fw_output_layer_norm_weight:
+        comment: "Reserved. A 1-D tensor of shape [fw_num_units]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_input_layer_norm_weight:
+        comment: "Reserved. A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_forget_layer_norm_weight:
+        comment: "Reserved. A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_cell_layer_norm_weight:
+        comment: "Reserved. A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_output_layer_norm_weight:
+        comment: "Reserved. A 1-D tensor of shape [bw_num_units]."
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      y:
+        comment:  |-
+          "The output tensor. Current support 2 outputs:
+          output 0: The forward output. A 3-D tensor of shape:
+                    If time-major and not merge_outputs: [max_time, batch_size, fw_output_size].
+                    If time-major and merge_outputs: [max_time, batch_size, fw_output_size + bw_output_size].
+                    If batch-major and not merge_outputs: [batch_size, max_time, fw_output_size]
+                    If batch-major and merge_outputs: [batch_size, max_time, fw_output_size + bw_output_size]
+          output 1: The backward output.Unused if merge_outputs is true. A 3-D tensor of shape:
+                    If time-major: [max_time, batch_size, bw_output_size].
+                    If batch-major: [batch_size, max_time, bw_output_size].
+          "
+        tensor_types: DT_FLOAT
+        dynamic: true
+    attrs:
+      activation:
+        comment:  |-
+          "LSTM activation mode, with options as follows:
+          1 : Tanh
+          3 : ReLU
+          4 : ReLU6
+          6 : Sigmoid
+          "
+        type: INT
+        default: "4"
+      lstm_cell_clip:
+        comment: "clipping threshold for the cell state."
+        type: FLOAT
+        default: "0.0"
+      lstm_proj_clip:
+        comment: "clipping threshold for the output from the projection layer."
+        type: FLOAT
+        default: "0.0"
+      use_cifg:
+        comment: "True : enable CIFG feature; False: disable CIFG feature."
+        type: BOOL
+        default: "false"
+      use_peephole:
+        comment: "True : enable peephole optimization; False: disable peephole optimization"
+        type: BOOL
+        default: "false"
+      use_projection:
+        comment: "True. enable projection weight; False: disable projection weight."
+        type: BOOL
+        default: "false"
+      use_projection_bias:
+        comment:  |-
+          "True. enable projection bias; False: disable projection bias.
+          IF use_projection is False, use_projection_bias is disabled.
+          "
+        type: BOOL
+        default: "false"
+      time_major:
+        comment: "specifying the shape format of input and output tensors."
+        type: BOOL
+        default: "true"
+      merge_output:
+        comment: "the input_gate_bias's offset."
+        type: BOOL
+        default: "true"
+
+  RNNV3:
+    comment: "A recurrent neural network layer."
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "input. A 2-D tensor of shape [batch_size, input_size]."
+        tensor_types: DT_FLOAT
+      weights:
+        comment: "A 2-D tensor of shape [num_units, input_size]."
+        tensor_types: DT_FLOAT
+      recurrent_weights:
+        comment: "A 2-D tensor of shape [num_units, num_units]."
+        tensor_types: DT_FLOAT
+      bias:
+        comment: "A 1-D tensor of shape [num_units]."
+        tensor_types: DT_FLOAT
+      hidden_state:
+        comment: "A 2-D tensor of shape [batch_size, num_units]."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "The output tensor. The output size are directed by \"mode\"."
+        tensor_types: DT_FLOAT
+        dynamic: true
+    attrs:
+      rnn_activate:
+        comment: "activation mode."
+        type: INT
+        default: "4"
+      mode:
+        comment:  |-
+          "\"Basic\" mean BasicLstm, have four outputs :
+               output 0: Reserved. The scratch buffer A 2-D tensor of shape [batch_size, num_units * 3] with CIFG,
+                         or [batch_size, num_units * 4] without CIFG.
+               output 1: The output state (out). A 2-D tensor of shape [batch_size, output_size].
+               output 2: The cell state (out). A 2-D tensor of shape [batch_size, num_units].
+               output 3: The output. A 2-D tensor of shape [batch_size, output_size].
+          \"UniDirectional\" mean UniDirectional LSTM, have one output :
+               output 0: The output. A 3-D tensor of shape:
+                         If time-major: [max_time, batch_size, output_size].
+                         If batch-major: [batch_size, max_time, output_size].
+          "
+        type: STR
+        default: "Basic"
+      time_major:
+        comment: "only effect when model is \"UniDirectional\""
+        type: BOOL
+        default: "true"
+
+  BidirectionalSequenceRnn:
+    comment:  |-
+      "A recurrent neural network layer that applies a basic RNN cell to a sequence of inputs
+      in forward and backward directions
+      "
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "input. input. A 3-D tensor. input has a shape [maxTime, batchSize, inputSize]."
+        tensor_types: DT_FLOAT
+      fw_weights:
+        comment: "A 2-D tensor of shape [fwNumUnits, inputSize]."
+        tensor_types: DT_FLOAT
+      fw_recurrent_weights:
+        comment: "A 2-D tensor of shape [fwNumUnits, fwNumUnits]."
+        tensor_types: DT_FLOAT
+      fw_bias:
+        comment: "A 1-D tensor of shape [fwNumUnits]."
+        tensor_types: DT_FLOAT
+      fw_hidden_state:
+        comment: "A 2-D tensor of shape [batchSize, fwNumUnits]."
+        tensor_types: DT_FLOAT
+      bw_weights:
+        comment: "A 2-D tensor of shape [bwNumUnits, inputSize]."
+        tensor_types: DT_FLOAT
+      bw_recurrent_weights:
+        comment: "A 2-D tensor of shape [bwNumUnits, bwNumUnits]."
+        tensor_types: DT_FLOAT
+      bw_bias:
+        comment: "A 1-D tensor of shape [bwNumUnits]."
+        tensor_types: DT_FLOAT
+      bw_hidden_state:
+        comment: "A 2-D tensor of shape [batchSize, bwNumUnits]."
+        tensor_types: DT_FLOAT
+      aux_input:
+        comment: "A 3-D tensor, the input has a shape [batchSize, maxTime, auxInputSize]."
+        tensor_types: DT_FLOAT
+        optional: true
+      fw_aux_weights:
+        comment: "A 2-D tensor of shape [fwNumUnits, auxInputSize]."
+        tensor_types: DT_FLOAT
+        optional: true
+      bw_aux_weights:
+        comment: "A 2-D tensor of shape [bwNumUnits, auxInputSize]."
+        tensor_types: DT_FLOAT
+        optional: true
+    outputs:
+      y:
+        comment: "The output tensor. The output size are directed."
+        tensor_types: DT_FLOAT
+        dynamic: true
+    attrs:
+      merge_output:
+        comment: "LSTM activation mode, with options as follows:"
+        type: BOOL
+        default: "false"
+      time_major:
+        comment: "LSTM activation mode, with options as follows:"
+        type: BOOL
+        default: "true"
+      bisequence_rnn_activate:
+        comment: "The activation function."
+        type: INT
+        default: "1"
+
+  Yolo2Reorg:
+    comment: "Yolo2Reorg Operator"
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "Input tensor of shape N*C*H*W"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "output tensor be Reorged"
+        tensor_types: DT_FLOAT
+    attrs:
+      stride:
+        comment: "Zoom factor"
+        type: INT
+        default: "2"
+      reverse:
+        comment:  |-
+          "false  output shape N*(C*stride*stride)*(H/stride)*(W/stride)
+          true   output shape N*(C/(stride*stride))*(H*stride)*(W*stride)
+          "
+        type: BOOL
+        default: "false"
+
+  ROIPooling:
+    comment: "Performs Region of Interest (RoI) Pool operator."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "the first input 4-D tensor."
+        tensor_types: DT_FLOAT
+      rois:
+        comment: "the second input 2-D tensor, here respecting the roi.Shape is [num_rois, 5]."
+        tensor_types: DT_FLOAT
+      roi_actual_num:
+        comment: "Reserved."
+        tensor_types: DT_INT32
+        optional: true
+    outputs:
+      y:
+        comment: "the output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      pooled_h:
+        comment: "roi_pooling pooled_h must be greater than 0."
+        type: INT
+        required: true
+      pooled_w:
+        comment: "roi_pooling pooled_w must be greater than 0."
+        type: INT
+        required: true
+      spatial_scale_h:
+        comment:  |-
+          "specifying the ratio from the height of original image to the height of feature map.
+          must be greater than 0.
+          "
+        type: FLOAT
+        required: true
+      spatial_scale_w:
+        comment:  |-
+          "specifying the ratio from the width of original image to the width of feature map.
+          must be greater than 0
+          "
+        type: FLOAT
+        required: true
+
+  Yolo:
+    comment: "Normalizes data. It is called Region on YOLO v2 and Yolo on YOLO v3."
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment:  |-
+          "An NCHW tensor with shape (N, boxes*(coords+obj+classes), H, W),
+          \"obj\" indicates the confidence of an object, and only one confidence is supported.
+          "
+        tensor_types: DT_FLOAT
+    outputs:
+      coord_data:
+        comment:  |-
+          "A tensor with shape [N, boxes*coords, ceilx(height*width*2+32, 32)/2].
+          \"ceil\" indicates that a detected box is aligned upwards with the second parameter.
+          Specifies the coordinates of a detected box.
+          "
+        tensor_types: DT_FLOAT
+      obj_prob:
+        comment: "A tensor with shape [N, ceilx(boxes*height*width *2+32, 32)/2]."
+        tensor_types: DT_FLOAT
+      classes_prob:
+        comment: "A tensor with shape [N, classes, ceilx(boxes*height*width *2+32, 32)/2]."
+        tensor_types: DT_FLOAT
+    attrs:
+      boxes:
+        comment: "specifying the number of anchor boxes. Defaults to \"5\" for V2 or \"3\" for V3."
+        type: INT
+        default: "3"
+      coords:
+        comment:  |-
+          "specifying the number of parameters required for locating an object.
+          The value is fixed at "4", corresponding to (x, y, w, h).
+          "
+        type: INT
+        default: "4"
+      classes:
+        comment: "specifying the number of prediction classes. The value range is [1, 1024]."
+        type: INT
+        default: "80"
+      yolo_version:
+        comment: "A int, specifying the YOLO version, either \"V2(1)\" or \"V3(2)\"."
+        type: INT
+        default: "2"
+      softmax:
+        comment: "specifying whether to perform softmax, valid only when \"yolo_version = V2\"."
+        type: BOOL
+        default: "false"
+      softmax_tree:
+        comment: "Reserved. Only support false."
+        type: BOOL
+        default: "false"
+      background:
+        comment:  |-
+          "specifying the operation types of the obj and classes,
+          used in conjunction with "softmax" and valid only when "yolo_version = V2".
+          "
+        type: BOOL
+        default: "false"
+
+  YoloDetectionOutput:
+    comment: "Performs YOLO V2 detection."
+    add_version: 100.500.010.011
+    inputs:
+      coord:
+        comment: "Outputs of YOLO. For details, see the description of operator Yolo."
+        tensor_types: DT_FLOAT
+      obj:
+        comment: "Outputs of YOLO. For details, see the description of operator Yolo."
+        tensor_types: DT_FLOAT
+      class:
+        comment: "Outputs of YOLO. For details, see the description of operator Yolo."
+        tensor_types: DT_FLOAT
+      im_info:
+        comment:  |-
+          "A float16, describing the image information including the required image height and width
+          and the actual image height and width.
+          "
+        tensor_types: DT_FLOAT
+    outputs:
+      box_out:
+        comment:  |-
+          "An NCHW tensor describing the information of each output box,
+          including the coordinates, class, and confidence.
+          "
+        tensor_types: DT_FLOAT
+      box_out_num:
+        comment: "An NCHW tensor specifying the number of output boxes."
+        tensor_types: DT_INT32
+    attrs:
+      biases:
+        comment: "Number of biases must be equal to twice of boxes."
+        type: LIST_FLOAT
+        required: true
+      classes:
+        comment: "specifying the number of prediction classes. The value range is [1, 1024]."
+        type: INT
+        default: "80"
+      boxes:
+        comment: "specifying the number of anchor boxes. Defaults to \"5\" for V2 or \"3\" for V3."
+        type: INT
+        default: "5"
+      relative:
+        comment: "Defaults to and must be \"true\"."
+        type: BOOL
+        default: "true"
+      objectness_threshold:
+        comment:  |-
+          "specifying the confidence threshold for box filtering,
+          which is the output "obj" of operator Yolo. The value range is [0.0, 1.0].
+          "
+        type: FLOAT
+        default: "0.5"
+      class_threshold:
+        comment:  |-
+          "specifying the class score threshold for box filtering,
+          which is the output "class" of operator Yolo. The value range is [0.0, 1.0].
+          "
+        type: FLOAT
+        default: "0.5"
+      post_top_k:
+        comment: "The maximum number of boxes returning from the hard NMS algorithm."
+        type: INT
+        default: "512"
+      pre_nms_topn:
+        comment: "This attribute is reserved."
+        type: INT
+        default: "80"
+      nms_threshold:
+        comment:  |-
+          "specifying the intersection-over-union threshold for box filtering.
+          The value range is [0.0, 1.0].
+          "
+        type: FLOAT
+        default: "0.0"
+
+  Convolution3D:
+    comment: "Consumes an 5D input tensor and a 5D filter, and computes the output."
+    add_version: 100.600.020.100
+    inputs:
+      x:
+        comment: "Input 5D tensor with size [N, Ci, Di, Hi, Wi] or [N, Di, Hi, Wi, Ci]."
+        tensor_types: DT_FLOAT
+      filter:
+        comment: "5D shape with size [Co, Ci/group, Dk, Hk, Wk]."
+        tensor_types: DT_FLOAT
+      bias:
+        comment: "With shape [Co], must be a Const-OP."
+        tensor_types: DT_FLOAT
+        optional: true
+      offset_w:
+        comment: "Reserved. For quantized."
+        tensor_types: DT_INT8
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      strides:
+        comment: "Stride along each input spatial axis [Di, Hi, Wi]. Strides size must be 3."
+        type: LIST_INT
+        required: true
+      pads:
+        comment: "Padding for the beginning and ending along each axis [dh, dt, hh, ht, wh, wt]."
+        type: LIST_INT
+        default: "0, 0, 0, 0, 0, 0"
+      pad_mode:
+        comment:  |-
+          "Pad mode, SPECIFIC(Default): not set, using pads; SAME, or VALID.
+          If provided both pads and pad_mode, pad_mode has a higher priority than pads.
+          "
+        type: STR
+        default: "SPECIFIC"
+      dilations:
+        comment: "Dilation value along each filter spatial axis [Dk, Hk, Wk]. Dilations size must be 3."
+        type: LIST_INT
+        default: "1, 1, 1"
+      groups:
+        comment:  |-
+          "Number of groups input channels and output channels are divided into.
+          When groups = 1, traditional convolution will be performed;
+          When groups > 1, feature maps are grouped by group_count, and then each groups
+          is convoluted separately. Specially, 'groups' equal to the number of input feature
+          maps indicates Depthwise Convolution.
+          "
+        type: INT
+        default: "1"
+      data_format:
+        comment: "Format of operator, 'NCDHW' or 'NDHWC'. Default is 'NCDHW'"
+        type: STR
+        default: "NCDHW"
+      offset_x:
+        comment: "Reserved. For quantized."
+        type: INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({1, 10, 224, 224, 3}), FORMAT_NDHWC, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+          x.update_output_desc_y(xDesc);
+
+          TensorDesc filterTensorDesc(Shape({16, 3, 1, 1, 1}), FORMAT_NCDHW, DT_FLOAT);
+          TensorPtr filterTensor = std::make_shared<hiai::Tensor>(filterTensorDesc);
+          vector<float> filterDataValue(16 * 3 , 0);
+          filterTensor->SetData((uint8_t*)filterDataValue.data(), 16 * 3 * sizeof(float));
+          auto filter = hiai::op::Const("filter").set_attr_value(filterTensor);
+
+          TensorDesc biasTensorDesc(Shape({16}), FORMAT_NCDHW, DT_FLOAT);
+          TensorPtr biasTensor = std::make_shared<hiai::Tensor>(biasTensorDesc);
+          vector<float> biasDataValue(16, 0);
+          biasTensor->SetData((uint8_t*)biasDataValue.data(), 16 * sizeof(float));
+          auto bias = hiai::op::Const("bias").set_attr_value(biasTensor);
+
+          auto convolution3d = hiai::op::Convolution3D("convolution3d")
+                             .set_input_x(x)
+                             .set_input_filter(filter)
+                             .set_input_bias(bias)
+                             .set_attr_strides({2, 2, 2})
+                             .set_attr_dilations({1, 1, 1})
+                             .set_attr_pads({0, 0, 0, 0, 0, 0})
+                             .set_attr_pad_mode("VALID")
+                             .set_attr_groups(1)
+                             .set_attr_data_format("NDHWC");
+      "
+
+  MaxPooling3D:
+    comment: "Computing a 3D max pooling from a 5D input."
+    add_version: 100.600.020.100
+    inputs:
+      x:
+        comment: "5D tensor with shape [N, Ci, Di, Hi, Wi] or [N, Di, Hi, Wi, Ci,]."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor."
+        tensor_types: DT_FLOAT
+    attrs:
+      ksize:
+        comment: "Tuple of 3 integers, which is downscale factor for [Di, Hi, Wi]."
+        type: LIST_INT
+        required: true
+      strides:
+        comment: "Stride along each input spatial dimension [Di, Hi, Wi]. Strides size must be 3."
+        type: LIST_INT
+        required: true
+      pads:
+        comment: "Padding for the beginning and ending along each dimension [dh, dt, hh, ht, wh, wt]."
+        type: LIST_INT
+        default: "0, 0, 0, 0, 0, 0"
+      pad_mode:
+        comment: "Pad mode, SPECIFIC(Default): not set, using pads; SAME, or VALID."
+        type: STR
+        default: "SPECIFIC"
+      dilations:
+        comment: "Dilations along each dimension of the ksize. Dilations size must be 3."
+        type: LIST_INT
+        default: "1, 1, 1"
+      ceil_mode:
+        comment: "When True, will use ceil instead of floor to compute the output shape. Default is false."
+        type: BOOL
+        default: "false"
+      data_format:
+        comment: "Format of operator, 'NCDHW' or 'NDHWC'. Default is 'NCDHW'."
+        type: STR
+        default: "NCDHW"
+    examples: |-
+      "    TensorDesc xDesc(Shape({1, 10, 224, 224, 3}), FORMAT_NDHWC, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+          x.update_output_desc_y(xDesc);
+
+          auto maxpooling3d = hiai::op::MaxPooling3D("maxpooling3d")
+                             .set_input_x(x)
+                             .set_attr_ksize({2, 2, 2})
+                             .set_attr_strides({1, 1, 1})
+                             .set_attr_pads({0, 0, 0, 0, 0, 0})
+                             .set_attr_pad_mode("VALID")
+                             .set_attr_dilations({1, 1, 1})
+                             .set_attr_ceil_mode(false)
+                             .set_attr_data_format("NDHWC");
+      "
+
+  AvgPooling3D:
+    comment: "Computing a 3D average pooling from a 5D input."
+    add_version: 100.600.020.100
+    inputs:
+      x:
+        comment: "5D tensor with shape [N, Ci, Di, Hi, Wi] or [N, Di, Hi, Wi, Ci,]."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor."
+        tensor_types: DT_FLOAT
+    attrs:
+      ksize:
+        comment: "Tuple of 3 integers, which is downscale factor for [Di, Hi, Wi]."
+        type: LIST_INT
+        required: true
+      strides:
+        comment: "Stride along each input spatial dimension [Hi, Wi, Ci]. Strides size must be 3."
+        type: LIST_INT
+        required: true
+      pads:
+        comment: "Padding for the beginning and ending along each dimension [dh, dt, hh, ht, wh, wt]."
+        type: LIST_INT
+        default: "0, 0, 0, 0, 0, 0"
+      pad_mode:
+        comment: "Pad mode, SPECIFIC(Default): not set, using pads; SAME, or VALID."
+        type: STR
+        default: "SPECIFIC"
+      ceil_mode:
+        comment: "When True, will use ceil instead of floor to compute the output shape. Default is false."
+        type: BOOL
+        default: "false"
+      count_include_pad:
+        comment: "Reserved. If true, include the zero-padding in the averageing calculation. Default is false."
+        type: BOOL
+        default: "false"
+      divisor_override:
+        comment: "Reserved. If specified, it will be used as divisor, otherwise the ksize will be used."
+        type: INT
+        default: "0"
+      data_format:
+        comment: "Format of operator, 'NCDHW' or 'NDHWC'. Default is 'NCDHW'."
+        type: STR
+        default: "NCDHW"
+    examples: |-
+      "    TensorDesc xDesc(Shape({1, 10, 224, 224, 3}), FORMAT_NDHWC, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+          x.update_output_desc_y(xDesc);
+
+          auto avgpooling3d = hiai::op::AvgPooling3D("avgpooling3d")
+                             .set_input_x(x)
+                             .set_attr_ksize({2, 2, 2})
+                             .set_attr_strides({1, 1, 1})
+                             .set_attr_pads({0, 0, 0, 0, 0, 0})
+                             .set_attr_pad_mode("VALID")
+                             .set_attr_ceil_mode(false)
+                             .set_attr_count_include_pad(false)
+                             .set_attr_divisor_override(0)
+                             .set_attr_data_format("NDHWC");
+      "
+
+  MaxPoolWithArgmaxV2:
+    comment: "Performs max pooling on the input and outputs both max values and indices."
+    add_version: 100.500.010.010
+    inputs:
+      x:
+        comment: "Input tensor with size [N, C, H, W]."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Output tensor, has the same type as input."
+        tensor_types: DT_FLOAT
+      argmax:
+        comment: "Output tensor, index of the maximum location."
+        tensor_types: DT_INT32, DT_INT64
+    attrs:
+      ksize:
+        comment: "The size of the window to take a max over. A tuple of two ints."
+        type: LIST_INT
+        required: true
+      strides:
+        comment: "The stride of the window. A tuple of two ints."
+        type: LIST_INT
+        required: true
+      pads:
+        comment: "Implicit zero padding to be added on both sides. A tuple of two ints."
+        type: LIST_INT
+        required: true
+      dtype:
+        comment: "Data type of the output argmax. Int32 or Int64."
+        type: INT
+        default: "DT_INT32"
+      dilation:
+        comment: "A parameter that controls the stride of elements in the window. A tuple of two ints."
+        type: LIST_INT
+        default: "1, 1"
+      ceil_mode:
+        comment: "When True, will use ceil instead of floor to compute the output shape."
+        type: BOOL
+        default: "false"
+
+  MaxUnpool2D:
+    comment: "Computes a partial inverse in which all non-maximal values are set to zero."
+    add_version: 100.500.010.010
+    inputs:
+      x:
+        comment: "Input tensor with size [N, C, H, W]."
+        tensor_types: DT_FLOAT
+      argmax:
+        comment: "Input tensor, index of the maximum location."
+        tensor_types: DT_INT32, DT_INT64
+    outputs:
+      y:
+        comment: "Output tensor."
+        tensor_types: DT_FLOAT
+    attrs:
+      ksize:
+        comment: "Size of the max pooling window. A tuple of two ints."
+        type: LIST_INT
+        required: true
+      strides:
+        comment: "Stride of the max pooling window. A tuple of two ints."
+        type: LIST_INT
+        required: true
+      pads:
+        comment: "Padding that was added to the input. A tuple of two ints."
+        type: LIST_INT
+        required: true
+      output_shape:
+        comment: "The output shape. A tuple of two ints or four ints."
+        type: LIST_INT
+        default: ""
+      data_format:
+        comment: "Format of operator, 'NCHW' or 'NHWC'. Now only support NCHW"
+        type: STR
+        default: "NCHW"
+
+  WinoConvolution:
+    comment: "Consumes an input tensor and a filter, and computes the output."
+    add_version: 100.520.010.000
+    inputs:
+      x:
+        comment: "Input tensor with size [N, Ci, Hi, Wi]."
+        tensor_types: DT_FLOAT, DT_INT16, DT_UINT8
+      filter:
+        comment: "With shape [Co, Ci/group, Hk, Wk], must be a Const-OP."
+        tensor_types: DT_INT8
+      bias:
+        comment: "With shape [Co], must be a Const-OP."
+        tensor_types: DT_FLOAT, DT_INT32
+        optional: true
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT, DT_INT32, DT_INT16
+    attrs:
+      strides:
+        comment: "Stride along each axis."
+        type: LIST_INT
+        required: true
+      dilations:
+        comment: "Dilation value along each axis of the filter."
+        type: LIST_INT
+        default: "1, 1"
+      pads:
+        comment: "Padding for the beginning and ending along each axis [hh, ht, wh, wt]."
+        type: LIST_INT
+        default: "0, 0, 0, 0"
+      pad_mode:
+        comment: "Pad mode, SPECIFIC(Default): not set, using pads; SAME, or VALID"
+        type: STR
+        default: "SPECIFIC"
+      groups:
+        comment:  |-
+          "Number of groups input channels and output channels are divided into.
+          When groups = 1, traditional convolution will be performed;
+          When groups > 1, feature maps are grouped by group_count, and then each groups
+          is convoluted separately. Specially, 'groups' equal to the number of input feature
+          maps indicates Depthwise Convolution.
+          "
+        type: INT
+        default: "1"
+      data_format:
+        comment: "Format of operator, 'NCHW' or 'NHWC'. Default is 'NCHW'"
+        type: STR
+        default: "NCHW"
+      quantType:
+        comment: "quantize type 1:INT8_8;2:INT8_2;3:INT4_4;4:OneSideQuant;6:INT16_8"
+        type: INT
+        default: "1"
+      QuantizeInfo:
+        comment: "Quantize info, including input scale/offset and weight scale/offset."
+        type: NamedAttrs
+        default: ""
+      quantizeInfoExt:
+        comment: "Quantize extended info, using for compute library calculate."
+        type: STR
+        default: ""
+
+  StopGradient:
+    comment: "This operation outputs its input tensor such as Identity"
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT, DT_DOUBLE, DT_INT8, DT_UINT8, DT_INT32, DT_INT64, DT_BOOL
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT, DT_DOUBLE, DT_INT8, DT_UINT8, DT_INT32, DT_INT64, DT_BOOL
+

@@ -1,0 +1,2 @@
+hi_add_subdirectory(proxy)
+hi_add_subdirectory(proto_impl)

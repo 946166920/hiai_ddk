@@ -1,0 +1,163 @@
+nn_ops:
+  TensorArray:
+    comment: "Class wrapping dynamic-sized, per-time-step, write-once Tensor arrays."
+    add_version: 100.500.010.010
+    inputs:
+      size:
+        comment: "The size of the TensorArray."
+        tensor_types: DT_UINT32
+    outputs:
+      handle:
+        comment: "A Tensor handle to an existing TensorArray."
+        tensor_types: DT_RESOURCE
+      flow:
+        comment: "Output tensor."
+        tensor_types: DT_FLOAT, DT_FLOAT16, DT_INT8, DT_INT16, DT_UINT16, DT_UINT8, DT_INT32, DT_INT64, DT_BOOL, DT_DOUBLE
+    attrs:
+      dtype:
+        comment: "(required) Data type of the TensorArray."
+        type: DATA_TYPE
+        required: true
+      element_shape:
+        comment:  |-
+          "A TensorShape object specifying the shape constraints of
+          each of the elements of the TensorArray.
+          "
+        type: LIST_INT
+        default: "0"
+      dynamic_size:
+        comment:  |-
+          "A boolean that determines whether writes to the TensorArray
+          are allowed to grow the size. Default to False.
+          "
+        type: BOOL
+        default: "false"
+      clear_after_read:
+        comment: "If True, clear TensorArray values after reading them.Default: True."
+        type: BOOL
+        default: "true"
+      identical_element_shapes:
+        comment:  |-
+          "If true (default is false), then all elements in the TensorArray will
+          be expected to have have identical shapes.Defaults to False.
+          "
+        type: BOOL
+        default: "false"
+      tensor_array_name:
+        comment: "the name of the TensorArray.Defaults to \"\"."
+        type: STR
+        default: ""
+
+  TensorArrayRead:
+    comment: "Read an element from the TensorArray into output value."
+    add_version: 100.500.010.010
+    inputs:
+      handle:
+        comment: "The handle to a TensorArray."
+        tensor_types: DT_RESOURCE
+      index:
+        comment: "The position to read to inside the TensorArray."
+        tensor_types: DT_INT32
+      flow_in:
+        comment: "A float scalar that enforces proper chaining of operations."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "The tensor that is read from the TensorArray."
+        tensor_types: DT_FLOAT, DT_FLOAT16, DT_INT8, DT_INT16, DT_UINT16, DT_UINT8, DT_INT32, DT_INT64, DT_UINT32, DT_UINT64, DT_BOOL, DT_DOUBLE
+
+  TensorArrayWrite:
+    comment: "Push an element onto the tensor_array."
+    add_version: 100.500.010.010
+    inputs:
+      handle:
+        comment: "The handle to a TensorArray."
+        tensor_types: DT_RESOURCE
+      index:
+        comment: "The position to write to inside the TensorArray."
+        tensor_types: DT_INT32
+      value:
+        comment: "The tensor to write to the TensorArray."
+        tensor_types: DT_FLOAT, DT_FLOAT16, DT_INT8, DT_INT16, DT_UINT16, DT_UINT8, DT_INT32, DT_INT64, DT_BOOL, DT_DOUBLE
+      flow_in:
+        comment: "A float scalar that enforces proper chaining of operations."
+        tensor_types: DT_FLOAT
+    outputs:
+      flow_out:
+        comment: "A float scalar that enforces proper chaining of operations."
+        tensor_types: DT_FLOAT
+
+  TensorArrayScatter:
+    comment: "Scatter the data from the input value into specific TensorArray elements."
+    add_version: 100.500.010.010
+    inputs:
+      handle:
+        comment: "The handle to a TensorArray."
+        tensor_types: DT_RESOURCE
+      index:
+        comment: "The locations at which to write the tensor elements."
+        tensor_types: DT_INT32
+      value:
+        comment: "The concatenated tensor to write to the TensorArray."
+        tensor_types: DT_FLOAT, DT_FLOAT16, DT_INT8, DT_INT16, DT_UINT16, DT_UINT8, DT_INT32, DT_INT64, DT_BOOL, DT_DOUBLE
+      flow_in:
+        comment: "A float scalar that enforces proper chaining of operations."
+        tensor_types: DT_FLOAT
+    outputs:
+      flow_out:
+        comment: "A float scalar that enforces proper chaining of operations."
+        tensor_types: DT_FLOAT
+
+  TensorArraySize:
+    comment: "Get the current size of the TensorArray."
+    add_version: 100.500.010.010
+    inputs:
+      handle:
+        comment: "The handle to a TensorArray."
+        tensor_types: DT_RESOURCE
+      flow_in:
+        comment: "A float scalar that enforces proper chaining of operations."
+        tensor_types: DT_FLOAT
+    outputs:
+      size:
+        comment: "The current size of the TensorArray."
+        tensor_types: DT_INT32
+
+  TensorArrayGather:
+    comment: "Gather specific elements from the TensorArray into output value."
+    add_version: 100.500.010.010
+    inputs:
+      handle:
+        comment: "The handle to a TensorArray."
+        tensor_types: DT_RESOURCE
+      indices:
+        comment: "The locations in the TensorArray from which to read tensor elements."
+        tensor_types: DT_INT32
+      flow_in:
+        comment: "A float scalar that enforces proper chaining of operations."
+        tensor_types: DT_FLOAT
+    outputs:
+      value:
+        comment: "A Tensor handle to an existing TensorArray."
+        tensor_types: DT_FLOAT, DT_FLOAT16, DT_INT8, DT_INT16, DT_UINT16, DT_UINT8, DT_INT32, DT_INT64, DT_BOOL, DT_DOUBLE
+    attrs:
+      dtype:
+        comment: "(required) The type of the elem that is returned."
+        type: DATA_TYPE
+        required: true
+      element_shape:
+        comment:  |-
+          "The expected shape of an element, if known. Used to validate the shapes of TensorArray
+          elements.
+          "
+        type: LIST_INT
+        default: "0"
+
+  TensorArrayClose:
+    comment: "operator close tensorarray"
+    add_version: 100.500.010.010
+    inputs:
+      handle:
+        comment: "The handle to a TensorArray."
+        tensor_types: DT_RESOURCE
+

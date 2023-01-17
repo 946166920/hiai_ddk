@@ -1,0 +1,13 @@
+hi_cc_library_static(
+  NAME
+    ai::fmk::graph::utils_static
+  CDEFS
+    GRAPH_API_VISIABLE
+  SRCS
+    *.cpp
+    checker/*.cpp
+    replacer/*.cpp
+  DEPS
+    hiai::api::ops
+    hiai::inc::ops
+)

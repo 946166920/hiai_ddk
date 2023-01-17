@@ -1,0 +1,1228 @@
+nn_ops:
+  Data:
+    comment: "Data tensor"
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_INT32, DT_BOOL, DT_INT64, DT_DOUBLE
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_INT32, DT_BOOL, DT_INT64, DT_DOUBLE
+    attrs:
+      index:
+        comment: "Reserved. The index of input data in network, only support 0 currently."
+        type: INT
+        default: "0"
+
+  ConcatD:
+    comment:  |-
+      "Concatenates a list of tensors into a single tensor along one dimension.
+      The number of dimensions of the input tensors must match, and all dimensions except axis must be equal.
+      "
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "List of tensors for concatenation"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_INT8, DT_BOOL
+        dynamic: true
+    outputs:
+      y:
+        comment: "Concatenated tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_INT8, DT_BOOL
+    attrs:
+      concat_dim:
+        comment: "Dimension along which to concatenate"
+        type: INT
+        required: true
+      N:
+        comment: "Number of inputs"
+        type: INT
+        default: "1"
+    examples: |-
+      "    TensorDesc xDesc1(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x1 = hiai::op::Data("x1");
+          x1.update_input_desc_x(xDesc1);
+
+          TensorDesc xDesc2(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x2 = hiai::op::Data("x2");
+          x2.update_input_desc_x(xDesc2);
+
+          auto concatD = hiai::op::ConcatD("concatD")
+                         .create_dynamic_input_x(2)
+                         .set_dynamic_input_x(1, x1)
+                         .set_dynamic_input_x(2, x2)
+                         .set_attr_concat_dim(1)
+                         .set_attr_N(2);
+      "
+
+  FakeQuantWithMinMaxVars:
+    comment: "Fake-quantize the inputs tensor of type float via global float scalars."
+    add_version: 100.500.010.011
+    inputs:
+      x:
+        comment: "A Tensor of type float32."
+        tensor_types: DT_FLOAT
+      min:
+        comment: "0D (scalar), A Tensor of type float32."
+        tensor_types: DT_FLOAT
+      max:
+        comment: "0D (scalar), A Tensor of type float32."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "A Tensor of type float32."
+        tensor_types: DT_FLOAT
+    attrs:
+      num_bits:
+        comment: "An optional int. Defaults to 8."
+        type: INT
+        default: "8"
+      narrow_range:
+        comment: "An optional bool. Defaults to False."
+        type: BOOL
+        default: "false"
+
+  Reshape:
+    comment: "Reshape the input tensor."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor, of the same type as Data"
+        tensor_types: DT_FLOAT, DT_INT32, DT_INT64, DT_BOOL
+      shape:
+        comment: "The shape to be resized, must be const op"
+        tensor_types: DT_INT32, DT_INT64
+    outputs:
+      y:
+        comment: "Reshaped tensor that has the same values as Attr 'shape'"
+        tensor_types: DT_FLOAT, DT_INT32, DT_INT64, DT_BOOL
+    attrs:
+      axis:
+        comment: "Dimension along which to reshape"
+        type: INT
+        default: "0"
+      num_axes:
+        comment:  |-
+          "Used to calculate the output shape
+          When 'num_axes' is -1, output.size() = shape.size() + axis.
+          When 'num_axes' is not -1, output.size() = shape.size() + tensor.size() - num_axes.
+          "
+        type: INT
+        default: "-1"
+
+  SplitD:
+    comment: "Splits a tensor into a list of tensors along the split_dim."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Input tensor."
+        tensor_types: DT_FLOAT, DT_INT8, DT_INT32, DT_BOOL, DT_UINT8
+    outputs:
+      y:
+        comment: "(Mandatory) splited tensors, whose number is specified by num_split"
+        tensor_types: DT_FLOAT, DT_INT8, DT_INT32, DT_BOOL, DT_UINT8
+        dynamic: true
+    attrs:
+      split_dim:
+        comment: "Which axis to split on, the value should be in range of [-RANK(X), RANK(X))."
+        type: INT
+        required: true
+      num_split:
+        comment: "Number of outputs, x.shape[split_dim] % num_split should be 0."
+        type: INT
+        required: true
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto splitD = hiai::op::SplitD("splitD")
+                        .set_input_x(x)
+                        .create_dynamic_output_y(3)
+                        .set_attr_split_dim(2)
+                        .set_attr_num_split(3);
+      "
+
+  SplitV:
+    comment: "Splits a tensor into 'num_split' tensors along one dimension."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor."
+        tensor_types: DT_FLOAT
+      size_splits:
+        comment:  |-
+          "Tensor of type int32, must be const op.
+          Optional length of each output.
+          Sum of the values must be equal to the dim value at 'split_dim' specified.
+          "
+        tensor_types: DT_INT32
+      split_dim:
+        comment:  |-
+          "Tensor of type int32, must be a scalar const op.
+          Which axis to split on. A negative value means counting dimensions from the back.
+          Accepted range is [-rank(x), rank(x)).
+          "
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "(Mandatory) spited tensors, whose number is specified by 'num_split'"
+        tensor_types: DT_FLOAT
+        dynamic: true
+    attrs:
+      num_split:
+        comment: "int (>= 1), number of outputs"
+        type: INT
+        required: true
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc sizeSplitsTensorDesc(Shape({3}), FORMAT_NCHW, DT_INT32);
+          TensorPtr sizeSplitsTensor = std::make_shared<hiai::Tensor>(sizeSplitsTensorDesc);
+          vector<int32_t> sizeSplitsDataValue = {1, 2, 3};
+          sizeSplitsTensor->SetData((uint8_t*)sizeSplitsDataValue.data(), 3 * sizeof(int32_t));
+          auto sizeSplits = hiai::op::Const("sizeSplits").set_attr_value(sizeSplitsTensor);
+
+          TensorDesc splitDimTensorDesc(Shape(), FORMAT_NCHW, DT_INT32);
+          TensorPtr splitDimTensor = std::make_shared<hiai::Tensor>(splitDimTensorDesc);
+          vector<int32_t> splitDimDataValue = {2};
+          splitDimTensor->SetData((uint8_t*)splitDimDataValue.data(), 1 * sizeof(int32_t));
+          auto splitDim = hiai::op::Const("splitDim").set_attr_value(splitDimTensor);
+
+          auto splitV = hiai::op::SplitV("splitV")
+                        .set_input_x(x)
+                        .set_input_size_splits(sizeSplits)
+                        .set_input_split_dim(splitDim)
+                        .set_attr_num_split(3)
+                        .create_dynamic_output_y(3);
+      "
+
+  Unpack:
+    comment: "Unpacks the given dimension of a rank-R tensor into rank-(R-1) tensors."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+    outputs:
+      y:
+        comment: "List of Tensor objects unstacked from x"
+        tensor_types: DT_FLOAT, DT_INT32
+        dynamic: true
+    attrs:
+      num:
+        comment:  |-
+          "Output number of tensor after split.
+          The value of num must be equal to x[axis].
+          "
+        type: INT
+        required: true
+      axis:
+        comment: "Axis to unpack along"
+        type: INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto unpack = hiai::op::Unpack("unpack")
+                        .set_input_x(x)
+                        .set_attr_axis(2)
+                        .set_attr_num(6)
+                        .create_dynamic_output_y(6);
+      "
+
+  Flatten:
+    comment: "Flattens the input tensor into a 2D matrix."
+    add_version: 100.300.010.011
+    inputs:
+      x:
+        comment: "Tensor of rank"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment:  |-
+          "2D tensor with the contents of the input tensor, with input dimensions up to axis flattened to
+          the outer dimension of the output and remaining input dimensions flattened into the inner dimension
+          of the output.
+          "
+        tensor_types: DT_FLOAT
+
+  FlattenV2:
+    comment: "Flattens the input tensor into a 2D matrix."
+    add_version: 100.500.010.010
+    inputs:
+      x:
+        comment: "Tensor of rank"
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment:  |-
+          "2D tensor with the contents of the input tensor, with input dimensions up to axis flattened to
+          the outer dimension of the output and remaining input dimensions flattened into the inner dimension
+          of the output.
+          "
+        tensor_types: DT_FLOAT
+    attrs:
+      axis:
+        comment:  |-
+          "An optional int32, specifying the first axis to flatten.
+          All preceding axes are retained in the output. Defaults to "1".
+          "
+        type: INT
+        default: "1"
+      end_axis:
+        comment:  |-
+          "An optional int32, specifying the last axis to flatten.
+          All following axes are retained in the output. Defaults to "-1".
+          "
+        type: INT
+        default: "-1"
+
+  Slice:
+    comment:  |-
+      "Extracts a slice of size 'size' from a tensor input starting at the location specified by 'offsets '.
+      The slice 'size' is represented as a tensor shape,
+      where size[i] is the number of elements of the ith dimension to slice.
+      The starting location (offsets) for the slice is represented as an offset in each dimension of input.
+      In other words, offsets[i] is the offset into the ith dimension of input to slice.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+      offsets:
+        comment: "Const, starting location for each dimension of input"
+        tensor_types: DT_INT32
+      size:
+        comment: "Const, number of elements for each dimension of input"
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc offsetsTensorDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          TensorPtr offsetsTensor = std::make_shared<hiai::Tensor>(offsetsTensorDesc);
+          vector<int32_t>offsetsDataValue = {0, 1, 0, 1};
+          offsetsTensor->SetData((uint8_t*)offsetsDataValue.data(), 4 * sizeof(int32_t));
+          auto offsets = hiai::op::Const("offsets").set_attr_value(offsetsTensor);
+
+          TensorDesc sizeTensorDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          TensorPtr sizeTensor = std::make_shared<hiai::Tensor>(sizeTensorDesc);
+          vector<int32_t> sizeDataValue = {1, 3, 2, -1};
+          sizeTensor->SetData((uint8_t*)sizeDataValue.data(), 4 * sizeof(int32_t));
+          auto size = hiai::op::Const("size").set_attr_value(sizeTensor);
+
+          auto slice = hiai::op::Slice("slice")
+                       .set_input_x(x)
+                       .set_input_offsets(offsets)
+                       .set_input_size(size);
+      "
+
+  ExpandDims:
+    comment:  |-
+      "Inserts a dimension of 1 into a tensor's shape.
+      This op support max realdims is 4 and support max padding dims is 3.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+      axis:
+        comment: "one element const, dimension index at which to expand the shape of input"
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor. The dimension of y not support bigger than 4."
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+
+  GatherV2D:
+    comment: "Gathers slices from 'x' axis according to 'indices'."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Tensor from which to gather values"
+        tensor_types: DT_FLOAT, DT_INT32
+      indices:
+        comment: "Input tensor"
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+    attrs:
+      axis:
+        comment: "which axis to gather values. Accepted range is [-rank(x), rank(x))."
+        type: INT
+        required: true
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc indicesDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          hiai::op::Data indices = hiai::op::Data("indices");
+          indices.update_input_desc_x(indicesDesc);
+
+          auto gatherV2D = hiai::op::GatherV2D("gatherV2D")
+                           .set_input_x(x)
+                           .set_input_indices(indices)
+                           .set_attr_axis(1);
+      "
+
+  GatherNd:
+    comment: "Gathers slices from 'x' into a Tensor with shape specified by 'indices'."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Tensor from which to gather values."
+        tensor_types: DT_FLOAT, DT_INT32
+      indices:
+        comment: "Input tensor."
+        tensor_types: DT_FLOAT, DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc indicesDesc(Shape({3}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data indices = hiai::op::Data("indices");
+          indices.update_input_desc_x(indicesDesc);
+
+          auto gatherNd = hiai::op::GatherNd("gatherNd")
+                          .set_input_x(x)
+                          .set_input_indices(indices);
+      "
+
+  Pack:
+    comment: "Stacks a list of rank-R tensors into one rank-(R+1) tensor."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "List of Tensor objects with the same shape and type"
+        tensor_types: DT_FLOAT, DT_INT32
+        dynamic: true
+    outputs:
+      y:
+        comment: "Output tensor. The dimension of y not support bigger than 4."
+        tensor_types: DT_FLOAT, DT_INT32
+    attrs:
+      axis:
+        comment: "Axis to stack along"
+        type: INT
+        default: "0"
+      N:
+        comment: "Number of values"
+        type: INT
+        required: true
+    examples: |-
+      "    TensorDesc xDesc1(Shape({4, 5, 6}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x1 = hiai::op::Data("x1");
+          x1.update_input_desc_x(xDesc1);
+
+          TensorDesc xDesc2(Shape({4, 5, 6}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x2 = hiai::op::Data("x2");
+          x2.update_input_desc_x(xDesc2);
+
+          auto pack = hiai::op::Pack("pack")
+                      .create_dynamic_input_x(2)
+                      .set_dynamic_input_x(1, x1)
+                      .set_dynamic_input_x(2, x2)
+                      .set_attr_N(2)
+                      .set_attr_axis(1);
+      "
+
+  SpaceToDepth:
+    comment:  |-
+      "Rearranges blocks of spatial data, into depth. More specifically, this op outputs a copy of
+      the input tensor where values from the height and width dimensions are moved to the depth dimension.
+      The attr block_size indicates the input block size.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor with shape [n, c, h, w] or [n, h, w, c], where h and w must be divisible by 'block_size'"
+        tensor_types: DT_FLOAT, DT_UINT8, DT_INT8
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_UINT8, DT_INT8
+    attrs:
+      block_size:
+        comment: "int (>= 1), size of the spatial block"
+        type: INT
+        required: true
+      data_format:
+        comment: "Format of input, 'NCHW' or 'NHWC'. Default is 'NHWC'"
+        type: STR
+        default: "NHWC"
+
+  DepthToSpace:
+    comment:  |-
+      "Rearranges data from depth into blocks of spatial data.This is the reverse transformation of SpaceToDepth.
+      More specifically, this op outputs a copy of the input tensor where values from the depth dimension are moved
+      in spatial blocks to the height and width dimensions.
+      "
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment:  |-
+          "The input tensor with shape [ batch, height, width, channels ], channels
+          must be divided by block_size*block_size.
+          "
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "The output tensor"
+        tensor_types: DT_FLOAT
+    attrs:
+      block_size:
+        comment: "The size of the spatial block, must be greater than 0."
+        type: INT
+        required: true
+      mode:
+        comment:  |-
+          "DCR (default) for depth-column-row order re-arrangement.
+          CRD for column-row-depth order.
+          "
+        type: STR
+        default: "DCR"
+      data_format:
+        comment: "The data format of input, now only support : NHWC."
+        type: STR
+        default: "NHWC"
+
+  StridedSlice:
+    comment: "Extracts a strided slice of a tensor"
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+      begin:
+        comment: "An int32 tensor, must be const op"
+        tensor_types: DT_INT32
+      end:
+        comment: "An int32 tensor, must be const op"
+        tensor_types: DT_INT32
+      strides:
+        comment: "An int32 tensor, must be const op"
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+    attrs:
+      begin_mask:
+        comment: "An int32 mask, defaults to 0."
+        type: INT
+        default: "0"
+      end_mask:
+        comment: "An int32 mask, defaults to 0."
+        type: INT
+        default: "0"
+      ellipsis_mask:
+        comment: "An int32 mask, defaults to 0."
+        type: INT
+        default: "0"
+      new_axis_mask:
+        comment: "An int32 mask, defaults to 0."
+        type: INT
+        default: "0"
+      shrink_axis_mask:
+        comment: "Defaults to 0."
+        type: INT
+        default: "0"
+    examples: |-
+      "    TensorDesc xDesc(Shape({5, 6, 7, 8}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc beginTensorDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          TensorPtr beginTensor = std::make_shared<hiai::Tensor>(beginTensorDesc);
+          vector<int32_t> beginDataValue = {1, 3, 3, 5};
+          beginTensor->SetData((uint8_t*)beginDataValue.data(), 4 * sizeof(int32_t));
+          auto begin = hiai::op::Const("begin").set_attr_value(beginTensor);
+
+          TensorDesc endTensorDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          TensorPtr endTensor = std::make_shared<hiai::Tensor>(endTensorDesc);
+          vector<int32_t> endDataValue = {-2, 7, 0, 6};
+          endTensor->SetData((uint8_t*)endDataValue.data(), 4 * sizeof(int32_t));
+          auto end = hiai::op::Const("end").set_attr_value(endTensor);
+
+          TensorDesc stridesTensorDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          TensorPtr stridesTensor = std::make_shared<hiai::Tensor>(stridesTensorDesc);
+          vector<int32_t> stridesDataValue = {2, 2, 2, 2};
+          stridesTensor->SetData((uint8_t*)stridesDataValue.data(), 4 * sizeof(int32_t));
+          auto strides = hiai::op::Const("strides").set_attr_value(stridesTensor);
+
+          auto stridedSlice = hiai::op::StridedSlice("stridedSlice")
+                              .set_input_x(x)
+                              .set_input_begin(begin)
+                              .set_input_end(end)
+                              .set_input_strides(strides)
+                              .set_attr_begin_mask(1)
+                              .set_attr_end_mask(15)
+                              .set_attr_ellipsis_mask(0)
+                              .set_attr_new_axis_mask(0)
+                              .set_attr_shrink_axis_mask(0);
+      "
+
+  StridedSliceV2:
+    comment: "Extracts a strided slice of a tensor."
+    add_version: 100.500.010.010
+    inputs:
+      x:
+        comment: "Tensor of data to extract slices from."
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+      begin:
+        comment: "1-D tensor of starting indices of corresponding axis in `axes`. Only support Const op."
+        tensor_types: DT_INT32
+      end:
+        comment: "1-D tensor of ending indices (exclusive) of corresponding axis in `axes`. Only support Const op."
+        tensor_types: DT_INT32
+      axes:
+        comment: "1-D tensor of axes that `starts` and `ends` apply to. Only support Const op."
+        tensor_types: DT_INT32
+        optional: true
+      strides:
+        comment: "1-D tensor of slice step of corresponding axis in `axes`.. Only support Const op."
+        tensor_types: DT_INT32
+        optional: true
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+    attrs:
+      begin_mask:
+        comment: "reserved, default 0"
+        type: INT
+        default: "0"
+      end_mask:
+        comment: "reserved, default 0"
+        type: INT
+        default: "0"
+      ellipsis_mask:
+        comment: "reserved, default 0"
+        type: INT
+        default: "0"
+      new_axis_mask:
+        comment: "reserved, default 0"
+        type: INT
+        default: "0"
+      shrink_axis_mask:
+        comment: "reserved, default 0"
+        type: INT
+        default: "0"
+    examples: |-
+      "
+          TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc beginTensorDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          TensorPtr beginTensor = std::make_shared<hiai::Tensor>(beginTensorDesc);
+          vector<int32_t>offsetsDataValue = {0, 1, 0, 1};
+          beginTensor->SetData((uint8_t*)offsetsDataValue.data(), 4 * sizeof(int32_t));
+          auto offsets = hiai::op::Const("offsets").set_attr_value(beginTensor);
+
+          TensorDesc endTensorDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          TensorPtr endTensor = std::make_shared<hiai::Tensor>(endTensorDesc);
+          vector<int32_t> sizeDataValue = {1, 3, 2, -1};
+          endTensor->SetData((uint8_t*)sizeDataValue.data(), 4 * sizeof(int32_t));
+          auto size = hiai::op::Const("size").set_attr_value(endTensor);
+
+          auto StridedSliceV2 = hiai::op::StridedSliceV2("StridedSliceV2")
+                               .set_input_x(x)
+                               .set_input_offsets(begin)
+                               .set_input_size(end);
+                               .set_attr_begin_mask(0)
+                               .set_attr_end_mask(0)
+                               .set_attr_ellipsis_mask(0)
+                               .set_attr_new_axis_mask(0)
+                               .set_attr_shrink_axis_mask(0);
+      "
+
+  SpaceToBatchND:
+    comment:  |-
+      "Zero-pads and then rearranges blocks of spatial data into batch.The operation outputs
+      a copy of the input tensor, in which the values from the height and width dimensions
+      are moved to the batch dimension.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment:  |-
+          "4-D tensor with shape [batch, depth, height, width]. Both height and width must be divisible
+          by 'block_shape'.
+          "
+        tensor_types: DT_FLOAT
+      block_shape:
+        comment: "Const OP, 1-D with shape [M], where all values must be >= 1"
+        tensor_types: DT_INT32
+      paddings:
+        comment:  |-
+          "Const OP, 2-D with shape [M, 2], where, all values must be >= 0
+          paddings = [[pad_top, pad_bottom], [pad_left, pad_right]]
+          The effective spatial dimensions of the zero-padded input tensor will be:
+          height_pad = pad_top + height + pad_bottom
+          width_pad = pad_left + width + pad_right
+          Both 'height_pad' and 'width_pad' must be divisible by 'block_size'.
+          "
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Tensor of the same type as 'x'"
+        tensor_types: DT_FLOAT
+    examples: |-
+      "    TensorDesc xDesc(Shape({5, 6, 7, 8}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc blockShapeTensorDesc(Shape({2}), FORMAT_NCHW, DT_INT32);
+          TensorPtr blockShapeTensor = std::make_shared<hiai::Tensor>(blockShapeTensorDesc);
+          vector<int32_t> blockShapeDataValue = {1, 2};
+          blockShapeTensor->SetData((uint8_t*)blockShapeDataValue.data(), 2 * sizeof(int32_t));
+          auto blockShape = hiai::op::Const("blockShape").set_attr_value(blockShapeTensor);
+
+          TensorDesc paddingsTensorDesc(Shape({2, 2}), FORMAT_NCHW, DT_INT32);
+          TensorPtr paddingsTensor = std::make_shared<hiai::Tensor>(paddingsTensorDesc);
+          vector<int32_t> paddingsDataValue = {1, 2, 2, 4};
+          paddingsTensor->SetData((uint8_t*)paddingsDataValue.data(), 4 * sizeof(int32_t));
+          auto paddings = hiai::op::Const("paddings").set_attr_value(paddingsTensor);
+
+          auto spaceToBatchND = hiai::op::SpaceToBatchND("spaceToBatchND")
+                                .set_input_x(x)
+                                .set_input_block_shape(blockShape)
+                                .set_input_paddings(paddings);
+      "
+
+  BatchToSpaceND:
+    comment:  |-
+      "This operation reshapes the "batch" dimension 0 into height and width that divided by block.
+      Interleaves these blocks back into the grid defined by the spatial dimensions [batch, depth, height, width],
+      to obtain a result with the same rank as the input. The spatial dimensions of this intermediate result
+      are then optionally cropped according to crops to produce the output.
+      "
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment:  |-
+          "4-D tensor with shape [batch, depth, height, width]. It is required that the elements of x.dimension[0]
+          must be divided by block_shape.dimension[0] * block_shape.dimension[1].
+          "
+        tensor_types: DT_FLOAT
+      block_shape:
+        comment: "Const OP, 1-D with shape [M], where all values must be >= 1"
+        tensor_types: DT_INT32
+      crops:
+        comment:  |-
+          "Const OP, 2-D with shape [M, 2], where all values must be >= 0. crops[i] = [crop_start, crop_end]
+          specifies the amount to crop from input dimension i + 1, which corresponds to spatial dimension i.
+          It is required that crop_start[i] + crop_end[i] <= block_shape[i] * input_shape[i + 1].
+          "
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Tensor of the same type as 'x'"
+        tensor_types: DT_FLOAT
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 6, 7, 8}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc blockShapeTensorDesc(Shape({2}), FORMAT_NCHW, DT_INT32);
+          TensorPtr blockShapeTensor = std::make_shared<hiai::Tensor>(blockShapeTensorDesc);
+          vector<int32_t> blockShapeDataValue = {1, 2};
+          blockShapeTensor->SetData((uint8_t*)blockShapeDataValue.data(), 2 * sizeof(int32_t));
+          auto blockShape = hiai::op::Const("blockShape").set_attr_value(blockShapeTensor);
+
+          TensorDesc cropsTensorDesc(Shape({2, 2}), FORMAT_NCHW, DT_INT32);
+          TensorPtr cropsTensor = std::make_shared<hiai::Tensor>(cropsTensorDesc);
+          vector<int32_t> cropsDataValue = {1, 2, 2, 4};
+          cropsTensor->SetData((uint8_t*)cropsDataValue.data(), 4 * sizeof(int32_t));
+          auto crops = hiai::op::Const("crops").set_attr_value(cropsTensor);
+
+          auto batchToSpaceND = hiai::op::BatchToSpaceND("batchToSpaceND")
+                                .set_input_x(x)
+                                .set_input_block_shape(blockShape)
+                                .set_input_crops(crops);
+      "
+
+  Tile:
+    comment: "Constructs a tensor by tiling a given tensor."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+      multiples:
+        comment: "Const OP"
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+
+  Size:
+    comment: "Returns the size of a tensor."
+    add_version: 100.310.010.013
+    inputs:
+      x:
+        comment: "Input tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_INT32
+    attrs:
+      dtype:
+        comment: "Reserved. data type of the output y."
+        type: INT
+        default: "DT_INT32"
+    examples: |-
+      "    TensorDesc xDesc(Shape({1, 4, 1, 1}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto size = hiai::op::Size("size")
+                     .set_input_x(x);
+
+          auto cast = hiai::op::CastT("cast")
+                     .set_input_x(size)
+                     .set_attr_src_dtype(3)
+                     .set_attr_dst_dtype(1);
+
+          auto add = hiai::op::Add("add")
+                     .set_input_x1(x)
+                     .set_input_x2(cast);
+      "
+
+  Fill:
+    comment: "Creates a tensor of shape 'dims' and fills it with 'value'."
+    add_version: 100.310.010.013
+    inputs:
+      dims:
+        comment: "Const OP, 1-D, shape of the output tensor"
+        tensor_types: DT_INT32
+      value:
+        comment: "0-D, value to fill the returned tensor"
+        tensor_types: DT_FLOAT, DT_BOOL, DT_INT32, DT_UINT8
+    outputs:
+      y:
+        comment: "Output tensor"
+        tensor_types: DT_FLOAT, DT_BOOL, DT_INT32, DT_UINT8
+
+  Select:
+    comment: "Performs tensor select."
+    add_version: 100.320.010.010
+    inputs:
+      condition:
+        comment: "the condition of select. Only support first dimension broadcast."
+        tensor_types: DT_BOOL
+      x1:
+        comment: "First operand."
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+      x2:
+        comment: "Second operand, has the same shape of x1."
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+    outputs:
+      y:
+        comment: "Result, has same element type as two inputs."
+        tensor_types: DT_FLOAT, DT_INT32, DT_UINT8, DT_BOOL
+
+  PadV2:
+    comment: "The operation pads input according to the paddings and constant_values."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT, DT_INT32
+      paddings:
+        comment:  |-
+          "The values of paddings, as a role of dimensions to be added on the input tensor x,
+          must be a Const-OP.
+          "
+        tensor_types: DT_INT32
+      constant_values:
+        comment:  |-
+          "A tensor of the same type as x, that indicates the value to use for padding input,
+          must be a Const-OP.
+          "
+        tensor_types: DT_FLOAT, DT_INT32
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT, DT_INT32
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc biasTensorDesc(Shape({4, 2}), FORMAT_NCHW, DT_INT32);
+          TensorPtr biasTensor = std::make_shared<hiai::Tensor>(biasTensorDesc);
+          vector<int32_t> dataValue = {0, 1, 2, 3, 4, 5, 6, 7};
+          biasTensor->SetData((uint8_t*)dataValue.data(), 8 * sizeof(int32_t));
+          auto paddings = hiai::op::Const("paddings").set_attr_value(biasTensor);
+
+          TensorDesc constantValuesTensorDesc(Shape({1}), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr constantValuesTensor = std::make_shared<hiai::Tensor>(constantValuesTensorDesc);
+          vector<float> constantValuesDataValue = {1.0};
+          constantValuesTensor->SetData((uint8_t*)constantValuesDataValue.data(), 1 * sizeof(float));
+          auto constantValues = hiai::op::Const("constantValues").set_attr_value(constantValuesTensor);
+
+          auto padV2 = hiai::op::PadV2("PadV2")
+                       .set_input_x(x)
+                       .set_input_paddings(paddings)
+                       .set_input_constant_values(constantValues);
+      "
+
+  Squeeze:
+    comment:  |-
+      "Given a tensor input, this operation returns a tensor of the same type with all dimensions of size 1 removed.
+      If you do not want to remove all size with 1 dimensions,
+      you can remove specific size 1 dimensions by specifying axis.
+      "
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input to be squeezed."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_FLOAT
+    attrs:
+      axis:
+        comment: "The dimensions which to remove."
+        type: LIST_INT
+        default: ""
+
+  Pad:
+    comment: "Pads a tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+      paddings:
+        comment:  |-
+          "The values of padding, as a role of dimensions to be added on the input tensor x,
+          with shape [D, 2], D is the rank of x.
+          "
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "The output tensor"
+        tensor_types: DT_FLOAT, DT_INT32
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc biasTensorDesc(Shape({4, 2}), FORMAT_NCHW, DT_INT32);
+          TensorPtr biasTensor = std::make_shared<hiai::Tensor>(biasTensorDesc);
+          vector<int32_t> dataValue = {0, 1, 2, 3, 4, 5, 6, 7};
+          biasTensor->SetData((uint8_t*)dataValue.data(), 8 * sizeof(int32_t));
+          auto paddings = hiai::op::Const("paddings").set_attr_value(biasTensor);
+
+          auto pad = hiai::op::Pad("Pad")
+                     .set_input_x(x)
+                     .set_input_paddings(paddings);
+      "
+
+  MirrorPad:
+    comment: "Pads a tensor with mirrored values."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_BOOL, DT_INT64
+      paddings:
+        comment:  |-
+          "The values of paddings, as a role of dimensions to be added on the input tensor x,
+          must be a Const-OP.
+          "
+        tensor_types: DT_INT32, DT_INT64
+    outputs:
+      y:
+        comment: "The output tensor"
+        tensor_types: DT_FLOAT, DT_INT32, DT_BOOL, DT_INT64
+    attrs:
+      mode:
+        comment:  |-
+          "REFLECT or SYMMETRIC.
+          SYMMETRIC  paddings must be no greater than the x dimension size
+          REFLECT  paddings must be less than the x dimension size
+          "
+        type: STR
+        required: true
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc biasTensorDesc(Shape({4, 2}), FORMAT_NCHW, DT_INT32);
+          TensorPtr biasTensor = std::make_shared<hiai::Tensor>(biasTensorDesc);
+          vector<int32_t> dataValue = {0, 1, 2, 3, 4, 5, 6, 7};
+          biasTensor->SetData((uint8_t*)dataValue.data(), 8 * sizeof(int32_t));
+          auto paddings = hiai::op::Const("paddings").set_attr_value(biasTensor);
+
+          auto mirrorPad = hiai::op::MirrorPad("mirrorPad")
+                          .set_input_x(x)
+                          .set_input_paddings(paddings)
+                          .set_attr_mode("SYMMETRIC");
+      "
+
+  OneHot:
+    comment: "Return a one-hot tensor"
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "A index tensor."
+        tensor_types: DT_INT32, DT_UINT8
+      depth:
+        comment: "A scalar defining the depth of the one hot dimension."
+        tensor_types: DT_INT32
+      on_value:
+        comment: "A scalar defining the value to fill in output when x[j] = i. (default: 1)."
+        tensor_types: DT_UINT8, DT_INT8, DT_FLOAT, DT_BOOL
+      off_value:
+        comment: "A scalar defining the value to fill in output when x[j] != i. (default: 0)."
+        tensor_types: DT_UINT8, DT_INT8, DT_FLOAT, DT_BOOL
+    outputs:
+      y:
+        comment: "Result, has element type as T. The dimension of y not support bigger than 4."
+        tensor_types: DT_UINT8, DT_INT8, DT_FLOAT, DT_BOOL
+    attrs:
+      axis:
+        comment: "The axis to fill.(default: -1)"
+        type: INT
+        default: "-1"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4}), FORMAT_NCHW, DT_INT32);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          TensorDesc depthTensorDesc(Shape(), FORMAT_NCHW, DT_INT32);
+          TensorPtr depthTensor = std::make_shared<hiai::Tensor>(depthTensorDesc);
+          vector<int32_t> depthDataValue = {1};
+          depthTensor->SetData((uint8_t*)depthDataValue.data(), 1 * sizeof(int32_t));
+          auto depth = hiai::op::Const("depth").set_attr_value(depthTensor);
+
+          TensorDesc onValueTensorDesc(Shape(), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr onValueTensor = std::make_shared<hiai::Tensor>(onValueTensorDesc);
+          vector<float> onValueDataValue = {1.0};
+          onValueTensor->SetData((uint8_t*)onValueDataValue.data(), 1 * sizeof(float));
+          auto onValue = hiai::op::Const("onValue").set_attr_value(onValueTensor);
+
+          TensorDesc offValueTensorDesc(Shape(), FORMAT_NCHW, DT_FLOAT);
+          TensorPtr offValueTensor = std::make_shared<hiai::Tensor>(offValueTensorDesc);
+          vector<float> offValueDataValue = {1.0};
+          offValueTensor->SetData((uint8_t*)offValueDataValue.data(), 1 * sizeof(float));
+          auto offValue = hiai::op::Const("offValue").set_attr_value(offValueTensor);
+
+          auto oneHot = hiai::op::OneHot("oneHot")
+                        .set_input_x(x)
+                        .set_input_depth(depth)
+                        .set_input_on_value(onValue)
+                        .set_input_off_value(offValue)
+                        .set_attr_axis(0);
+      "
+
+  Shape:
+    comment: "Obtain the shape of input tensor,  expressed in the form of one-dimensional integer tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "The input tensor."
+        tensor_types: DT_FLOAT, DT_INT32, DT_BOOL, DT_UINT8
+    outputs:
+      y:
+        comment: "The output tensor."
+        tensor_types: DT_INT32
+    attrs:
+      dtype:
+        comment: "Reserved. data type of the output y."
+        type: INT
+        default: "DT_INT32"
+    examples: |-
+      "    TensorDesc xDesc(Shape({4, 5, 6, 7}), FORMAT_NCHW, DT_FLOAT);
+          hiai::op::Data x = hiai::op::Data("x");
+          x.update_input_desc_x(xDesc);
+
+          auto shape = hiai::op::Shape("shape")
+                     .set_input_x(x);
+      "
+
+  Dequantize:
+    comment: "Dequantizes the 'input' tensor into a float tensor."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "Tensor of type uint8."
+        tensor_types: DT_UINT8
+      min_range:
+        comment:  |-
+          "Tensor of type float, defining the minimum scalar value possibly produced for the input.
+          Min need lessequal 0.
+          "
+        tensor_types: DT_FLOAT
+      max_range:
+        comment: "Tensor of type float, defining the maximum scalar value possibly produced for the input."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Tensor of type float."
+        tensor_types: DT_FLOAT
+    attrs:
+      mode:
+        comment: "Reserved."
+        type: STR
+        default: "MIN_COMBINED"
+
+  Quantize:
+    comment: "Quantizes the 'input' tensor of type float to 'output' tensor of type uint8."
+    add_version: 100.320.010.010
+    inputs:
+      x:
+        comment: "Tensor of type float."
+        tensor_types: DT_FLOAT
+      min_range:
+        comment:  |-
+          "Tensor of type float, defining the minimum scalar value possibly produced for the input.
+          Min need lessequal 0.
+          "
+        tensor_types: DT_FLOAT
+      max_range:
+        comment: "Tensor of type float, defining the maximum scalar value possibly produced for the input."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Tensor of type uint8."
+        tensor_types: DT_UINT8
+    attrs:
+      mode:
+        comment: "Reserved."
+        type: STR
+        default: "MIN_COMBINED"
+
+  BroadcastTo:
+    comment: "Broadcasts an array for a compatible shape."
+    add_version: 100.500.010.010
+    inputs:
+      x:
+        comment: "A Tensor to broadcast."
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_BOOL
+      shape:
+        comment: "The shape of the desired output, must be const op."
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Result, has the same type as x."
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_BOOL
+  QuantizeV2:
+    comment: |-
+      "    Quantizes the 'input' tensor of type float to 'output' tensor of type specified.
+          This op should be used before quantize op together with DequantizeV2 after quantize op."
+    add_version: 100.515.020.100
+    inputs:
+      x:
+        comment: "Tensor of type float."
+        tensor_types: DT_FLOAT
+    outputs:
+      y:
+        comment: "Tensor of type specified by dtype."
+        tensor_types: DT_INT16, DT_UINT8, DT_INT8, DT_INT4
+    attrs:
+      scale:
+        comment: "Quantize scale values. Currently only support Per Layer mode, scale value size is 1."
+        type: LIST_FLOAT
+        required: true
+      offset:
+        comment: "Quantize offset values. offset value nums is equal to scale values nums."
+        type: LIST_FLOAT
+        required: true
+      dtype:
+        comment: "Output data type after quantize."
+        type: INT
+        required: true
+      round_mode:
+        comment: |-
+          "Quantize round mode. Candidates:Round, Floor, Ceil.
+          Currently round_mode is not supported, param is reserved.
+          "
+        type: STR
+        default: "Round"
+      sqrt_mode:
+        comment: |-
+          "Quantize with square root calculations. If true, sqrt the input data.
+          Currently sqrt_mode is not supported, param is reserved.
+          "
+        type: BOOL
+        default: "false"
+    examples: |-
+      "    hiai::op::Data data("data");
+          std::vector<float> inputScales = { 0.0023456 };
+          std::vector<float> inputOffsets = { 120.00 };
+          hiai::op::QuantizeV2 conv1Quantize = hiai::op::QuantizeV2("conv1_quantize")
+                                                    .set_input_x(data)
+                                                    .set_attr_scale(inputScales)
+                                                    .set_attr_offset(inputOffsets)
+                                                    .set_attr_dtype(ge::DT_UINT8);
+          hiai::op::Convolution conv1 = hiai::op::Convolution1("conv1")
+                                            .set_input_x(conv1Quantize);
+      "
+  DequantizeV2:
+    comment: |-
+      "    Dequantizes the 'input' tensor of type int32 to 'output' tensor of float.
+          This op should be used after quantize op together with QuantizeV2 before quantize op."
+    add_version: 100.515.020.100
+    inputs:
+      x:
+        comment: "Tensor of type int32."
+        tensor_types: DT_INT32
+    outputs:
+      y:
+        comment: "Tensor of type float."
+        tensor_types: DT_FLOAT
+    attrs:
+      deq_scale :
+        comment: |-
+          " Dequantize scale values. This attr is not used currently, it can be calculated automatically.
+          "
+        type: LIST_FLOAT
+        default: ""
+      sqrt_mode:
+        comment: |-
+          " Quantize with square root calculations. If true, sqrt the input data.
+            Currently sqrt_mode is not supported, param is reserved.
+          "
+        type: BOOL
+        default: "false"
+      relu_flag:
+        comment: "Specifing whether to perform ReLU."
+        type: BOOL
+        default: "false"
+    examples: |-
+      "    hiai::op::Convolution conv1 = hiai::op::Convolution("conv1");
+          hiai::op::DequantizeV2 conv1Dequantize = hiai::op::DequantizeV2("conv1_dequantize")
+                                         .set_input_x(conv1);
+      "
+

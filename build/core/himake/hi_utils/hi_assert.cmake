@@ -1,0 +1,73 @@
+include(hi_utils/hi_message)
+
+function(hi_assert_eq)
+  if(NOT ARGC EQUAL 2)
+    hi_message(FATAL_ERROR "assertion failed: invalid argument count: ${ARGC}")
+  endif()
+
+  if(NOT "${ARGV0}" STREQUAL "${ARGV1}")
+    hi_message(FATAL_ERROR "assertion failed: expect '${ARGV0}' == '${ARGV1}'")
+  endif()
+endfunction()
+
+function(hi_assert_ne)
+  if(NOT ARGC EQUAL 2)
+    hi_message(FATAL_ERROR "assertion failed: invalid argument count: ${ARGC}")
+  endif()
+
+  if("${ARGV0}" STREQUAL "${ARGV1}")
+    hi_message(FATAL_ERROR "assertion failed: expect '${ARGV0}' != '${ARGV1}'")
+  endif()
+endfunction()
+
+function(hi_assert_not_empty value)
+  if(NOT ${value})
+    hi_message(FATAL_ERROR "assertion failed: expect '${value}' does not empty")
+  endif()
+endfunction()
+
+function(hi_assert_empty value)
+  if(${value})
+    hi_message(FATAL_ERROR "assertion failed: expect '${value}' empty, but got '${value}'")
+  endif()
+endfunction()
+
+function(hi_assert_defined value)
+  if(NOT DEFINED ${value})
+    hi_message(FATAL_ERROR "assertion failed: expect '${value}' be defined")
+  endif()
+endfunction()
+
+function(hi_assert_not_defined value)
+  if(DEFINED ${value})
+    hi_message(FATAL_ERROR "assertion failed: expect '${value}' was not defiend, but got '${${value}}'")
+  endif()
+endfunction()
+
+function(hi_assert_true value)
+  if(NOT ${${value}})
+    hi_message(FATAL_ERROR "assertion failed: expect '${value}' be true, but got '${${value}}'")
+  endif()
+endfunction()
+
+function(hi_assert_false value)
+  if(${${value}})
+    hi_message(FATAL_ERROR "assertion failed: expect '${value}' be false, but got '${${value}}'")
+  endif()
+endfunction()
+
+function(hi_failed)
+  hi_message(FATAL_ERROR "assertion failed: ${ARGN}")
+endfunction()
+
+function(hi_assert_exist file)
+  if(NOT EXISTS ${file})
+    hi_message(FATAL_ERROR "assertion failed: expect file ${file} exist")
+  endif()
+endfunction()
+
+function(hi_assert_not_exist file)
+  if(EXISTS ${file})
+    hi_message(FATAL_ERROR "assertion failed: expect file ${file} does not exist")
+  endif()
+endfunction()
