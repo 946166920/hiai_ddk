@@ -931,3 +931,43 @@ nn_ops:
       y:
         comment: "A tensor"
         tensor_types: DT_UINT8
+
+  Case:
+    comment: "Case"
+    add_version: 100.600.010.010
+    inputs:
+      branch_index:
+        comment: "A index of which graph"
+        tensor_types: DT_INT32
+      input:
+        comment: "A list of input tensors"
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_INT32, DT_BOOL, DT_INT64, DT_DOUBLE
+        dynamic: true
+    outputs:
+      output:
+        comment: "A list of output tensors"
+        tensor_types: DT_FLOAT, DT_INT8, DT_UINT8, DT_INT32, DT_BOOL, DT_INT64, DT_DOUBLE
+        dynamic: true
+    graphs:
+      branches:
+        comment: "A list of graph"
+        dynamic: true
+
+  MapIndex:
+    comment: "MapIndex"
+    add_version: 100.600.010.010
+    inputs:
+      x:
+        comment: "A shape data"
+        tensor_types: DT_INT32
+      data_seq:
+        comment: "All shape enum, const op"
+        tensor_types: DT_INT32
+      level_index:
+        comment: "A level index"
+        tensor_types: DT_INT32
+        optional: true
+    outputs:
+      y:
+        comment: "A index"
+        tensor_types: DT_INT32

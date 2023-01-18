@@ -39,6 +39,7 @@ class GraphSchema(object):
     def __init__(self, name, comments):
         self.name_ = name
         self.comments_ = comments
+        self.dynamic_ = False
 
 
 class OpSchema(object):
@@ -81,6 +82,8 @@ class YamlSchemaParser(object):
     def parse_graphs(self, graphs, graphRepo):
         for k, v in graphs.items():
             gs = GraphSchema(k, v["comment"].strip())
+            if "dynamic" in v:
+                gs.dynamic_ = v["dynamic"]
             graphRepo.append(gs)
 
     def parse_attrs(self, attrs, attrRepo):
@@ -94,7 +97,6 @@ class YamlSchemaParser(object):
 
     def parse_ops(self, ops, repo):
         for k, v in ops.items():
-            # print("parse op: [" + k + "]")
             op = OpSchema(k)
 
             if "comment" in v:
@@ -118,6 +120,5 @@ class YamlSchemaParser(object):
         content = yaml.load(f)
         for k, v in content.items():
             repo = OpSchemaRepo(k)
-            # print("parse op category: [" + k + "]")
             self.parse_ops(v, repo)
             return repo
