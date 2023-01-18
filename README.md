@@ -42,7 +42,6 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 | inc | 头文件接口目录 |
 | src | 源码目录 |
 | tests | 测试源码目录 |
-| third_party | 三方代码存放目录 |
 | CMakeLists.txt | 顶层CMakeLists文件 |
 | LICENSE | 许可证文件 |
 | README.md | readme文件 |
