@@ -46,6 +46,10 @@ class HandleConfig(object):
                 "android-ndk-r23b-linux.zip"],
             }
         self.THIRD_PARTY_LINK_LIST = {
+            "cutils": [
+                "https://mirrors.aliyun.com/android.googlesource.com/system/core/libcutils/include/cutils/native_handle.h",
+                "cutils",
+                self.decompress_cutils],
             "bounds_checking_function": [
                 "https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip",
                 "libboundscheck-1.1.11.zip",
@@ -196,6 +200,17 @@ class HandleConfig(object):
         return False
 
     # third_party
+    def decompress_cutils(self, package):
+        native_handle_h_path = os.path.join(THIRD_PARTY_DIR, package, "native_handle.h")
+        if not os.path.exists(native_handle_h_path):
+            download_path = os.path.join(THIRD_PARTY_DIR, "native_handle.h")
+            if not os.path.exists(download_path):
+                print("[ERROR] : FAIL! file {} is not exist.".format(download_path))
+                sys.exit(-1)
+            os.makedirs(os.path.join(THIRD_PARTY_DIR, package))
+            mv_cmd = "mv {} {}".format(download_path, native_handle_h_path)
+            os.system(mv_cmd)
+
     def decompress_protobuf(self, package):
         print("decompress_protobuf")
         with zipfile.ZipFile(os.path.join(THIRD_PARTY_DIR, package), 'r') as z:

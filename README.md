@@ -65,6 +65,7 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 | -------------- | -------- | ------------------------------------------------------------ |
 | libboundscheck | 1.1.11 | https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip |
 | protobuf       | 3.13.0  | https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.13.0.zip |
+| cutils | -- | https://mirrors.aliyun.com/android.googlesource.com/system/core/libcutils/include/cutils/native_handle.h |
 | googletest     | 1.8.1    | https://codeload.github.com/google/googletest/tar.gz/release-1.8.1 |
 | mockcpp | 2.7 | https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip |
 | cmake | 3.20.5 | https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz |
