@@ -46,11 +46,6 @@ class HandleConfig(object):
                 "android-ndk-r23b-linux.zip"],
             }
         self.THIRD_PARTY_LINK_LIST = {
-            "cutils": [
-                "https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/ \
-                    cutils.tar.gz",
-                "core-refs_heads_master-libcutils-include-cutils.tar.gz",
-                self.decompress_cutils],
             "bounds_checking_function": [
                 "https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip",
                 "libboundscheck-1.1.11.zip",
@@ -118,8 +113,10 @@ class HandleConfig(object):
 
 
     def download_third_party(self):
-        if not os.path.exists(THIRD_PARTY_DIR):
-            os.mkdir(THIRD_PARTY_DIR)
+        native_handle_h_path = os.path.join(THIRD_PARTY_DIR, "cutils", "native_handle.h")
+        if not os.path.exists(native_handle_h_path):
+            print("[ERROR] : FAIL! file {} is not exist.".format(native_handle_h_path))
+            return False
 
         for item in self.THIRD_PARTY_LINK_LIST:
             if not os.path.exists(os.path.join(THIRD_PARTY_DIR, item)):
@@ -199,11 +196,6 @@ class HandleConfig(object):
         return False
 
     # third_party
-    def decompress_cutils(self, package):
-        with tarfile.open(os.path.join(THIRD_PARTY_DIR, package)) as t:
-            t.extractall(os.path.join(THIRD_PARTY_DIR, "cutils"))
-
-
     def decompress_protobuf(self, package):
         print("decompress_protobuf")
         with zipfile.ZipFile(os.path.join(THIRD_PARTY_DIR, package), 'r') as z:

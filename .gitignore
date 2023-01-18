@@ -1,5 +1,6 @@
 buildtools/*
 third_party/*
+!third_party/cutils
 out/*
 test/framework/build/*
 test/out/*

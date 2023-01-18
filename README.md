@@ -42,12 +42,15 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 | inc | 头文件接口目录 |
 | src | 源码目录 |
 | tests | 测试源码目录 |
+| third_party | 三方代码存放目录 |
 | CMakeLists.txt | 顶层CMakeLists文件 |
 | LICENSE | 许可证文件 |
 | README.md | readme文件 |
 | RELEASE.md | 发布历史记录文件 |
 | Third_Party_Open_Source_Software_Notice.doc | 开源三方使用声明文件 |
 | build.py | 编译脚本 |
+
+
 
 
 
@@ -62,7 +65,6 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 | -------------- | -------- | ------------------------------------------------------------ |
 | libboundscheck | 1.1.11 | https://github.com/openeuler-mirror/libboundscheck/archive/refs/tags/v1.1.11.zip |
 | protobuf       | 3.13.0  | https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.13.0.zip |
-| cutils | -- | https://android.googlesource.com/platform/system/core/+archive/refs/heads/master/libcutils/include/cutils.tar.gz |
 | googletest     | 1.8.1    | https://codeload.github.com/google/googletest/tar.gz/release-1.8.1 |
 | mockcpp | 2.7 | https://github.com/sinojelly/mockcpp/archive/refs/tags/v2.7.zip |
 | cmake | 3.20.5 | https://cmake.org/files/v3.20/cmake-3.20.5-linux-x86_64.tar.gz |
@@ -73,7 +75,7 @@ HiAI DDK开发套件将其AI推理能力封装在动态库文件里，通过此�
 
 HiAI DDK编译需要依赖第三方库，编译过程中脚本会自动下载所需的源码和工具，请确保可连接网络，下载耗时因网络环境而异。
 
-下载过程中会在工程根目录下新建一个`third_party`目录用来存放下载的第三方源码，其中`libboundscheck`源码使用`build/core/cmake/external/c_sec/CMakeLists.txt`编译生成`libhuawei_c_sec_shared.so`。
+下载过程中会在工程根目录下的`third_party`目录中存放下载的第三方源码，其中`libboundscheck`源码使用`build/core/cmake/external/c_sec/CMakeLists.txt`编译生成`libhuawei_c_sec_shared.so`。
 
 本项目编译依赖NDK和CMake编译工具（暂不支持r19c以下的NDK版本。）：
 
